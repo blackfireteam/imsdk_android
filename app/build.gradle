@@ -10,8 +10,8 @@ android {
         applicationId "com.masonsoft.imsdk.sample"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode createGitVersionCode()
+        versionName createGitVersionName()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -25,6 +25,15 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+// 自定义生成的 apk 文件名
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        if (outputFileName.endsWith(".apk")) {
+            outputFileName = "MSIMSDK_v${android.defaultConfig.versionName}_${variant.buildType.name}_sample.apk"
+        }
     }
 }
 
