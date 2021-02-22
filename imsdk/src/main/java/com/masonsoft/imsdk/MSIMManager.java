@@ -1,7 +1,9 @@
 package com.masonsoft.imsdk;
 
 /**
- * MSIM 统一管理类(单例 {@linkplain #getInstance() MSIMManager.getInstance()}).
+ * MSIM 统一管理类, 核心类, 业务层使用 IM 功能的最外层入口。包括登录，消息，会话等 IM 强相关功能。
+ *
+ * @since 1.0
  */
 public class MSIMManager {
 
@@ -17,6 +19,13 @@ public class MSIMManager {
     }
 
     private MSIMManager() {
+    }
+
+    /**
+     * 获取 MSIMConversationManager 单例
+     */
+    public MSIMConversationManager getConversationManager() {
+        return MSIMConversationManager.getInstance();
     }
 
 }
