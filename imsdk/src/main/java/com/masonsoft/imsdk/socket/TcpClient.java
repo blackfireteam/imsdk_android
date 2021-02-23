@@ -7,7 +7,7 @@ import com.masonsoft.imsdk.util.IMLog;
 import java.io.Closeable;
 
 /**
- * 处理 Netty 长连接. 该长连接是一次性的，如果需要重连，需要关闭连接，并重新创建.<br/>
+ * 处理 tcp 长连接. 该长连接是一次性的，如果需要重连，需要关闭连接，并重新创建.<br/>
  * 链接的状态为单向变化，在一个链接生命周期中，每一个状态至多只存在一次。<br/>
  * 所有可能存在的状态迁移路径是：<br/>
  * <ol>
@@ -22,7 +22,7 @@ import java.io.Closeable;
  *   </li>
  * </ol>
  */
-public abstract class NettyClient implements Closeable {
+public abstract class TcpClient implements Closeable {
 
     /**
      * 当前长连接处于空闲状态(默认状态)
@@ -63,12 +63,16 @@ public abstract class NettyClient implements Closeable {
         throw new IllegalStateException("unknown state " + state);
     }
 
+    protected int getState() {
+        return mState;
+    }
+
     /**
      * 将当前状态切换到目标状态，如果切换失败，抛出 {@linkplain IllegalStateException} 异常
      *
      * @param state
      */
-    private void moveToState(@State int state) {
+    protected void moveToState(@State int state) {
         if (mState > state) {
             throw new IllegalStateException();
         }
@@ -86,7 +90,7 @@ public abstract class NettyClient implements Closeable {
      * @param newState 迁移后的状态(当前状态)
      */
     protected void onStateChanged(int oldState, int newState) {
-        IMLog.i("NettyClient state changed %s -> %s",
+        IMLog.i("TcpClient state changed %s -> %s",
                 translateStateAsHumanRead(oldState),
                 translateStateAsHumanRead(newState));
     }
