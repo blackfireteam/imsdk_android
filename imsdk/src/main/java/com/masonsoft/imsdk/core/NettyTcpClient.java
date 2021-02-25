@@ -44,11 +44,15 @@ import io.netty.handler.timeout.IdleStateHandler;
 public abstract class NettyTcpClient extends TcpClient {
 
     /**
-     * 长连接写空闲超时时间，用来触发心跳。单位秒。当长连接写空闲超时事件被触发时，客户端将发送一个心跳包。
+     * 长连接写空闲超时时间，单位秒。
+     *
+     * @see #onTcpClientWriteTimeout(boolean)
      */
     private static final int WRITE_IDLE_TIMEOUT_SECONDS = 30;
     /**
-     * 长连接读空闲超时时间，用来检测错误的链接。单位秒。当长连接读空闲超时事件被触发时，客户端将主动关闭当前长连接。
+     * 长连接读空闲超时时间，单位秒。
+     *
+     * @see #onTcpClientReadTimeout(boolean)
      */
     private static final int READ_IDLE_TIMEOUT_SECONDS = WRITE_IDLE_TIMEOUT_SECONDS * 2;
 
