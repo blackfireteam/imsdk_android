@@ -26,6 +26,13 @@ public final class IMLog {
         LOG_LEVEL = logLevel;
     }
 
+    /**
+     * 获取当前日志级别
+     */
+    public static int getLogLevel() {
+        return LOG_LEVEL;
+    }
+
     private static boolean isLoggable(int logLevel) {
         return logLevel >= LOG_LEVEL;
     }

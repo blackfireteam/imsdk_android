@@ -42,5 +42,6 @@ android.libraryVariants.all { variant ->
 
 dependencies {
     implementation 'io.netty:netty-all:4.1.59.Final'
+    implementation "com.idonans.lang:lang:0.1.7"
     api 'androidx.appcompat:appcompat:1.2.0'
 }

@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.socket;
+package com.masonsoft.imsdk.core;
 
 import androidx.annotation.IntDef;
 
@@ -45,10 +45,15 @@ public abstract class TcpClient implements Closeable {
     public @interface State {
     }
 
+    private final Object mStateLock = new Object();
+
     @State
     private int mState = STATE_IDLE;
 
-    private static String translateStateAsHumanRead(@State int state) {
+    /**
+     * 将长连接状态转换为可读的字符串
+     */
+    private static String stateToString(@State int state) {
         switch (state) {
             case STATE_IDLE:
                 return "STATE_IDLE";
@@ -63,8 +68,13 @@ public abstract class TcpClient implements Closeable {
         throw new IllegalStateException("unknown state " + state);
     }
 
+    /**
+     * 获取当前长连接状态
+     */
     protected int getState() {
-        return mState;
+        synchronized (mStateLock) {
+            return mState;
+        }
     }
 
     /**
@@ -73,13 +83,28 @@ public abstract class TcpClient implements Closeable {
      * @param state
      */
     protected void moveToState(@State int state) {
-        if (mState > state) {
-            throw new IllegalStateException();
+        synchronized (mStateLock) {
+            if (mState > state) {
+                throw new IllegalStateException("TcpClient fail to move state " + stateToString(mState) + " -> " + stateToString(state));
+            }
+            if (mState != state) {
+                final int oldState = mState;
+                mState = state;
+                this.onStateChanged(oldState, mState);
+            }
         }
-        if (mState != state) {
-            final int oldState = mState;
-            mState = state;
-            this.onStateChanged(oldState, mState);
+    }
+
+    /**
+     * 校验当前长连接状态必然是指定状态，否则抛出 {@linkplain IllegalStateException} 异常
+     *
+     * @param state
+     */
+    protected void checkState(@State int state) {
+        synchronized (mStateLock) {
+            if (mState != state) {
+                throw new IllegalStateException("required " + stateToString(state) + " but " + stateToString(mState));
+            }
         }
     }
 
@@ -91,8 +116,8 @@ public abstract class TcpClient implements Closeable {
      */
     protected void onStateChanged(int oldState, int newState) {
         IMLog.i("TcpClient state changed %s -> %s",
-                translateStateAsHumanRead(oldState),
-                translateStateAsHumanRead(newState));
+                stateToString(oldState),
+                stateToString(newState));
     }
 
 }
