@@ -415,7 +415,7 @@ public abstract class NettyTcpClient extends TcpClient {
     protected void updateChannelHandlerContext(@Nullable ChannelHandlerContext context, boolean forceClosable) {
         if (context == null) {
             IMLog.v("updateChannelHandlerContext with null context");
-            IOUtil.closeQuietly(this);
+            dispatchDisconnected();
             return;
         }
 
@@ -423,7 +423,7 @@ public abstract class NettyTcpClient extends TcpClient {
         final Channel channel = context.channel();
         if (channel == null) {
             IMLog.v("updateChannelHandlerContext with null channel");
-            IOUtil.closeQuietly(this);
+            dispatchDisconnected();
             return;
         }
 
