@@ -14,6 +14,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
@@ -123,13 +124,22 @@ public abstract class NettyTcpClient extends TcpClient {
      */
     @Override
     public void close() throws IOException {
-        if (mEventLoopGroup != null) {
-            mEventLoopGroup.shutdownGracefully();
-            mEventLoopGroup = null;
+        try {
+            if (mEventLoopGroup != null) {
+                mEventLoopGroup.shutdownGracefully();
+                mEventLoopGroup = null;
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
 
-        if (mChannelHandlerContext != null) {
-            mChannelHandlerContext.close();
+        try {
+            if (mChannelHandlerContext != null) {
+                mChannelHandlerContext.close();
+                mChannelHandlerContext = null;
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 
@@ -471,6 +481,39 @@ public abstract class NettyTcpClient extends TcpClient {
      */
     protected void onMessageReceived(@Nonnull Message message) {
         IMLog.v("onMessageReceived %s", message);
+    }
+
+    /**
+     * 在长连接上发送消息，如果当前长连接处于不可发送的状态，将抛出异常.
+     *
+     * @see #sendMessageQuietly(Message)
+     */
+    public void sendMessage(@Nonnull Message message) throws Throwable {
+        checkState(STATE_CONNECTED);
+        Objects.requireNonNull(mChannelHandlerContext);
+        final Channel channel = mChannelHandlerContext.channel();
+        Objects.requireNonNull(channel);
+        if (!channel.isActive()) {
+            throw new IllegalStateException("channel is not active");
+        }
+        mChannelHandlerContext.writeAndFlush(message);
+    }
+
+    /**
+     * 在长连接上发送消息，如果当前长连接处于不可发送状态，返回 false, 否则返回 true.
+     * 当返回 false 时，表示消息发送失败。当返回 true 时，并不能说明消息发送成功，消息是否发送成功需要以消息回执为准。
+     * 返回 true 时，仅说明消息已经写入到了 TCP 链接中。
+     *
+     * @see #sendMessage(Message)
+     */
+    public boolean sendMessageQuietly(@Nonnull Message message) {
+        try {
+            sendMessage(message);
+            return true;
+        } catch (Throwable e) {
+            IMLog.v(e, "sendMessageQuietly fail");
+        }
+        return false;
     }
 
 }
