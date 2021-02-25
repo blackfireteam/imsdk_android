@@ -28,6 +28,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -103,7 +104,8 @@ public abstract class NettyTcpClient extends TcpClient {
                         .addLast(new MessageDecoder())
                         .addLast(new TimeoutHandler())
                         .addLast(new ConnectionStateHandler())
-                        .addLast(new MessageReader());
+                        .addLast(new MessageReader())
+                        .addLast(new ExceptionHandler());
             }
         });
         moveToState(STATE_CONNECTING);
@@ -469,13 +471,11 @@ public abstract class NettyTcpClient extends TcpClient {
         IMLog.v("onDisconnected");
     }
 
-    private class MessageReader extends ChannelInboundHandlerAdapter {
+    private class MessageReader extends SimpleChannelInboundHandler<Message> {
         @Override
-        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-            super.channelRead(ctx, msg);
-
-            if (msg instanceof Message) {
-                onMessageReceived((Message) msg);
+        protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception {
+            if (msg != null) {
+                onMessageReceived(msg);
             }
         }
     }
@@ -487,20 +487,40 @@ public abstract class NettyTcpClient extends TcpClient {
         IMLog.v("onMessageReceived %s", message);
     }
 
+    private class ExceptionHandler extends ChannelInboundHandlerAdapter {
+        @Override
+        public void exceptionCaught(ChannelHandlerContext ctx, Throwable e) throws Exception {
+            super.exceptionCaught(ctx, e);
+
+            IMLog.e(e, "ExceptionHandler");
+            // 发生了未知异常，强制关闭长连接
+            dispatchDisconnected();
+        }
+    }
+
     /**
      * 在长连接上发送消息，如果当前长连接处于不可发送的状态，将抛出异常.
      *
      * @see #sendMessageQuietly(Message)
      */
     public void sendMessage(@Nonnull Message message) throws Throwable {
-        checkState(STATE_CONNECTED);
-        Objects.requireNonNull(mChannelHandlerContext);
-        final Channel channel = mChannelHandlerContext.channel();
-        Objects.requireNonNull(channel);
-        if (!channel.isActive()) {
-            throw new IllegalStateException("channel is not active");
+        try {
+            checkState(STATE_CONNECTED);
+            Objects.requireNonNull(mChannelHandlerContext);
+            final Channel channel = mChannelHandlerContext.channel();
+            Objects.requireNonNull(channel);
+            if (!channel.isActive()) {
+                throw new IllegalStateException("channel is not active");
+            }
+            mChannelHandlerContext.writeAndFlush(message);
+        } catch (Throwable e) {
+            if (getState() == STATE_CONNECTED) {
+                // 如果当前链接状态为已连接，则强制关闭长连接.
+                dispatchDisconnected();
+            }
+
+            throw e;
         }
-        mChannelHandlerContext.writeAndFlush(message);
     }
 
     /**
