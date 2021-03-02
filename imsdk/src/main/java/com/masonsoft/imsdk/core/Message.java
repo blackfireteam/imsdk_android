@@ -11,6 +11,8 @@ public class Message {
 
     /**
      * proto buff 编码
+     *
+     * @see Type
      */
     private final int mType;
 
@@ -25,6 +27,9 @@ public class Message {
         this.mData = data;
     }
 
+    /**
+     * @see Type
+     */
     public int getType() {
         return mType;
     }
@@ -43,6 +48,14 @@ public class Message {
     @NonNull
     public String toString() {
         return toShortString();
+    }
+
+    /**
+     * proto buff 编码
+     *
+     * @see #getType()
+     */
+    public static class Type {
     }
 
 }

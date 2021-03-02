@@ -50,4 +50,6 @@ dependencies {
     implementation rootProject.ext.bcfg.deps.okhttp
     implementation rootProject.ext.bcfg.deps.rxjava
     implementation rootProject.ext.bcfg.deps.rxandroid
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
 }

@@ -46,4 +46,5 @@ dependencies {
     implementation rootProject.ext.bcfg.deps.androidx_appcompat
     implementation rootProject.ext.bcfg.deps.idonans_appcontext
     implementation rootProject.ext.bcfg.deps.idonans_core
+    implementation 'org.bouncycastle:bcprov-jdk16:1.46'
 }
