@@ -2,9 +2,11 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.IntDef;
 
-import com.masonsoft.imsdk.util.IMLog;
+import com.masonsoft.imsdk.IMLog;
 
 import java.io.Closeable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * 处理 tcp 长连接. 该长连接是一次性的，如果需要重连，需要关闭连接，并重新创建.<br/>
@@ -42,6 +44,7 @@ public abstract class TcpClient implements Closeable {
     public static final int STATE_CLOSED = 3;
 
     @IntDef({STATE_IDLE, STATE_CONNECTING, STATE_CONNECTED, STATE_CLOSED})
+    @Retention(RetentionPolicy.SOURCE)
     public @interface State {
     }
 

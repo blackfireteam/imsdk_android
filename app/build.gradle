@@ -3,15 +3,15 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion rootProject.ext.bcfg.ver.target_sdk
+    buildToolsVersion rootProject.ext.bcfg.ver.build_tools
 
     defaultConfig {
         applicationId "com.masonsoft.imsdk.sample"
-        minSdkVersion 21
-        targetSdkVersion 30
-        versionCode createGitVersionCode()
-        versionName createGitVersionName()
+        minSdkVersion rootProject.ext.bcfg.ver.min_sdk
+        targetSdkVersion rootProject.ext.bcfg.ver.target_sdk
+        versionCode rootProject.ext.bcfg.ver.versionCode
+        versionName rootProject.ext.bcfg.ver.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -38,10 +38,16 @@ android.applicationVariants.all { variant ->
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(path: ':imsdk')
+    implementation rootProject.ext.bcfg.deps.androidx_constraintlayout
+    implementation rootProject.ext.bcfg.deps.idonans_appcontext
+    implementation rootProject.ext.bcfg.deps.idonans_core
+    implementation rootProject.ext.bcfg.deps.androidx_appcompat
+    implementation rootProject.ext.bcfg.deps.guava
+    implementation rootProject.ext.bcfg.deps.gson
+    implementation rootProject.ext.bcfg.deps.rxbinding
+    implementation rootProject.ext.bcfg.deps.okhttp
+    implementation rootProject.ext.bcfg.deps.rxjava
+    implementation rootProject.ext.bcfg.deps.rxandroid
 }

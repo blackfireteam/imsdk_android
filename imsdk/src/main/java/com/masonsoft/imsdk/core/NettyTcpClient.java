@@ -2,12 +2,13 @@ package com.masonsoft.imsdk.core;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.lang.thread.Threads;
-import com.idonans.lang.util.IOUtil;
-import com.masonsoft.imsdk.util.IMLog;
-import com.masonsoft.imsdk.util.ZipUtil;
+import com.idonans.core.thread.Threads;
+import com.idonans.core.util.IOUtil;
+import com.idonans.core.util.ZipUtil;
+import com.masonsoft.imsdk.IMLog;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -16,8 +17,6 @@ import java.nio.ByteOrder;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Nonnull;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -189,15 +188,15 @@ public abstract class NettyTcpClient extends TcpClient {
     /**
      * 对消息内容解密，返回解密后的内容。
      */
-    @Nonnull
-    protected abstract byte[] decryptMessage(@Nonnull byte[] messageData);
+    @NonNull
+    protected abstract byte[] decryptMessage(@NonNull byte[] messageData);
 
     /**
      * 对消息内容进行压缩，如果进行了压缩，返回压缩后的 data, 否则返回 null. 默认行为是当数据长度
      * 较长时(超过 {@linkplain #MAX_PLAIN_DATA_LENGTH}), 返回压缩后的数据，否则返回 null.
      * 如果需要对不同的消息类型选择是否开启压缩，可以通过 messageType 判断消息类型。
      */
-    protected byte[] deflateMessage(int messageType, @Nonnull byte[] messageData) {
+    protected byte[] deflateMessage(int messageType, @NonNull byte[] messageData) {
         final int length = messageData.length;
         if (length > MAX_PLAIN_DATA_LENGTH) {
             // 数据超过阈值，开启压缩
@@ -211,8 +210,8 @@ public abstract class NettyTcpClient extends TcpClient {
     /**
      * 对消息内容解压，返回解压后的内容.
      */
-    @Nonnull
-    protected byte[] inflateMessage(@Nonnull byte[] messageData) {
+    @NonNull
+    protected byte[] inflateMessage(@NonNull byte[] messageData) {
         return ZipUtil.inflate(messageData);
     }
 
@@ -483,7 +482,7 @@ public abstract class NettyTcpClient extends TcpClient {
     /**
      * 读取到服务器发送的原始消息
      */
-    protected void onMessageReceived(@Nonnull Message message) {
+    protected void onMessageReceived(@NonNull Message message) {
         IMLog.v("onMessageReceived %s", message);
     }
 
@@ -503,7 +502,7 @@ public abstract class NettyTcpClient extends TcpClient {
      *
      * @see #sendMessageQuietly(Message)
      */
-    public void sendMessage(@Nonnull Message message) throws Throwable {
+    public void sendMessage(@NonNull Message message) throws Throwable {
         try {
             checkState(STATE_CONNECTED);
             Objects.requireNonNull(mChannelHandlerContext);
@@ -530,7 +529,7 @@ public abstract class NettyTcpClient extends TcpClient {
      *
      * @see #sendMessage(Message)
      */
-    public boolean sendMessageQuietly(@Nonnull Message message) {
+    public boolean sendMessageQuietly(@NonNull Message message) {
         try {
             sendMessage(message);
             return true;
