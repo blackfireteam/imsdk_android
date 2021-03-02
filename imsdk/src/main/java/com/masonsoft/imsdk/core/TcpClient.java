@@ -23,6 +23,8 @@ import java.lang.annotation.RetentionPolicy;
  *     {@linkplain #STATE_IDLE} -> {@linkplain #STATE_CLOSED}
  *   </li>
  * </ol>
+ *
+ * @since 1.0
  */
 public abstract class TcpClient implements Closeable {
 

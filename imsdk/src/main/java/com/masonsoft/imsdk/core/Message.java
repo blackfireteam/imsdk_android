@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 /**
  * 传输于长连接上的原始消息
+ *
+ * @since 1.0
  */
 public class Message {
 

@@ -40,6 +40,8 @@ import io.netty.handler.timeout.IdleStateHandler;
 
 /**
  * 基于 Netty 实现 TCP 长连接
+ *
+ * @since 1.0
  */
 public abstract class NettyTcpClient extends TcpClient {
 
