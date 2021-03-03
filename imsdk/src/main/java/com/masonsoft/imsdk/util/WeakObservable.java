@@ -21,7 +21,7 @@ public class WeakObservable<T> {
         mObservers.removeAll();
     }
 
-    public void forEach(@NonNull Consumer<T> consumer) {
+    protected void forEach(@NonNull Consumer<T> consumer) {
         final List<T> observers = mObservers.getAll();
         for (T observer : observers) {
             if (observer == null) {
