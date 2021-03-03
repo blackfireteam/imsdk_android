@@ -25,8 +25,26 @@ public class ReadWriteWeakSet<T> {
         }
     }
 
+    public void remove(@Nullable T object) {
+        mWriteLock.lock();
+        try {
+            mWeakMap.remove(object);
+        } finally {
+            mWriteLock.unlock();
+        }
+    }
+
+    public void removeAll() {
+        mWriteLock.lock();
+        try {
+            mWeakMap.clear();
+        } finally {
+            mWriteLock.unlock();
+        }
+    }
+
     @NonNull
-    public List<T> get() {
+    public List<T> getAll() {
         mReadLock.lock();
         try {
             mWeakMap.size();
