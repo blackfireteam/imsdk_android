@@ -1,0 +1,128 @@
+syntax = "proto3";
+option java_package = "com.masonsoft.imsdk.proto";
+
+//0
+message Ping
+{
+    int64 type = 1;
+}
+//1
+message ImLogin
+{
+    int64 sign = 1;
+    string token = 2; //从应用方获取的imtoken
+}
+//2
+message ImLogout
+{
+    int64 sign = 1;
+}
+//3
+message Result
+{
+    int64 sign = 1;//信息标示，原路返回
+    int64 code = 2;
+    string msg = 3;
+    int64 now_time = 4; //当前服务器时间戳
+    int64 uid = 5;//鉴权时返回的uid
+}
+//4
+message ChatS
+{
+    int64 sign = 1; //客户端自定义标识，服务器会原样返回
+    int64 type = 2;// 消息类型
+    int64 to_uid = 3; //发送给谁
+    string body = 4; //消息内容
+    int64 width = 5; //图片的宽度
+    int64 height = 6; //图片的高度
+    int64 duration = 7;//时长
+    int64 lat = 8;//纬度
+    int64 lng = 9;//经度
+}
+//5
+message ChatSR
+{
+    int64 sign = 1;//信息标示，原路返回
+    int64 msg_id = 2;//消息id
+}
+//6
+message ChatR
+{
+    int64 sign = 1;
+    int64 msg_id = 2; //消息id
+    int64 from_uid = 3; //谁发的
+    int64 to_uid = 4; //发给谁
+    int64 type = 5;// 消息类型
+    string body = 6; //消息内容
+    int64 width = 7; //图片的宽度
+    int64 height = 8; //图片的高度
+    int64 duration = 9;//时长
+    int64 lat = 10;//纬度
+    int64 lng = 11;//经度
+}
+//7
+message ChatRBatch
+{
+    int64 sign = 1;//信息标示，原路返回
+    repeated ChatR msgs = 2;
+}
+//8
+message GetHistory
+{
+    int64 sign = 1; //客户端自定义标识，服务器会原样返回
+    int64 to_uid = 2; //和谁的聊天记录
+    int64 msg_id = 3; //msg id 指针
+    int64 offset = 4; //拉多少条，默认20，最多100
+}
+//9
+message Revoke
+{
+    int64 sign = 1; //客户端自定义标识，服务器会原样返回
+    int64 to_uid = 2;// 谁发的消息
+    int64 msg_id = 3;// 撤回的消息id
+}
+//10
+message MsgRead
+{
+    int64 sign = 1; //客户端自定义标识，服务器会原样返回
+    int64 to_uid = 2;// 谁发的消息已读
+    int64 msg_id = 3;// 已读消息id
+}
+//11 消息已读状态发生变更通知（客户端收到这个才去变更）
+message LastReadMsg
+{
+    int64 from_uid = 1;// 谁的会话
+    int64 msg_id = 2;// 最后一条已读消息
+    int64 unread = 3;//还有多少条未读消息
+}
+//12
+message DelChat
+{
+    int64 sign = 1; //客户端自定义标识，服务器会原样返回
+    int64 to_uid = 2;// 删除谁的
+}
+//13
+message GetChatList
+{
+    int64 sign = 1; //客户端自定义标识，服务器会原样返回
+    int64 msg_id = 2;// 客户端本地保存的会话列表的最新一个会话的msg id
+}
+//14
+message ChatItem
+{
+    int64 uid = 1;
+    int64 msg_start = 2;
+    int64 msg_end = 3;
+    int64 msg_last_read = 4;
+    string last_msg = 5;
+    int64 unread = 6;
+    bool is_new = 7;
+    bool my_move = 8;
+    bool ice_break = 9;
+    bool tip_free = 10;
+}
+//15
+message ChatList
+{
+    repeated ChatItem chat_items = 1;
+}

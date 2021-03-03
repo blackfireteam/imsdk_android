@@ -3,6 +3,8 @@ package com.masonsoft.imsdk.core.session;
 import androidx.annotation.NonNull;
 
 import com.idonans.core.Charsets;
+import com.masonsoft.imsdk.MSIMSessionManager;
+import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.NettyTcpClient;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -20,16 +22,35 @@ public class SessionTcpClient extends NettyTcpClient {
 
     @NonNull
     private final Session mSession;
+    private final MSIMSessionManager.SessionObserver mSessionObserver;
 
     public SessionTcpClient(@NonNull Session session) {
         super(session.getTcpHost(), session.getTcpPort());
         mSession = session;
+        mSessionObserver = this::validateSession;
+        validateSession();
+    }
+
+    /**
+     * 校验当前长连接上的 Session 状态，如果 Session 已经与当前登录的 Session 不一致，或者当前已经退出登录，则强制中断长连接.
+     */
+    protected void validateSession() {
+        if (SessionValidator.isValid(mSession)) {
+            return;
+        }
+
+        // 当前 Session 已经失效，强制断开链接
+        dispatchDisconnected();
     }
 
     @Override
     protected byte[] encryptMessage(int messageType, byte[] messageData) {
-        // 请求登录的消息强制加密
-        // TODO
+        final String aesKey = mSession.getAesKey();
+
+        // 请求登录的消息需要加密
+        if (messageType == Message.Type.IM_LOGIN) {
+            return crypt(messageData, aesKey, true);
+        }
 
         return super.encryptMessage(messageType, messageData);
     }
@@ -60,6 +81,24 @@ public class SessionTcpClient extends NettyTcpClient {
             return cipher.doFinal(input);
         } catch (Throwable e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    @Override
+    public void sendMessage(@NonNull Message message) throws Throwable {
+        // 在发送长连接消息之前，检查当前 Session 的状态
+        validateSession();
+
+        super.sendMessage(message);
+    }
+
+    @Override
+    protected void onConnected() {
+        super.onConnected();
+
+        // 需要加锁，存在不确定性的多线程多次调用
+        synchronized (mSession) {
+
         }
     }
 

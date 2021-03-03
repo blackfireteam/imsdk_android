@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.library'
+    id 'com.google.protobuf'
 }
 
 android {
@@ -40,6 +41,24 @@ android.libraryVariants.all { variant ->
     }
 }
 
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.0.0'
+    }
+    plugins {
+        javalite {
+            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                javalite {}
+            }
+        }
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'io.netty:netty-all:4.1.59.Final'
@@ -47,4 +66,5 @@ dependencies {
     implementation rootProject.ext.bcfg.deps.idonans_appcontext
     implementation rootProject.ext.bcfg.deps.idonans_core
     implementation 'org.bouncycastle:bcprov-jdk16:1.46'
+    implementation 'com.google.protobuf:protobuf-lite:3.0.1'
 }
