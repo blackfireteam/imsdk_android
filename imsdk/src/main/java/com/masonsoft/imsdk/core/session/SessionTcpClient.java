@@ -3,6 +3,8 @@ package com.masonsoft.imsdk.core.session;
 import androidx.annotation.NonNull;
 
 import com.idonans.core.Charsets;
+import com.masonsoft.imsdk.IMLog;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMSessionManager;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.NettyTcpClient;
@@ -24,10 +26,22 @@ public class SessionTcpClient extends NettyTcpClient {
     private final Session mSession;
     private final MSIMSessionManager.SessionObserver mSessionObserver;
 
+    /**
+     * @see #onConnected()
+     * @see #onFirstConnected()
+     */
+    private boolean mAlreadyConnected;
+    /**
+     * @see #onDisconnected()
+     * @see #onFirstDisconnected()
+     */
+    private boolean mAlreadyDisconnected;
+
     public SessionTcpClient(@NonNull Session session) {
         super(session.getTcpHost(), session.getTcpPort());
         mSession = session;
         mSessionObserver = this::validateSession;
+        MSIMManager.getInstance().getSessionManager().getSessionObservable().registerObserver(mSessionObserver);
         validateSession();
     }
 
@@ -85,6 +99,16 @@ public class SessionTcpClient extends NettyTcpClient {
     }
 
     @Override
+    protected void onTcpClientWriteTimeout(boolean first) {
+        super.onTcpClientWriteTimeout(first);
+
+        // 发送心跳包
+        if (getState() == STATE_CONNECTED) {
+            // TODO 在已经认证的情况下才发送心跳包
+        }
+    }
+
+    @Override
     public void sendMessage(@NonNull Message message) throws Throwable {
         // 在发送长连接消息之前，检查当前 Session 的状态
         validateSession();
@@ -96,10 +120,58 @@ public class SessionTcpClient extends NettyTcpClient {
     protected void onConnected() {
         super.onConnected();
 
+        if (mAlreadyConnected) {
+            return;
+        }
+
+        boolean invokeFirstConnected = false;
         // 需要加锁，存在不确定性的多线程多次调用
         synchronized (mSession) {
-
+            if (!mAlreadyConnected) {
+                mAlreadyConnected = true;
+                invokeFirstConnected = true;
+            }
         }
+        if (invokeFirstConnected) {
+            onFirstConnected();
+        }
+    }
+
+    /**
+     * 成功建立长连接。至多执行一次。
+     */
+    protected void onFirstConnected() {
+        IMLog.v("onFirstConnected");
+        // 发送认证信息
+        // TODO
+    }
+
+    @Override
+    protected void onDisconnected() {
+        super.onDisconnected();
+
+        if (mAlreadyDisconnected) {
+            return;
+        }
+
+        boolean invokeFirstDisconnected = false;
+        // 需要加锁，存在不确定性的多线程多次调用
+        synchronized (mSession) {
+            if (!mAlreadyDisconnected) {
+                mAlreadyDisconnected = true;
+                invokeFirstDisconnected = true;
+            }
+        }
+        if (invokeFirstDisconnected) {
+            onFirstDisconnected();
+        }
+    }
+
+    /**
+     * 长连接已断开。至多执行一次。
+     */
+    protected void onFirstDisconnected() {
+        IMLog.v("onFirstDisconnected");
     }
 
 }
