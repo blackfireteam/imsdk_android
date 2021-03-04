@@ -201,7 +201,7 @@ public abstract class MessagePacketSend {
     public void validateTimeout() {
         synchronized (mStateLock) {
             if (mState == STATE_WAIT_RESULT) {
-                // 仅在处于 STATE_WAIT_RESULT 状态是才检查 timeout
+                // 仅在处于 STATE_WAIT_RESULT 状态时才检查 timeout
                 final long diff = System.currentTimeMillis() - mSendTimeMs;
                 if (diff > mTimeoutMs) {
                     // 已经超时，设置状态为发送失败

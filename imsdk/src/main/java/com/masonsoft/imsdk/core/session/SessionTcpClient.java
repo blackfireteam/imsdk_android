@@ -12,7 +12,6 @@ import com.masonsoft.imsdk.core.NettyTcpClient;
 import com.masonsoft.imsdk.message.MessagePacketSend;
 import com.masonsoft.imsdk.message.PingMessagePacket;
 import com.masonsoft.imsdk.message.SignInMessagePacket;
-import com.masonsoft.imsdk.message.SignOutMessagePacket;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -47,14 +46,12 @@ public class SessionTcpClient extends NettyTcpClient {
     private boolean mAlreadyDisconnected;
 
     private final SignInMessagePacket mSignInMessagePacket;
-    private final SignOutMessagePacket mSignOutMessagePacket;
 
     public SessionTcpClient(@NonNull Session session) {
         super(session.getTcpHost(), session.getTcpPort());
         mSession = session;
 
         mSignInMessagePacket = SignInMessagePacket.create(mSession.getToken());
-        mSignOutMessagePacket = SignOutMessagePacket.create();
 
         mSessionObserver = this::validateSession;
         MSIMManager.getInstance().getSessionManager().getSessionObservable().registerObserver(mSessionObserver);
@@ -199,16 +196,27 @@ public class SessionTcpClient extends NettyTcpClient {
      */
     private void signIn() {
         synchronized (mSession) {
-            if (mSignInMessagePacket.getState() == MessagePacketSend.STATE_IDLE) {
-                mSignInMessagePacket.moveToState(MessagePacketSend.STATE_GOING);
-                final boolean writeSuccess = sendMessageQuietly(mSignInMessagePacket.getMessage());
-                if (writeSuccess) {
-                    mSignInMessagePacket.moveToState(MessagePacketSend.STATE_WAIT_RESULT);
-                } else {
-                    mSignInMessagePacket.moveToState(MessagePacketSend.STATE_FAIL);
-                }
+            if (mSignInMessagePacket.getState() != MessagePacketSend.STATE_IDLE) {
+                IMLog.e("signIn unexpected. SignInMessagePacket state:%s", MessagePacketSend.stateToString(mSignInMessagePacket.getState()));
+                return;
+            }
+
+            mSignInMessagePacket.moveToState(MessagePacketSend.STATE_GOING);
+            final boolean writeSuccess = sendMessageQuietly(mSignInMessagePacket.getMessage());
+            if (writeSuccess) {
+                mSignInMessagePacket.moveToState(MessagePacketSend.STATE_WAIT_RESULT);
+            } else {
+                IMLog.e("signIn unexpected. current tcp state or connection is not ready or active. tcp state:%s", stateToString(getState()));
+                mSignInMessagePacket.moveToState(MessagePacketSend.STATE_FAIL);
             }
         }
+    }
+
+    /**
+     * 退出登录
+     */
+    public void signOut() {
+        // TODO
     }
 
 }

@@ -58,7 +58,7 @@ public abstract class TcpClient implements Closeable {
     /**
      * 将长连接状态转换为可读的字符串
      */
-    private static String stateToString(@State int state) {
+    public static String stateToString(@State int state) {
         switch (state) {
             case STATE_IDLE:
                 return "STATE_IDLE";
