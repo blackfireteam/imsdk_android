@@ -19,7 +19,7 @@ public class SignGenerator {
     }
 
     /**
-     * 获取下一个唯一的时间戳，精度：千分之一秒
+     * 获取下一个唯一的时间戳，精度：千分之一毫秒
      */
     public static long next() {
         synchronized (LOCK) {

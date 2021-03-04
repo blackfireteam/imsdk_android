@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk.core.session;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.idonans.core.Charsets;
 import com.masonsoft.imsdk.IMLog;
@@ -8,6 +9,10 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMSessionManager;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.NettyTcpClient;
+import com.masonsoft.imsdk.message.MessagePacketSend;
+import com.masonsoft.imsdk.message.PingMessagePacket;
+import com.masonsoft.imsdk.message.SignInMessagePacket;
+import com.masonsoft.imsdk.message.SignOutMessagePacket;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -17,6 +22,9 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * 维护长连接的可用性，包括在长连接上进行 Session 认证，发送心跳等。
+ */
 public class SessionTcpClient extends NettyTcpClient {
 
     private static final String AES_KEY_DEFAULT = "10231234545613465926778834590126";
@@ -24,6 +32,7 @@ public class SessionTcpClient extends NettyTcpClient {
 
     @NonNull
     private final Session mSession;
+    @SuppressWarnings("FieldCanBeLocal")
     private final MSIMSessionManager.SessionObserver mSessionObserver;
 
     /**
@@ -37,9 +46,16 @@ public class SessionTcpClient extends NettyTcpClient {
      */
     private boolean mAlreadyDisconnected;
 
+    private final SignInMessagePacket mSignInMessagePacket;
+    private final SignOutMessagePacket mSignOutMessagePacket;
+
     public SessionTcpClient(@NonNull Session session) {
         super(session.getTcpHost(), session.getTcpPort());
         mSession = session;
+
+        mSignInMessagePacket = SignInMessagePacket.create(mSession.getToken());
+        mSignOutMessagePacket = SignOutMessagePacket.create();
+
         mSessionObserver = this::validateSession;
         MSIMManager.getInstance().getSessionManager().getSessionObservable().registerObserver(mSessionObserver);
         validateSession();
@@ -81,7 +97,7 @@ public class SessionTcpClient extends NettyTcpClient {
      * 按照约定参数 AES 加密/解密
      */
     @NonNull
-    private static byte[] crypt(@NonNull byte[] input, @NonNull String key, boolean encrypt/*是否为加密模式*/) {
+    private static byte[] crypt(@NonNull byte[] input, @Nullable String key, boolean encrypt/*是否为加密模式*/) {
         try {
             if (key == null) {
                 // 如果没有自定义 key, 则使用默认 key
@@ -104,7 +120,10 @@ public class SessionTcpClient extends NettyTcpClient {
 
         // 发送心跳包
         if (getState() == STATE_CONNECTED) {
-            // TODO 在已经认证的情况下才发送心跳包
+            // 在已经认证的情况下才发送心跳包
+            if (mSignInMessagePacket.isActive()) {
+                sendMessageQuietly(PingMessagePacket.create().getMessage());
+            }
         }
     }
 
@@ -142,8 +161,9 @@ public class SessionTcpClient extends NettyTcpClient {
      */
     protected void onFirstConnected() {
         IMLog.v("onFirstConnected");
+
         // 发送认证信息
-        // TODO
+        signIn();
     }
 
     @Override
@@ -172,6 +192,23 @@ public class SessionTcpClient extends NettyTcpClient {
      */
     protected void onFirstDisconnected() {
         IMLog.v("onFirstDisconnected");
+    }
+
+    /**
+     * 登录
+     */
+    private void signIn() {
+        synchronized (mSession) {
+            if (mSignInMessagePacket.getState() == MessagePacketSend.STATE_IDLE) {
+                mSignInMessagePacket.moveToState(MessagePacketSend.STATE_GOING);
+                final boolean writeSuccess = sendMessageQuietly(mSignInMessagePacket.getMessage());
+                if (writeSuccess) {
+                    mSignInMessagePacket.moveToState(MessagePacketSend.STATE_WAIT_RESULT);
+                } else {
+                    mSignInMessagePacket.moveToState(MessagePacketSend.STATE_FAIL);
+                }
+            }
+        }
     }
 
 }

@@ -52,4 +52,11 @@ public class MSIMManager {
         return MSIMSessionManager.getInstance();
     }
 
+    /**
+     * 获取 MSIMMessageManager 单例
+     */
+    public MSIMMessageManager getMessageManager() {
+        return MSIMMessageManager.getInstance();
+    }
+
 }
