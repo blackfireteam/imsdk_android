@@ -12,6 +12,7 @@ import com.masonsoft.imsdk.core.NettyTcpClient;
 import com.masonsoft.imsdk.message.MessagePacketSend;
 import com.masonsoft.imsdk.message.PingMessagePacket;
 import com.masonsoft.imsdk.message.SignInMessagePacket;
+import com.masonsoft.imsdk.message.SignOutMessagePacket;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -46,12 +47,14 @@ public class SessionTcpClient extends NettyTcpClient {
     private boolean mAlreadyDisconnected;
 
     private final SignInMessagePacket mSignInMessagePacket;
+    private final SignOutMessagePacket mSignOutMessagePacket;
 
     public SessionTcpClient(@NonNull Session session) {
         super(session.getTcpHost(), session.getTcpPort());
         mSession = session;
 
         mSignInMessagePacket = SignInMessagePacket.create(mSession.getToken());
+        mSignOutMessagePacket = SignOutMessagePacket.create();
 
         mSessionObserver = this::validateSession;
         MSIMManager.getInstance().getSessionManager().getSessionObservable().registerObserver(mSessionObserver);
@@ -129,7 +132,9 @@ public class SessionTcpClient extends NettyTcpClient {
         // 在发送长连接消息之前，检查当前 Session 的状态
         validateSession();
 
-        super.sendMessage(message);
+        synchronized (mSession) {
+            super.sendMessage(message);
+        }
     }
 
     @Override
@@ -191,32 +196,62 @@ public class SessionTcpClient extends NettyTcpClient {
         IMLog.v("onFirstDisconnected");
     }
 
+    public void sendMessagePacketQuietly(@NonNull final MessagePacketSend messagePacket) {
+        synchronized (mSession) {
+            if (messagePacket.getState() != MessagePacketSend.STATE_IDLE) {
+                IMLog.e(new IllegalStateException("require state STATE_IDLE"), messagePacket.toString());
+                return;
+            }
+
+            messagePacket.moveToState(MessagePacketSend.STATE_GOING);
+            final boolean writeSuccess = sendMessageQuietly(messagePacket.getMessage());
+            if (writeSuccess) {
+                messagePacket.moveToState(MessagePacketSend.STATE_WAIT_RESULT);
+            } else {
+                IMLog.e(
+                        new IllegalStateException("current tcp state or connection is not ready or active"),
+                        "tcp state:%s",
+                        stateToString(getState())
+                );
+                messagePacket.moveToState(MessagePacketSend.STATE_FAIL);
+            }
+        }
+    }
+
+    @Override
+    protected void onMessageReceived(@NonNull Message message) {
+        super.onMessageReceived(message);
+
+        // 在接收到长连接消息时，检查当前 Session 的状态
+        validateSession();
+
+        synchronized (mSession) {
+            if (getState() != STATE_CONNECTED) {
+                IMLog.e(
+                        new IllegalStateException("message received, current tcp state or connection is not ready or active"),
+                        "tcp state:%s, message:%s",
+                        stateToString(getState()),
+                        message.toString()
+                );
+                return;
+            }
+
+            // TODO 优先过滤本地
+        }
+    }
+
     /**
      * 登录
      */
     private void signIn() {
-        synchronized (mSession) {
-            if (mSignInMessagePacket.getState() != MessagePacketSend.STATE_IDLE) {
-                IMLog.e("signIn unexpected. SignInMessagePacket state:%s", MessagePacketSend.stateToString(mSignInMessagePacket.getState()));
-                return;
-            }
-
-            mSignInMessagePacket.moveToState(MessagePacketSend.STATE_GOING);
-            final boolean writeSuccess = sendMessageQuietly(mSignInMessagePacket.getMessage());
-            if (writeSuccess) {
-                mSignInMessagePacket.moveToState(MessagePacketSend.STATE_WAIT_RESULT);
-            } else {
-                IMLog.e("signIn unexpected. current tcp state or connection is not ready or active. tcp state:%s", stateToString(getState()));
-                mSignInMessagePacket.moveToState(MessagePacketSend.STATE_FAIL);
-            }
-        }
+        sendMessagePacketQuietly(mSignInMessagePacket);
     }
 
     /**
      * 退出登录
      */
     public void signOut() {
-        // TODO
+        sendMessagePacketQuietly(mSignOutMessagePacket);
     }
 
 }

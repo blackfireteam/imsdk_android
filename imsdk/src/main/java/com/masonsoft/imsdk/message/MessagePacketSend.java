@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk.message;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.IMLog;
@@ -225,6 +226,23 @@ public abstract class MessagePacketSend {
         public void notifyStateChanged(MessagePacketSend packet, int oldState, int newState) {
             forEach(stateObserver -> stateObserver.onStateChanged(packet, oldState, newState));
         }
+    }
+
+    @NonNull
+    public String toShortString() {
+        return String.format(
+                "%s@%s{sign:%s,state:%s}",
+                getClass().getSimpleName(),
+                System.identityHashCode(this),
+                mSign,
+                stateToString(mState)
+        );
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return toShortString();
     }
 
 }
