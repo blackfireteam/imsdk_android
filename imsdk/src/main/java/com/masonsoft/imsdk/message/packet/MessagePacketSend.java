@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.message;
+package com.masonsoft.imsdk.message.packet;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import com.masonsoft.imsdk.IMLog;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.SignGenerator;
+import com.masonsoft.imsdk.lang.Processor;
+import com.masonsoft.imsdk.message.MessageWrapper;
 import com.masonsoft.imsdk.util.WeakObservable;
 
 import java.lang.annotation.Retention;
@@ -15,7 +17,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * 本地在长连接上发送的消息包（带有发送状态的消息）
  */
-public abstract class MessagePacketSend {
+public abstract class MessagePacketSend implements Processor<MessageWrapper> {
 
     /**
      * 发送消息的默认超时时间, 60 秒
@@ -216,7 +218,8 @@ public abstract class MessagePacketSend {
     /**
      * 处理服务器返回的消息，如果处理成功返回 true, 否则返回 false。(仅处理服务器对当前消息的回执)
      */
-    public abstract boolean accept(@Nullable Object messageReceived);
+    @Override
+    public abstract boolean doProcess(@Nullable MessageWrapper target);
 
     public interface StateObserver {
         void onStateChanged(MessagePacketSend packet, int oldState, int newState);

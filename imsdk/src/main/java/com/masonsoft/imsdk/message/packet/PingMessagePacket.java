@@ -1,8 +1,9 @@
-package com.masonsoft.imsdk.message;
+package com.masonsoft.imsdk.message.packet;
 
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.Message;
+import com.masonsoft.imsdk.message.MessageWrapper;
 import com.masonsoft.imsdk.proto.ProtoMessage;
 
 /**
@@ -15,20 +16,13 @@ public class PingMessagePacket extends MessagePacketSend {
     }
 
     @Override
-    public boolean accept(@Nullable Object messageReceived) {
+    public boolean doProcess(@Nullable MessageWrapper target) {
         // 心跳消息包没有回执
         return false;
     }
 
     public static PingMessagePacket create() {
-        return new PingMessagePacket(
-                new Message(
-                        Message.Type.PING,
-                        ProtoMessage.Ping.newBuilder()
-                                .build()
-                                .toByteArray()
-                )
-        );
+        return new PingMessagePacket(Message.Type.encode(ProtoMessage.Ping.newBuilder().build()));
     }
 
 }

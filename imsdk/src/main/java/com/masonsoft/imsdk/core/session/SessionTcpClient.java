@@ -9,10 +9,10 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMSessionManager;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.NettyTcpClient;
-import com.masonsoft.imsdk.message.MessagePacketSend;
-import com.masonsoft.imsdk.message.PingMessagePacket;
-import com.masonsoft.imsdk.message.SignInMessagePacket;
-import com.masonsoft.imsdk.message.SignOutMessagePacket;
+import com.masonsoft.imsdk.message.packet.MessagePacketSend;
+import com.masonsoft.imsdk.message.packet.PingMessagePacket;
+import com.masonsoft.imsdk.message.packet.SignInMessagePacket;
+import com.masonsoft.imsdk.message.packet.SignOutMessagePacket;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 

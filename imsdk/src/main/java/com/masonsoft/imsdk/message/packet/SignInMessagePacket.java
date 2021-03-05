@@ -1,10 +1,11 @@
-package com.masonsoft.imsdk.message;
+package com.masonsoft.imsdk.message.packet;
 
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.IMLog;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.SignGenerator;
+import com.masonsoft.imsdk.message.MessageWrapper;
 import com.masonsoft.imsdk.proto.ProtoMessage;
 
 /**
@@ -26,10 +27,10 @@ public class SignInMessagePacket extends MessagePacketSend {
     }
 
     @Override
-    public boolean accept(@Nullable Object messageReceived) {
-        if (messageReceived instanceof ProtoMessage.Result) {
+    public boolean doProcess(@Nullable MessageWrapper target) {
+        if (target != null && target.getProtoMessageObject() instanceof ProtoMessage.Result) {
             // 接收 Result 消息
-            final ProtoMessage.Result result = (ProtoMessage.Result) messageReceived;
+            final ProtoMessage.Result result = (ProtoMessage.Result) target.getProtoMessageObject();
             if (result.getSign() == getSign()) {
                 // 校验 sign 是否相等
 
