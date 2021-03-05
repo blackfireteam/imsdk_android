@@ -9,7 +9,7 @@ import com.masonsoft.imsdk.proto.ProtoMessage;
 /**
  * 在长连接上的心跳消息包
  */
-public class PingMessagePacket extends MessagePacketSend {
+public class PingMessagePacket extends MessagePacket {
 
     private PingMessagePacket(Message message) {
         super(message);

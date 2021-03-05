@@ -17,7 +17,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * 本地在长连接上发送的消息包（带有发送状态的消息）
  */
-public abstract class MessagePacketSend implements Processor<MessageWrapper> {
+public abstract class MessagePacket implements Processor<MessageWrapper> {
 
     /**
      * 发送消息的默认超时时间, 60 秒
@@ -93,11 +93,11 @@ public abstract class MessagePacketSend implements Processor<MessageWrapper> {
     private long mErrorCode;
     private String mErrorMessage;
 
-    public MessagePacketSend(final Message message) {
+    public MessagePacket(final Message message) {
         this(message, SignGenerator.next());
     }
 
-    public MessagePacketSend(final Message message, final long sign) {
+    public MessagePacket(final Message message, final long sign) {
         mMessage = message;
         mSign = sign;
     }
@@ -222,11 +222,11 @@ public abstract class MessagePacketSend implements Processor<MessageWrapper> {
     public abstract boolean doProcess(@Nullable MessageWrapper target);
 
     public interface StateObserver {
-        void onStateChanged(MessagePacketSend packet, int oldState, int newState);
+        void onStateChanged(MessagePacket packet, int oldState, int newState);
     }
 
     public static class StateObservable extends WeakObservable<StateObserver> {
-        public void notifyStateChanged(MessagePacketSend packet, int oldState, int newState) {
+        public void notifyStateChanged(MessagePacket packet, int oldState, int newState) {
             forEach(stateObserver -> stateObserver.onStateChanged(packet, oldState, newState));
         }
     }

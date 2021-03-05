@@ -9,7 +9,7 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMSessionManager;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.NettyTcpClient;
-import com.masonsoft.imsdk.message.packet.MessagePacketSend;
+import com.masonsoft.imsdk.message.packet.MessagePacket;
 import com.masonsoft.imsdk.message.packet.PingMessagePacket;
 import com.masonsoft.imsdk.message.packet.SignInMessagePacket;
 import com.masonsoft.imsdk.message.packet.SignOutMessagePacket;
@@ -196,24 +196,24 @@ public class SessionTcpClient extends NettyTcpClient {
         IMLog.v("onFirstDisconnected");
     }
 
-    public void sendMessagePacketQuietly(@NonNull final MessagePacketSend messagePacket) {
+    public void sendMessagePacketQuietly(@NonNull final MessagePacket messagePacket) {
         synchronized (mSession) {
-            if (messagePacket.getState() != MessagePacketSend.STATE_IDLE) {
+            if (messagePacket.getState() != MessagePacket.STATE_IDLE) {
                 IMLog.e(new IllegalStateException("require state STATE_IDLE"), messagePacket.toString());
                 return;
             }
 
-            messagePacket.moveToState(MessagePacketSend.STATE_GOING);
+            messagePacket.moveToState(MessagePacket.STATE_GOING);
             final boolean writeSuccess = sendMessageQuietly(messagePacket.getMessage());
             if (writeSuccess) {
-                messagePacket.moveToState(MessagePacketSend.STATE_WAIT_RESULT);
+                messagePacket.moveToState(MessagePacket.STATE_WAIT_RESULT);
             } else {
                 IMLog.e(
                         new IllegalStateException("current tcp state or connection is not ready or active"),
                         "tcp state:%s",
                         stateToString(getState())
                 );
-                messagePacket.moveToState(MessagePacketSend.STATE_FAIL);
+                messagePacket.moveToState(MessagePacket.STATE_FAIL);
             }
         }
     }

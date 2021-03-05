@@ -11,7 +11,7 @@ import com.masonsoft.imsdk.proto.ProtoMessage;
 /**
  * 在长连接上的退出登录消息包
  */
-public class SignOutMessagePacket extends MessagePacketSend {
+public class SignOutMessagePacket extends MessagePacket {
 
     private SignOutMessagePacket(Message message, long sign) {
         super(message, sign);

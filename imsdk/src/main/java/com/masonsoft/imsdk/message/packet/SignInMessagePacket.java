@@ -11,7 +11,7 @@ import com.masonsoft.imsdk.proto.ProtoMessage;
 /**
  * 在长连接上的登录消息包
  */
-public class SignInMessagePacket extends MessagePacketSend {
+public class SignInMessagePacket extends MessagePacket {
 
     /**
      * 登录信息中对应的用户 id.(服务器返回的)
