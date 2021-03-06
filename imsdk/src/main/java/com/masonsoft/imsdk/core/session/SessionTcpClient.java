@@ -5,8 +5,8 @@ import androidx.annotation.Nullable;
 
 import com.idonans.core.Charsets;
 import com.masonsoft.imsdk.IMLog;
+import com.masonsoft.imsdk.IMSessionManager;
 import com.masonsoft.imsdk.MSIMManager;
-import com.masonsoft.imsdk.MSIMSessionManager;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.NettyTcpClient;
 import com.masonsoft.imsdk.lang.MultiProcessor;
@@ -36,7 +36,7 @@ public class SessionTcpClient extends NettyTcpClient {
     @NonNull
     private final Session mSession;
     @SuppressWarnings("FieldCanBeLocal")
-    private final MSIMSessionManager.SessionObserver mSessionObserver;
+    private final IMSessionManager.SessionObserver mSessionObserver;
 
     /**
      * @see #onConnected()
@@ -90,7 +90,7 @@ public class SessionTcpClient extends NettyTcpClient {
         mLocalMessageProcessor.addLastProcessor(mSignInMessagePacket);
         mLocalMessageProcessor.addLastProcessor(mSignOutMessagePacket);
 
-        mSessionObserver = new MSIMSessionManager.SessionObserver() {
+        mSessionObserver = new IMSessionManager.SessionObserver() {
             @Override
             public void onSessionChanged() {
                 validateSession();
@@ -342,6 +342,13 @@ public class SessionTcpClient extends NettyTcpClient {
      */
     public void signOut() {
         sendMessagePacketQuietly(mSignOutMessagePacket, false);
+    }
+
+    @Override
+    protected void onStateChanged(int oldState, int newState) {
+        super.onStateChanged(oldState, newState);
+
+        mObservable.notifyConnectionStateChanged();
     }
 
     public interface Observer {

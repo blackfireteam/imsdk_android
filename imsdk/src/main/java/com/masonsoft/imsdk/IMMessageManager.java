@@ -8,12 +8,12 @@ import com.masonsoft.imsdk.message.MessageWrapper;
 /**
  * 长连接上的消息收发池
  */
-public class MSIMMessageManager {
+public class IMMessageManager {
 
-    private static final Singleton<MSIMMessageManager> INSTANCE = new Singleton<MSIMMessageManager>() {
+    private static final Singleton<IMMessageManager> INSTANCE = new Singleton<IMMessageManager>() {
         @Override
-        protected MSIMMessageManager create() {
-            return new MSIMMessageManager();
+        protected IMMessageManager create() {
+            return new IMMessageManager();
         }
     };
 
@@ -23,11 +23,11 @@ public class MSIMMessageManager {
      * @see MSIMManager#getMessageManager()
      */
     @NonNull
-    static MSIMMessageManager getInstance() {
+    static IMMessageManager getInstance() {
         return INSTANCE.get();
     }
 
-    private MSIMMessageManager() {
+    private IMMessageManager() {
     }
 
     /**

@@ -9,6 +9,7 @@ import com.idonans.core.SimpleAbortSignal;
 import com.idonans.core.Singleton;
 import com.idonans.core.thread.Threads;
 import com.idonans.core.util.AbortUtil;
+import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.core.KeyValueStorage;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
@@ -20,12 +21,12 @@ import com.masonsoft.imsdk.util.WeakObservable;
  *
  * @since 1.0
  */
-public class MSIMSessionManager {
+public class IMSessionManager {
 
-    private static final Singleton<MSIMSessionManager> INSTANCE = new Singleton<MSIMSessionManager>() {
+    private static final Singleton<IMSessionManager> INSTANCE = new Singleton<IMSessionManager>() {
         @Override
-        protected MSIMSessionManager create() {
-            return new MSIMSessionManager();
+        protected IMSessionManager create() {
+            return new IMSessionManager();
         }
     };
 
@@ -35,7 +36,7 @@ public class MSIMSessionManager {
      * @see MSIMManager#getSessionManager()
      */
     @NonNull
-    static MSIMSessionManager getInstance() {
+    static IMSessionManager getInstance() {
         return INSTANCE.get();
     }
 
@@ -50,7 +51,7 @@ public class MSIMSessionManager {
     @Nullable
     private SessionTcpClientProxy mSessionTcpClientProxy;
 
-    private MSIMSessionManager() {
+    private IMSessionManager() {
     }
 
     /**
@@ -73,7 +74,7 @@ public class MSIMSessionManager {
             mSessionObservable.notifySessionChanged();
 
             if (mSession != null) {
-                mSessionTcpClientProxy = new SessionTcpClientProxy(new SessionTcpClient(mSession));
+                mSessionTcpClientProxy = new SessionTcpClientProxy(mSession);
             }
         }
     }
@@ -81,6 +82,21 @@ public class MSIMSessionManager {
     @Nullable
     public Session getSession() {
         return mSession;
+    }
+
+    @Nullable
+    public SessionTcpClientProxy getSessionTcpClientProxy() {
+        return mSessionTcpClientProxy;
+    }
+
+    /**
+     * 获取当前 session 对应的用户 id<br/>
+     * 此 session user id 可能是从历史缓存中获取的，也可能是从当前成功登录的长连接上获取的。<br/>
+     * 即：能够获取到 session user id, 仅代表以当前 session 中的 token 信息至少(或曾经)成功登录过一次，并不能说明
+     * 当前的长连接已经建立成功或者已经在当前长连接上登录成功。
+     */
+    public long getSessionUserId() {
+        return mSessionUserId;
     }
 
     public void setSessionUserId(@Nullable final Session session, final long sessionUserId) {
@@ -175,26 +191,47 @@ public class MSIMSessionManager {
         }
     }
 
-    private class SessionTcpClientProxy extends SimpleAbortSignal implements SessionTcpClient.Observer {
+    public class SessionTcpClientProxy extends SimpleAbortSignal implements SessionTcpClient.Observer {
 
-        @SuppressWarnings("FieldCanBeLocal")
-        @NonNull
-        private final SessionTcpClient mSessionTcpClient;
+        @Nullable
+        private SessionTcpClient mSessionTcpClient;
 
-        private SessionTcpClientProxy(@NonNull SessionTcpClient sessionTcpClient) {
-            mSessionTcpClient = sessionTcpClient;
+        private SessionTcpClientProxy(@NonNull Session session) {
+            mSessionTcpClient = new SessionTcpClient(session);
             mSessionTcpClient.getObservable().registerObserver(this);
         }
 
         @Override
+        public void setAbort() {
+            super.setAbort();
+
+            IOUtil.closeQuietly(mSessionTcpClient);
+            mSessionTcpClient = null;
+        }
+
+        /**
+         * 判断当前长连接是否在线。当长连接不在线时，不能够发送消息。长连接在线的含义是：长连接建立成功并且认证通过。
+         * 认证消息(登录消息)在长连接内部自动维护(长连接首次建立成功时会自动发送登录消息)。
+         */
+        public boolean isOnline() {
+            SessionTcpClient sessionTcpClient = mSessionTcpClient;
+            return !isAbort() && sessionTcpClient != null && sessionTcpClient.isOnline();
+        }
+
+        @Override
         public boolean isAbort() {
-            return super.isAbort() || MSIMSessionManager.this.mSessionTcpClientProxy != this;
+            return super.isAbort() || IMSessionManager.this.mSessionTcpClientProxy != this;
         }
 
         @Override
         public void onConnectionStateChanged() {
             if (AbortUtil.isAbort(this)) {
                 IMLog.v("ignore onConnectionStateChanged. SessionTcpClientProxy is abort.");
+                return;
+            }
+
+            SessionTcpClient sessionTcpClient = mSessionTcpClient;
+            if (sessionTcpClient == null) {
                 return;
             }
 
@@ -208,9 +245,14 @@ public class MSIMSessionManager {
                 return;
             }
 
-            if (mSessionTcpClient.isOnline()) {
-                final Session session = mSessionTcpClient.getSession();
-                final long sessionUserId = mSessionTcpClient.getSessionUserId();
+            SessionTcpClient sessionTcpClient = mSessionTcpClient;
+            if (sessionTcpClient == null) {
+                return;
+            }
+
+            if (sessionTcpClient.isOnline()) {
+                final Session session = sessionTcpClient.getSession();
+                final long sessionUserId = sessionTcpClient.getSessionUserId();
                 if (sessionUserId > 0) {
                     // 长连接上有合法的用户 id 时，同步到本地存储
                     setSessionUserId(session, sessionUserId);
@@ -222,6 +264,11 @@ public class MSIMSessionManager {
         public void onSignOutStateChanged() {
             if (AbortUtil.isAbort(this)) {
                 IMLog.v("ignore onSignOutStateChanged. SessionTcpClientProxy is abort.");
+                return;
+            }
+
+            SessionTcpClient sessionTcpClient = mSessionTcpClient;
+            if (sessionTcpClient == null) {
                 return;
             }
 

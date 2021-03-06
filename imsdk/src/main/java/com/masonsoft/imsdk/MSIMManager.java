@@ -40,23 +40,23 @@ public class MSIMManager {
      * 获取 MSIMConversationManager 单例
      */
     @NonNull
-    public MSIMConversationManager getConversationManager() {
-        return MSIMConversationManager.getInstance();
+    public IMConversationManager getConversationManager() {
+        return IMConversationManager.getInstance();
     }
 
     /**
      * 获取 MSIMSessionManager 单例
      */
     @NonNull
-    public MSIMSessionManager getSessionManager() {
-        return MSIMSessionManager.getInstance();
+    public IMSessionManager getSessionManager() {
+        return IMSessionManager.getInstance();
     }
 
     /**
      * 获取 MSIMMessageManager 单例
      */
-    public MSIMMessageManager getMessageManager() {
-        return MSIMMessageManager.getInstance();
+    public IMMessageManager getMessageManager() {
+        return IMMessageManager.getInstance();
     }
 
 }

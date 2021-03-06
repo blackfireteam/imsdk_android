@@ -9,12 +9,12 @@ import com.idonans.core.Singleton;
  *
  * @since 1.0
  */
-public class MSIMConversationManager {
+public class IMConversationManager {
 
-    private static final Singleton<MSIMConversationManager> INSTANCE = new Singleton<MSIMConversationManager>() {
+    private static final Singleton<IMConversationManager> INSTANCE = new Singleton<IMConversationManager>() {
         @Override
-        protected MSIMConversationManager create() {
-            return new MSIMConversationManager();
+        protected IMConversationManager create() {
+            return new IMConversationManager();
         }
     };
 
@@ -24,11 +24,11 @@ public class MSIMConversationManager {
      * @see MSIMManager#getConversationManager()
      */
     @NonNull
-    static MSIMConversationManager getInstance() {
+    static IMConversationManager getInstance() {
         return INSTANCE.get();
     }
 
-    private MSIMConversationManager() {
+    private IMConversationManager() {
     }
 
 }
