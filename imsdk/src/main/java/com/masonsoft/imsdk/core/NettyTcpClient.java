@@ -504,7 +504,7 @@ public abstract class NettyTcpClient extends TcpClient {
      *
      * @see #sendMessageQuietly(Message)
      */
-    public void sendMessage(@NonNull Message message) throws Throwable {
+    protected void sendMessage(@NonNull Message message) throws Throwable {
         try {
             checkState(STATE_CONNECTED);
             Objects.requireNonNull(mChannelHandlerContext);
@@ -531,7 +531,7 @@ public abstract class NettyTcpClient extends TcpClient {
      *
      * @see #sendMessage(Message)
      */
-    public boolean sendMessageQuietly(@NonNull Message message) {
+    protected boolean sendMessageQuietly(@NonNull Message message) {
         try {
             sendMessage(message);
             return true;

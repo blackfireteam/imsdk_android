@@ -9,6 +9,8 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMSessionManager;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.NettyTcpClient;
+import com.masonsoft.imsdk.lang.MultiProcessor;
+import com.masonsoft.imsdk.message.MessageWrapper;
 import com.masonsoft.imsdk.message.packet.MessagePacket;
 import com.masonsoft.imsdk.message.packet.PingMessagePacket;
 import com.masonsoft.imsdk.message.packet.SignInMessagePacket;
@@ -49,12 +51,21 @@ public class SessionTcpClient extends NettyTcpClient {
     private final SignInMessagePacket mSignInMessagePacket;
     private final SignOutMessagePacket mSignOutMessagePacket;
 
+    /**
+     * 用来处理服务器返回的与登录，退出登录相关的消息
+     */
+    private final MultiProcessor<MessageWrapper> mLocalMessageProcessor;
+
     public SessionTcpClient(@NonNull Session session) {
         super(session.getTcpHost(), session.getTcpPort());
         mSession = session;
 
         mSignInMessagePacket = SignInMessagePacket.create(mSession.getToken());
         mSignOutMessagePacket = SignOutMessagePacket.create();
+
+        mLocalMessageProcessor = new MultiProcessor<>();
+        mLocalMessageProcessor.addLastProcessor(mSignInMessagePacket);
+        mLocalMessageProcessor.addLastProcessor(mSignOutMessagePacket);
 
         mSessionObserver = this::validateSession;
         MSIMManager.getInstance().getSessionManager().getSessionObservable().registerObserver(mSessionObserver);
@@ -119,16 +130,30 @@ public class SessionTcpClient extends NettyTcpClient {
         super.onTcpClientWriteTimeout(first);
 
         // 发送心跳包
-        if (getState() == STATE_CONNECTED) {
-            // 在已经认证的情况下才发送心跳包
-            if (mSignInMessagePacket.isActive()) {
-                sendMessageQuietly(PingMessagePacket.create().getMessage());
-            }
+        // 在已经登录的情况下才发送心跳包
+        if (isOnline()) {
+            sendMessageQuietly(PingMessagePacket.create().getMessage());
         }
     }
 
+    /**
+     * 当前长连接是否在线(长连接已建立并且已经登录成功)
+     */
+    public boolean isOnline() {
+        return SessionValidator.isValid(mSession)
+                && getState() == STATE_CONNECTED
+                && mSignInMessagePacket.isSignIn();
+    }
+
+    /**
+     * 获取当前 token 对应的用户 id
+     */
+    public long getSessionUserId() {
+        return mSignInMessagePacket.getSessionUserId();
+    }
+
     @Override
-    public void sendMessage(@NonNull Message message) throws Throwable {
+    protected void sendMessage(@NonNull Message message) throws Throwable {
         // 在发送长连接消息之前，检查当前 Session 的状态
         validateSession();
 
@@ -197,6 +222,10 @@ public class SessionTcpClient extends NettyTcpClient {
     }
 
     public void sendMessagePacketQuietly(@NonNull final MessagePacket messagePacket) {
+        this.sendMessagePacketQuietly(messagePacket, true);
+    }
+
+    protected void sendMessagePacketQuietly(@NonNull final MessagePacket messagePacket, boolean requireSignIn) {
         synchronized (mSession) {
             if (messagePacket.getState() != MessagePacket.STATE_IDLE) {
                 IMLog.e(new IllegalStateException("require state STATE_IDLE"), messagePacket.toString());
@@ -236,7 +265,22 @@ public class SessionTcpClient extends NettyTcpClient {
                 return;
             }
 
-            // TODO 优先过滤本地
+            final MessageWrapper messageWrapper = new MessageWrapper(message);
+
+            // 优先本地消费(直接消费，快速响应)
+            if (mLocalMessageProcessor.doProcess(messageWrapper)) {
+                return;
+            }
+
+            // 其它消息，分发给消息队列处理
+            // 需要是已登录状态
+            final long sessionUserId = mSignInMessagePacket.getSessionUserId();
+            if (!mSignInMessagePacket.isSignIn()) {
+                // 当前没有正确登录，但是收到了意外地消息
+                IMLog.e(new IllegalStateException("is not sign in, but received message"), "message wrapper:%s", messageWrapper);
+                return;
+            }
+            MSIMManager.getInstance().getMessageManager().enqueueReceivedMessage(sessionUserId, messageWrapper);
         }
     }
 
@@ -244,14 +288,14 @@ public class SessionTcpClient extends NettyTcpClient {
      * 登录
      */
     private void signIn() {
-        sendMessagePacketQuietly(mSignInMessagePacket);
+        sendMessagePacketQuietly(mSignInMessagePacket, false);
     }
 
     /**
      * 退出登录
      */
     public void signOut() {
-        sendMessagePacketQuietly(mSignOutMessagePacket);
+        sendMessagePacketQuietly(mSignOutMessagePacket, false);
     }
 
 }

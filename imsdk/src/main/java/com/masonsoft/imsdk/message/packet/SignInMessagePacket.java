@@ -60,9 +60,9 @@ public class SignInMessagePacket extends MessagePacket {
     }
 
     /**
-     * 判断当前登录状态是否是处于活动状态(数据包状态为已经发送成功并且获得有效的服务器返回的用户 id).即长连接已经认证通过。
+     * 判断当前是否登录成功(数据包状态为已经发送成功并且获得有效的服务器返回的用户 id).
      */
-    public boolean isActive() {
+    public boolean isSignIn() {
         return getState() == STATE_SUCCESS && mSessionUserId > 0;
     }
 

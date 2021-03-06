@@ -28,4 +28,20 @@ public class MessageWrapper {
         return mProtoMessageObject;
     }
 
+    private String getProtoMessageObjectShortString() {
+        if (mProtoMessageObject != null) {
+            return mProtoMessageObject.getClass().getName();
+        }
+        return "null";
+    }
+
+    public String toShortString() {
+        return String.format("MessageWrapper[origin:%s, proto message object:%s]", mOrigin, getProtoMessageObjectShortString());
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return toShortString();
+    }
 }
