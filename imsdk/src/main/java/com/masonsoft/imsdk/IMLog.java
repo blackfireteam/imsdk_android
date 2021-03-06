@@ -19,6 +19,7 @@ public class IMLog {
     static {
         final String logTag = BuildConfig.LIB_NAME + "_" + BuildConfig.LIB_VERSION_NAME + "(" + BuildConfig.LIB_VERSION_CODE + ")";
         final int length = logTag.length();
+        //noinspection ConstantConditions
         if (length > 23) {
             LOG_TAG = logTag.substring(0, 23);
         } else {

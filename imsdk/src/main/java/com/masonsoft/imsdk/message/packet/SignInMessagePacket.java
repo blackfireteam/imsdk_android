@@ -2,6 +2,7 @@ package com.masonsoft.imsdk.message.packet;
 
 import androidx.annotation.Nullable;
 
+import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.IMLog;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.SignGenerator;
@@ -28,6 +29,9 @@ public class SignInMessagePacket extends MessagePacket {
 
     @Override
     public boolean doProcess(@Nullable MessageWrapper target) {
+        // check thread state
+        Threads.mustNotUi();
+
         if (target != null && target.getProtoMessageObject() instanceof ProtoMessage.Result) {
             // 接收 Result 消息
             final ProtoMessage.Result result = (ProtoMessage.Result) target.getProtoMessageObject();
@@ -40,16 +44,17 @@ public class SignInMessagePacket extends MessagePacket {
                     return false;
                 }
 
-                mSessionUserId = result.getUid();
                 if (result.getCode() != 0) {
                     setErrorCode(result.getCode());
                     setErrorMessage(result.getMsg());
                     moveToState(STATE_FAIL);
                 } else {
-                    if (mSessionUserId <= 0) {
-                        IMLog.e("SignInMessagePacket unexpected. accept with same sign:%s and invalid user id:%s", getSign(), mSessionUserId);
+                    final long sessionUserId = result.getUid();
+                    if (sessionUserId <= 0) {
+                        IMLog.e("SignInMessagePacket unexpected. accept with same sign:%s and invalid user id:%s", getSign(), sessionUserId);
                         return false;
                     }
+                    mSessionUserId = sessionUserId;
                     moveToState(STATE_SUCCESS);
                 }
                 return true;

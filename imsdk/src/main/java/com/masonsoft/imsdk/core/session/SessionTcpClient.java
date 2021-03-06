@@ -15,6 +15,7 @@ import com.masonsoft.imsdk.message.packet.MessagePacket;
 import com.masonsoft.imsdk.message.packet.PingMessagePacket;
 import com.masonsoft.imsdk.message.packet.SignInMessagePacket;
 import com.masonsoft.imsdk.message.packet.SignOutMessagePacket;
+import com.masonsoft.imsdk.util.WeakObservable;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -48,13 +49,24 @@ public class SessionTcpClient extends NettyTcpClient {
      */
     private boolean mAlreadyDisconnected;
 
+    // 登录消息包
     private final SignInMessagePacket mSignInMessagePacket;
+    // 退出登录消息包
     private final SignOutMessagePacket mSignOutMessagePacket;
+
+    // 监听登录消息包的状态变化
+    @SuppressWarnings("FieldCanBeLocal")
+    private final MessagePacket.StateObserver mSignInMessagePacketStateObserver;
+    // 监听退出登录消息包的状态变化
+    @SuppressWarnings("FieldCanBeLocal")
+    private final MessagePacket.StateObserver mSignOutMessagePacketStateObserver;
 
     /**
      * 用来处理服务器返回的与登录，退出登录相关的消息
      */
     private final MultiProcessor<MessageWrapper> mLocalMessageProcessor;
+
+    private final Observable mObservable = new Observable();
 
     public SessionTcpClient(@NonNull Session session) {
         super(session.getTcpHost(), session.getTcpPort());
@@ -63,13 +75,37 @@ public class SessionTcpClient extends NettyTcpClient {
         mSignInMessagePacket = SignInMessagePacket.create(mSession.getToken());
         mSignOutMessagePacket = SignOutMessagePacket.create();
 
+        mSignInMessagePacketStateObserver = (packet, oldState, newState) -> {
+            // 登录的消息包发生状态变化
+            mObservable.notifySignInStateChanged();
+        };
+        mSignInMessagePacket.getStateObservable().registerObserver(mSignInMessagePacketStateObserver);
+        mSignOutMessagePacketStateObserver = (packet, oldState, newState) -> {
+            // 退出登录的消息包发生状态变化
+            mObservable.notifySignOutStateChanged();
+        };
+        mSignOutMessagePacket.getStateObservable().registerObserver(mSignOutMessagePacketStateObserver);
+
         mLocalMessageProcessor = new MultiProcessor<>();
         mLocalMessageProcessor.addLastProcessor(mSignInMessagePacket);
         mLocalMessageProcessor.addLastProcessor(mSignOutMessagePacket);
 
-        mSessionObserver = this::validateSession;
+        mSessionObserver = new MSIMSessionManager.SessionObserver() {
+            @Override
+            public void onSessionChanged() {
+                validateSession();
+            }
+
+            @Override
+            public void onSessionUserIdChanged() {
+            }
+        };
         MSIMManager.getInstance().getSessionManager().getSessionObservable().registerObserver(mSessionObserver);
         validateSession();
+    }
+
+    public Observable getObservable() {
+        return mObservable;
     }
 
     /**
@@ -143,6 +179,11 @@ public class SessionTcpClient extends NettyTcpClient {
         return SessionValidator.isValid(mSession)
                 && getState() == STATE_CONNECTED
                 && mSignInMessagePacket.isSignIn();
+    }
+
+    @NonNull
+    public Session getSession() {
+        return mSession;
     }
 
     /**
@@ -227,6 +268,11 @@ public class SessionTcpClient extends NettyTcpClient {
 
     protected void sendMessagePacketQuietly(@NonNull final MessagePacket messagePacket, boolean requireSignIn) {
         synchronized (mSession) {
+            if (requireSignIn && !isOnline()) {
+                IMLog.e(new IllegalStateException("current is offline, abort send message."));
+                return;
+            }
+
             if (messagePacket.getState() != MessagePacket.STATE_IDLE) {
                 IMLog.e(new IllegalStateException("require state STATE_IDLE"), messagePacket.toString());
                 return;
@@ -296,6 +342,28 @@ public class SessionTcpClient extends NettyTcpClient {
      */
     public void signOut() {
         sendMessagePacketQuietly(mSignOutMessagePacket, false);
+    }
+
+    public interface Observer {
+        void onConnectionStateChanged();
+
+        void onSignInStateChanged();
+
+        void onSignOutStateChanged();
+    }
+
+    public static class Observable extends WeakObservable<Observer> {
+        public void notifyConnectionStateChanged() {
+            forEach(Observer::onConnectionStateChanged);
+        }
+
+        public void notifySignInStateChanged() {
+            forEach(Observer::onSignInStateChanged);
+        }
+
+        public void notifySignOutStateChanged() {
+            forEach(Observer::onSignOutStateChanged);
+        }
     }
 
 }
