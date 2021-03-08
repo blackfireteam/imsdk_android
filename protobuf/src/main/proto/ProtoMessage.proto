@@ -52,13 +52,14 @@ message ChatR
     int64 msg_id = 2; //消息id
     int64 from_uid = 3; //谁发的
     int64 to_uid = 4; //发给谁
-    int64 type = 5;// 消息类型
-    string body = 6; //消息内容
-    int64 width = 7; //图片的宽度
-    int64 height = 8; //图片的高度
-    int64 duration = 9;//时长
-    int64 lat = 10;//纬度
-    int64 lng = 11;//经度
+    int64 sput = 5; //sender_profile_update_time 发送人的profile更新时间
+    int64 type = 6;// 消息类型
+    string body = 7; //消息内容
+    int64 width = 8; //图片的宽度
+    int64 height = 9; //图片的高度
+    int64 duration = 10;//时长
+    int64 lat = 11;//纬度
+    int64 lng = 12;//经度
 }
 //7
 message ChatRBatch
@@ -116,13 +117,57 @@ message ChatItem
     int64 msg_last_read = 4;
     string last_msg = 5;
     int64 unread = 6;
-    bool is_new = 7;
-    bool my_move = 8;
-    bool ice_break = 9;
-    bool tip_free = 10;
+    bool matched = 7;
+    bool new = 8;
+    bool my_move = 9;
+    bool ice_break = 10;
+    bool tip_free = 11;
+    bool top_album = 12;
 }
 //15
 message ChatList
 {
     repeated ChatItem chat_items = 1;
+}
+//16
+message GetProfile
+{
+    int64 uid = 1;
+    int64 update_time = 2;
+}
+//17
+message GetProfiles
+{
+    repeated GetProfile get_profiles = 1;
+}
+//18
+message Profile
+{
+    int64 uid = 1;
+    int64 update_time = 2;
+    string nick_name = 3;
+    string avatar = 4;
+    bool gold = 5;
+    bool verified = 6;
+}
+//19
+message ProfileList
+{
+    repeated Profile profiles = 1;
+}
+//20
+message GetChatListOnlineUids
+{
+    int64 sign = 1;
+}
+//21
+message OnlineUids
+{
+    repeated int64 uids = 2;
+}
+//22
+message IsOnline
+{
+    int64 sign = 1;
+    int64 uid = 2;
 }
