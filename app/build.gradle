@@ -40,10 +40,11 @@ android.applicationVariants.all { variant ->
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':imsdk')
-    implementation rootProject.ext.bcfg.deps.androidx_constraintlayout
     implementation rootProject.ext.bcfg.deps.idonans_appcontext
     implementation rootProject.ext.bcfg.deps.idonans_core
+    implementation rootProject.ext.bcfg.deps.androidx_constraintlayout
     implementation rootProject.ext.bcfg.deps.androidx_appcompat
+    implementation rootProject.ext.bcfg.deps.material
     implementation rootProject.ext.bcfg.deps.guava
     implementation rootProject.ext.bcfg.deps.gson
     implementation rootProject.ext.bcfg.deps.rxbinding
@@ -51,5 +52,7 @@ dependencies {
     implementation rootProject.ext.bcfg.deps.rxjava
     implementation rootProject.ext.bcfg.deps.rxandroid
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
