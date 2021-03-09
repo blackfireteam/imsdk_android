@@ -21,7 +21,7 @@ public class IMConversationManager {
     /**
      * 获取 MSIMConversationManager 单例
      *
-     * @see MSIMManager#getConversationManager()
+     * @see IMManager#getConversationManager()
      */
     @NonNull
     static IMConversationManager getInstance() {

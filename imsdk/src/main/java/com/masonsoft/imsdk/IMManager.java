@@ -11,12 +11,12 @@ import com.idonans.core.manager.ProcessManager;
  *
  * @since 1.0
  */
-public class MSIMManager {
+public class IMManager {
 
-    private static final Singleton<MSIMManager> INSTANCE = new Singleton<MSIMManager>() {
+    private static final Singleton<IMManager> INSTANCE = new Singleton<IMManager>() {
         @Override
-        protected MSIMManager create() {
-            return new MSIMManager();
+        protected IMManager create() {
+            return new IMManager();
         }
     };
 
@@ -24,7 +24,7 @@ public class MSIMManager {
      * 获取 MSIMManager 单例
      */
     @NonNull
-    public static MSIMManager getInstance() {
+    public static IMManager getInstance() {
         // 进程检查，如果不是主进程，抛出异常.
         if (!ProcessManager.getInstance().isMainProcess()) {
             throw new IllegalAccessError("current process is not main process");
@@ -33,7 +33,7 @@ public class MSIMManager {
         return INSTANCE.get();
     }
 
-    private MSIMManager() {
+    private IMManager() {
     }
 
     /**

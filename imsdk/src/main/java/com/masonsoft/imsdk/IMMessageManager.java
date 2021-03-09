@@ -20,7 +20,7 @@ public class IMMessageManager {
     /**
      * 获取 MSIMMessageManager 单例
      *
-     * @see MSIMManager#getMessageManager()
+     * @see IMManager#getMessageManager()
      */
     @NonNull
     static IMMessageManager getInstance() {

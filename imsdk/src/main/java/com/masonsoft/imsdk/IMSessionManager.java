@@ -33,7 +33,7 @@ public class IMSessionManager {
     /**
      * 获取 MSIMSessionManager 单例
      *
-     * @see MSIMManager#getSessionManager()
+     * @see IMManager#getSessionManager()
      */
     @NonNull
     static IMSessionManager getInstance() {

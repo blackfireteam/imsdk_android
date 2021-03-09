@@ -32,12 +32,15 @@ message ChatS
     int64 sign = 1; //客户端自定义标识，服务器会原样返回
     int64 type = 2;// 消息类型
     int64 to_uid = 3; //发送给谁
-    string body = 4; //消息内容
-    int64 width = 5; //图片的宽度
-    int64 height = 6; //图片的高度
-    int64 duration = 7;//时长
-    int64 lat = 8;//纬度
-    int64 lng = 9;//经度
+    string title = 4; //消息内容
+    string body = 5; //消息内容
+    string thumb = 6; //封面图
+    int64 width = 7; //图片的宽度
+    int64 height = 8; //图片的高度
+    int64 duration = 9;//时长
+    double lat = 10;//纬度
+    double lng = 11;//经度
+    int64 zoom = 12;//地图缩放层级
 }
 //5
 message ChatSR
@@ -54,12 +57,15 @@ message ChatR
     int64 to_uid = 4; //发给谁
     int64 sput = 5; //sender_profile_update_time 发送人的profile更新时间
     int64 type = 6;// 消息类型
-    string body = 7; //消息内容
-    int64 width = 8; //图片的宽度
-    int64 height = 9; //图片的高度
-    int64 duration = 10;//时长
-    int64 lat = 11;//纬度
-    int64 lng = 12;//经度
+    string title = 7; //消息内容
+    string body = 8; //消息内容
+    string thumb = 9; //封面图
+    int64 width = 10; //图片的宽度
+    int64 height = 11; //图片的高度
+    int64 duration = 12;//时长
+    double lat = 13;//纬度
+    double lng = 14;//经度
+    int64 zoom = 15;//地图缩放层级
 }
 //7
 message ChatRBatch
@@ -115,14 +121,15 @@ message ChatItem
     int64 msg_start = 2;
     int64 msg_end = 3;
     int64 msg_last_read = 4;
-    string last_msg = 5;
-    int64 unread = 6;
-    bool matched = 7;
-    bool new = 8;
-    bool my_move = 9;
-    bool ice_break = 10;
-    bool tip_free = 11;
-    bool top_album = 12;
+    int64 show_msg_type = 5;
+    int64 show_msg_id = 6;
+    int64 unread = 7;
+    bool matched = 8;
+    bool new_msg = 9;
+    bool my_move = 10;
+    bool ice_break = 11;
+    bool tip_free = 12;
+    bool top_album = 13;
 }
 //15
 message ChatList
