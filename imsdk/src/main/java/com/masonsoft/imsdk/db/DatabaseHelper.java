@@ -54,6 +54,37 @@ public final class DatabaseHelper {
         String C_TARGET_USER_ID = "c_target_user_id";
 
         /**
+         * 会话中的第一条消息 id(这条消息可能并没有存储在本地)。
+         * 服务器端的逻辑消息，用来计算是否还有更多历史消息。
+         * 这条消息可能是一个指令消息。
+         */
+        String C_MSG_START_ID = "c_msg_start_id";
+
+        /**
+         * 会话中的最后一条消息 id(这条消息可能并没有存储在本地)。
+         * 服务器端的逻辑消息，用来计算是否还有更多新消息。
+         * 如果在此会话中收到了一条消息 id 更大的消息，则会手动更新该值。
+         * 这条消息可能是一个指令消息。
+         */
+        String C_MSG_END_ID = "c_msg_end_id";
+
+        /**
+         * 最后一条已读消息 id(这条消息可能并没有存储在本地)。
+         */
+        String C_MSG_LAST_READ_ID = "c_msg_last_read_id";
+
+        /**
+         * 在会话上需要展示的那条消息的类型
+         */
+        String C_SHOW_MSG_TYPE = "c_show_msg_type";
+
+        /**
+         * 在会话上需要展示的那条消息的 id(这条消息可能并没有存储在本地)。
+         * 服务器端的逻辑消息，当收到的消息比这个消息 id 更大时，需要累加未读消息数。
+         */
+        String C_SHOW_MSG_ID = "c_show_msg_id";
+
+        /**
          * 会话中的最后一条消息 id，可能是发送的，也可能是收到的 (对应消息表的自增主键)
          *
          * @since db version 1
@@ -80,6 +111,43 @@ public final class DatabaseHelper {
          * @since db version 1
          */
         String C_CONVERSATION_TYPE = "c_conversation_type";
+
+        /**
+         * 会话的展示时间，通常是最后一条消息的时间(毫秒).
+         */
+        String C_TIME_MS = "c_time_ms";
+
+        /**
+         * 业务定制：是否 match
+         *
+         * @since db version 1
+         */
+        String C_MATCHED = "c_matched";
+
+        /**
+         * 业务定制：是否是 new message
+         */
+        String C_NEW_MSG = "c_new_msg";
+
+        /**
+         * 业务定制：是否 my move
+         */
+        String C_MY_MOVE = "c_my_move";
+
+        /**
+         * 业务定制：是否 ice break
+         */
+        String C_ICE_BREAK = "c_ice_break";
+
+        /**
+         * 业务定制：是否 tip free
+         */
+        String C_TIP_FREE = "c_tip_free";
+
+        /**
+         * 业务定制：是否 top album
+         */
+        String C_TOP_ALBUM = "c_top_album";
     }
 
     /**
@@ -95,7 +163,8 @@ public final class DatabaseHelper {
         String C_ID = "c_id";
 
         /**
-         * 消息的排序字段
+         * 消息的排序字段.此字段有索引但是不唯一。
+         * 在同一个会话中是唯一的。
          *
          * @see Sequence
          * @since db version 1
@@ -129,6 +198,11 @@ public final class DatabaseHelper {
          * @since db version 1
          */
         String C_FROM_USER_ID = "c_from_user_id";
+
+        /**
+         * 消息发送者的个人信息的最后更新时间。用来校验本地缓存是否需要更新。
+         */
+        String C_FROM_USER_PROFILE_LAST_MODIFY = "c_from_user_profile_last_modify";
 
         /**
          * 消息接收者的 user id
@@ -215,15 +289,10 @@ public final class DatabaseHelper {
 
         /**
          * 消息发送状态
-         * <p>Added in version 1</p>
+         *
+         * @since db version 1
          */
         String C_SEND_STATUS = "c_send_status";
-
-        /**
-         * 消息阅读状态
-         * <p>Added in version 1</p>
-         */
-        String C_READ_STATUS = "c_read_status";
     }
 
     /**
@@ -284,10 +353,22 @@ public final class DatabaseHelper {
                 ColumnsConversation.C_ID + " integer primary key autoincrement not null," +
                 ColumnsConversation.C_SEQ + " integer not null," +
                 ColumnsConversation.C_TARGET_USER_ID + " integer not null," +
-                ColumnsConversation.C_LAST_MSG_ID + " integer default 0," +
-                ColumnsConversation.C_TOP + " integer default 0," +
-                ColumnsConversation.C_UNREAD_COUNT + " integer default 0," +
-                ColumnsConversation.C_CONVERSATION_TYPE + " integer default 0" +
+                ColumnsConversation.C_MSG_START_ID + " integer not null default 0," +
+                ColumnsConversation.C_MSG_END_ID + " integer not null default 0," +
+                ColumnsConversation.C_MSG_LAST_READ_ID + " integer not null default 0," +
+                ColumnsConversation.C_SHOW_MSG_TYPE + " integer not null default 0," +
+                ColumnsConversation.C_SHOW_MSG_ID + " integer not null default 0," +
+                ColumnsConversation.C_LAST_MSG_ID + " integer not null default 0," +
+                ColumnsConversation.C_TOP + " integer not null default 0," +
+                ColumnsConversation.C_UNREAD_COUNT + " integer not null default 0," +
+                ColumnsConversation.C_CONVERSATION_TYPE + " integer not null default 0," +
+                ColumnsConversation.C_TIME_MS + " integer not null," +
+                ColumnsConversation.C_MATCHED + " integer not null default 0," +
+                ColumnsConversation.C_NEW_MSG + " integer not null default 0," +
+                ColumnsConversation.C_MY_MOVE + " integer not null default 0," +
+                ColumnsConversation.C_ICE_BREAK + " integer not null default 0," +
+                ColumnsConversation.C_TIP_FREE + " integer not null default 0," +
+                ColumnsConversation.C_TOP_ALBUM + " integer not null default 0" +
                 ")";
     }
 
@@ -297,91 +378,38 @@ public final class DatabaseHelper {
     @NonNull
     private String[] getSQLIndexTableConversation() {
         return new String[]{
-                "create index " + TABLE_NAME_CONVERSATION + "_index_seq on " + TABLE_NAME_CONVERSATION + "(" + ColumnsConversation.C_TARGET_USER_ID + ")",
+                "create index " + TABLE_NAME_CONVERSATION + "_index_seq on " + TABLE_NAME_CONVERSATION + "(" + ColumnsConversation.C_SEQ + ")",
                 "create index " + TABLE_NAME_CONVERSATION + "_index_target_user_id on " + TABLE_NAME_CONVERSATION + "(" + ColumnsConversation.C_TARGET_USER_ID + ")",
                 "create index " + TABLE_NAME_CONVERSATION + "_index_conversation_type on " + TABLE_NAME_CONVERSATION + "(" + ColumnsConversation.C_CONVERSATION_TYPE + ")"
         };
     }
 
     /**
-     * 数据库版本 3 中，会话表(Conversation) 相关的变更.
-     * <p>
-     * 增加列，分别是:<br/>
-     * {@linkplain ColumnsConversation#C_LATEST_UNREAD_GIFT_MSG_ID}<br/>
-     * </p>
-     */
-    private void exeTableConversationUpgradeSQLOnVersion3(SQLiteDatabase db) {
-        Timber.v("exeTableConversationUpgradeSQLOnVersion3");
-        db.execSQL("alter table " + TABLE_NAME_CONVERSATION + " add column " + ColumnsConversation.C_LATEST_UNREAD_GIFT_MSG_ID + " integer default 0");
-    }
-
-    /**
-     * 数据库版本 5 中，会话表(Conversation) 相关的变更.
-     * <p>
-     * 业务逻辑上不再支持‘新的留言’消息类型，需要清除对应的未读消息数，以免影响未读消息总数的统计.
-     * </p>
-     */
-    private void exeTableConversationUpgradeSQLOnVersion5(SQLiteDatabase db) {
-        Timber.v("exeTableConversationUpgradeSQLOnVersion5");
-        db.execSQL("update " + TABLE_NAME_CONVERSATION + " set " + ColumnsConversation.C_UNREAD_COUNT + "=0 where " + ColumnsConversation.C_SYSTEM_TYPE + "=" + ImConstant.ConversationSystemType.SYSTEM_TYPE_COMMENTS);
-    }
-
-    /**
      * 消息表创建语句(数据库最新版本)
      */
     @NonNull
-    private final String getSQLCreateTableMessage() {
+    private String getSQLCreateTableMessage() {
         return "create table " + TABLE_NAME_MESSAGE + " (" +
-                ColumnsMessage.C_ID + " integer primary key autoincrement," +
-                ColumnsMessage.C_CONVERSATION_ID + " integer default 0," +
-                ColumnsMessage.C_MSG_ID + " integer default 0," +
-                ColumnsMessage.C_MSG_SERVER_TIME + " integer default 0," +
-                ColumnsMessage.C_FROM_USER_ID + " integer default 0," +
-                ColumnsMessage.C_TO_USER_ID + " integer default 0," +
-                ColumnsMessage.C_MSG_LOCAL_TIME + " integer default 0," +
-                ColumnsMessage.C_MSG_TYPE + " integer default 0," +
-                ColumnsMessage.C_MSG_TEXT + " text," +
-                ColumnsMessage.C_MSG_TITLE + " text," +
-                ColumnsMessage.C_MSG_IMAGE_SERVER_THUMB + " text," +
-                ColumnsMessage.C_MSG_IMAGE_SERVER_URL + " text," +
-                ColumnsMessage.C_MSG_IMAGE_LOCAL_URL + " text," +
-                ColumnsMessage.C_MSG_IMAGE_WIDTH + " integer default 0," +
-                ColumnsMessage.C_MSG_IMAGE_HEIGHT + " integer default 0," +
-                ColumnsMessage.C_MSG_IMAGE_FILE_SIZE + " integer default 0," +
-                ColumnsMessage.C_MSG_VOICE_SERVER_URL + " text," +
-                ColumnsMessage.C_MSG_VOICE_LOCAL_URL + " text," +
-                ColumnsMessage.C_MSG_VOICE_DURATION + " integer default 0," +
-                ColumnsMessage.C_MSG_VOICE_FILE_SIZE + " integer default 0," +
-                ColumnsMessage.C_MSG_VIDEO_SERVER_THUMB + " text," +
-                ColumnsMessage.C_MSG_VIDEO_SERVER_URL + " text," +
-                ColumnsMessage.C_MSG_VIDEO_LOCAL_URL + " text," +
-                ColumnsMessage.C_MSG_VIDEO_WIDTH + " integer default 0," +
-                ColumnsMessage.C_MSG_VIDEO_HEIGHT + " integer default 0," +
-                ColumnsMessage.C_MSG_VIDEO_DURATION + " integer default 0," +
-                ColumnsMessage.C_MSG_VIDEO_FILE_SIZE + " integer default 0," +
-                ColumnsMessage.C_MSG_LOCATION_TITLE + " text," +
-                ColumnsMessage.C_MSG_LOCATION_LAT + " text," +
-                ColumnsMessage.C_MSG_LOCATION_LNG + " text," +
-                ColumnsMessage.C_MSG_LOCATION_ZOOM + " integer default 0," +
-                ColumnsMessage.C_MSG_LOCATION_ADDRESS + " text," +
-                ColumnsMessage.C_MSG_UGC_ID + " integer default 0," +
-                ColumnsMessage.C_MSG_UGC_USER_ID + " integer default 0," +
-                ColumnsMessage.C_MSG_UGC_SERVER_THUMB + " text," +
-                ColumnsMessage.C_MSG_UGC_NICE_NUM + " integer default 0," +
-                ColumnsMessage.C_MSG_FROM_USER_ID + " integer default 0," +
-                ColumnsMessage.C_MSG_NUMBER + " integer default 0," +
-                ColumnsMessage.C_MSG_URL + " text," +
-                ColumnsMessage.C_MSG_SUBJECT + " text," +
-                ColumnsMessage.C_MSG_MSGS + " text," +
-                ColumnsMessage.C_MSG_GIFT_ID + " integer default 0," +
-                ColumnsMessage.C_MSG_GIFT_NAME + " text," +
-                ColumnsMessage.C_MSG_GIFT_DESC + " text," +
-                ColumnsMessage.C_MSG_GIFT_K_PRICE + " integer default 0," +
-                ColumnsMessage.C_MSG_GIFT_COVER + " text," +
-                ColumnsMessage.C_MSG_GIFT_ANIM + " text," +
-                ColumnsMessage.C_SEND_STATUS + " integer default 0," +
-                ColumnsMessage.C_READ_STATUS + " integer default 0," +
-                ColumnsMessage.C_REVERT_STATUS + " integer default 0" +
+                ColumnsMessage.C_ID + " integer primary key autoincrement not null," +
+                ColumnsMessage.C_SEQ + " integer not null," +
+                ColumnsMessage.C_CONVERSATION_ID + " integer not null," +
+                ColumnsMessage.C_MSG_ID + " integer not null default 0," +
+                ColumnsMessage.C_TIME_MS + " integer not null," +
+                ColumnsMessage.C_FROM_USER_ID + " integer not null," +
+                ColumnsMessage.C_FROM_USER_PROFILE_LAST_MODIFY + " integer not null default 0," +
+                ColumnsMessage.C_TO_USER_ID + " integer not null," +
+                ColumnsMessage.C_MSG_TYPE + " integer not null default 0," +
+                ColumnsMessage.C_BODY + " text," +
+                ColumnsMessage.C_BODY_ORIGIN + " text," +
+                ColumnsMessage.C_WIDTH + " integer not null default 0," +
+                ColumnsMessage.C_HEIGHT + " integer not null default 0," +
+                ColumnsMessage.C_DURATION + " integer not null default 0," +
+                ColumnsMessage.C_THUMB + " text," +
+                ColumnsMessage.C_LAT + " double," +
+                ColumnsMessage.C_LNG + " double," +
+                ColumnsMessage.C_ZOOM + " integer not null default 0," +
+                ColumnsMessage.C_TITLE + " text," +
+                ColumnsMessage.C_SEND_STATUS + " integer not null default 0" +
                 ")";
     }
 
@@ -389,58 +417,17 @@ public final class DatabaseHelper {
      * 消息表创建索引语句(数据库最新版本)
      */
     @NonNull
-    private final String[] getSQLIndexTableMessage() {
+    private String[] getSQLIndexTableMessage() {
         return new String[]{
+                "create index " + TABLE_NAME_MESSAGE + "_index_seq on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_SEQ + ")",
                 "create index " + TABLE_NAME_MESSAGE + "_index_conversation_id on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_CONVERSATION_ID + ")",
                 "create index " + TABLE_NAME_MESSAGE + "_index_msg_id on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_MSG_ID + ")",
-                "create index " + TABLE_NAME_MESSAGE + "_index_msg_server_time on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_MSG_SERVER_TIME + ")",
                 "create index " + TABLE_NAME_MESSAGE + "_index_from_user_id on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_FROM_USER_ID + ")",
+                "create index " + TABLE_NAME_MESSAGE + "_index_from_user_profile_last_modify on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_FROM_USER_PROFILE_LAST_MODIFY + ")",
                 "create index " + TABLE_NAME_MESSAGE + "_index_to_user_id on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_TO_USER_ID + ")",
-                "create index " + TABLE_NAME_MESSAGE + "_index_msg_local_time on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_MSG_LOCAL_TIME + ")",
-                "create index " + TABLE_NAME_MESSAGE + "_index_send_status on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_SEND_STATUS + ")",
-                "create index " + TABLE_NAME_MESSAGE + "_index_read_status on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_READ_STATUS + ")"
+                "create index " + TABLE_NAME_MESSAGE + "_index_msg_type on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_MSG_TYPE + ")",
+                "create index " + TABLE_NAME_MESSAGE + "_index_send_status on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_SEND_STATUS + ")"
         };
-    }
-
-    /**
-     * 数据库版本 2 中，消息表(Message) 相关的变更.
-     * <p>
-     * 增加列，分别是:<br/>
-     * {@linkplain ColumnsMessage#C_MSG_GIFT_ID}<br/>
-     * {@linkplain ColumnsMessage#C_MSG_GIFT_NAME}<br/>
-     * {@linkplain ColumnsMessage#C_MSG_GIFT_DESC}<br/>
-     * {@linkplain ColumnsMessage#C_MSG_GIFT_K_PRICE}<br/>
-     * {@linkplain ColumnsMessage#C_MSG_GIFT_COVER}<br/>
-     * {@linkplain ColumnsMessage#C_MSG_GIFT_ANIM}<br/>
-     * </p>
-     */
-    private void exeTableMessageUpgradeSQLOnVersion2(SQLiteDatabase db) {
-        Timber.v("exeTableMessageUpgradeSQLOnVersion2");
-        db.execSQL("alter table " + TABLE_NAME_MESSAGE + " add column " + ColumnsMessage.C_MSG_GIFT_ID + " integer default 0");
-        db.execSQL("alter table " + TABLE_NAME_MESSAGE + " add column " + ColumnsMessage.C_MSG_GIFT_NAME + " text");
-        db.execSQL("alter table " + TABLE_NAME_MESSAGE + " add column " + ColumnsMessage.C_MSG_GIFT_DESC + " text");
-        db.execSQL("alter table " + TABLE_NAME_MESSAGE + " add column " + ColumnsMessage.C_MSG_GIFT_K_PRICE + " integer default 0");
-        db.execSQL("alter table " + TABLE_NAME_MESSAGE + " add column " + ColumnsMessage.C_MSG_GIFT_COVER + " text");
-        db.execSQL("alter table " + TABLE_NAME_MESSAGE + " add column " + ColumnsMessage.C_MSG_GIFT_ANIM + " text");
-    }
-
-    /**
-     * 数据库版本 4 中，消息表(Message) 相关的变更.
-     * <p>
-     * 增加列，分别是:<br/>
-     * {@linkplain ColumnsMessage#C_MSG_URL}<br/>
-     * {@linkplain ColumnsMessage#C_MSG_SUBJECT}<br/>
-     * </p>
-     */
-    private void exeTableMessageUpgradeSQLOnVersion4(SQLiteDatabase db) {
-        Timber.v("exeTableMessageUpgradeSQLOnVersion4");
-        db.execSQL("alter table " + TABLE_NAME_MESSAGE + " add column " + ColumnsMessage.C_MSG_URL + " text");
-        db.execSQL("alter table " + TABLE_NAME_MESSAGE + " add column " + ColumnsMessage.C_MSG_SUBJECT + " text");
-    }
-
-    @Override
-    public void close() {
-        mDBHelper.close();
     }
 
 }
