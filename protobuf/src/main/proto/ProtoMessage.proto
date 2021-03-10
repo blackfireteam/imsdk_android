@@ -73,13 +73,15 @@ message ChatRBatch
     int64 sign = 1;//信息标示，原路返回
     repeated ChatR msgs = 2;
 }
-//8
+//8 拉取历史消息，只能按时间倒序拉取，服务器会返回offset条，或者到msg_start为止
+// msg_end  msg_start 是客户端两个连续的block中间缺失的部分
 message GetHistory
 {
     int64 sign = 1; //客户端自定义标识，服务器会原样返回
     int64 to_uid = 2; //和谁的聊天记录
-    int64 msg_id = 3; //msg id 指针
-    int64 offset = 4; //拉多少条，默认20，最多100
+    int64 msg_end = 3; //从这条消息往后拉（不包括此条）
+    int64 msg_start = 4; //最多拉到这条（不包括此条）
+    int64 offset = 5; //拉多少条，默认20，最多100
 }
 //9
 message Revoke
@@ -130,11 +132,14 @@ message ChatItem
     bool ice_break = 11;
     bool tip_free = 12;
     bool top_album = 13;
+    bool i_block_u = 14;
+    bool connected = 15;//双方互发过消息了
 }
 //15
 message ChatList
 {
     repeated ChatItem chat_items = 1;
+    int64 update_time = 2;//有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值
 }
 //16
 message GetProfile
@@ -161,6 +166,16 @@ message Profile
 message ProfileList
 {
     repeated Profile profiles = 1;
+}
+//20
+message BlockU
+{
+    int64 to_uid = 1;//block谁
+}
+//21
+message UnblockU
+{
+    int64 to_uid = 1;//unblock谁
 }
 //20
 message GetChatListOnlineUids
