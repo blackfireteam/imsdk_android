@@ -64,7 +64,7 @@ public class Sequence {
 
     private static int nextIndex() {
         synchronized (INDEX_LOCK) {
-            sIndex = (sIndex++) % 0x10;
+            sIndex = (sIndex + 1) % 0x10;
             return sIndex;
         }
     }
