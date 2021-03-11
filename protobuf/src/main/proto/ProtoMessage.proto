@@ -4,192 +4,194 @@ option java_package = "com.masonsoft.imsdk.proto";
 //0
 message Ping
 {
-    int64 type = 1;
+  int64 type = 1;
 }
 //1
 message ImLogin
 {
-    int64 sign = 1;
-    string token = 2; //从应用方获取的imtoken
+  int64 sign = 1;
+  string token = 2; //从应用方获取的imtoken
 }
 //2
 message ImLogout
 {
-    int64 sign = 1;
+  int64 sign = 1;
 }
 //3
 message Result
 {
-    int64 sign = 1;//信息标示，原路返回
-    int64 code = 2;
-    string msg = 3;
-    int64 now_time = 4; //当前服务器时间戳
-    int64 uid = 5;//鉴权时返回的uid
+  int64 sign = 1;//信息标示，原路返回
+  int64 code = 2;
+  string msg = 3;
+  int64 now_time = 4; //当前服务器时间戳
+  int64 uid = 5;//鉴权时返回的uid
 }
 //4
 message ChatS
 {
-    int64 sign = 1; //客户端自定义标识，服务器会原样返回
-    int64 type = 2;// 消息类型
-    int64 to_uid = 3; //发送给谁
-    string title = 4; //消息内容
-    string body = 5; //消息内容
-    string thumb = 6; //封面图
-    int64 width = 7; //图片的宽度
-    int64 height = 8; //图片的高度
-    int64 duration = 9;//时长
-    double lat = 10;//纬度
-    double lng = 11;//经度
-    int64 zoom = 12;//地图缩放层级
+  int64 sign = 1; //客户端自定义标识，服务器会原样返回
+  int64 type = 2;// 消息类型
+  int64 to_uid = 3; //发送给谁
+  string title = 4; //消息内容
+  string body = 5; //消息内容
+  string thumb = 6; //封面图
+  int64 width = 7; //封面图的宽度
+  int64 height = 8; //封面图的高度
+  int64 duration = 9;//时长
+  double lat = 10;//纬度
+  double lng = 11;//经度
+  int64 zoom = 12;//地图缩放层级
 }
 //5
 message ChatSR
 {
-    int64 sign = 1;//信息标示，原路返回
-    int64 msg_id = 2;//消息id
+  int64 sign = 1;//信息标示，原路返回
+  int64 msg_id = 2;//消息id
 }
 //6
 message ChatR
 {
-    int64 sign = 1;
-    int64 msg_id = 2; //消息id
-    int64 from_uid = 3; //谁发的
-    int64 to_uid = 4; //发给谁
-    int64 sput = 5; //sender_profile_update_time 发送人的profile更新时间
-    int64 type = 6;// 消息类型
-    string title = 7; //消息内容
-    string body = 8; //消息内容
-    string thumb = 9; //封面图
-    int64 width = 10; //图片的宽度
-    int64 height = 11; //图片的高度
-    int64 duration = 12;//时长
-    double lat = 13;//纬度
-    double lng = 14;//经度
-    int64 zoom = 15;//地图缩放层级
+  int64 sign = 1;
+  int64 from_uid = 2; //谁发的
+  int64 to_uid = 3; //发给谁
+  int64 msg_id = 4; //消息id
+  int64 msg_time = 5; //消息时间（以服务器为准 精确到秒的时间戳）
+  int64 sput = 6; //sender_profile_update_time 发送人的profile更新时间
+  int64 type = 7;// 消息类型
+  string title = 8; //消息内容
+  string body = 9; //消息内容
+  string thumb = 10; //封面图
+  int64 width = 11; //封面图的宽度
+  int64 height = 12; //封面图的高度
+  int64 duration = 13;//时长
+  double lat = 14;//纬度
+  double lng = 15;//经度
+  int64 zoom = 16;//地图缩放层级
 }
 //7
 message ChatRBatch
 {
-    int64 sign = 1;//信息标示，原路返回
-    repeated ChatR msgs = 2;
+  int64 sign = 1;//信息标示，原路返回
+  repeated ChatR msgs = 2;
 }
 //8 拉取历史消息，只能按时间倒序拉取，服务器会返回offset条，或者到msg_start为止
 // msg_end  msg_start 是客户端两个连续的block中间缺失的部分
 message GetHistory
 {
-    int64 sign = 1; //客户端自定义标识，服务器会原样返回
-    int64 to_uid = 2; //和谁的聊天记录
-    int64 msg_end = 3; //从这条消息往后拉（不包括此条）
-    int64 msg_start = 4; //最多拉到这条（不包括此条）
-    int64 offset = 5; //拉多少条，默认20，最多100
+  int64 sign = 1; //客户端自定义标识，服务器会原样返回
+  int64 to_uid = 2; //和谁的聊天记录
+  int64 msg_end = 3; //从这条消息往后拉（不包括此条）
+  int64 msg_start = 4; //最多拉到这条（不包括此条）
+  int64 offset = 5; //拉多少条，默认20，最多100
 }
 //9
 message Revoke
 {
-    int64 sign = 1; //客户端自定义标识，服务器会原样返回
-    int64 to_uid = 2;// 谁发的消息
-    int64 msg_id = 3;// 撤回的消息id
+  int64 sign = 1; //客户端自定义标识，服务器会原样返回
+  int64 to_uid = 2;// 谁发的消息
+  int64 msg_id = 3;// 撤回的消息id
 }
 //10
 message MsgRead
 {
-    int64 sign = 1; //客户端自定义标识，服务器会原样返回
-    int64 to_uid = 2;// 谁发的消息已读
-    int64 msg_id = 3;// 已读消息id
+  int64 sign = 1; //客户端自定义标识，服务器会原样返回
+  int64 to_uid = 2;// 谁发的消息已读
+  int64 msg_id = 3;// 已读消息id
 }
 //11 消息已读状态发生变更通知（客户端收到这个才去变更）
 message LastReadMsg
 {
-    int64 from_uid = 1;// 谁的会话
-    int64 msg_id = 2;// 最后一条已读消息
-    int64 unread = 3;//还有多少条未读消息
+  int64 from_uid = 1;// 谁的会话
+  int64 msg_id = 2;// 最后一条已读消息
+  int64 unread = 3;//还有多少条未读消息
 }
 //12
 message DelChat
 {
-    int64 sign = 1; //客户端自定义标识，服务器会原样返回
-    int64 to_uid = 2;// 删除谁的
+  int64 sign = 1; //客户端自定义标识，服务器会原样返回
+  int64 to_uid = 2;// 删除谁的
 }
 //13
 message GetChatList
 {
-    int64 sign = 1; //客户端自定义标识，服务器会原样返回
-    int64 msg_id = 2;// 客户端本地保存的会话列表的最新一个会话的msg id
+  int64 sign = 1; //客户端自定义标识，服务器会原样返回
+  int64 msg_id = 2;// 客户端本地保存的会话列表的最新一个会话的msg id
 }
 //14
 message ChatItem
 {
-    int64 uid = 1;
-    int64 msg_start = 2;
-    int64 msg_end = 3;
-    int64 msg_last_read = 4;
-    int64 show_msg_type = 5;
-    int64 show_msg_id = 6;
-    int64 unread = 7;
-    bool matched = 8;
-    bool new_msg = 9;
-    bool my_move = 10;
-    bool ice_break = 11;
-    bool tip_free = 12;
-    bool top_album = 13;
-    bool i_block_u = 14;
-    bool connected = 15;//双方互发过消息了
+  int64 uid = 1;
+  int64 msg_start = 2;
+  int64 msg_end = 3;
+  int64 msg_last_read = 4;
+  int64 show_msg_type = 5;
+  int64 show_msg_id = 6;
+  int64 show_msg_time = 7;
+  int64 unread = 8;
+  bool matched = 9;
+  bool new_msg = 10;
+  bool my_move = 11;
+  bool ice_break = 12;
+  bool tip_free = 13;
+  bool top_album = 14;
+  bool i_block_u = 15;
+  bool connected = 16;//双方互发过消息了
 }
 //15
 message ChatList
 {
-    repeated ChatItem chat_items = 1;
-    int64 update_time = 2;//有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值
+  repeated ChatItem chat_items = 1;
+  int64 update_time = 2;//有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值
 }
 //16
 message GetProfile
 {
-    int64 uid = 1;
-    int64 update_time = 2;
+  int64 uid = 1;
+  int64 update_time = 2;
 }
 //17
 message GetProfiles
 {
-    repeated GetProfile get_profiles = 1;
+  repeated GetProfile get_profiles = 1;
 }
 //18
 message Profile
 {
-    int64 uid = 1;
-    int64 update_time = 2;
-    string nick_name = 3;
-    string avatar = 4;
-    bool gold = 5;
-    bool verified = 6;
+  int64 uid = 1;
+  int64 update_time = 2;
+  string nick_name = 3;
+  string avatar = 4;
+  bool gold = 5;
+  bool verified = 6;
 }
 //19
 message ProfileList
 {
-    repeated Profile profiles = 1;
+  repeated Profile profiles = 1;
 }
 //20
 message BlockU
 {
-    int64 to_uid = 1;//block谁
+  int64 to_uid = 1;//block谁
 }
 //21
 message UnblockU
 {
-    int64 to_uid = 1;//unblock谁
-}
-//20
-message GetChatListOnlineUids
-{
-    int64 sign = 1;
-}
-//21
-message OnlineUids
-{
-    repeated int64 uids = 2;
+  int64 to_uid = 1;//unblock谁
 }
 //22
+message GetChatListOnlineUids
+{
+  int64 sign = 1;
+}
+//23
+message OnlineUids
+{
+  repeated int64 uids = 2;
+}
+//24
 message IsOnline
 {
-    int64 sign = 1;
-    int64 uid = 2;
+  int64 sign = 1;
+  int64 uid = 2;
 }

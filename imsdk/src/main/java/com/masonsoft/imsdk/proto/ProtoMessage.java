@@ -1738,7 +1738,7 @@ public final class ProtoMessage {
 
     /**
      * <pre>
-     *图片的宽度
+     *封面图的宽度
      * </pre>
      *
      * <code>optional int64 width = 7;</code>
@@ -1747,7 +1747,7 @@ public final class ProtoMessage {
 
     /**
      * <pre>
-     *图片的高度
+     *封面图的高度
      * </pre>
      *
      * <code>optional int64 height = 8;</code>
@@ -2114,7 +2114,7 @@ public final class ProtoMessage {
     private long width_;
     /**
      * <pre>
-     *图片的宽度
+     *封面图的宽度
      * </pre>
      *
      * <code>optional int64 width = 7;</code>
@@ -2124,7 +2124,7 @@ public final class ProtoMessage {
     }
     /**
      * <pre>
-     *图片的宽度
+     *封面图的宽度
      * </pre>
      *
      * <code>optional int64 width = 7;</code>
@@ -2135,7 +2135,7 @@ public final class ProtoMessage {
     }
     /**
      * <pre>
-     *图片的宽度
+     *封面图的宽度
      * </pre>
      *
      * <code>optional int64 width = 7;</code>
@@ -2149,7 +2149,7 @@ public final class ProtoMessage {
     private long height_;
     /**
      * <pre>
-     *图片的高度
+     *封面图的高度
      * </pre>
      *
      * <code>optional int64 height = 8;</code>
@@ -2159,7 +2159,7 @@ public final class ProtoMessage {
     }
     /**
      * <pre>
-     *图片的高度
+     *封面图的高度
      * </pre>
      *
      * <code>optional int64 height = 8;</code>
@@ -2170,7 +2170,7 @@ public final class ProtoMessage {
     }
     /**
      * <pre>
-     *图片的高度
+     *封面图的高度
      * </pre>
      *
      * <code>optional int64 height = 8;</code>
@@ -2790,7 +2790,7 @@ public final class ProtoMessage {
 
       /**
        * <pre>
-       *图片的宽度
+       *封面图的宽度
        * </pre>
        *
        * <code>optional int64 width = 7;</code>
@@ -2800,7 +2800,7 @@ public final class ProtoMessage {
       }
       /**
        * <pre>
-       *图片的宽度
+       *封面图的宽度
        * </pre>
        *
        * <code>optional int64 width = 7;</code>
@@ -2812,7 +2812,7 @@ public final class ProtoMessage {
       }
       /**
        * <pre>
-       *图片的宽度
+       *封面图的宽度
        * </pre>
        *
        * <code>optional int64 width = 7;</code>
@@ -2825,7 +2825,7 @@ public final class ProtoMessage {
 
       /**
        * <pre>
-       *图片的高度
+       *封面图的高度
        * </pre>
        *
        * <code>optional int64 height = 8;</code>
@@ -2835,7 +2835,7 @@ public final class ProtoMessage {
       }
       /**
        * <pre>
-       *图片的高度
+       *封面图的高度
        * </pre>
        *
        * <code>optional int64 height = 8;</code>
@@ -2847,7 +2847,7 @@ public final class ProtoMessage {
       }
       /**
        * <pre>
-       *图片的高度
+       *封面图的高度
        * </pre>
        *
        * <code>optional int64 height = 8;</code>
@@ -3581,19 +3581,10 @@ public final class ProtoMessage {
 
     /**
      * <pre>
-     *消息id
-     * </pre>
-     *
-     * <code>optional int64 msg_id = 2;</code>
-     */
-    long getMsgId();
-
-    /**
-     * <pre>
      *谁发的
      * </pre>
      *
-     * <code>optional int64 from_uid = 3;</code>
+     * <code>optional int64 from_uid = 2;</code>
      */
     long getFromUid();
 
@@ -3602,16 +3593,34 @@ public final class ProtoMessage {
      *发给谁
      * </pre>
      *
-     * <code>optional int64 to_uid = 4;</code>
+     * <code>optional int64 to_uid = 3;</code>
      */
     long getToUid();
+
+    /**
+     * <pre>
+     *消息id
+     * </pre>
+     *
+     * <code>optional int64 msg_id = 4;</code>
+     */
+    long getMsgId();
+
+    /**
+     * <pre>
+     *消息时间（以服务器为准 精确到秒的时间戳）
+     * </pre>
+     *
+     * <code>optional int64 msg_time = 5;</code>
+     */
+    long getMsgTime();
 
     /**
      * <pre>
      *sender_profile_update_time 发送人的profile更新时间
      * </pre>
      *
-     * <code>optional int64 sput = 5;</code>
+     * <code>optional int64 sput = 6;</code>
      */
     long getSput();
 
@@ -3620,7 +3629,7 @@ public final class ProtoMessage {
      * 消息类型
      * </pre>
      *
-     * <code>optional int64 type = 6;</code>
+     * <code>optional int64 type = 7;</code>
      */
     long getType();
 
@@ -3629,7 +3638,7 @@ public final class ProtoMessage {
      *消息内容
      * </pre>
      *
-     * <code>optional string title = 7;</code>
+     * <code>optional string title = 8;</code>
      */
     java.lang.String getTitle();
     /**
@@ -3637,7 +3646,7 @@ public final class ProtoMessage {
      *消息内容
      * </pre>
      *
-     * <code>optional string title = 7;</code>
+     * <code>optional string title = 8;</code>
      */
     com.google.protobuf.ByteString
     getTitleBytes();
@@ -3647,7 +3656,7 @@ public final class ProtoMessage {
      *消息内容
      * </pre>
      *
-     * <code>optional string body = 8;</code>
+     * <code>optional string body = 9;</code>
      */
     java.lang.String getBody();
     /**
@@ -3655,7 +3664,7 @@ public final class ProtoMessage {
      *消息内容
      * </pre>
      *
-     * <code>optional string body = 8;</code>
+     * <code>optional string body = 9;</code>
      */
     com.google.protobuf.ByteString
     getBodyBytes();
@@ -3665,7 +3674,7 @@ public final class ProtoMessage {
      *封面图
      * </pre>
      *
-     * <code>optional string thumb = 9;</code>
+     * <code>optional string thumb = 10;</code>
      */
     java.lang.String getThumb();
     /**
@@ -3673,26 +3682,26 @@ public final class ProtoMessage {
      *封面图
      * </pre>
      *
-     * <code>optional string thumb = 9;</code>
+     * <code>optional string thumb = 10;</code>
      */
     com.google.protobuf.ByteString
     getThumbBytes();
 
     /**
      * <pre>
-     *图片的宽度
+     *封面图的宽度
      * </pre>
      *
-     * <code>optional int64 width = 10;</code>
+     * <code>optional int64 width = 11;</code>
      */
     long getWidth();
 
     /**
      * <pre>
-     *图片的高度
+     *封面图的高度
      * </pre>
      *
-     * <code>optional int64 height = 11;</code>
+     * <code>optional int64 height = 12;</code>
      */
     long getHeight();
 
@@ -3701,7 +3710,7 @@ public final class ProtoMessage {
      *时长
      * </pre>
      *
-     * <code>optional int64 duration = 12;</code>
+     * <code>optional int64 duration = 13;</code>
      */
     long getDuration();
 
@@ -3710,7 +3719,7 @@ public final class ProtoMessage {
      *纬度
      * </pre>
      *
-     * <code>optional double lat = 13;</code>
+     * <code>optional double lat = 14;</code>
      */
     double getLat();
 
@@ -3719,7 +3728,7 @@ public final class ProtoMessage {
      *经度
      * </pre>
      *
-     * <code>optional double lng = 14;</code>
+     * <code>optional double lng = 15;</code>
      */
     double getLng();
 
@@ -3728,7 +3737,7 @@ public final class ProtoMessage {
      *地图缩放层级
      * </pre>
      *
-     * <code>optional int64 zoom = 15;</code>
+     * <code>optional int64 zoom = 16;</code>
      */
     long getZoom();
   }
@@ -3772,49 +3781,14 @@ public final class ProtoMessage {
       sign_ = 0L;
     }
 
-    public static final int MSG_ID_FIELD_NUMBER = 2;
-    private long msgId_;
-    /**
-     * <pre>
-     *消息id
-     * </pre>
-     *
-     * <code>optional int64 msg_id = 2;</code>
-     */
-    public long getMsgId() {
-      return msgId_;
-    }
-    /**
-     * <pre>
-     *消息id
-     * </pre>
-     *
-     * <code>optional int64 msg_id = 2;</code>
-     */
-    private void setMsgId(long value) {
-
-      msgId_ = value;
-    }
-    /**
-     * <pre>
-     *消息id
-     * </pre>
-     *
-     * <code>optional int64 msg_id = 2;</code>
-     */
-    private void clearMsgId() {
-
-      msgId_ = 0L;
-    }
-
-    public static final int FROM_UID_FIELD_NUMBER = 3;
+    public static final int FROM_UID_FIELD_NUMBER = 2;
     private long fromUid_;
     /**
      * <pre>
      *谁发的
      * </pre>
      *
-     * <code>optional int64 from_uid = 3;</code>
+     * <code>optional int64 from_uid = 2;</code>
      */
     public long getFromUid() {
       return fromUid_;
@@ -3824,7 +3798,7 @@ public final class ProtoMessage {
      *谁发的
      * </pre>
      *
-     * <code>optional int64 from_uid = 3;</code>
+     * <code>optional int64 from_uid = 2;</code>
      */
     private void setFromUid(long value) {
 
@@ -3835,21 +3809,21 @@ public final class ProtoMessage {
      *谁发的
      * </pre>
      *
-     * <code>optional int64 from_uid = 3;</code>
+     * <code>optional int64 from_uid = 2;</code>
      */
     private void clearFromUid() {
 
       fromUid_ = 0L;
     }
 
-    public static final int TO_UID_FIELD_NUMBER = 4;
+    public static final int TO_UID_FIELD_NUMBER = 3;
     private long toUid_;
     /**
      * <pre>
      *发给谁
      * </pre>
      *
-     * <code>optional int64 to_uid = 4;</code>
+     * <code>optional int64 to_uid = 3;</code>
      */
     public long getToUid() {
       return toUid_;
@@ -3859,7 +3833,7 @@ public final class ProtoMessage {
      *发给谁
      * </pre>
      *
-     * <code>optional int64 to_uid = 4;</code>
+     * <code>optional int64 to_uid = 3;</code>
      */
     private void setToUid(long value) {
 
@@ -3870,21 +3844,91 @@ public final class ProtoMessage {
      *发给谁
      * </pre>
      *
-     * <code>optional int64 to_uid = 4;</code>
+     * <code>optional int64 to_uid = 3;</code>
      */
     private void clearToUid() {
 
       toUid_ = 0L;
     }
 
-    public static final int SPUT_FIELD_NUMBER = 5;
+    public static final int MSG_ID_FIELD_NUMBER = 4;
+    private long msgId_;
+    /**
+     * <pre>
+     *消息id
+     * </pre>
+     *
+     * <code>optional int64 msg_id = 4;</code>
+     */
+    public long getMsgId() {
+      return msgId_;
+    }
+    /**
+     * <pre>
+     *消息id
+     * </pre>
+     *
+     * <code>optional int64 msg_id = 4;</code>
+     */
+    private void setMsgId(long value) {
+
+      msgId_ = value;
+    }
+    /**
+     * <pre>
+     *消息id
+     * </pre>
+     *
+     * <code>optional int64 msg_id = 4;</code>
+     */
+    private void clearMsgId() {
+
+      msgId_ = 0L;
+    }
+
+    public static final int MSG_TIME_FIELD_NUMBER = 5;
+    private long msgTime_;
+    /**
+     * <pre>
+     *消息时间（以服务器为准 精确到秒的时间戳）
+     * </pre>
+     *
+     * <code>optional int64 msg_time = 5;</code>
+     */
+    public long getMsgTime() {
+      return msgTime_;
+    }
+    /**
+     * <pre>
+     *消息时间（以服务器为准 精确到秒的时间戳）
+     * </pre>
+     *
+     * <code>optional int64 msg_time = 5;</code>
+     */
+    private void setMsgTime(long value) {
+
+      msgTime_ = value;
+    }
+    /**
+     * <pre>
+     *消息时间（以服务器为准 精确到秒的时间戳）
+     * </pre>
+     *
+     * <code>optional int64 msg_time = 5;</code>
+     */
+    private void clearMsgTime() {
+
+      msgTime_ = 0L;
+    }
+
+    public static final int SPUT_FIELD_NUMBER = 6;
     private long sput_;
     /**
      * <pre>
      *sender_profile_update_time 发送人的profile更新时间
      * </pre>
      *
-     * <code>optional int64 sput = 5;</code>
+     * <code>optional int64 sput = 6;</code>
      */
     public long getSput() {
       return sput_;
@@ -3894,7 +3938,7 @@ public final class ProtoMessage {
      *sender_profile_update_time 发送人的profile更新时间
      * </pre>
      *
-     * <code>optional int64 sput = 5;</code>
+     * <code>optional int64 sput = 6;</code>
      */
     private void setSput(long value) {
 
@@ -3905,21 +3949,21 @@ public final class ProtoMessage {
      *sender_profile_update_time 发送人的profile更新时间
      * </pre>
      *
-     * <code>optional int64 sput = 5;</code>
+     * <code>optional int64 sput = 6;</code>
      */
     private void clearSput() {
 
       sput_ = 0L;
     }
 
-    public static final int TYPE_FIELD_NUMBER = 6;
+    public static final int TYPE_FIELD_NUMBER = 7;
     private long type_;
     /**
      * <pre>
      * 消息类型
      * </pre>
      *
-     * <code>optional int64 type = 6;</code>
+     * <code>optional int64 type = 7;</code>
      */
     public long getType() {
       return type_;
@@ -3929,7 +3973,7 @@ public final class ProtoMessage {
      * 消息类型
      * </pre>
      *
-     * <code>optional int64 type = 6;</code>
+     * <code>optional int64 type = 7;</code>
      */
     private void setType(long value) {
 
@@ -3940,21 +3984,21 @@ public final class ProtoMessage {
      * 消息类型
      * </pre>
      *
-     * <code>optional int64 type = 6;</code>
+     * <code>optional int64 type = 7;</code>
      */
     private void clearType() {
 
       type_ = 0L;
     }
 
-    public static final int TITLE_FIELD_NUMBER = 7;
+    public static final int TITLE_FIELD_NUMBER = 8;
     private java.lang.String title_;
     /**
      * <pre>
      *消息内容
      * </pre>
      *
-     * <code>optional string title = 7;</code>
+     * <code>optional string title = 8;</code>
      */
     public java.lang.String getTitle() {
       return title_;
@@ -3964,7 +4008,7 @@ public final class ProtoMessage {
      *消息内容
      * </pre>
      *
-     * <code>optional string title = 7;</code>
+     * <code>optional string title = 8;</code>
      */
     public com.google.protobuf.ByteString
     getTitleBytes() {
@@ -3975,7 +4019,7 @@ public final class ProtoMessage {
      *消息内容
      * </pre>
      *
-     * <code>optional string title = 7;</code>
+     * <code>optional string title = 8;</code>
      */
     private void setTitle(
             java.lang.String value) {
@@ -3990,7 +4034,7 @@ public final class ProtoMessage {
      *消息内容
      * </pre>
      *
-     * <code>optional string title = 7;</code>
+     * <code>optional string title = 8;</code>
      */
     private void clearTitle() {
 
@@ -4001,7 +4045,7 @@ public final class ProtoMessage {
      *消息内容
      * </pre>
      *
-     * <code>optional string title = 7;</code>
+     * <code>optional string title = 8;</code>
      */
     private void setTitleBytes(
             com.google.protobuf.ByteString value) {
@@ -4013,14 +4057,14 @@ public final class ProtoMessage {
       title_ = value.toStringUtf8();
     }
 
-    public static final int BODY_FIELD_NUMBER = 8;
+    public static final int BODY_FIELD_NUMBER = 9;
     private java.lang.String body_;
     /**
      * <pre>
      *消息内容
      * </pre>
      *
-     * <code>optional string body = 8;</code>
+     * <code>optional string body = 9;</code>
      */
     public java.lang.String getBody() {
       return body_;
@@ -4030,7 +4074,7 @@ public final class ProtoMessage {
      *消息内容
      * </pre>
      *
-     * <code>optional string body = 8;</code>
+     * <code>optional string body = 9;</code>
      */
     public com.google.protobuf.ByteString
     getBodyBytes() {
@@ -4041,7 +4085,7 @@ public final class ProtoMessage {
      *消息内容
      * </pre>
      *
-     * <code>optional string body = 8;</code>
+     * <code>optional string body = 9;</code>
      */
     private void setBody(
             java.lang.String value) {
@@ -4056,7 +4100,7 @@ public final class ProtoMessage {
      *消息内容
      * </pre>
      *
-     * <code>optional string body = 8;</code>
+     * <code>optional string body = 9;</code>
      */
     private void clearBody() {
 
@@ -4067,7 +4111,7 @@ public final class ProtoMessage {
      *消息内容
      * </pre>
      *
-     * <code>optional string body = 8;</code>
+     * <code>optional string body = 9;</code>
      */
     private void setBodyBytes(
             com.google.protobuf.ByteString value) {
@@ -4079,14 +4123,14 @@ public final class ProtoMessage {
       body_ = value.toStringUtf8();
     }
 
-    public static final int THUMB_FIELD_NUMBER = 9;
+    public static final int THUMB_FIELD_NUMBER = 10;
     private java.lang.String thumb_;
     /**
      * <pre>
      *封面图
      * </pre>
      *
-     * <code>optional string thumb = 9;</code>
+     * <code>optional string thumb = 10;</code>
      */
     public java.lang.String getThumb() {
       return thumb_;
@@ -4096,7 +4140,7 @@ public final class ProtoMessage {
      *封面图
      * </pre>
      *
-     * <code>optional string thumb = 9;</code>
+     * <code>optional string thumb = 10;</code>
      */
     public com.google.protobuf.ByteString
     getThumbBytes() {
@@ -4107,7 +4151,7 @@ public final class ProtoMessage {
      *封面图
      * </pre>
      *
-     * <code>optional string thumb = 9;</code>
+     * <code>optional string thumb = 10;</code>
      */
     private void setThumb(
             java.lang.String value) {
@@ -4122,7 +4166,7 @@ public final class ProtoMessage {
      *封面图
      * </pre>
      *
-     * <code>optional string thumb = 9;</code>
+     * <code>optional string thumb = 10;</code>
      */
     private void clearThumb() {
 
@@ -4133,7 +4177,7 @@ public final class ProtoMessage {
      *封面图
      * </pre>
      *
-     * <code>optional string thumb = 9;</code>
+     * <code>optional string thumb = 10;</code>
      */
     private void setThumbBytes(
             com.google.protobuf.ByteString value) {
@@ -4145,24 +4189,24 @@ public final class ProtoMessage {
       thumb_ = value.toStringUtf8();
     }
 
-    public static final int WIDTH_FIELD_NUMBER = 10;
+    public static final int WIDTH_FIELD_NUMBER = 11;
     private long width_;
     /**
      * <pre>
-     *图片的宽度
+     *封面图的宽度
      * </pre>
      *
-     * <code>optional int64 width = 10;</code>
+     * <code>optional int64 width = 11;</code>
      */
     public long getWidth() {
       return width_;
     }
     /**
      * <pre>
-     *图片的宽度
+     *封面图的宽度
      * </pre>
      *
-     * <code>optional int64 width = 10;</code>
+     * <code>optional int64 width = 11;</code>
      */
     private void setWidth(long value) {
 
@@ -4170,34 +4214,34 @@ public final class ProtoMessage {
     }
     /**
      * <pre>
-     *图片的宽度
+     *封面图的宽度
      * </pre>
      *
-     * <code>optional int64 width = 10;</code>
+     * <code>optional int64 width = 11;</code>
      */
     private void clearWidth() {
 
       width_ = 0L;
     }
 
-    public static final int HEIGHT_FIELD_NUMBER = 11;
+    public static final int HEIGHT_FIELD_NUMBER = 12;
     private long height_;
     /**
      * <pre>
-     *图片的高度
+     *封面图的高度
      * </pre>
      *
-     * <code>optional int64 height = 11;</code>
+     * <code>optional int64 height = 12;</code>
      */
     public long getHeight() {
       return height_;
     }
     /**
      * <pre>
-     *图片的高度
+     *封面图的高度
      * </pre>
      *
-     * <code>optional int64 height = 11;</code>
+     * <code>optional int64 height = 12;</code>
      */
     private void setHeight(long value) {
 
@@ -4205,24 +4249,24 @@ public final class ProtoMessage {
     }
     /**
      * <pre>
-     *图片的高度
+     *封面图的高度
      * </pre>
      *
-     * <code>optional int64 height = 11;</code>
+     * <code>optional int64 height = 12;</code>
      */
     private void clearHeight() {
 
       height_ = 0L;
     }
 
-    public static final int DURATION_FIELD_NUMBER = 12;
+    public static final int DURATION_FIELD_NUMBER = 13;
     private long duration_;
     /**
      * <pre>
      *时长
      * </pre>
      *
-     * <code>optional int64 duration = 12;</code>
+     * <code>optional int64 duration = 13;</code>
      */
     public long getDuration() {
       return duration_;
@@ -4232,7 +4276,7 @@ public final class ProtoMessage {
      *时长
      * </pre>
      *
-     * <code>optional int64 duration = 12;</code>
+     * <code>optional int64 duration = 13;</code>
      */
     private void setDuration(long value) {
 
@@ -4243,21 +4287,21 @@ public final class ProtoMessage {
      *时长
      * </pre>
      *
-     * <code>optional int64 duration = 12;</code>
+     * <code>optional int64 duration = 13;</code>
      */
     private void clearDuration() {
 
       duration_ = 0L;
     }
 
-    public static final int LAT_FIELD_NUMBER = 13;
+    public static final int LAT_FIELD_NUMBER = 14;
     private double lat_;
     /**
      * <pre>
      *纬度
      * </pre>
      *
-     * <code>optional double lat = 13;</code>
+     * <code>optional double lat = 14;</code>
      */
     public double getLat() {
       return lat_;
@@ -4267,7 +4311,7 @@ public final class ProtoMessage {
      *纬度
      * </pre>
      *
-     * <code>optional double lat = 13;</code>
+     * <code>optional double lat = 14;</code>
      */
     private void setLat(double value) {
 
@@ -4278,21 +4322,21 @@ public final class ProtoMessage {
      *纬度
      * </pre>
      *
-     * <code>optional double lat = 13;</code>
+     * <code>optional double lat = 14;</code>
      */
     private void clearLat() {
 
       lat_ = 0D;
     }
 
-    public static final int LNG_FIELD_NUMBER = 14;
+    public static final int LNG_FIELD_NUMBER = 15;
     private double lng_;
     /**
      * <pre>
      *经度
      * </pre>
      *
-     * <code>optional double lng = 14;</code>
+     * <code>optional double lng = 15;</code>
      */
     public double getLng() {
       return lng_;
@@ -4302,7 +4346,7 @@ public final class ProtoMessage {
      *经度
      * </pre>
      *
-     * <code>optional double lng = 14;</code>
+     * <code>optional double lng = 15;</code>
      */
     private void setLng(double value) {
 
@@ -4313,21 +4357,21 @@ public final class ProtoMessage {
      *经度
      * </pre>
      *
-     * <code>optional double lng = 14;</code>
+     * <code>optional double lng = 15;</code>
      */
     private void clearLng() {
 
       lng_ = 0D;
     }
 
-    public static final int ZOOM_FIELD_NUMBER = 15;
+    public static final int ZOOM_FIELD_NUMBER = 16;
     private long zoom_;
     /**
      * <pre>
      *地图缩放层级
      * </pre>
      *
-     * <code>optional int64 zoom = 15;</code>
+     * <code>optional int64 zoom = 16;</code>
      */
     public long getZoom() {
       return zoom_;
@@ -4337,7 +4381,7 @@ public final class ProtoMessage {
      *地图缩放层级
      * </pre>
      *
-     * <code>optional int64 zoom = 15;</code>
+     * <code>optional int64 zoom = 16;</code>
      */
     private void setZoom(long value) {
 
@@ -4348,7 +4392,7 @@ public final class ProtoMessage {
      *地图缩放层级
      * </pre>
      *
-     * <code>optional int64 zoom = 15;</code>
+     * <code>optional int64 zoom = 16;</code>
      */
     private void clearZoom() {
 
@@ -4360,47 +4404,50 @@ public final class ProtoMessage {
       if (sign_ != 0L) {
         output.writeInt64(1, sign_);
       }
-      if (msgId_ != 0L) {
-        output.writeInt64(2, msgId_);
-      }
       if (fromUid_ != 0L) {
-        output.writeInt64(3, fromUid_);
+        output.writeInt64(2, fromUid_);
       }
       if (toUid_ != 0L) {
-        output.writeInt64(4, toUid_);
+        output.writeInt64(3, toUid_);
+      }
+      if (msgId_ != 0L) {
+        output.writeInt64(4, msgId_);
+      }
+      if (msgTime_ != 0L) {
+        output.writeInt64(5, msgTime_);
       }
       if (sput_ != 0L) {
-        output.writeInt64(5, sput_);
+        output.writeInt64(6, sput_);
       }
       if (type_ != 0L) {
-        output.writeInt64(6, type_);
+        output.writeInt64(7, type_);
       }
       if (!title_.isEmpty()) {
-        output.writeString(7, getTitle());
+        output.writeString(8, getTitle());
       }
       if (!body_.isEmpty()) {
-        output.writeString(8, getBody());
+        output.writeString(9, getBody());
       }
       if (!thumb_.isEmpty()) {
-        output.writeString(9, getThumb());
+        output.writeString(10, getThumb());
       }
       if (width_ != 0L) {
-        output.writeInt64(10, width_);
+        output.writeInt64(11, width_);
       }
       if (height_ != 0L) {
-        output.writeInt64(11, height_);
+        output.writeInt64(12, height_);
       }
       if (duration_ != 0L) {
-        output.writeInt64(12, duration_);
+        output.writeInt64(13, duration_);
       }
       if (lat_ != 0D) {
-        output.writeDouble(13, lat_);
+        output.writeDouble(14, lat_);
       }
       if (lng_ != 0D) {
-        output.writeDouble(14, lng_);
+        output.writeDouble(15, lng_);
       }
       if (zoom_ != 0L) {
-        output.writeInt64(15, zoom_);
+        output.writeInt64(16, zoom_);
       }
     }
 
@@ -4413,61 +4460,65 @@ public final class ProtoMessage {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(1, sign_);
       }
-      if (msgId_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(2, msgId_);
-      }
       if (fromUid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(3, fromUid_);
+                .computeInt64Size(2, fromUid_);
       }
       if (toUid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(4, toUid_);
+                .computeInt64Size(3, toUid_);
+      }
+      if (msgId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(4, msgId_);
+      }
+      if (msgTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(5, msgTime_);
       }
       if (sput_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(5, sput_);
+                .computeInt64Size(6, sput_);
       }
       if (type_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(6, type_);
+                .computeInt64Size(7, type_);
       }
       if (!title_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-                .computeStringSize(7, getTitle());
+                .computeStringSize(8, getTitle());
       }
       if (!body_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-                .computeStringSize(8, getBody());
+                .computeStringSize(9, getBody());
       }
       if (!thumb_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-                .computeStringSize(9, getThumb());
+                .computeStringSize(10, getThumb());
       }
       if (width_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(10, width_);
+                .computeInt64Size(11, width_);
       }
       if (height_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(11, height_);
+                .computeInt64Size(12, height_);
       }
       if (duration_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(12, duration_);
+                .computeInt64Size(13, duration_);
       }
       if (lat_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
-                .computeDoubleSize(13, lat_);
+                .computeDoubleSize(14, lat_);
       }
       if (lng_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
-                .computeDoubleSize(14, lng_);
+                .computeDoubleSize(15, lng_);
       }
       if (zoom_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(15, zoom_);
+                .computeInt64Size(16, zoom_);
       }
       memoizedSerializedSize = size;
       return size;
@@ -4584,45 +4635,10 @@ public final class ProtoMessage {
 
       /**
        * <pre>
-       *消息id
-       * </pre>
-       *
-       * <code>optional int64 msg_id = 2;</code>
-       */
-      public long getMsgId() {
-        return instance.getMsgId();
-      }
-      /**
-       * <pre>
-       *消息id
-       * </pre>
-       *
-       * <code>optional int64 msg_id = 2;</code>
-       */
-      public Builder setMsgId(long value) {
-        copyOnWrite();
-        instance.setMsgId(value);
-        return this;
-      }
-      /**
-       * <pre>
-       *消息id
-       * </pre>
-       *
-       * <code>optional int64 msg_id = 2;</code>
-       */
-      public Builder clearMsgId() {
-        copyOnWrite();
-        instance.clearMsgId();
-        return this;
-      }
-
-      /**
-       * <pre>
        *谁发的
        * </pre>
        *
-       * <code>optional int64 from_uid = 3;</code>
+       * <code>optional int64 from_uid = 2;</code>
        */
       public long getFromUid() {
         return instance.getFromUid();
@@ -4632,7 +4648,7 @@ public final class ProtoMessage {
        *谁发的
        * </pre>
        *
-       * <code>optional int64 from_uid = 3;</code>
+       * <code>optional int64 from_uid = 2;</code>
        */
       public Builder setFromUid(long value) {
         copyOnWrite();
@@ -4644,7 +4660,7 @@ public final class ProtoMessage {
        *谁发的
        * </pre>
        *
-       * <code>optional int64 from_uid = 3;</code>
+       * <code>optional int64 from_uid = 2;</code>
        */
       public Builder clearFromUid() {
         copyOnWrite();
@@ -4657,7 +4673,7 @@ public final class ProtoMessage {
        *发给谁
        * </pre>
        *
-       * <code>optional int64 to_uid = 4;</code>
+       * <code>optional int64 to_uid = 3;</code>
        */
       public long getToUid() {
         return instance.getToUid();
@@ -4667,7 +4683,7 @@ public final class ProtoMessage {
        *发给谁
        * </pre>
        *
-       * <code>optional int64 to_uid = 4;</code>
+       * <code>optional int64 to_uid = 3;</code>
        */
       public Builder setToUid(long value) {
         copyOnWrite();
@@ -4679,7 +4695,7 @@ public final class ProtoMessage {
        *发给谁
        * </pre>
        *
-       * <code>optional int64 to_uid = 4;</code>
+       * <code>optional int64 to_uid = 3;</code>
        */
       public Builder clearToUid() {
         copyOnWrite();
@@ -4689,10 +4705,80 @@ public final class ProtoMessage {
 
       /**
        * <pre>
+       *消息id
+       * </pre>
+       *
+       * <code>optional int64 msg_id = 4;</code>
+       */
+      public long getMsgId() {
+        return instance.getMsgId();
+      }
+      /**
+       * <pre>
+       *消息id
+       * </pre>
+       *
+       * <code>optional int64 msg_id = 4;</code>
+       */
+      public Builder setMsgId(long value) {
+        copyOnWrite();
+        instance.setMsgId(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *消息id
+       * </pre>
+       *
+       * <code>optional int64 msg_id = 4;</code>
+       */
+      public Builder clearMsgId() {
+        copyOnWrite();
+        instance.clearMsgId();
+        return this;
+      }
+
+      /**
+       * <pre>
+       *消息时间（以服务器为准 精确到秒的时间戳）
+       * </pre>
+       *
+       * <code>optional int64 msg_time = 5;</code>
+       */
+      public long getMsgTime() {
+        return instance.getMsgTime();
+      }
+      /**
+       * <pre>
+       *消息时间（以服务器为准 精确到秒的时间戳）
+       * </pre>
+       *
+       * <code>optional int64 msg_time = 5;</code>
+       */
+      public Builder setMsgTime(long value) {
+        copyOnWrite();
+        instance.setMsgTime(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *消息时间（以服务器为准 精确到秒的时间戳）
+       * </pre>
+       *
+       * <code>optional int64 msg_time = 5;</code>
+       */
+      public Builder clearMsgTime() {
+        copyOnWrite();
+        instance.clearMsgTime();
+        return this;
+      }
+
+      /**
+       * <pre>
        *sender_profile_update_time 发送人的profile更新时间
        * </pre>
        *
-       * <code>optional int64 sput = 5;</code>
+       * <code>optional int64 sput = 6;</code>
        */
       public long getSput() {
         return instance.getSput();
@@ -4702,7 +4788,7 @@ public final class ProtoMessage {
        *sender_profile_update_time 发送人的profile更新时间
        * </pre>
        *
-       * <code>optional int64 sput = 5;</code>
+       * <code>optional int64 sput = 6;</code>
        */
       public Builder setSput(long value) {
         copyOnWrite();
@@ -4714,7 +4800,7 @@ public final class ProtoMessage {
        *sender_profile_update_time 发送人的profile更新时间
        * </pre>
        *
-       * <code>optional int64 sput = 5;</code>
+       * <code>optional int64 sput = 6;</code>
        */
       public Builder clearSput() {
         copyOnWrite();
@@ -4727,7 +4813,7 @@ public final class ProtoMessage {
        * 消息类型
        * </pre>
        *
-       * <code>optional int64 type = 6;</code>
+       * <code>optional int64 type = 7;</code>
        */
       public long getType() {
         return instance.getType();
@@ -4737,7 +4823,7 @@ public final class ProtoMessage {
        * 消息类型
        * </pre>
        *
-       * <code>optional int64 type = 6;</code>
+       * <code>optional int64 type = 7;</code>
        */
       public Builder setType(long value) {
         copyOnWrite();
@@ -4749,7 +4835,7 @@ public final class ProtoMessage {
        * 消息类型
        * </pre>
        *
-       * <code>optional int64 type = 6;</code>
+       * <code>optional int64 type = 7;</code>
        */
       public Builder clearType() {
         copyOnWrite();
@@ -4762,7 +4848,7 @@ public final class ProtoMessage {
        *消息内容
        * </pre>
        *
-       * <code>optional string title = 7;</code>
+       * <code>optional string title = 8;</code>
        */
       public java.lang.String getTitle() {
         return instance.getTitle();
@@ -4772,7 +4858,7 @@ public final class ProtoMessage {
        *消息内容
        * </pre>
        *
-       * <code>optional string title = 7;</code>
+       * <code>optional string title = 8;</code>
        */
       public com.google.protobuf.ByteString
       getTitleBytes() {
@@ -4783,7 +4869,7 @@ public final class ProtoMessage {
        *消息内容
        * </pre>
        *
-       * <code>optional string title = 7;</code>
+       * <code>optional string title = 8;</code>
        */
       public Builder setTitle(
               java.lang.String value) {
@@ -4796,7 +4882,7 @@ public final class ProtoMessage {
        *消息内容
        * </pre>
        *
-       * <code>optional string title = 7;</code>
+       * <code>optional string title = 8;</code>
        */
       public Builder clearTitle() {
         copyOnWrite();
@@ -4808,7 +4894,7 @@ public final class ProtoMessage {
        *消息内容
        * </pre>
        *
-       * <code>optional string title = 7;</code>
+       * <code>optional string title = 8;</code>
        */
       public Builder setTitleBytes(
               com.google.protobuf.ByteString value) {
@@ -4822,7 +4908,7 @@ public final class ProtoMessage {
        *消息内容
        * </pre>
        *
-       * <code>optional string body = 8;</code>
+       * <code>optional string body = 9;</code>
        */
       public java.lang.String getBody() {
         return instance.getBody();
@@ -4832,7 +4918,7 @@ public final class ProtoMessage {
        *消息内容
        * </pre>
        *
-       * <code>optional string body = 8;</code>
+       * <code>optional string body = 9;</code>
        */
       public com.google.protobuf.ByteString
       getBodyBytes() {
@@ -4843,7 +4929,7 @@ public final class ProtoMessage {
        *消息内容
        * </pre>
        *
-       * <code>optional string body = 8;</code>
+       * <code>optional string body = 9;</code>
        */
       public Builder setBody(
               java.lang.String value) {
@@ -4856,7 +4942,7 @@ public final class ProtoMessage {
        *消息内容
        * </pre>
        *
-       * <code>optional string body = 8;</code>
+       * <code>optional string body = 9;</code>
        */
       public Builder clearBody() {
         copyOnWrite();
@@ -4868,7 +4954,7 @@ public final class ProtoMessage {
        *消息内容
        * </pre>
        *
-       * <code>optional string body = 8;</code>
+       * <code>optional string body = 9;</code>
        */
       public Builder setBodyBytes(
               com.google.protobuf.ByteString value) {
@@ -4882,7 +4968,7 @@ public final class ProtoMessage {
        *封面图
        * </pre>
        *
-       * <code>optional string thumb = 9;</code>
+       * <code>optional string thumb = 10;</code>
        */
       public java.lang.String getThumb() {
         return instance.getThumb();
@@ -4892,7 +4978,7 @@ public final class ProtoMessage {
        *封面图
        * </pre>
        *
-       * <code>optional string thumb = 9;</code>
+       * <code>optional string thumb = 10;</code>
        */
       public com.google.protobuf.ByteString
       getThumbBytes() {
@@ -4903,7 +4989,7 @@ public final class ProtoMessage {
        *封面图
        * </pre>
        *
-       * <code>optional string thumb = 9;</code>
+       * <code>optional string thumb = 10;</code>
        */
       public Builder setThumb(
               java.lang.String value) {
@@ -4916,7 +5002,7 @@ public final class ProtoMessage {
        *封面图
        * </pre>
        *
-       * <code>optional string thumb = 9;</code>
+       * <code>optional string thumb = 10;</code>
        */
       public Builder clearThumb() {
         copyOnWrite();
@@ -4928,7 +5014,7 @@ public final class ProtoMessage {
        *封面图
        * </pre>
        *
-       * <code>optional string thumb = 9;</code>
+       * <code>optional string thumb = 10;</code>
        */
       public Builder setThumbBytes(
               com.google.protobuf.ByteString value) {
@@ -4939,20 +5025,20 @@ public final class ProtoMessage {
 
       /**
        * <pre>
-       *图片的宽度
+       *封面图的宽度
        * </pre>
        *
-       * <code>optional int64 width = 10;</code>
+       * <code>optional int64 width = 11;</code>
        */
       public long getWidth() {
         return instance.getWidth();
       }
       /**
        * <pre>
-       *图片的宽度
+       *封面图的宽度
        * </pre>
        *
-       * <code>optional int64 width = 10;</code>
+       * <code>optional int64 width = 11;</code>
        */
       public Builder setWidth(long value) {
         copyOnWrite();
@@ -4961,10 +5047,10 @@ public final class ProtoMessage {
       }
       /**
        * <pre>
-       *图片的宽度
+       *封面图的宽度
        * </pre>
        *
-       * <code>optional int64 width = 10;</code>
+       * <code>optional int64 width = 11;</code>
        */
       public Builder clearWidth() {
         copyOnWrite();
@@ -4974,20 +5060,20 @@ public final class ProtoMessage {
 
       /**
        * <pre>
-       *图片的高度
+       *封面图的高度
        * </pre>
        *
-       * <code>optional int64 height = 11;</code>
+       * <code>optional int64 height = 12;</code>
        */
       public long getHeight() {
         return instance.getHeight();
       }
       /**
        * <pre>
-       *图片的高度
+       *封面图的高度
        * </pre>
        *
-       * <code>optional int64 height = 11;</code>
+       * <code>optional int64 height = 12;</code>
        */
       public Builder setHeight(long value) {
         copyOnWrite();
@@ -4996,10 +5082,10 @@ public final class ProtoMessage {
       }
       /**
        * <pre>
-       *图片的高度
+       *封面图的高度
        * </pre>
        *
-       * <code>optional int64 height = 11;</code>
+       * <code>optional int64 height = 12;</code>
        */
       public Builder clearHeight() {
         copyOnWrite();
@@ -5012,7 +5098,7 @@ public final class ProtoMessage {
        *时长
        * </pre>
        *
-       * <code>optional int64 duration = 12;</code>
+       * <code>optional int64 duration = 13;</code>
        */
       public long getDuration() {
         return instance.getDuration();
@@ -5022,7 +5108,7 @@ public final class ProtoMessage {
        *时长
        * </pre>
        *
-       * <code>optional int64 duration = 12;</code>
+       * <code>optional int64 duration = 13;</code>
        */
       public Builder setDuration(long value) {
         copyOnWrite();
@@ -5034,7 +5120,7 @@ public final class ProtoMessage {
        *时长
        * </pre>
        *
-       * <code>optional int64 duration = 12;</code>
+       * <code>optional int64 duration = 13;</code>
        */
       public Builder clearDuration() {
         copyOnWrite();
@@ -5047,7 +5133,7 @@ public final class ProtoMessage {
        *纬度
        * </pre>
        *
-       * <code>optional double lat = 13;</code>
+       * <code>optional double lat = 14;</code>
        */
       public double getLat() {
         return instance.getLat();
@@ -5057,7 +5143,7 @@ public final class ProtoMessage {
        *纬度
        * </pre>
        *
-       * <code>optional double lat = 13;</code>
+       * <code>optional double lat = 14;</code>
        */
       public Builder setLat(double value) {
         copyOnWrite();
@@ -5069,7 +5155,7 @@ public final class ProtoMessage {
        *纬度
        * </pre>
        *
-       * <code>optional double lat = 13;</code>
+       * <code>optional double lat = 14;</code>
        */
       public Builder clearLat() {
         copyOnWrite();
@@ -5082,7 +5168,7 @@ public final class ProtoMessage {
        *经度
        * </pre>
        *
-       * <code>optional double lng = 14;</code>
+       * <code>optional double lng = 15;</code>
        */
       public double getLng() {
         return instance.getLng();
@@ -5092,7 +5178,7 @@ public final class ProtoMessage {
        *经度
        * </pre>
        *
-       * <code>optional double lng = 14;</code>
+       * <code>optional double lng = 15;</code>
        */
       public Builder setLng(double value) {
         copyOnWrite();
@@ -5104,7 +5190,7 @@ public final class ProtoMessage {
        *经度
        * </pre>
        *
-       * <code>optional double lng = 14;</code>
+       * <code>optional double lng = 15;</code>
        */
       public Builder clearLng() {
         copyOnWrite();
@@ -5117,7 +5203,7 @@ public final class ProtoMessage {
        *地图缩放层级
        * </pre>
        *
-       * <code>optional int64 zoom = 15;</code>
+       * <code>optional int64 zoom = 16;</code>
        */
       public long getZoom() {
         return instance.getZoom();
@@ -5127,7 +5213,7 @@ public final class ProtoMessage {
        *地图缩放层级
        * </pre>
        *
-       * <code>optional int64 zoom = 15;</code>
+       * <code>optional int64 zoom = 16;</code>
        */
       public Builder setZoom(long value) {
         copyOnWrite();
@@ -5139,7 +5225,7 @@ public final class ProtoMessage {
        *地图缩放层级
        * </pre>
        *
-       * <code>optional int64 zoom = 15;</code>
+       * <code>optional int64 zoom = 16;</code>
        */
       public Builder clearZoom() {
         copyOnWrite();
@@ -5170,12 +5256,14 @@ public final class ProtoMessage {
           com.masonsoft.imsdk.proto.ProtoMessage.ChatR other = (com.masonsoft.imsdk.proto.ProtoMessage.ChatR) arg1;
           sign_ = visitor.visitLong(sign_ != 0L, sign_,
                   other.sign_ != 0L, other.sign_);
-          msgId_ = visitor.visitLong(msgId_ != 0L, msgId_,
-                  other.msgId_ != 0L, other.msgId_);
           fromUid_ = visitor.visitLong(fromUid_ != 0L, fromUid_,
                   other.fromUid_ != 0L, other.fromUid_);
           toUid_ = visitor.visitLong(toUid_ != 0L, toUid_,
                   other.toUid_ != 0L, other.toUid_);
+          msgId_ = visitor.visitLong(msgId_ != 0L, msgId_,
+                  other.msgId_ != 0L, other.msgId_);
+          msgTime_ = visitor.visitLong(msgTime_ != 0L, msgTime_,
+                  other.msgTime_ != 0L, other.msgTime_);
           sput_ = visitor.visitLong(sput_ != 0L, sput_,
                   other.sput_ != 0L, other.sput_);
           type_ = visitor.visitLong(type_ != 0L, type_,
@@ -5229,73 +5317,78 @@ public final class ProtoMessage {
                 }
                 case 16: {
 
-                  msgId_ = input.readInt64();
+                  fromUid_ = input.readInt64();
                   break;
                 }
                 case 24: {
 
-                  fromUid_ = input.readInt64();
+                  toUid_ = input.readInt64();
                   break;
                 }
                 case 32: {
 
-                  toUid_ = input.readInt64();
+                  msgId_ = input.readInt64();
                   break;
                 }
                 case 40: {
 
-                  sput_ = input.readInt64();
+                  msgTime_ = input.readInt64();
                   break;
                 }
                 case 48: {
 
-                  type_ = input.readInt64();
+                  sput_ = input.readInt64();
                   break;
                 }
-                case 58: {
-                  String s = input.readStringRequireUtf8();
+                case 56: {
 
-                  title_ = s;
+                  type_ = input.readInt64();
                   break;
                 }
                 case 66: {
                   String s = input.readStringRequireUtf8();
 
-                  body_ = s;
+                  title_ = s;
                   break;
                 }
                 case 74: {
                   String s = input.readStringRequireUtf8();
 
-                  thumb_ = s;
+                  body_ = s;
                   break;
                 }
-                case 80: {
+                case 82: {
+                  String s = input.readStringRequireUtf8();
 
-                  width_ = input.readInt64();
+                  thumb_ = s;
                   break;
                 }
                 case 88: {
 
-                  height_ = input.readInt64();
+                  width_ = input.readInt64();
                   break;
                 }
                 case 96: {
 
-                  duration_ = input.readInt64();
+                  height_ = input.readInt64();
                   break;
                 }
-                case 105: {
+                case 104: {
 
-                  lat_ = input.readDouble();
+                  duration_ = input.readInt64();
                   break;
                 }
                 case 113: {
 
+                  lat_ = input.readDouble();
+                  break;
+                }
+                case 121: {
+
                   lng_ = input.readDouble();
                   break;
                 }
-                case 120: {
+                case 128: {
 
                   zoom_ = input.readInt64();
                   break;
@@ -8858,42 +8951,47 @@ public final class ProtoMessage {
     long getShowMsgId();
 
     /**
-     * <code>optional int64 unread = 7;</code>
+     * <code>optional int64 show_msg_time = 7;</code>
+     */
+    long getShowMsgTime();
+
+    /**
+     * <code>optional int64 unread = 8;</code>
      */
     long getUnread();
 
     /**
-     * <code>optional bool matched = 8;</code>
+     * <code>optional bool matched = 9;</code>
      */
     boolean getMatched();
 
     /**
-     * <code>optional bool new_msg = 9;</code>
+     * <code>optional bool new_msg = 10;</code>
      */
     boolean getNewMsg();
 
     /**
-     * <code>optional bool my_move = 10;</code>
+     * <code>optional bool my_move = 11;</code>
      */
     boolean getMyMove();
 
     /**
-     * <code>optional bool ice_break = 11;</code>
+     * <code>optional bool ice_break = 12;</code>
      */
     boolean getIceBreak();
 
     /**
-     * <code>optional bool tip_free = 12;</code>
+     * <code>optional bool tip_free = 13;</code>
      */
     boolean getTipFree();
 
     /**
-     * <code>optional bool top_album = 13;</code>
+     * <code>optional bool top_album = 14;</code>
      */
     boolean getTopAlbum();
 
     /**
-     * <code>optional bool i_block_u = 14;</code>
+     * <code>optional bool i_block_u = 15;</code>
      */
     boolean getIBlockU();
 
@@ -8902,7 +9000,7 @@ public final class ProtoMessage {
      *双方互发过消息了
      * </pre>
      *
-     * <code>optional bool connected = 15;</code>
+     * <code>optional bool connected = 16;</code>
      */
     boolean getConnected();
   }
@@ -9058,198 +9156,221 @@ public final class ProtoMessage {
       showMsgId_ = 0L;
     }
 
-    public static final int UNREAD_FIELD_NUMBER = 7;
+    public static final int SHOW_MSG_TIME_FIELD_NUMBER = 7;
+    private long showMsgTime_;
+    /**
+     * <code>optional int64 show_msg_time = 7;</code>
+     */
+    public long getShowMsgTime() {
+      return showMsgTime_;
+    }
+    /**
+     * <code>optional int64 show_msg_time = 7;</code>
+     */
+    private void setShowMsgTime(long value) {
+
+      showMsgTime_ = value;
+    }
+    /**
+     * <code>optional int64 show_msg_time = 7;</code>
+     */
+    private void clearShowMsgTime() {
+
+      showMsgTime_ = 0L;
+    }
+
+    public static final int UNREAD_FIELD_NUMBER = 8;
     private long unread_;
     /**
-     * <code>optional int64 unread = 7;</code>
+     * <code>optional int64 unread = 8;</code>
      */
     public long getUnread() {
       return unread_;
     }
     /**
-     * <code>optional int64 unread = 7;</code>
+     * <code>optional int64 unread = 8;</code>
      */
     private void setUnread(long value) {
 
       unread_ = value;
     }
     /**
-     * <code>optional int64 unread = 7;</code>
+     * <code>optional int64 unread = 8;</code>
      */
     private void clearUnread() {
 
       unread_ = 0L;
     }
 
-    public static final int MATCHED_FIELD_NUMBER = 8;
+    public static final int MATCHED_FIELD_NUMBER = 9;
     private boolean matched_;
     /**
-     * <code>optional bool matched = 8;</code>
+     * <code>optional bool matched = 9;</code>
      */
     public boolean getMatched() {
       return matched_;
     }
     /**
-     * <code>optional bool matched = 8;</code>
+     * <code>optional bool matched = 9;</code>
      */
     private void setMatched(boolean value) {
 
       matched_ = value;
     }
     /**
-     * <code>optional bool matched = 8;</code>
+     * <code>optional bool matched = 9;</code>
      */
     private void clearMatched() {
 
       matched_ = false;
     }
 
-    public static final int NEW_MSG_FIELD_NUMBER = 9;
+    public static final int NEW_MSG_FIELD_NUMBER = 10;
     private boolean newMsg_;
     /**
-     * <code>optional bool new_msg = 9;</code>
+     * <code>optional bool new_msg = 10;</code>
      */
     public boolean getNewMsg() {
       return newMsg_;
     }
     /**
-     * <code>optional bool new_msg = 9;</code>
+     * <code>optional bool new_msg = 10;</code>
      */
     private void setNewMsg(boolean value) {
 
       newMsg_ = value;
     }
     /**
-     * <code>optional bool new_msg = 9;</code>
+     * <code>optional bool new_msg = 10;</code>
      */
     private void clearNewMsg() {
 
       newMsg_ = false;
     }
 
-    public static final int MY_MOVE_FIELD_NUMBER = 10;
+    public static final int MY_MOVE_FIELD_NUMBER = 11;
     private boolean myMove_;
     /**
-     * <code>optional bool my_move = 10;</code>
+     * <code>optional bool my_move = 11;</code>
      */
     public boolean getMyMove() {
       return myMove_;
     }
     /**
-     * <code>optional bool my_move = 10;</code>
+     * <code>optional bool my_move = 11;</code>
      */
     private void setMyMove(boolean value) {
 
       myMove_ = value;
     }
     /**
-     * <code>optional bool my_move = 10;</code>
+     * <code>optional bool my_move = 11;</code>
      */
     private void clearMyMove() {
 
       myMove_ = false;
     }
 
-    public static final int ICE_BREAK_FIELD_NUMBER = 11;
+    public static final int ICE_BREAK_FIELD_NUMBER = 12;
     private boolean iceBreak_;
     /**
-     * <code>optional bool ice_break = 11;</code>
+     * <code>optional bool ice_break = 12;</code>
      */
     public boolean getIceBreak() {
       return iceBreak_;
     }
     /**
-     * <code>optional bool ice_break = 11;</code>
+     * <code>optional bool ice_break = 12;</code>
      */
     private void setIceBreak(boolean value) {
 
       iceBreak_ = value;
     }
     /**
-     * <code>optional bool ice_break = 11;</code>
+     * <code>optional bool ice_break = 12;</code>
      */
     private void clearIceBreak() {
 
       iceBreak_ = false;
     }
 
-    public static final int TIP_FREE_FIELD_NUMBER = 12;
+    public static final int TIP_FREE_FIELD_NUMBER = 13;
     private boolean tipFree_;
     /**
-     * <code>optional bool tip_free = 12;</code>
+     * <code>optional bool tip_free = 13;</code>
      */
     public boolean getTipFree() {
       return tipFree_;
     }
     /**
-     * <code>optional bool tip_free = 12;</code>
+     * <code>optional bool tip_free = 13;</code>
      */
     private void setTipFree(boolean value) {
 
       tipFree_ = value;
     }
     /**
-     * <code>optional bool tip_free = 12;</code>
+     * <code>optional bool tip_free = 13;</code>
      */
     private void clearTipFree() {
 
       tipFree_ = false;
     }
 
-    public static final int TOP_ALBUM_FIELD_NUMBER = 13;
+    public static final int TOP_ALBUM_FIELD_NUMBER = 14;
     private boolean topAlbum_;
     /**
-     * <code>optional bool top_album = 13;</code>
+     * <code>optional bool top_album = 14;</code>
      */
     public boolean getTopAlbum() {
       return topAlbum_;
     }
     /**
-     * <code>optional bool top_album = 13;</code>
+     * <code>optional bool top_album = 14;</code>
      */
     private void setTopAlbum(boolean value) {
 
       topAlbum_ = value;
     }
     /**
-     * <code>optional bool top_album = 13;</code>
+     * <code>optional bool top_album = 14;</code>
      */
     private void clearTopAlbum() {
 
       topAlbum_ = false;
     }
 
-    public static final int I_BLOCK_U_FIELD_NUMBER = 14;
+    public static final int I_BLOCK_U_FIELD_NUMBER = 15;
     private boolean iBlockU_;
     /**
-     * <code>optional bool i_block_u = 14;</code>
+     * <code>optional bool i_block_u = 15;</code>
      */
     public boolean getIBlockU() {
       return iBlockU_;
     }
     /**
-     * <code>optional bool i_block_u = 14;</code>
+     * <code>optional bool i_block_u = 15;</code>
      */
     private void setIBlockU(boolean value) {
 
       iBlockU_ = value;
     }
     /**
-     * <code>optional bool i_block_u = 14;</code>
+     * <code>optional bool i_block_u = 15;</code>
      */
     private void clearIBlockU() {
 
       iBlockU_ = false;
     }
 
-    public static final int CONNECTED_FIELD_NUMBER = 15;
+    public static final int CONNECTED_FIELD_NUMBER = 16;
     private boolean connected_;
     /**
      * <pre>
      *双方互发过消息了
      * </pre>
      *
-     * <code>optional bool connected = 15;</code>
+     * <code>optional bool connected = 16;</code>
      */
     public boolean getConnected() {
       return connected_;
@@ -9259,7 +9380,7 @@ public final class ProtoMessage {
      *双方互发过消息了
      * </pre>
      *
-     * <code>optional bool connected = 15;</code>
+     * <code>optional bool connected = 16;</code>
      */
     private void setConnected(boolean value) {
 
@@ -9270,7 +9391,7 @@ public final class ProtoMessage {
      *双方互发过消息了
      * </pre>
      *
-     * <code>optional bool connected = 15;</code>
+     * <code>optional bool connected = 16;</code>
      */
     private void clearConnected() {
 
@@ -9297,32 +9418,35 @@ public final class ProtoMessage {
       if (showMsgId_ != 0L) {
         output.writeInt64(6, showMsgId_);
       }
+      if (showMsgTime_ != 0L) {
+        output.writeInt64(7, showMsgTime_);
+      }
       if (unread_ != 0L) {
-        output.writeInt64(7, unread_);
+        output.writeInt64(8, unread_);
       }
       if (matched_ != false) {
-        output.writeBool(8, matched_);
+        output.writeBool(9, matched_);
       }
       if (newMsg_ != false) {
-        output.writeBool(9, newMsg_);
+        output.writeBool(10, newMsg_);
       }
       if (myMove_ != false) {
-        output.writeBool(10, myMove_);
+        output.writeBool(11, myMove_);
       }
       if (iceBreak_ != false) {
-        output.writeBool(11, iceBreak_);
+        output.writeBool(12, iceBreak_);
       }
       if (tipFree_ != false) {
-        output.writeBool(12, tipFree_);
+        output.writeBool(13, tipFree_);
       }
       if (topAlbum_ != false) {
-        output.writeBool(13, topAlbum_);
+        output.writeBool(14, topAlbum_);
       }
       if (iBlockU_ != false) {
-        output.writeBool(14, iBlockU_);
+        output.writeBool(15, iBlockU_);
       }
       if (connected_ != false) {
-        output.writeBool(15, connected_);
+        output.writeBool(16, connected_);
       }
     }
 
@@ -9355,41 +9479,45 @@ public final class ProtoMessage {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(6, showMsgId_);
       }
+      if (showMsgTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(7, showMsgTime_);
+      }
       if (unread_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(7, unread_);
+                .computeInt64Size(8, unread_);
       }
       if (matched_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(8, matched_);
+                .computeBoolSize(9, matched_);
       }
       if (newMsg_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(9, newMsg_);
+                .computeBoolSize(10, newMsg_);
       }
       if (myMove_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(10, myMove_);
+                .computeBoolSize(11, myMove_);
       }
       if (iceBreak_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(11, iceBreak_);
+                .computeBoolSize(12, iceBreak_);
       }
       if (tipFree_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(12, tipFree_);
+                .computeBoolSize(13, tipFree_);
       }
       if (topAlbum_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(13, topAlbum_);
+                .computeBoolSize(14, topAlbum_);
       }
       if (iBlockU_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(14, iBlockU_);
+                .computeBoolSize(15, iBlockU_);
       }
       if (connected_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(15, connected_);
+                .computeBoolSize(16, connected_);
       }
       memoizedSerializedSize = size;
       return size;
@@ -9620,13 +9748,36 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional int64 unread = 7;</code>
+       * <code>optional int64 show_msg_time = 7;</code>
+       */
+      public long getShowMsgTime() {
+        return instance.getShowMsgTime();
+      }
+      /**
+       * <code>optional int64 show_msg_time = 7;</code>
+       */
+      public Builder setShowMsgTime(long value) {
+        copyOnWrite();
+        instance.setShowMsgTime(value);
+        return this;
+      }
+      /**
+       * <code>optional int64 show_msg_time = 7;</code>
+       */
+      public Builder clearShowMsgTime() {
+        copyOnWrite();
+        instance.clearShowMsgTime();
+        return this;
+      }
+
+      /**
+       * <code>optional int64 unread = 8;</code>
        */
       public long getUnread() {
         return instance.getUnread();
       }
       /**
-       * <code>optional int64 unread = 7;</code>
+       * <code>optional int64 unread = 8;</code>
        */
       public Builder setUnread(long value) {
         copyOnWrite();
@@ -9634,7 +9785,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional int64 unread = 7;</code>
+       * <code>optional int64 unread = 8;</code>
        */
       public Builder clearUnread() {
         copyOnWrite();
@@ -9643,13 +9794,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool matched = 8;</code>
+       * <code>optional bool matched = 9;</code>
        */
       public boolean getMatched() {
         return instance.getMatched();
       }
       /**
-       * <code>optional bool matched = 8;</code>
+       * <code>optional bool matched = 9;</code>
        */
       public Builder setMatched(boolean value) {
         copyOnWrite();
@@ -9657,7 +9808,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool matched = 8;</code>
+       * <code>optional bool matched = 9;</code>
        */
       public Builder clearMatched() {
         copyOnWrite();
@@ -9666,13 +9817,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool new_msg = 9;</code>
+       * <code>optional bool new_msg = 10;</code>
        */
       public boolean getNewMsg() {
         return instance.getNewMsg();
       }
       /**
-       * <code>optional bool new_msg = 9;</code>
+       * <code>optional bool new_msg = 10;</code>
        */
       public Builder setNewMsg(boolean value) {
         copyOnWrite();
@@ -9680,7 +9831,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool new_msg = 9;</code>
+       * <code>optional bool new_msg = 10;</code>
        */
       public Builder clearNewMsg() {
         copyOnWrite();
@@ -9689,13 +9840,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool my_move = 10;</code>
+       * <code>optional bool my_move = 11;</code>
        */
       public boolean getMyMove() {
         return instance.getMyMove();
       }
       /**
-       * <code>optional bool my_move = 10;</code>
+       * <code>optional bool my_move = 11;</code>
        */
       public Builder setMyMove(boolean value) {
         copyOnWrite();
@@ -9703,7 +9854,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool my_move = 10;</code>
+       * <code>optional bool my_move = 11;</code>
        */
       public Builder clearMyMove() {
         copyOnWrite();
@@ -9712,13 +9863,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool ice_break = 11;</code>
+       * <code>optional bool ice_break = 12;</code>
        */
       public boolean getIceBreak() {
         return instance.getIceBreak();
       }
       /**
-       * <code>optional bool ice_break = 11;</code>
+       * <code>optional bool ice_break = 12;</code>
        */
       public Builder setIceBreak(boolean value) {
         copyOnWrite();
@@ -9726,7 +9877,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool ice_break = 11;</code>
+       * <code>optional bool ice_break = 12;</code>
        */
       public Builder clearIceBreak() {
         copyOnWrite();
@@ -9735,13 +9886,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool tip_free = 12;</code>
+       * <code>optional bool tip_free = 13;</code>
        */
       public boolean getTipFree() {
         return instance.getTipFree();
       }
       /**
-       * <code>optional bool tip_free = 12;</code>
+       * <code>optional bool tip_free = 13;</code>
        */
       public Builder setTipFree(boolean value) {
         copyOnWrite();
@@ -9749,7 +9900,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool tip_free = 12;</code>
+       * <code>optional bool tip_free = 13;</code>
        */
       public Builder clearTipFree() {
         copyOnWrite();
@@ -9758,13 +9909,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool top_album = 13;</code>
+       * <code>optional bool top_album = 14;</code>
        */
       public boolean getTopAlbum() {
         return instance.getTopAlbum();
       }
       /**
-       * <code>optional bool top_album = 13;</code>
+       * <code>optional bool top_album = 14;</code>
        */
       public Builder setTopAlbum(boolean value) {
         copyOnWrite();
@@ -9772,7 +9923,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool top_album = 13;</code>
+       * <code>optional bool top_album = 14;</code>
        */
       public Builder clearTopAlbum() {
         copyOnWrite();
@@ -9781,13 +9932,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool i_block_u = 14;</code>
+       * <code>optional bool i_block_u = 15;</code>
        */
       public boolean getIBlockU() {
         return instance.getIBlockU();
       }
       /**
-       * <code>optional bool i_block_u = 14;</code>
+       * <code>optional bool i_block_u = 15;</code>
        */
       public Builder setIBlockU(boolean value) {
         copyOnWrite();
@@ -9795,7 +9946,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool i_block_u = 14;</code>
+       * <code>optional bool i_block_u = 15;</code>
        */
       public Builder clearIBlockU() {
         copyOnWrite();
@@ -9808,7 +9959,7 @@ public final class ProtoMessage {
        *双方互发过消息了
        * </pre>
        *
-       * <code>optional bool connected = 15;</code>
+       * <code>optional bool connected = 16;</code>
        */
       public boolean getConnected() {
         return instance.getConnected();
@@ -9818,7 +9969,7 @@ public final class ProtoMessage {
        *双方互发过消息了
        * </pre>
        *
-       * <code>optional bool connected = 15;</code>
+       * <code>optional bool connected = 16;</code>
        */
       public Builder setConnected(boolean value) {
         copyOnWrite();
@@ -9830,7 +9981,7 @@ public final class ProtoMessage {
        *双方互发过消息了
        * </pre>
        *
-       * <code>optional bool connected = 15;</code>
+       * <code>optional bool connected = 16;</code>
        */
       public Builder clearConnected() {
         copyOnWrite();
@@ -9871,6 +10022,8 @@ public final class ProtoMessage {
                   other.showMsgType_ != 0L, other.showMsgType_);
           showMsgId_ = visitor.visitLong(showMsgId_ != 0L, showMsgId_,
                   other.showMsgId_ != 0L, other.showMsgId_);
+          showMsgTime_ = visitor.visitLong(showMsgTime_ != 0L, showMsgTime_,
+                  other.showMsgTime_ != 0L, other.showMsgTime_);
           unread_ = visitor.visitLong(unread_ != 0L, unread_,
                   other.unread_ != 0L, other.unread_);
           matched_ = visitor.visitBoolean(matched_ != false, matched_,
@@ -9945,45 +10098,50 @@ public final class ProtoMessage {
                 }
                 case 56: {
 
-                  unread_ = input.readInt64();
+                  showMsgTime_ = input.readInt64();
                   break;
                 }
                 case 64: {
 
-                  matched_ = input.readBool();
+                  unread_ = input.readInt64();
                   break;
                 }
                 case 72: {
 
-                  newMsg_ = input.readBool();
+                  matched_ = input.readBool();
                   break;
                 }
                 case 80: {
 
-                  myMove_ = input.readBool();
+                  newMsg_ = input.readBool();
                   break;
                 }
                 case 88: {
 
-                  iceBreak_ = input.readBool();
+                  myMove_ = input.readBool();
                   break;
                 }
                 case 96: {
 
-                  tipFree_ = input.readBool();
+                  iceBreak_ = input.readBool();
                   break;
                 }
                 case 104: {
 
-                  topAlbum_ = input.readBool();
+                  tipFree_ = input.readBool();
                   break;
                 }
                 case 112: {
 
-                  iBlockU_ = input.readBool();
+                  topAlbum_ = input.readBool();
                   break;
                 }
                 case 120: {
+
+                  iBlockU_ = input.readBool();
+                  break;
+                }
+                case 128: {
 
                   connected_ = input.readBool();
                   break;
@@ -13146,7 +13304,7 @@ public final class ProtoMessage {
   }
   /**
    * <pre>
-   *20
+   *22
    * </pre>
    *
    * Protobuf type {@code GetChatListOnlineUids}
@@ -13271,7 +13429,7 @@ public final class ProtoMessage {
 
     /**
      * <pre>
-     *20
+     *22
      * </pre>
      *
      * Protobuf type {@code GetChatListOnlineUids}
@@ -13427,7 +13585,7 @@ public final class ProtoMessage {
   }
   /**
    * <pre>
-   *21
+   *23
    * </pre>
    *
    * Protobuf type {@code OnlineUids}
@@ -13594,7 +13752,7 @@ public final class ProtoMessage {
 
     /**
      * <pre>
-     *21
+     *23
      * </pre>
      *
      * Protobuf type {@code OnlineUids}
@@ -13795,7 +13953,7 @@ public final class ProtoMessage {
   }
   /**
    * <pre>
-   *22
+   *24
    * </pre>
    *
    * Protobuf type {@code IsOnline}
@@ -13950,7 +14108,7 @@ public final class ProtoMessage {
 
     /**
      * <pre>
-     *22
+     *24
      * </pre>
      *
      * Protobuf type {@code IsOnline}
