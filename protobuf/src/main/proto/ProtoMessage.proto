@@ -80,7 +80,7 @@ message GetHistory
 {
   int64 sign = 1; //客户端自定义标识，服务器会原样返回
   int64 to_uid = 2; //和谁的聊天记录
-  int64 msg_end = 3; //从这条消息往后拉（不包括此条）
+  int64 msg_end = 3; //从这条消息往前拉（不包括此条）
   int64 msg_start = 4; //最多拉到这条（不包括此条）
   int64 offset = 5; //拉多少条，默认20，最多100
 }
@@ -124,18 +124,16 @@ message ChatItem
   int64 msg_start = 2;
   int64 msg_end = 3;
   int64 msg_last_read = 4;
-  int64 show_msg_type = 5;
-  int64 show_msg_id = 6;
-  int64 show_msg_time = 7;
-  int64 unread = 8;
-  bool matched = 9;
-  bool new_msg = 10;
-  bool my_move = 11;
-  bool ice_break = 12;
-  bool tip_free = 13;
-  bool top_album = 14;
-  bool i_block_u = 15;
-  bool connected = 16;//双方互发过消息了
+  int64 show_msg_id = 5;
+  int64 unread = 6;
+  bool matched = 7;
+  bool new_msg = 8;
+  bool my_move = 9;
+  bool ice_break = 10;
+  bool tip_free = 11;
+  bool top_album = 12;
+  bool i_block_u = 13;
+  bool connected = 14;//双方互发过消息了
 }
 //15
 message ChatList

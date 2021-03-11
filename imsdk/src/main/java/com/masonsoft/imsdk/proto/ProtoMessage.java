@@ -6016,7 +6016,7 @@ public final class ProtoMessage {
 
     /**
      * <pre>
-     *从这条消息往后拉（不包括此条）
+     *从这条消息往前拉（不包括此条）
      * </pre>
      *
      * <code>optional int64 msg_end = 3;</code>
@@ -6130,7 +6130,7 @@ public final class ProtoMessage {
     private long msgEnd_;
     /**
      * <pre>
-     *从这条消息往后拉（不包括此条）
+     *从这条消息往前拉（不包括此条）
      * </pre>
      *
      * <code>optional int64 msg_end = 3;</code>
@@ -6140,7 +6140,7 @@ public final class ProtoMessage {
     }
     /**
      * <pre>
-     *从这条消息往后拉（不包括此条）
+     *从这条消息往前拉（不包括此条）
      * </pre>
      *
      * <code>optional int64 msg_end = 3;</code>
@@ -6151,7 +6151,7 @@ public final class ProtoMessage {
     }
     /**
      * <pre>
-     *从这条消息往后拉（不包括此条）
+     *从这条消息往前拉（不包括此条）
      * </pre>
      *
      * <code>optional int64 msg_end = 3;</code>
@@ -6438,7 +6438,7 @@ public final class ProtoMessage {
 
       /**
        * <pre>
-       *从这条消息往后拉（不包括此条）
+       *从这条消息往前拉（不包括此条）
        * </pre>
        *
        * <code>optional int64 msg_end = 3;</code>
@@ -6448,7 +6448,7 @@ public final class ProtoMessage {
       }
       /**
        * <pre>
-       *从这条消息往后拉（不包括此条）
+       *从这条消息往前拉（不包括此条）
        * </pre>
        *
        * <code>optional int64 msg_end = 3;</code>
@@ -6460,7 +6460,7 @@ public final class ProtoMessage {
       }
       /**
        * <pre>
-       *从这条消息往后拉（不包括此条）
+       *从这条消息往前拉（不包括此条）
        * </pre>
        *
        * <code>optional int64 msg_end = 3;</code>
@@ -8941,57 +8941,47 @@ public final class ProtoMessage {
     long getMsgLastRead();
 
     /**
-     * <code>optional int64 show_msg_type = 5;</code>
-     */
-    long getShowMsgType();
-
-    /**
-     * <code>optional int64 show_msg_id = 6;</code>
+     * <code>optional int64 show_msg_id = 5;</code>
      */
     long getShowMsgId();
 
     /**
-     * <code>optional int64 show_msg_time = 7;</code>
-     */
-    long getShowMsgTime();
-
-    /**
-     * <code>optional int64 unread = 8;</code>
+     * <code>optional int64 unread = 6;</code>
      */
     long getUnread();
 
     /**
-     * <code>optional bool matched = 9;</code>
+     * <code>optional bool matched = 7;</code>
      */
     boolean getMatched();
 
     /**
-     * <code>optional bool new_msg = 10;</code>
+     * <code>optional bool new_msg = 8;</code>
      */
     boolean getNewMsg();
 
     /**
-     * <code>optional bool my_move = 11;</code>
+     * <code>optional bool my_move = 9;</code>
      */
     boolean getMyMove();
 
     /**
-     * <code>optional bool ice_break = 12;</code>
+     * <code>optional bool ice_break = 10;</code>
      */
     boolean getIceBreak();
 
     /**
-     * <code>optional bool tip_free = 13;</code>
+     * <code>optional bool tip_free = 11;</code>
      */
     boolean getTipFree();
 
     /**
-     * <code>optional bool top_album = 14;</code>
+     * <code>optional bool top_album = 12;</code>
      */
     boolean getTopAlbum();
 
     /**
-     * <code>optional bool i_block_u = 15;</code>
+     * <code>optional bool i_block_u = 13;</code>
      */
     boolean getIBlockU();
 
@@ -9000,7 +8990,7 @@ public final class ProtoMessage {
      *双方互发过消息了
      * </pre>
      *
-     * <code>optional bool connected = 16;</code>
+     * <code>optional bool connected = 14;</code>
      */
     boolean getConnected();
   }
@@ -9110,267 +9100,221 @@ public final class ProtoMessage {
       msgLastRead_ = 0L;
     }
 
-    public static final int SHOW_MSG_TYPE_FIELD_NUMBER = 5;
-    private long showMsgType_;
-    /**
-     * <code>optional int64 show_msg_type = 5;</code>
-     */
-    public long getShowMsgType() {
-      return showMsgType_;
-    }
-    /**
-     * <code>optional int64 show_msg_type = 5;</code>
-     */
-    private void setShowMsgType(long value) {
-
-      showMsgType_ = value;
-    }
-    /**
-     * <code>optional int64 show_msg_type = 5;</code>
-     */
-    private void clearShowMsgType() {
-
-      showMsgType_ = 0L;
-    }
-
-    public static final int SHOW_MSG_ID_FIELD_NUMBER = 6;
+    public static final int SHOW_MSG_ID_FIELD_NUMBER = 5;
     private long showMsgId_;
     /**
-     * <code>optional int64 show_msg_id = 6;</code>
+     * <code>optional int64 show_msg_id = 5;</code>
      */
     public long getShowMsgId() {
       return showMsgId_;
     }
     /**
-     * <code>optional int64 show_msg_id = 6;</code>
+     * <code>optional int64 show_msg_id = 5;</code>
      */
     private void setShowMsgId(long value) {
 
       showMsgId_ = value;
     }
     /**
-     * <code>optional int64 show_msg_id = 6;</code>
+     * <code>optional int64 show_msg_id = 5;</code>
      */
     private void clearShowMsgId() {
 
       showMsgId_ = 0L;
     }
 
-    public static final int SHOW_MSG_TIME_FIELD_NUMBER = 7;
-    private long showMsgTime_;
-    /**
-     * <code>optional int64 show_msg_time = 7;</code>
-     */
-    public long getShowMsgTime() {
-      return showMsgTime_;
-    }
-    /**
-     * <code>optional int64 show_msg_time = 7;</code>
-     */
-    private void setShowMsgTime(long value) {
-
-      showMsgTime_ = value;
-    }
-    /**
-     * <code>optional int64 show_msg_time = 7;</code>
-     */
-    private void clearShowMsgTime() {
-
-      showMsgTime_ = 0L;
-    }
-
-    public static final int UNREAD_FIELD_NUMBER = 8;
+    public static final int UNREAD_FIELD_NUMBER = 6;
     private long unread_;
     /**
-     * <code>optional int64 unread = 8;</code>
+     * <code>optional int64 unread = 6;</code>
      */
     public long getUnread() {
       return unread_;
     }
     /**
-     * <code>optional int64 unread = 8;</code>
+     * <code>optional int64 unread = 6;</code>
      */
     private void setUnread(long value) {
 
       unread_ = value;
     }
     /**
-     * <code>optional int64 unread = 8;</code>
+     * <code>optional int64 unread = 6;</code>
      */
     private void clearUnread() {
 
       unread_ = 0L;
     }
 
-    public static final int MATCHED_FIELD_NUMBER = 9;
+    public static final int MATCHED_FIELD_NUMBER = 7;
     private boolean matched_;
     /**
-     * <code>optional bool matched = 9;</code>
+     * <code>optional bool matched = 7;</code>
      */
     public boolean getMatched() {
       return matched_;
     }
     /**
-     * <code>optional bool matched = 9;</code>
+     * <code>optional bool matched = 7;</code>
      */
     private void setMatched(boolean value) {
 
       matched_ = value;
     }
     /**
-     * <code>optional bool matched = 9;</code>
+     * <code>optional bool matched = 7;</code>
      */
     private void clearMatched() {
 
       matched_ = false;
     }
 
-    public static final int NEW_MSG_FIELD_NUMBER = 10;
+    public static final int NEW_MSG_FIELD_NUMBER = 8;
     private boolean newMsg_;
     /**
-     * <code>optional bool new_msg = 10;</code>
+     * <code>optional bool new_msg = 8;</code>
      */
     public boolean getNewMsg() {
       return newMsg_;
     }
     /**
-     * <code>optional bool new_msg = 10;</code>
+     * <code>optional bool new_msg = 8;</code>
      */
     private void setNewMsg(boolean value) {
 
       newMsg_ = value;
     }
     /**
-     * <code>optional bool new_msg = 10;</code>
+     * <code>optional bool new_msg = 8;</code>
      */
     private void clearNewMsg() {
 
       newMsg_ = false;
     }
 
-    public static final int MY_MOVE_FIELD_NUMBER = 11;
+    public static final int MY_MOVE_FIELD_NUMBER = 9;
     private boolean myMove_;
     /**
-     * <code>optional bool my_move = 11;</code>
+     * <code>optional bool my_move = 9;</code>
      */
     public boolean getMyMove() {
       return myMove_;
     }
     /**
-     * <code>optional bool my_move = 11;</code>
+     * <code>optional bool my_move = 9;</code>
      */
     private void setMyMove(boolean value) {
 
       myMove_ = value;
     }
     /**
-     * <code>optional bool my_move = 11;</code>
+     * <code>optional bool my_move = 9;</code>
      */
     private void clearMyMove() {
 
       myMove_ = false;
     }
 
-    public static final int ICE_BREAK_FIELD_NUMBER = 12;
+    public static final int ICE_BREAK_FIELD_NUMBER = 10;
     private boolean iceBreak_;
     /**
-     * <code>optional bool ice_break = 12;</code>
+     * <code>optional bool ice_break = 10;</code>
      */
     public boolean getIceBreak() {
       return iceBreak_;
     }
     /**
-     * <code>optional bool ice_break = 12;</code>
+     * <code>optional bool ice_break = 10;</code>
      */
     private void setIceBreak(boolean value) {
 
       iceBreak_ = value;
     }
     /**
-     * <code>optional bool ice_break = 12;</code>
+     * <code>optional bool ice_break = 10;</code>
      */
     private void clearIceBreak() {
 
       iceBreak_ = false;
     }
 
-    public static final int TIP_FREE_FIELD_NUMBER = 13;
+    public static final int TIP_FREE_FIELD_NUMBER = 11;
     private boolean tipFree_;
     /**
-     * <code>optional bool tip_free = 13;</code>
+     * <code>optional bool tip_free = 11;</code>
      */
     public boolean getTipFree() {
       return tipFree_;
     }
     /**
-     * <code>optional bool tip_free = 13;</code>
+     * <code>optional bool tip_free = 11;</code>
      */
     private void setTipFree(boolean value) {
 
       tipFree_ = value;
     }
     /**
-     * <code>optional bool tip_free = 13;</code>
+     * <code>optional bool tip_free = 11;</code>
      */
     private void clearTipFree() {
 
       tipFree_ = false;
     }
 
-    public static final int TOP_ALBUM_FIELD_NUMBER = 14;
+    public static final int TOP_ALBUM_FIELD_NUMBER = 12;
     private boolean topAlbum_;
     /**
-     * <code>optional bool top_album = 14;</code>
+     * <code>optional bool top_album = 12;</code>
      */
     public boolean getTopAlbum() {
       return topAlbum_;
     }
     /**
-     * <code>optional bool top_album = 14;</code>
+     * <code>optional bool top_album = 12;</code>
      */
     private void setTopAlbum(boolean value) {
 
       topAlbum_ = value;
     }
     /**
-     * <code>optional bool top_album = 14;</code>
+     * <code>optional bool top_album = 12;</code>
      */
     private void clearTopAlbum() {
 
       topAlbum_ = false;
     }
 
-    public static final int I_BLOCK_U_FIELD_NUMBER = 15;
+    public static final int I_BLOCK_U_FIELD_NUMBER = 13;
     private boolean iBlockU_;
     /**
-     * <code>optional bool i_block_u = 15;</code>
+     * <code>optional bool i_block_u = 13;</code>
      */
     public boolean getIBlockU() {
       return iBlockU_;
     }
     /**
-     * <code>optional bool i_block_u = 15;</code>
+     * <code>optional bool i_block_u = 13;</code>
      */
     private void setIBlockU(boolean value) {
 
       iBlockU_ = value;
     }
     /**
-     * <code>optional bool i_block_u = 15;</code>
+     * <code>optional bool i_block_u = 13;</code>
      */
     private void clearIBlockU() {
 
       iBlockU_ = false;
     }
 
-    public static final int CONNECTED_FIELD_NUMBER = 16;
+    public static final int CONNECTED_FIELD_NUMBER = 14;
     private boolean connected_;
     /**
      * <pre>
      *双方互发过消息了
      * </pre>
      *
-     * <code>optional bool connected = 16;</code>
+     * <code>optional bool connected = 14;</code>
      */
     public boolean getConnected() {
       return connected_;
@@ -9380,7 +9324,7 @@ public final class ProtoMessage {
      *双方互发过消息了
      * </pre>
      *
-     * <code>optional bool connected = 16;</code>
+     * <code>optional bool connected = 14;</code>
      */
     private void setConnected(boolean value) {
 
@@ -9391,7 +9335,7 @@ public final class ProtoMessage {
      *双方互发过消息了
      * </pre>
      *
-     * <code>optional bool connected = 16;</code>
+     * <code>optional bool connected = 14;</code>
      */
     private void clearConnected() {
 
@@ -9412,41 +9356,35 @@ public final class ProtoMessage {
       if (msgLastRead_ != 0L) {
         output.writeInt64(4, msgLastRead_);
       }
-      if (showMsgType_ != 0L) {
-        output.writeInt64(5, showMsgType_);
-      }
       if (showMsgId_ != 0L) {
-        output.writeInt64(6, showMsgId_);
-      }
-      if (showMsgTime_ != 0L) {
-        output.writeInt64(7, showMsgTime_);
+        output.writeInt64(5, showMsgId_);
       }
       if (unread_ != 0L) {
-        output.writeInt64(8, unread_);
+        output.writeInt64(6, unread_);
       }
       if (matched_ != false) {
-        output.writeBool(9, matched_);
+        output.writeBool(7, matched_);
       }
       if (newMsg_ != false) {
-        output.writeBool(10, newMsg_);
+        output.writeBool(8, newMsg_);
       }
       if (myMove_ != false) {
-        output.writeBool(11, myMove_);
+        output.writeBool(9, myMove_);
       }
       if (iceBreak_ != false) {
-        output.writeBool(12, iceBreak_);
+        output.writeBool(10, iceBreak_);
       }
       if (tipFree_ != false) {
-        output.writeBool(13, tipFree_);
+        output.writeBool(11, tipFree_);
       }
       if (topAlbum_ != false) {
-        output.writeBool(14, topAlbum_);
+        output.writeBool(12, topAlbum_);
       }
       if (iBlockU_ != false) {
-        output.writeBool(15, iBlockU_);
+        output.writeBool(13, iBlockU_);
       }
       if (connected_ != false) {
-        output.writeBool(16, connected_);
+        output.writeBool(14, connected_);
       }
     }
 
@@ -9471,53 +9409,45 @@ public final class ProtoMessage {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(4, msgLastRead_);
       }
-      if (showMsgType_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(5, showMsgType_);
-      }
       if (showMsgId_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(6, showMsgId_);
-      }
-      if (showMsgTime_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(7, showMsgTime_);
+                .computeInt64Size(5, showMsgId_);
       }
       if (unread_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(8, unread_);
+                .computeInt64Size(6, unread_);
       }
       if (matched_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(9, matched_);
+                .computeBoolSize(7, matched_);
       }
       if (newMsg_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(10, newMsg_);
+                .computeBoolSize(8, newMsg_);
       }
       if (myMove_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(11, myMove_);
+                .computeBoolSize(9, myMove_);
       }
       if (iceBreak_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(12, iceBreak_);
+                .computeBoolSize(10, iceBreak_);
       }
       if (tipFree_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(13, tipFree_);
+                .computeBoolSize(11, tipFree_);
       }
       if (topAlbum_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(14, topAlbum_);
+                .computeBoolSize(12, topAlbum_);
       }
       if (iBlockU_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(15, iBlockU_);
+                .computeBoolSize(13, iBlockU_);
       }
       if (connected_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(16, connected_);
+                .computeBoolSize(14, connected_);
       }
       memoizedSerializedSize = size;
       return size;
@@ -9702,36 +9632,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional int64 show_msg_type = 5;</code>
-       */
-      public long getShowMsgType() {
-        return instance.getShowMsgType();
-      }
-      /**
-       * <code>optional int64 show_msg_type = 5;</code>
-       */
-      public Builder setShowMsgType(long value) {
-        copyOnWrite();
-        instance.setShowMsgType(value);
-        return this;
-      }
-      /**
-       * <code>optional int64 show_msg_type = 5;</code>
-       */
-      public Builder clearShowMsgType() {
-        copyOnWrite();
-        instance.clearShowMsgType();
-        return this;
-      }
-
-      /**
-       * <code>optional int64 show_msg_id = 6;</code>
+       * <code>optional int64 show_msg_id = 5;</code>
        */
       public long getShowMsgId() {
         return instance.getShowMsgId();
       }
       /**
-       * <code>optional int64 show_msg_id = 6;</code>
+       * <code>optional int64 show_msg_id = 5;</code>
        */
       public Builder setShowMsgId(long value) {
         copyOnWrite();
@@ -9739,7 +9646,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional int64 show_msg_id = 6;</code>
+       * <code>optional int64 show_msg_id = 5;</code>
        */
       public Builder clearShowMsgId() {
         copyOnWrite();
@@ -9748,36 +9655,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional int64 show_msg_time = 7;</code>
-       */
-      public long getShowMsgTime() {
-        return instance.getShowMsgTime();
-      }
-      /**
-       * <code>optional int64 show_msg_time = 7;</code>
-       */
-      public Builder setShowMsgTime(long value) {
-        copyOnWrite();
-        instance.setShowMsgTime(value);
-        return this;
-      }
-      /**
-       * <code>optional int64 show_msg_time = 7;</code>
-       */
-      public Builder clearShowMsgTime() {
-        copyOnWrite();
-        instance.clearShowMsgTime();
-        return this;
-      }
-
-      /**
-       * <code>optional int64 unread = 8;</code>
+       * <code>optional int64 unread = 6;</code>
        */
       public long getUnread() {
         return instance.getUnread();
       }
       /**
-       * <code>optional int64 unread = 8;</code>
+       * <code>optional int64 unread = 6;</code>
        */
       public Builder setUnread(long value) {
         copyOnWrite();
@@ -9785,7 +9669,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional int64 unread = 8;</code>
+       * <code>optional int64 unread = 6;</code>
        */
       public Builder clearUnread() {
         copyOnWrite();
@@ -9794,13 +9678,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool matched = 9;</code>
+       * <code>optional bool matched = 7;</code>
        */
       public boolean getMatched() {
         return instance.getMatched();
       }
       /**
-       * <code>optional bool matched = 9;</code>
+       * <code>optional bool matched = 7;</code>
        */
       public Builder setMatched(boolean value) {
         copyOnWrite();
@@ -9808,7 +9692,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool matched = 9;</code>
+       * <code>optional bool matched = 7;</code>
        */
       public Builder clearMatched() {
         copyOnWrite();
@@ -9817,13 +9701,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool new_msg = 10;</code>
+       * <code>optional bool new_msg = 8;</code>
        */
       public boolean getNewMsg() {
         return instance.getNewMsg();
       }
       /**
-       * <code>optional bool new_msg = 10;</code>
+       * <code>optional bool new_msg = 8;</code>
        */
       public Builder setNewMsg(boolean value) {
         copyOnWrite();
@@ -9831,7 +9715,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool new_msg = 10;</code>
+       * <code>optional bool new_msg = 8;</code>
        */
       public Builder clearNewMsg() {
         copyOnWrite();
@@ -9840,13 +9724,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool my_move = 11;</code>
+       * <code>optional bool my_move = 9;</code>
        */
       public boolean getMyMove() {
         return instance.getMyMove();
       }
       /**
-       * <code>optional bool my_move = 11;</code>
+       * <code>optional bool my_move = 9;</code>
        */
       public Builder setMyMove(boolean value) {
         copyOnWrite();
@@ -9854,7 +9738,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool my_move = 11;</code>
+       * <code>optional bool my_move = 9;</code>
        */
       public Builder clearMyMove() {
         copyOnWrite();
@@ -9863,13 +9747,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool ice_break = 12;</code>
+       * <code>optional bool ice_break = 10;</code>
        */
       public boolean getIceBreak() {
         return instance.getIceBreak();
       }
       /**
-       * <code>optional bool ice_break = 12;</code>
+       * <code>optional bool ice_break = 10;</code>
        */
       public Builder setIceBreak(boolean value) {
         copyOnWrite();
@@ -9877,7 +9761,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool ice_break = 12;</code>
+       * <code>optional bool ice_break = 10;</code>
        */
       public Builder clearIceBreak() {
         copyOnWrite();
@@ -9886,13 +9770,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool tip_free = 13;</code>
+       * <code>optional bool tip_free = 11;</code>
        */
       public boolean getTipFree() {
         return instance.getTipFree();
       }
       /**
-       * <code>optional bool tip_free = 13;</code>
+       * <code>optional bool tip_free = 11;</code>
        */
       public Builder setTipFree(boolean value) {
         copyOnWrite();
@@ -9900,7 +9784,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool tip_free = 13;</code>
+       * <code>optional bool tip_free = 11;</code>
        */
       public Builder clearTipFree() {
         copyOnWrite();
@@ -9909,13 +9793,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool top_album = 14;</code>
+       * <code>optional bool top_album = 12;</code>
        */
       public boolean getTopAlbum() {
         return instance.getTopAlbum();
       }
       /**
-       * <code>optional bool top_album = 14;</code>
+       * <code>optional bool top_album = 12;</code>
        */
       public Builder setTopAlbum(boolean value) {
         copyOnWrite();
@@ -9923,7 +9807,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool top_album = 14;</code>
+       * <code>optional bool top_album = 12;</code>
        */
       public Builder clearTopAlbum() {
         copyOnWrite();
@@ -9932,13 +9816,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool i_block_u = 15;</code>
+       * <code>optional bool i_block_u = 13;</code>
        */
       public boolean getIBlockU() {
         return instance.getIBlockU();
       }
       /**
-       * <code>optional bool i_block_u = 15;</code>
+       * <code>optional bool i_block_u = 13;</code>
        */
       public Builder setIBlockU(boolean value) {
         copyOnWrite();
@@ -9946,7 +9830,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool i_block_u = 15;</code>
+       * <code>optional bool i_block_u = 13;</code>
        */
       public Builder clearIBlockU() {
         copyOnWrite();
@@ -9959,7 +9843,7 @@ public final class ProtoMessage {
        *双方互发过消息了
        * </pre>
        *
-       * <code>optional bool connected = 16;</code>
+       * <code>optional bool connected = 14;</code>
        */
       public boolean getConnected() {
         return instance.getConnected();
@@ -9969,7 +9853,7 @@ public final class ProtoMessage {
        *双方互发过消息了
        * </pre>
        *
-       * <code>optional bool connected = 16;</code>
+       * <code>optional bool connected = 14;</code>
        */
       public Builder setConnected(boolean value) {
         copyOnWrite();
@@ -9981,7 +9865,7 @@ public final class ProtoMessage {
        *双方互发过消息了
        * </pre>
        *
-       * <code>optional bool connected = 16;</code>
+       * <code>optional bool connected = 14;</code>
        */
       public Builder clearConnected() {
         copyOnWrite();
@@ -10018,12 +9902,8 @@ public final class ProtoMessage {
                   other.msgEnd_ != 0L, other.msgEnd_);
           msgLastRead_ = visitor.visitLong(msgLastRead_ != 0L, msgLastRead_,
                   other.msgLastRead_ != 0L, other.msgLastRead_);
-          showMsgType_ = visitor.visitLong(showMsgType_ != 0L, showMsgType_,
-                  other.showMsgType_ != 0L, other.showMsgType_);
           showMsgId_ = visitor.visitLong(showMsgId_ != 0L, showMsgId_,
                   other.showMsgId_ != 0L, other.showMsgId_);
-          showMsgTime_ = visitor.visitLong(showMsgTime_ != 0L, showMsgTime_,
-                  other.showMsgTime_ != 0L, other.showMsgTime_);
           unread_ = visitor.visitLong(unread_ != 0L, unread_,
                   other.unread_ != 0L, other.unread_);
           matched_ = visitor.visitBoolean(matched_ != false, matched_,
@@ -10088,60 +9968,50 @@ public final class ProtoMessage {
                 }
                 case 40: {
 
-                  showMsgType_ = input.readInt64();
+                  showMsgId_ = input.readInt64();
                   break;
                 }
                 case 48: {
 
-                  showMsgId_ = input.readInt64();
+                  unread_ = input.readInt64();
                   break;
                 }
                 case 56: {
 
-                  showMsgTime_ = input.readInt64();
+                  matched_ = input.readBool();
                   break;
                 }
                 case 64: {
 
-                  unread_ = input.readInt64();
+                  newMsg_ = input.readBool();
                   break;
                 }
                 case 72: {
 
-                  matched_ = input.readBool();
+                  myMove_ = input.readBool();
                   break;
                 }
                 case 80: {
 
-                  newMsg_ = input.readBool();
+                  iceBreak_ = input.readBool();
                   break;
                 }
                 case 88: {
 
-                  myMove_ = input.readBool();
+                  tipFree_ = input.readBool();
                   break;
                 }
                 case 96: {
 
-                  iceBreak_ = input.readBool();
+                  topAlbum_ = input.readBool();
                   break;
                 }
                 case 104: {
 
-                  tipFree_ = input.readBool();
-                  break;
-                }
-                case 112: {
-
-                  topAlbum_ = input.readBool();
-                  break;
-                }
-                case 120: {
-
                   iBlockU_ = input.readBool();
                   break;
                 }
-                case 128: {
+                case 112: {
 
                   connected_ = input.readBool();
                   break;

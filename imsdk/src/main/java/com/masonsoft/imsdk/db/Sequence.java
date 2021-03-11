@@ -21,25 +21,13 @@ package com.masonsoft.imsdk.db;
  *     <td>时间戳(可表示至3021年的微秒)</td>
  *   </tr>
  *   <tr>
- *     <td>第61位</td>
- *     <td>预留功能位</td>
- *   </tr>
- *   <tr>
- *     <td>第62位</td>
- *     <td>置顶标志位</td>
- *   </tr>
- *   <tr>
- *     <td>第63位</td>
+ *     <td>第61-63位</td>
  *     <td>预留功能位</td>
  *   </tr>
  * </table>
  */
 public class Sequence {
 
-    /**
-     * 置顶标记
-     */
-    private static final long TOP_FLAG = 0x1L << 61;
     @SuppressWarnings("NumericOverflow")
     private static final long TIME_MASK = (Long.MAX_VALUE >> 3) & (Long.MAX_VALUE << 5);
     private static final long INDEX_MASK = 0xFL;
@@ -50,14 +38,10 @@ public class Sequence {
     /**
      * 创建一个序列值
      *
-     * @param top              是否置顶
      * @param timeMicroSeconds 时间戳微秒(可表示至3021年的微秒)
      */
-    public static long create(boolean top, long timeMicroSeconds) {
+    public static long create(long timeMicroSeconds) {
         long sequence = TIME_MASK & (timeMicroSeconds << 5);
-        if (top) {
-            sequence += TOP_FLAG;
-        }
         sequence += nextIndex() & INDEX_MASK;
         return sequence;
     }

@@ -9,6 +9,8 @@ import com.idonans.core.manager.ProcessManager;
 import com.idonans.core.util.ContextUtil;
 import com.masonsoft.imsdk.IMConstants;
 import com.masonsoft.imsdk.IMLog;
+import com.masonsoft.imsdk.annotation.Local;
+import com.masonsoft.imsdk.annotation.Remote;
 
 /**
  * 每一个登录用户分别属于单独的数据库文件
@@ -35,7 +37,8 @@ public final class DatabaseHelper {
          *
          * @since db version 1
          */
-        String C_ID = "c_id";
+        @Local
+        String C_LOCAL_ID = "c_local_id";
 
         /**
          * 会话的排序字段(根据逻辑可能会产生冲突，但是概率极小).
@@ -44,65 +47,67 @@ public final class DatabaseHelper {
          * @see Sequence
          * @since db version 1
          */
-        String C_SEQ = "c_seq";
+        @Local
+        String C_LOCAL_SEQ = "c_local_seq";
 
         /**
          * 会话目标用户 id
          *
          * @since db version 1
          */
+        @Remote("uid")
+        @Local
         String C_TARGET_USER_ID = "c_target_user_id";
 
         /**
          * 会话中的第一条消息 id(这条消息可能并没有存储在本地)。
-         * 服务器端的逻辑消息，用来计算是否还有更多历史消息。
-         * 这条消息可能是一个指令消息。
+         * 服务器端的逻辑消息 id
          */
-        String C_MSG_START_ID = "c_msg_start_id";
+        @Remote("msg_start")
+        String C_REMOTE_MSG_START_ID = "c_remote_msg_start_id";
 
         /**
          * 会话中的最后一条消息 id(这条消息可能并没有存储在本地)。
-         * 服务器端的逻辑消息，用来计算是否还有更多新消息。
-         * 如果在此会话中收到了一条消息 id 更大的消息，则会手动更新该值。
-         * 这条消息可能是一个指令消息。
+         * 服务器端的逻辑消息 id
          */
-        String C_MSG_END_ID = "c_msg_end_id";
+        @Remote("msg_end")
+        String C_REMOTE_MSG_END_ID = "c_remote_msg_end_id";
 
         /**
          * 最后一条已读消息 id(这条消息可能并没有存储在本地)。
          */
-        String C_MSG_LAST_READ_ID = "c_msg_last_read_id";
-
-        /**
-         * 在会话上需要展示的那条消息的类型
-         */
-        String C_SHOW_MSG_TYPE = "c_show_msg_type";
+        @Remote("msg_last_read")
+        String C_REMOTE_MSG_LAST_READ_ID = "c_remote_msg_last_read_id";
 
         /**
          * 在会话上需要展示的那条消息的 id(这条消息可能并没有存储在本地)。
-         * 服务器端的逻辑消息，当收到的消息比这个消息 id 更大时，需要累加未读消息数。
+         * 服务器端的逻辑消息 id, 在一个会话内是唯一的。
          */
-        String C_SHOW_MSG_ID = "c_show_msg_id";
+        @Remote("show_msg_id")
+        String C_REMOTE_SHOW_MSG_ID = "c_remote_show_msg_id";
+
+        /**
+         * 在会话上需要展示的那一条消息内容(不一定会是最后一条消息，例如：当最后一条消息是撤回消息的指令消息时).
+         * 这是一个本地消息 id, 对应消息表的自增主键。
+         */
+        @Local
+        String C_LOCAL_SHOW_MSG_ID = "c_local_show_msg_id";
 
         /**
          * 会话中的最后一条消息 id，可能是发送的，也可能是收到的 (对应消息表的自增主键)
          *
          * @since db version 1
          */
+        @Local
         String C_LAST_MSG_ID = "c_last_msg_id";
-
-        /**
-         * 该会话是否置顶
-         *
-         * @since db version 1
-         */
-        String C_TOP = "c_top";
 
         /**
          * 会话未读消息数
          *
          * @since db version 1
          */
+        @Remote
+        @Local
         String C_UNREAD_COUNT = "c_unread_count";
 
         /**
@@ -115,6 +120,7 @@ public final class DatabaseHelper {
         /**
          * 会话的展示时间，通常是最后一条消息的时间(毫秒).
          */
+        @Local
         String C_TIME_MS = "c_time_ms";
 
         /**
@@ -153,6 +159,16 @@ public final class DatabaseHelper {
          * 业务定制：是否 top album
          */
         String C_TOP_ALBUM = "c_top_album";
+
+        /**
+         * 业务定制：是否 block 了对方
+         */
+        String C_I_BLOCK_U = "c_i_block_u";
+
+        /**
+         * 业务定制：双方互发过消息了
+         */
+        String C_CONNECTED = "c_connected";
     }
 
     /**
