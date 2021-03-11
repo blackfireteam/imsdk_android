@@ -14,7 +14,7 @@ public class SignGeneratorTest {
     @Test
     public void testGeneralSpeed() {
         // 期望每毫秒生成的 sign 数量
-        final long speed = 1000;
+        final long speed = 100;
         final long count = 99999;
 
         final long timeStart = System.nanoTime();
