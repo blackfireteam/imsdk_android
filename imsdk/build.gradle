@@ -49,5 +49,7 @@ dependencies {
     implementation 'org.bouncycastle:bcprov-jdk16:1.46'
     implementation 'com.google.protobuf:protobuf-lite:3.0.1'
 
-    api 'com.tencent.imsdk:imsdk:5.1.50'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
