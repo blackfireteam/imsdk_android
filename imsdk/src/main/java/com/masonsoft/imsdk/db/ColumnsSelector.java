@@ -1,11 +1,10 @@
 package com.masonsoft.imsdk.db;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
-public interface ColumnsSelector {
+public interface ColumnsSelector<T> {
 
     /**
      * 指定需要查询的列
@@ -17,6 +16,6 @@ public interface ColumnsSelector {
      * 将指定查询的列转换为对象
      */
     @NonNull
-    ContentValues cursorToObjectWithQueryColumns(@NonNull Cursor cursor);
+    T cursorToObjectWithQueryColumns(@NonNull Cursor cursor);
 
 }

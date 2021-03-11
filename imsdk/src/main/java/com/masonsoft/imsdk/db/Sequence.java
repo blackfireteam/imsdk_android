@@ -51,7 +51,7 @@ public class Sequence {
      * 创建一个序列值
      *
      * @param top              是否置顶
-     * @param timeMicroSeconds 时间戳微秒
+     * @param timeMicroSeconds 时间戳微秒(可表示至3021年的微秒)
      */
     public static long create(boolean top, long timeMicroSeconds) {
         long sequence = TIME_MASK & (timeMicroSeconds << 5);

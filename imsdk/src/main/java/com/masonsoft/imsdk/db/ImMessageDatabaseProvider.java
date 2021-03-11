@@ -44,7 +44,7 @@ public class ImMessageDatabaseProvider {
     public long count(final long sessionUserId, final long conversationId) {
         Cursor cursor = null;
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             cursor = db.rawQuery("select count(*) from " + DatabaseHelper.TABLE_NAME_MESSAGE + " where " + DatabaseHelper.ColumnsMessage.C_CONVERSATION_ID + "=?",
                     new String[]{String.valueOf(conversationId)});
@@ -68,11 +68,11 @@ public class ImMessageDatabaseProvider {
      * @return
      */
     @NonNull
-    public Page<Message> getLatestMessages(final long sessionUserId, final long conversationId, final int offset, @Nullable ColumnsSelector<Message> columnsSelector) {
+    public TinyPage<Message> getLatestMessages(final long sessionUserId, final long conversationId, final int offset, @Nullable ColumnsSelector<Message> columnsSelector) {
         if (columnsSelector == null) {
             columnsSelector = COLUMNS_SELECTOR_FULL;
         }
-        final Page<Message> page = new Page<>();
+        final TinyPage<Message> page = new TinyPage<>();
         page.total = 0;
         page.hasMore = false;
         page.data = null;
@@ -80,7 +80,7 @@ public class ImMessageDatabaseProvider {
         final List<Message> items = new ArrayList<>();
         Cursor cursor = null;
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             cursor = db.query(
                     DatabaseHelper.TABLE_NAME_MESSAGE,
@@ -130,11 +130,11 @@ public class ImMessageDatabaseProvider {
      * @return
      */
     @NonNull
-    public Page<Message> getOlderMessages(final long sessionUserId, final long conversationId, final long localMessageId, final int offset, @Nullable ColumnsSelector<Message> columnsSelector) {
+    public TinyPage<Message> getOlderMessages(final long sessionUserId, final long conversationId, final long localMessageId, final int offset, @Nullable ColumnsSelector<Message> columnsSelector) {
         if (columnsSelector == null) {
             columnsSelector = COLUMNS_SELECTOR_FULL;
         }
-        final Page<Message> page = new Page<>();
+        final TinyPage<Message> page = new TinyPage<>();
         page.total = 0;
         page.hasMore = false;
         page.data = null;
@@ -142,7 +142,7 @@ public class ImMessageDatabaseProvider {
         final List<Message> items = new ArrayList<>();
         Cursor cursor = null;
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             cursor = db.query(
                     DatabaseHelper.TABLE_NAME_MESSAGE,
@@ -194,11 +194,11 @@ public class ImMessageDatabaseProvider {
      * @return
      */
     @NonNull
-    public Page<Message> getNewerMessages(final long sessionUserId, final long conversationId, final long localMessageId, final int offset, @Nullable ColumnsSelector<Message> columnsSelector) {
+    public TinyPage<Message> getNewerMessages(final long sessionUserId, final long conversationId, final long localMessageId, final int offset, @Nullable ColumnsSelector<Message> columnsSelector) {
         if (columnsSelector == null) {
             columnsSelector = COLUMNS_SELECTOR_FULL;
         }
-        final Page<Message> page = new Page<>();
+        final TinyPage<Message> page = new TinyPage<>();
         page.total = 0;
         page.hasMore = false;
         page.data = null;
@@ -206,7 +206,7 @@ public class ImMessageDatabaseProvider {
         final List<Message> items = new ArrayList<>();
         Cursor cursor = null;
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             cursor = db.query(
                     DatabaseHelper.TABLE_NAME_MESSAGE,
@@ -258,11 +258,11 @@ public class ImMessageDatabaseProvider {
      * @return
      */
     @NonNull
-    public Page<Message> getOlderMessagesWithTypeImageOrVideo(final long sessionUserId, final long conversationId, final long localMessageId, final int offset, @Nullable ColumnsSelector<Message> columnsSelector) {
+    public TinyPage<Message> getOlderMessagesWithTypeImageOrVideo(final long sessionUserId, final long conversationId, final long localMessageId, final int offset, @Nullable ColumnsSelector<Message> columnsSelector) {
         if (columnsSelector == null) {
             columnsSelector = COLUMNS_SELECTOR_FULL;
         }
-        final Page<Message> page = new Page<>();
+        final TinyPage<Message> page = new TinyPage<>();
         page.total = 0;
         page.hasMore = false;
         page.data = null;
@@ -270,7 +270,7 @@ public class ImMessageDatabaseProvider {
         final List<Message> items = new ArrayList<>();
         Cursor cursor = null;
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             cursor = db.query(
                     DatabaseHelper.TABLE_NAME_MESSAGE,
@@ -326,11 +326,11 @@ public class ImMessageDatabaseProvider {
      * @return
      */
     @NonNull
-    public Page<Message> getNewerMessagesWithTypeImageOrVideo(final long sessionUserId, final long conversationId, final long localMessageId, final int offset, @Nullable ColumnsSelector<Message> columnsSelector) {
+    public TinyPage<Message> getNewerMessagesWithTypeImageOrVideo(final long sessionUserId, final long conversationId, final long localMessageId, final int offset, @Nullable ColumnsSelector<Message> columnsSelector) {
         if (columnsSelector == null) {
             columnsSelector = COLUMNS_SELECTOR_FULL;
         }
-        final Page<Message> page = new Page<>();
+        final TinyPage<Message> page = new TinyPage<>();
         page.total = 0;
         page.hasMore = false;
         page.data = null;
@@ -338,7 +338,7 @@ public class ImMessageDatabaseProvider {
         final List<Message> items = new ArrayList<>();
         Cursor cursor = null;
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             cursor = db.query(
                     DatabaseHelper.TABLE_NAME_MESSAGE,
@@ -396,17 +396,17 @@ public class ImMessageDatabaseProvider {
      * @return
      */
     @NonNull
-    public Page<Message> getOlderMessagesWithTypeAndFromUserId(final long sessionUserId,
-                                                               final long conversationId,
-                                                               final long localMessageId,
-                                                               final int messageType,
-                                                               final long fromUserId,
-                                                               final int offset,
-                                                               @Nullable ColumnsSelector<Message> columnsSelector) {
+    public TinyPage<Message> getOlderMessagesWithTypeAndFromUserId(final long sessionUserId,
+                                                                   final long conversationId,
+                                                                   final long localMessageId,
+                                                                   final int messageType,
+                                                                   final long fromUserId,
+                                                                   final int offset,
+                                                                   @Nullable ColumnsSelector<Message> columnsSelector) {
         if (columnsSelector == null) {
             columnsSelector = COLUMNS_SELECTOR_FULL;
         }
-        final Page<Message> page = new Page<>();
+        final TinyPage<Message> page = new TinyPage<>();
         page.total = 0;
         page.hasMore = false;
         page.data = null;
@@ -414,7 +414,7 @@ public class ImMessageDatabaseProvider {
         final List<Message> items = new ArrayList<>();
         Cursor cursor = null;
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
 
             if (localMessageId <= 0) {
@@ -488,7 +488,7 @@ public class ImMessageDatabaseProvider {
      */
     public boolean forceSetMessageToFailIfNotSuccess(final long sessionUserId) {
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
 
             ContentValues cv = new ContentValues();
@@ -524,7 +524,7 @@ public class ImMessageDatabaseProvider {
         final List<Message> items = new ArrayList<>();
         Cursor cursor = null;
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             cursor = db.query(
                     DatabaseHelper.TABLE_NAME_MESSAGE,
@@ -565,7 +565,7 @@ public class ImMessageDatabaseProvider {
         }
         Cursor cursor = null;
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             cursor = db.query(
                     DatabaseHelper.TABLE_NAME_MESSAGE,
@@ -601,7 +601,7 @@ public class ImMessageDatabaseProvider {
         }
         Cursor cursor = null;
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             cursor = db.query(
                     DatabaseHelper.TABLE_NAME_MESSAGE,
@@ -657,7 +657,7 @@ public class ImMessageDatabaseProvider {
         }
 
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             long rowId = db.insert(
                     DatabaseHelper.TABLE_NAME_MESSAGE,
@@ -703,7 +703,7 @@ public class ImMessageDatabaseProvider {
         }
 
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             int rowsAffected = db.update(
                     DatabaseHelper.TABLE_NAME_MESSAGE,
@@ -738,7 +738,7 @@ public class ImMessageDatabaseProvider {
         }
 
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             int rowsAffected = db.delete(
                     DatabaseHelper.TABLE_NAME_MESSAGE,
@@ -763,7 +763,7 @@ public class ImMessageDatabaseProvider {
         List<Long> serverMessageIds = new ArrayList<>();
         Cursor cursor = null;
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             cursor = db.query(DatabaseHelper.TABLE_NAME_MESSAGE,
                     new String[]{DatabaseHelper.ColumnsMessage.C_MSG_ID},
@@ -789,7 +789,7 @@ public class ImMessageDatabaseProvider {
     public Long getServerMessageId(final long sessionUserId, final long localMessageId) {
         Cursor cursor = null;
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             cursor = db.query(DatabaseHelper.TABLE_NAME_MESSAGE,
                     new String[]{DatabaseHelper.ColumnsMessage.C_MSG_ID},
@@ -812,7 +812,7 @@ public class ImMessageDatabaseProvider {
 
     public boolean deleteAllMessage(final long sessionUserId, final long conversationId) {
         try {
-            DatabaseHelper dbHelper = ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             int rowsAffected = db.delete(
                     DatabaseHelper.TABLE_NAME_MESSAGE,
