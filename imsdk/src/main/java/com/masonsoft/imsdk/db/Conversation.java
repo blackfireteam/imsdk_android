@@ -12,97 +12,122 @@ public class Conversation {
     /**
      * 自增主键
      */
-    public StateProp<Long> id;
+    @NonNull
+    public final StateProp<Long> id = new StateProp<>();
 
     /**
      * 会话的排序字段
      */
-    public StateProp<Long> seq;
+    @NonNull
+    public final StateProp<Long> seq = new StateProp<>();
 
     /**
      * 会话目标用户 id
      */
-    public StateProp<Long> targetUserId;
+    @NonNull
+    public final StateProp<Long> targetUserId = new StateProp<>();
 
     /**
      * 会话中的第一条消息 id(服务器消息 id)
      */
-    public StateProp<Long> messageStartId;
+    @NonNull
+    public final StateProp<Long> messageStartId = new StateProp<>();
 
     /**
      * 会话中的最后一条消息 id(服务器消息 id)
      */
-    public StateProp<Long> messageEndId;
+    @NonNull
+    public final StateProp<Long> messageEndId = new StateProp<>();
 
     /**
      * 最后一条已读消息 id(服务器消息 id)
      */
-    public StateProp<Long> messageLastReadId;
+    @NonNull
+    public final StateProp<Long> messageLastReadId = new StateProp<>();
 
     /**
      * 在会话上需要展示的那条消息的类型
      */
-    public StateProp<Integer> showMessageType;
+    @NonNull
+    public final StateProp<Integer> showMessageType = new StateProp<>();
 
     /**
      * 在会话上需要展示的那条消息的 id(服务器消息 id)
      */
-    public StateProp<Long> showMessageId;
+    @NonNull
+    public final StateProp<Long> showMessageId = new StateProp<>();
 
     /**
      * 会话中的最后一条消息 id，可能是发送的，也可能是收到的 (对应消息表的自增主键)(本地消息 id)
      */
-    public StateProp<Long> lastMessageId;
+    @NonNull
+    public final StateProp<Long> lastMessageId = new StateProp<>();
 
     /**
      * 会话是否置顶
      */
-    public StateProp<Integer> top;
+    @NonNull
+    public final StateProp<Integer> top = new StateProp<>();
 
     /**
      * 会话未读消息数
      */
-    public StateProp<Integer> unreadCount;
+    @NonNull
+    public final StateProp<Integer> unreadCount = new StateProp<>();
 
     /**
      * 会话类型，用来区分是聊天消息，系统消息等等。
      */
-    public StateProp<Integer> conversationType;
+    @NonNull
+    public final StateProp<Integer> conversationType = new StateProp<>();
 
     /**
      * 会话的展示时间，通常是最后一条消息的时间(毫秒).
      */
-    public StateProp<Long> timeMs;
+    @NonNull
+    public final StateProp<Long> timeMs = new StateProp<>();
+
+    /**
+     * 会话是否已删除
+     */
+    @NonNull
+    public final StateProp<Integer> delete = new StateProp<>();
 
     /**
      * 业务定制：是否 match
      */
-    public StateProp<Integer> matched;
+    @NonNull
+    public final StateProp<Integer> matched = new StateProp<>();
 
     /**
      * 业务定制：是否是 new message
      */
-    public StateProp<Integer> newMessage;
+    @NonNull
+    public final StateProp<Integer> newMessage = new StateProp<>();
 
     /**
      * 业务定制：是否 my move
      */
-    public StateProp<Integer> myMove;
+    @NonNull
+    public final StateProp<Integer> myMove = new StateProp<>();
 
     /**
      * 业务定制：是否 ice break
      */
-    public StateProp<Integer> iceBreak;
+    @NonNull
+    public final StateProp<Integer> iceBreak = new StateProp<>();
 
     /**
      * 业务定制：是否 tip free
      */
-    public StateProp<Integer> tipFree;
+    @NonNull
+    public final StateProp<Integer> tipFree = new StateProp<>();
 
     /**
      * 业务定制：是否 top album
      */
-    public StateProp<Integer> topAlbum;
+    @NonNull
+    public final StateProp<Integer> topAlbum = new StateProp<>();
 
     @NonNull
     public ContentValues toContentValues() {
@@ -145,6 +170,9 @@ public class Conversation {
         }
         if (!this.timeMs.isUnset()) {
             target.put(DatabaseHelper.ColumnsConversation.C_TIME_MS, this.timeMs.get());
+        }
+        if (!this.delete.isUnset()) {
+            target.put(DatabaseHelper.ColumnsConversation.C_DELETE, this.delete.get());
         }
         if (!this.matched.isUnset()) {
             target.put(DatabaseHelper.ColumnsConversation.C_MATCHED, this.matched.get());
@@ -189,6 +217,7 @@ public class Conversation {
                     DatabaseHelper.ColumnsConversation.C_UNREAD_COUNT,
                     DatabaseHelper.ColumnsConversation.C_CONVERSATION_TYPE,
                     DatabaseHelper.ColumnsConversation.C_TIME_MS,
+                    DatabaseHelper.ColumnsConversation.C_DELETE,
                     DatabaseHelper.ColumnsConversation.C_MATCHED,
                     DatabaseHelper.ColumnsConversation.C_NEW_MSG,
                     DatabaseHelper.ColumnsConversation.C_MY_MOVE,
@@ -216,6 +245,7 @@ public class Conversation {
             target.unreadCount.set(cursor.getInt(++index));
             target.conversationType.set(cursor.getInt(++index));
             target.timeMs.set(cursor.getLong(++index));
+            target.delete.set(cursor.getInt(++index));
             target.matched.set(cursor.getInt(++index));
             target.newMessage.set(cursor.getInt(++index));
             target.myMove.set(cursor.getInt(++index));

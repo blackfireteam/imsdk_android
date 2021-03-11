@@ -118,6 +118,11 @@ public final class DatabaseHelper {
         String C_TIME_MS = "c_time_ms";
 
         /**
+         * 会话是否已删除
+         */
+        String C_DELETE = "c_delete";
+
+        /**
          * 业务定制：是否 match
          *
          * @since db version 1
@@ -363,6 +368,7 @@ public final class DatabaseHelper {
                 ColumnsConversation.C_UNREAD_COUNT + " integer not null default 0," +
                 ColumnsConversation.C_CONVERSATION_TYPE + " integer not null default 0," +
                 ColumnsConversation.C_TIME_MS + " integer not null," +
+                ColumnsConversation.C_DELETE + " integer not null default 0," +
                 ColumnsConversation.C_MATCHED + " integer not null default 0," +
                 ColumnsConversation.C_NEW_MSG + " integer not null default 0," +
                 ColumnsConversation.C_MY_MOVE + " integer not null default 0," +

@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.db;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -34,13 +35,17 @@ public class ConversationDatabaseProvider {
 
     /**
      * 查询结果按照 seq 从大到小排列
+     *
+     * @param seq           不包括这一条, 初始传 0
+     * @param includeDelete 是否查询已删除的会话
      */
     @NonNull
     public TinyPage<Conversation> pageQueryConversation(
             final long sessionUserId,
             final int conversationType,
-            final long seq  /*不包括这一条, 初始传 0*/,
+            final long seq,
             final int limit,
+            final boolean includeDelete,
             @Nullable ColumnsSelector<Conversation> columnsSelector) {
         if (columnsSelector == null) {
             columnsSelector = Conversation.COLUMNS_SELECTOR_ALL;
@@ -50,35 +55,32 @@ public class ConversationDatabaseProvider {
         try {
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
+
+            final StringBuilder selection = new StringBuilder();
+            final List<String> selectionArgs = new ArrayList<>();
+
+            selection.append(" " + DatabaseHelper.ColumnsConversation.C_CONVERSATION_TYPE + "=? ");
+            selectionArgs.add(String.valueOf(conversationType));
+
             if (seq > 0) {
-                cursor = db.query(
-                        DatabaseHelper.TABLE_NAME_CONVERSATION,
-                        columnsSelector.queryColumns(),
-                        DatabaseHelper.ColumnsConversation.C_CONVERSATION_TYPE + "=? and " +
-                                DatabaseHelper.ColumnsConversation.C_SEQ + "<?",
-                        new String[]{
-                                String.valueOf(conversationType),
-                                String.valueOf(seq),
-                        },
-                        null,
-                        null,
-                        DatabaseHelper.ColumnsConversation.C_SEQ + " desc",
-                        String.valueOf(limit + 1) // 此处多查询一条用来计算 hasMore
-                );
-            } else {
-                cursor = db.query(
-                        DatabaseHelper.TABLE_NAME_CONVERSATION,
-                        columnsSelector.queryColumns(),
-                        DatabaseHelper.ColumnsConversation.C_CONVERSATION_TYPE + "=?",
-                        new String[]{
-                                String.valueOf(conversationType),
-                        },
-                        null,
-                        null,
-                        DatabaseHelper.ColumnsConversation.C_SEQ + " desc",
-                        String.valueOf(limit + 1) // 此处多查询一条用来计算 hasMore
-                );
+                selection.append(" and " + DatabaseHelper.ColumnsConversation.C_SEQ + "<? ");
+                selectionArgs.add(String.valueOf(seq));
             }
+
+            if (!includeDelete) {
+                selection.append(" and " + DatabaseHelper.ColumnsConversation.C_DELETE + "=0 ");
+            }
+
+            cursor = db.query(
+                    DatabaseHelper.TABLE_NAME_CONVERSATION,
+                    columnsSelector.queryColumns(),
+                    selection.toString(),
+                    selectionArgs.toArray(new String[]{}),
+                    null,
+                    null,
+                    DatabaseHelper.ColumnsConversation.C_SEQ + " desc",
+                    String.valueOf(limit + 1) // 此处多查询一条用来计算 hasMore
+            );
 
             while (cursor.moveToNext()) {
                 Conversation item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
@@ -197,96 +199,70 @@ public class ConversationDatabaseProvider {
      */
     public boolean updateConversation(final long sessionUserId, final Conversation conversation) {
         if (conversation == null) {
-            Throwable e = new IllegalArgumentException("conversation is null");
-            Timber.e(e);
+            IMLog.e(new IllegalArgumentException("conversation is null"));
             return false;
         }
 
-        if (conversation.id <= 0) {
-            Throwable e = new IllegalArgumentException("invalid conversation id " + conversation.id);
-            Timber.e(e);
+        if (conversation.id.isUnset()) {
+            IMLog.e(new IllegalArgumentException("conversation id is unset"));
             return false;
         }
 
         try {
-            com.xmqvip.xiaomaiquan.common.im.core.db.ImDatabaseHelper dbHelper = com.xmqvip.xiaomaiquan.common.im.core.db.ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             int rowsAffected = db.update(
-                    com.xmqvip.xiaomaiquan.common.im.core.db.ImDatabaseHelper.TABLE_NAME_CONVERSATION,
+                    DatabaseHelper.TABLE_NAME_CONVERSATION,
                     conversation.toContentValues(),
-                    com.xmqvip.xiaomaiquan.common.im.core.db.ImDatabaseHelper.ColumnsConversation.C_ID + "=?",
-                    new String[]{String.valueOf(conversation.id)}
+                    DatabaseHelper.ColumnsConversation.C_ID + "=?",
+                    new String[]{String.valueOf(conversation.id.get())}
             );
             if (rowsAffected != 1) {
-                Throwable e = new IllegalAccessException("update conversation for session user id:" + sessionUserId + " with id:" + conversation.id + " affected " + rowsAffected + " rows");
-                Timber.e(e);
+                IMLog.e(
+                        new IllegalAccessException("update conversation fail"),
+                        "unexpected. update conversation with sessionUserId:% conversationId:%s affected %s rows",
+                        sessionUserId,
+                        conversation.id.get(),
+                        rowsAffected
+                );
             } else {
-                Timber.v("update conversation for session user id:%s with id:%s affected %s rows", sessionUserId, conversation.id, rowsAffected);
+                IMLog.v("update conversation with sessionUserId:%s conversationId:%s affected %s rows",
+                        sessionUserId,
+                        conversation.id.get(),
+                        rowsAffected);
             }
             return rowsAffected > 0;
         } catch (Throwable e) {
-            Timber.e(e);
+            IMLog.e(e);
         }
         return false;
     }
 
-    public boolean deleteConversation(final long sessionUserId, final Conversation conversation) {
-        if (conversation == null) {
-            Throwable e = new IllegalArgumentException("conversation is null");
-            Timber.e(e);
-            return false;
-        }
-
-        if (conversation.id <= 0) {
-            Throwable e = new IllegalArgumentException("invalid conversation id " + conversation.id);
-            Timber.e(e);
-            return false;
-        }
-
+    /**
+     * 软删除所有会话
+     *
+     * @see #updateConversation(long, Conversation)
+     */
+    public boolean deleteAllConversation(final long sessionUserId, int conversationType) {
         try {
-            com.xmqvip.xiaomaiquan.common.im.core.db.ImDatabaseHelper dbHelper = com.xmqvip.xiaomaiquan.common.im.core.db.ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
-            SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
-            int rowsAffected = db.delete(
-                    com.xmqvip.xiaomaiquan.common.im.core.db.ImDatabaseHelper.TABLE_NAME_CONVERSATION,
-                    com.xmqvip.xiaomaiquan.common.im.core.db.ImDatabaseHelper.ColumnsConversation.C_ID + "=?",
-                    new String[]{String.valueOf(conversation.id)}
-            );
-            if (rowsAffected != 1) {
-                Throwable e = new IllegalAccessException("delete conversation for session user id:" + sessionUserId + " with id:" + conversation.id + " affected " + rowsAffected + " rows");
-                Timber.e(e);
-            } else {
-                Timber.v("delete conversation for session user id:%s with id:%s affected %s rows", sessionUserId, conversation.id, rowsAffected);
-            }
-            return rowsAffected > 0;
-        } catch (Throwable e) {
-            Timber.e(e);
-        }
-        return false;
-    }
+            final ContentValues updateContentValues = new ContentValues();
+            updateContentValues.put(DatabaseHelper.ColumnsConversation.C_DELETE, 1);
 
-    public boolean deleteAllConversation(final long sessionUserId, int systemType) {
-        try {
-            if (systemType != ImConstant.ConversationSystemType.SYSTEM_TYPE_CHAT) {
-                Throwable e = new IllegalAccessException("WARN:: deleteAllConversation sessionUserId:" + sessionUserId + ", systemType:" + systemType + ", use update would be better.");
-                Timber.e(e);
-            }
-
-            com.xmqvip.xiaomaiquan.common.im.core.db.ImDatabaseHelper dbHelper = com.xmqvip.xiaomaiquan.common.im.core.db.ImDatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
-            int rowsAffected = db.delete(
-                    com.xmqvip.xiaomaiquan.common.im.core.db.ImDatabaseHelper.TABLE_NAME_CONVERSATION,
-                    com.xmqvip.xiaomaiquan.common.im.core.db.ImDatabaseHelper.ColumnsConversation.C_SYSTEM_TYPE + "=?",
-                    new String[]{
-                            String.valueOf(systemType)
-                    }
+            int rowsAffected = db.update(
+                    DatabaseHelper.TABLE_NAME_CONVERSATION,
+                    updateContentValues,
+                    DatabaseHelper.ColumnsConversation.C_CONVERSATION_TYPE + "=?",
+                    new String[]{String.valueOf(conversationType)}
             );
-            Timber.v("delete all conversation  with session user id:%s, systemType:%s affected %s rows",
+            IMLog.v("delete all conversation with sessionUserId:%s conversationType:%s affected %s rows",
                     sessionUserId,
-                    systemType,
+                    conversationType,
                     rowsAffected);
             return true;
         } catch (Throwable e) {
-            Timber.e(e);
+            IMLog.e(e);
         }
         return false;
     }

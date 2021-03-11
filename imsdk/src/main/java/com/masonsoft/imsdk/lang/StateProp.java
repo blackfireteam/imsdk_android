@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk.lang;
 
+import androidx.annotation.NonNull;
+
 /**
  * 带状态的对象属性定义。指定判断属性是否已经设置值。
  */
@@ -18,6 +20,10 @@ public class StateProp<T> {
      * @see #isUnset()
      */
     public T get() {
+        if (mProp == UNSET) {
+            throw new IllegalArgumentException("current prop is unset");
+        }
+
         //noinspection unchecked
         return (T) mProp;
     }
@@ -38,6 +44,22 @@ public class StateProp<T> {
 
     public void set(T value) {
         mProp = value;
+    }
+
+    /**
+     * 将值设置为 UNSET
+     *
+     * @see #isUnset()
+     */
+    public void clear() {
+        mProp = UNSET;
+    }
+
+    /**
+     * 复制指定 StateProp 的值
+     */
+    public void apply(@NonNull StateProp<T> origin) {
+        this.mProp = origin.mProp;
     }
 
 }
