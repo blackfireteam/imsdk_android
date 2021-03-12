@@ -5,192 +5,193 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.db.DatabaseHelper.ColumnsConversation;
 import com.masonsoft.imsdk.lang.StateProp;
 
 public class Conversation {
 
     /**
-     * 自增主键
+     * @see ColumnsConversation#C_LOCAL_ID
      */
     @NonNull
-    public final StateProp<Long> id = new StateProp<>();
+    public final StateProp<Long> localId = new StateProp<>();
 
     /**
-     * 会话的排序字段
+     * @see ColumnsConversation#C_LOCAL_SEQ
      */
     @NonNull
-    public final StateProp<Long> seq = new StateProp<>();
+    public final StateProp<Long> localSeq = new StateProp<>();
 
     /**
-     * 会话目标用户 id
+     * @see ColumnsConversation#C_TARGET_USER_ID
      */
     @NonNull
     public final StateProp<Long> targetUserId = new StateProp<>();
 
     /**
-     * 会话中的第一条消息 id(服务器消息 id)
+     * @see ColumnsConversation#C_REMOTE_MSG_START
      */
     @NonNull
-    public final StateProp<Long> messageStartId = new StateProp<>();
+    public final StateProp<Long> remoteMessageStart = new StateProp<>();
 
     /**
-     * 会话中的最后一条消息 id(服务器消息 id)
+     * @see ColumnsConversation#C_REMOTE_MSG_END
      */
     @NonNull
-    public final StateProp<Long> messageEndId = new StateProp<>();
+    public final StateProp<Long> remoteMessageEnd = new StateProp<>();
 
     /**
-     * 最后一条已读消息 id(服务器消息 id)
+     * @see ColumnsConversation#C_REMOTE_MSG_LAST_READ
      */
     @NonNull
-    public final StateProp<Long> messageLastReadId = new StateProp<>();
+    public final StateProp<Long> remoteMessageLastRead = new StateProp<>();
 
     /**
-     * 在会话上需要展示的那条消息的类型
+     * @see ColumnsConversation#C_REMOTE_SHOW_MSG_ID
      */
     @NonNull
-    public final StateProp<Integer> showMessageType = new StateProp<>();
+    public final StateProp<Long> remoteShowMessageId = new StateProp<>();
 
     /**
-     * 在会话上需要展示的那条消息的 id(服务器消息 id)
+     * @see ColumnsConversation#C_LOCAL_SHOW_MSG_ID
      */
     @NonNull
-    public final StateProp<Long> showMessageId = new StateProp<>();
+    public final StateProp<Long> localShowMessageId = new StateProp<>();
 
     /**
-     * 会话中的最后一条消息 id，可能是发送的，也可能是收到的 (对应消息表的自增主键)(本地消息 id)
+     * @see ColumnsConversation#C_REMOTE_UNREAD
      */
     @NonNull
-    public final StateProp<Long> lastMessageId = new StateProp<>();
+    public final StateProp<Long> remoteUnread = new StateProp<>();
 
     /**
-     * 会话是否置顶
+     * @see ColumnsConversation#C_LOCAL_UNREAD_COUNT
      */
     @NonNull
-    public final StateProp<Integer> top = new StateProp<>();
+    public final StateProp<Long> localUnreadCount = new StateProp<>();
 
     /**
-     * 会话未读消息数
+     * @see ColumnsConversation#C_LOCAL_TIME_MS
      */
     @NonNull
-    public final StateProp<Integer> unreadCount = new StateProp<>();
+    public final StateProp<Long> localTimeMs = new StateProp<>();
 
     /**
-     * 会话类型，用来区分是聊天消息，系统消息等等。
+     * @see ColumnsConversation#C_LOCAL_DELETE
      */
     @NonNull
-    public final StateProp<Integer> conversationType = new StateProp<>();
+    public final StateProp<Integer> localDelete = new StateProp<>();
 
     /**
-     * 会话的展示时间，通常是最后一条消息的时间(毫秒).
-     */
-    @NonNull
-    public final StateProp<Long> timeMs = new StateProp<>();
-
-    /**
-     * 会话是否已删除
-     */
-    @NonNull
-    public final StateProp<Integer> delete = new StateProp<>();
-
-    /**
-     * 业务定制：是否 match
+     * @see ColumnsConversation#C_MATCHED
      */
     @NonNull
     public final StateProp<Integer> matched = new StateProp<>();
 
     /**
-     * 业务定制：是否是 new message
+     * @see ColumnsConversation#C_NEW_MSG
      */
     @NonNull
     public final StateProp<Integer> newMessage = new StateProp<>();
 
     /**
-     * 业务定制：是否 my move
+     * @see ColumnsConversation#C_MY_MOVE
      */
     @NonNull
     public final StateProp<Integer> myMove = new StateProp<>();
 
     /**
-     * 业务定制：是否 ice break
+     * @see ColumnsConversation#C_ICE_BREAK
      */
     @NonNull
     public final StateProp<Integer> iceBreak = new StateProp<>();
 
     /**
-     * 业务定制：是否 tip free
+     * @see ColumnsConversation#C_TIP_FREE
      */
     @NonNull
     public final StateProp<Integer> tipFree = new StateProp<>();
 
     /**
-     * 业务定制：是否 top album
+     * @see ColumnsConversation#C_TOP_ALBUM
      */
     @NonNull
     public final StateProp<Integer> topAlbum = new StateProp<>();
 
+    /**
+     * @see ColumnsConversation#C_I_BLOCK_U
+     */
+    @NonNull
+    public final StateProp<Integer> iBlockU = new StateProp<>();
+
+    /**
+     * @see ColumnsConversation#C_CONNECTED
+     */
+    @NonNull
+    public final StateProp<Integer> connected = new StateProp<>();
+
     @NonNull
     public ContentValues toContentValues() {
         final ContentValues target = new ContentValues();
-        if (!this.id.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_ID, this.id.get());
+        if (!this.localId.isUnset()) {
+            target.put(ColumnsConversation.C_LOCAL_ID, this.localId.get());
         }
-        if (!this.seq.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_SEQ, this.seq.get());
+        if (!this.localSeq.isUnset()) {
+            target.put(ColumnsConversation.C_LOCAL_SEQ, this.localSeq.get());
         }
         if (!this.targetUserId.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_TARGET_USER_ID, this.targetUserId.get());
+            target.put(ColumnsConversation.C_TARGET_USER_ID, this.targetUserId.get());
         }
-        if (!this.messageStartId.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_MSG_START_ID, this.messageStartId.get());
+        if (!this.remoteMessageStart.isUnset()) {
+            target.put(ColumnsConversation.C_REMOTE_MSG_START, this.remoteMessageStart.get());
         }
-        if (!this.messageEndId.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_MSG_END_ID, this.messageEndId.get());
+        if (!this.remoteMessageEnd.isUnset()) {
+            target.put(ColumnsConversation.C_REMOTE_MSG_END, this.remoteMessageEnd.get());
         }
-        if (!this.messageLastReadId.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_MSG_LAST_READ_ID, this.messageLastReadId.get());
+        if (!this.remoteMessageLastRead.isUnset()) {
+            target.put(ColumnsConversation.C_REMOTE_MSG_LAST_READ, this.remoteMessageLastRead.get());
         }
-        if (!this.showMessageType.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_SHOW_MSG_TYPE, this.showMessageType.get());
+        if (!this.remoteShowMessageId.isUnset()) {
+            target.put(ColumnsConversation.C_REMOTE_SHOW_MSG_ID, this.remoteShowMessageId.get());
         }
-        if (!this.showMessageId.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_SHOW_MSG_ID, this.showMessageId.get());
+        if (!this.localShowMessageId.isUnset()) {
+            target.put(ColumnsConversation.C_LOCAL_SHOW_MSG_ID, this.localShowMessageId.get());
         }
-        if (!this.lastMessageId.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_LAST_MSG_ID, this.lastMessageId.get());
+        if (!this.remoteUnread.isUnset()) {
+            target.put(ColumnsConversation.C_REMOTE_UNREAD, this.remoteUnread.get());
         }
-        if (!this.top.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_TOP, this.top.get());
+        if (!this.localUnreadCount.isUnset()) {
+            target.put(ColumnsConversation.C_LOCAL_UNREAD_COUNT, this.localUnreadCount.get());
         }
-        if (!this.unreadCount.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_UNREAD_COUNT, this.unreadCount.get());
+        if (!this.localTimeMs.isUnset()) {
+            target.put(ColumnsConversation.C_LOCAL_TIME_MS, this.localTimeMs.get());
         }
-        if (!this.conversationType.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_CONVERSATION_TYPE, this.conversationType.get());
-        }
-        if (!this.timeMs.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_TIME_MS, this.timeMs.get());
-        }
-        if (!this.delete.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_DELETE, this.delete.get());
+        if (!this.localDelete.isUnset()) {
+            target.put(ColumnsConversation.C_LOCAL_DELETE, this.localDelete.get());
         }
         if (!this.matched.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_MATCHED, this.matched.get());
+            target.put(ColumnsConversation.C_MATCHED, this.matched.get());
         }
         if (!this.newMessage.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_NEW_MSG, this.newMessage.get());
+            target.put(ColumnsConversation.C_NEW_MSG, this.newMessage.get());
         }
         if (!this.myMove.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_MY_MOVE, this.myMove.get());
+            target.put(ColumnsConversation.C_MY_MOVE, this.myMove.get());
         }
         if (!this.iceBreak.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_ICE_BREAK, this.iceBreak.get());
+            target.put(ColumnsConversation.C_ICE_BREAK, this.iceBreak.get());
         }
         if (!this.tipFree.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_TIP_FREE, this.tipFree.get());
+            target.put(ColumnsConversation.C_TIP_FREE, this.tipFree.get());
         }
         if (!this.topAlbum.isUnset()) {
-            target.put(DatabaseHelper.ColumnsConversation.C_TOP_ALBUM, this.topAlbum.get());
+            target.put(ColumnsConversation.C_TOP_ALBUM, this.topAlbum.get());
+        }
+        if (!this.iBlockU.isUnset()) {
+            target.put(ColumnsConversation.C_I_BLOCK_U, this.iBlockU.get());
+        }
+        if (!this.connected.isUnset()) {
+            target.put(ColumnsConversation.C_CONNECTED, this.connected.get());
         }
         return target;
     }
@@ -204,26 +205,26 @@ public class Conversation {
         @Override
         public String[] queryColumns() {
             return new String[]{
-                    DatabaseHelper.ColumnsConversation.C_ID,
-                    DatabaseHelper.ColumnsConversation.C_SEQ,
-                    DatabaseHelper.ColumnsConversation.C_TARGET_USER_ID,
-                    DatabaseHelper.ColumnsConversation.C_MSG_START_ID,
-                    DatabaseHelper.ColumnsConversation.C_MSG_END_ID,
-                    DatabaseHelper.ColumnsConversation.C_MSG_LAST_READ_ID,
-                    DatabaseHelper.ColumnsConversation.C_SHOW_MSG_TYPE,
-                    DatabaseHelper.ColumnsConversation.C_SHOW_MSG_ID,
-                    DatabaseHelper.ColumnsConversation.C_LAST_MSG_ID,
-                    DatabaseHelper.ColumnsConversation.C_TOP,
-                    DatabaseHelper.ColumnsConversation.C_UNREAD_COUNT,
-                    DatabaseHelper.ColumnsConversation.C_CONVERSATION_TYPE,
-                    DatabaseHelper.ColumnsConversation.C_TIME_MS,
-                    DatabaseHelper.ColumnsConversation.C_DELETE,
-                    DatabaseHelper.ColumnsConversation.C_MATCHED,
-                    DatabaseHelper.ColumnsConversation.C_NEW_MSG,
-                    DatabaseHelper.ColumnsConversation.C_MY_MOVE,
-                    DatabaseHelper.ColumnsConversation.C_ICE_BREAK,
-                    DatabaseHelper.ColumnsConversation.C_TIP_FREE,
-                    DatabaseHelper.ColumnsConversation.C_TOP_ALBUM,
+                    ColumnsConversation.C_LOCAL_ID,
+                    ColumnsConversation.C_LOCAL_SEQ,
+                    ColumnsConversation.C_TARGET_USER_ID,
+                    ColumnsConversation.C_REMOTE_MSG_START,
+                    ColumnsConversation.C_REMOTE_MSG_END,
+                    ColumnsConversation.C_REMOTE_MSG_LAST_READ,
+                    ColumnsConversation.C_REMOTE_SHOW_MSG_ID,
+                    ColumnsConversation.C_LOCAL_SHOW_MSG_ID,
+                    ColumnsConversation.C_REMOTE_UNREAD,
+                    ColumnsConversation.C_LOCAL_UNREAD_COUNT,
+                    ColumnsConversation.C_LOCAL_TIME_MS,
+                    ColumnsConversation.C_LOCAL_DELETE,
+                    ColumnsConversation.C_MATCHED,
+                    ColumnsConversation.C_NEW_MSG,
+                    ColumnsConversation.C_MY_MOVE,
+                    ColumnsConversation.C_ICE_BREAK,
+                    ColumnsConversation.C_TIP_FREE,
+                    ColumnsConversation.C_TOP_ALBUM,
+                    ColumnsConversation.C_I_BLOCK_U,
+                    ColumnsConversation.C_CONNECTED,
             };
         }
 
@@ -232,26 +233,26 @@ public class Conversation {
         public Conversation cursorToObjectWithQueryColumns(@NonNull Cursor cursor) {
             final Conversation target = new Conversation();
             int index = -1;
-            target.id.set(cursor.getLong(++index));
-            target.seq.set(cursor.getLong(++index));
+            target.localId.set(cursor.getLong(++index));
+            target.localSeq.set(cursor.getLong(++index));
             target.targetUserId.set(cursor.getLong(++index));
-            target.messageStartId.set(cursor.getLong(++index));
-            target.messageEndId.set(cursor.getLong(++index));
-            target.messageLastReadId.set(cursor.getLong(++index));
-            target.showMessageType.set(cursor.getInt(++index));
-            target.showMessageId.set(cursor.getLong(++index));
-            target.lastMessageId.set(cursor.getLong(++index));
-            target.top.set(cursor.getInt(++index));
-            target.unreadCount.set(cursor.getInt(++index));
-            target.conversationType.set(cursor.getInt(++index));
-            target.timeMs.set(cursor.getLong(++index));
-            target.delete.set(cursor.getInt(++index));
+            target.remoteMessageStart.set(cursor.getLong(++index));
+            target.remoteMessageEnd.set(cursor.getLong(++index));
+            target.remoteMessageLastRead.set(cursor.getLong(++index));
+            target.remoteShowMessageId.set(cursor.getLong(++index));
+            target.localShowMessageId.set(cursor.getLong(++index));
+            target.remoteUnread.set(cursor.getLong(++index));
+            target.localUnreadCount.set(cursor.getLong(++index));
+            target.localTimeMs.set(cursor.getLong(++index));
+            target.localDelete.set(cursor.getInt(++index));
             target.matched.set(cursor.getInt(++index));
             target.newMessage.set(cursor.getInt(++index));
             target.myMove.set(cursor.getInt(++index));
             target.iceBreak.set(cursor.getInt(++index));
             target.tipFree.set(cursor.getInt(++index));
             target.topAlbum.set(cursor.getInt(++index));
+            target.iBlockU.set(cursor.getInt(++index));
+            target.connected.set(cursor.getInt(++index));
             return target;
         }
     };
