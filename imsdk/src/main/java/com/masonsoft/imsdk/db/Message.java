@@ -23,10 +23,16 @@ public class Message {
     public final StateProp<Long> localSeq = new StateProp<>();
 
     /**
-     * @see ColumnsMessage#C_LOCAL_CONVERSATION_ID
+     * @see ColumnsMessage#C_LOCAL_CONVERSATION_TYPE
      */
     @NonNull
-    public final StateProp<Long> localConversationId = new StateProp<>();
+    public final StateProp<Integer> localConversationType = new StateProp<>();
+
+    /**
+     * @see ColumnsMessage#C_LOCAL_TARGET_USER_ID
+     */
+    @NonNull
+    public final StateProp<Long> localTargetUserId = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_FROM_USER_ID
@@ -157,8 +163,11 @@ public class Message {
         if (!this.localSeq.isUnset()) {
             target.put(ColumnsMessage.C_LOCAL_SEQ, this.localSeq.get());
         }
-        if (!this.localConversationId.isUnset()) {
-            target.put(ColumnsMessage.C_LOCAL_CONVERSATION_ID, this.localConversationId.get());
+        if (!this.localConversationType.isUnset()) {
+            target.put(ColumnsMessage.C_LOCAL_CONVERSATION_TYPE, this.localConversationType.get());
+        }
+        if (!this.localTargetUserId.isUnset()) {
+            target.put(ColumnsMessage.C_LOCAL_TARGET_USER_ID, this.localTargetUserId.get());
         }
         if (!this.fromUserId.isUnset()) {
             target.put(ColumnsMessage.C_FROM_USER_ID, this.fromUserId.get());
@@ -234,7 +243,8 @@ public class Message {
             return new String[]{
                     ColumnsMessage.C_LOCAL_ID,
                     ColumnsMessage.C_LOCAL_SEQ,
-                    ColumnsMessage.C_LOCAL_CONVERSATION_ID,
+                    ColumnsMessage.C_LOCAL_CONVERSATION_TYPE,
+                    ColumnsMessage.C_LOCAL_TARGET_USER_ID,
                     ColumnsMessage.C_FROM_USER_ID,
                     ColumnsMessage.C_TO_USER_ID,
                     ColumnsMessage.C_REMOTE_MSG_ID,
@@ -265,7 +275,8 @@ public class Message {
             int index = -1;
             target.localId.set(cursor.getLong(++index));
             target.localSeq.set(cursor.getLong(++index));
-            target.localConversationId.set(cursor.getLong(++index));
+            target.localConversationType.set(cursor.getInt(++index));
+            target.localTargetUserId.set(cursor.getLong(++index));
             target.fromUserId.set(cursor.getLong(++index));
             target.toUserId.set(cursor.getLong(++index));
             target.remoteMessageId.set(cursor.getLong(++index));

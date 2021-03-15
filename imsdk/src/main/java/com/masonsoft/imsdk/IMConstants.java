@@ -21,4 +21,14 @@ public final class IMConstants {
         int NO = 0;
     }
 
+    /**
+     * 会话类型
+     */
+    public interface ConversationType {
+        /**
+         * 单聊
+         */
+        int C2C = 0;
+    }
+
 }

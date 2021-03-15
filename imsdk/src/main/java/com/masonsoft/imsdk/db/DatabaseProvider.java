@@ -29,14 +29,20 @@ public class DatabaseProvider {
     }
 
     public DatabaseHelper getDBHelper(String sessionNamespace) {
+        String key = String.valueOf(sessionNamespace);
+
+        DatabaseHelper cache = mDBHelpers.get(key);
+        if (cache != null) {
+            return cache;
+        }
+
         synchronized (mDBHelpers) {
-            String key = String.valueOf(sessionNamespace);
-            DatabaseHelper dbHelper = mDBHelpers.get(key);
-            if (dbHelper == null) {
-                dbHelper = new DatabaseHelper(sessionNamespace);
-                mDBHelpers.put(key, dbHelper);
+            cache = mDBHelpers.get(key);
+            if (cache == null) {
+                cache = new DatabaseHelper(sessionNamespace);
+                mDBHelpers.put(key, cache);
             }
-            return dbHelper;
+            return cache;
         }
     }
 

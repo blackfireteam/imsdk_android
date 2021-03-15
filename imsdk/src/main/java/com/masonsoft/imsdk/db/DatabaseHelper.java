@@ -12,6 +12,9 @@ import com.masonsoft.imsdk.IMLog;
 import com.masonsoft.imsdk.annotation.Local;
 import com.masonsoft.imsdk.annotation.Remote;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 每一个登录用户分别属于单独的数据库文件
  */
@@ -21,8 +24,11 @@ public final class DatabaseHelper {
     private static final int DB_VERSION = 1;
     // 会话表
     public static final String TABLE_NAME_CONVERSATION = "t_conversation";
-    // 消息表
-    public static final String TABLE_NAME_MESSAGE = "t_message";
+
+    // 消息表前缀, 每一个会话使用一个单独的消息表
+    private static final String TABLE_NAME_MESSAGE_PREFIX = "t_message_";
+
+    private final Map<String, Object> mTableMessageCreateFlagMap = new HashMap<>();
 
     @NonNull
     private final SQLiteOpenHelper mDBHelper;
@@ -49,6 +55,15 @@ public final class DatabaseHelper {
          */
         @Local
         String C_LOCAL_SEQ = "c_local_seq";
+
+        /**
+         * 会话类型
+         *
+         * @see IMConstants.ConversationType
+         * @since db version 1
+         */
+        @Local
+        String C_LOCAL_CONVERSATION_TYPE = "c_local_conversation_type";
 
         /**
          * 会话目标用户 id
@@ -232,12 +247,21 @@ public final class DatabaseHelper {
         String C_LOCAL_SEQ = "c_local_seq";
 
         /**
-         * 所属会话，对应会话表的自增主键
+         * 所属会话的类型
          *
+         * @see #C_LOCAL_TARGET_USER_ID
+         * @since db version 1
+         */
+        String C_LOCAL_CONVERSATION_TYPE = "c_local_conversation_type";
+
+        /**
+         * 所属会话的目标用户 id
+         *
+         * @see #C_LOCAL_CONVERSATION_TYPE
          * @since db version 1
          */
         @Local
-        String C_LOCAL_CONVERSATION_ID = "c_local_conversation_id";
+        String C_LOCAL_TARGET_USER_ID = "c_local_target_user_id";
 
         /**
          * 消息的发送方
@@ -414,8 +438,10 @@ public final class DatabaseHelper {
      * 用法举例：使用全局共享的数据时，可以使用固定的 sessionNamespace 值，如 "share".
      * 仅当前登录用户可见的数据，则用当前登录用户的 id 作为 sessionNamespace.
      * </pre>
+     *
+     * @see DatabaseProvider
      */
-    public DatabaseHelper(final String sessionNamespace) {
+    DatabaseHelper(final String sessionNamespace) {
         final String dbName = IMConstants.GLOBAL_NAMESPACE + "_" + sessionNamespace + "_" + ProcessManager.getInstance().getProcessTag();
         mDBHelper = new SQLiteOpenHelper(ContextUtil.getContext(), dbName, null, DB_VERSION) {
             @Override
@@ -426,13 +452,6 @@ public final class DatabaseHelper {
                     db.execSQL(getSQLCreateTableConversation());
                     // 创建会话表索引
                     for (String sqlIndex : getSQLIndexTableConversation()) {
-                        db.execSQL(sqlIndex);
-                    }
-
-                    // 创建消息表
-                    db.execSQL(getSQLCreateTableMessage());
-                    // 创建消息表索引
-                    for (String sqlIndex : getSQLIndexTableMessage()) {
                         db.execSQL(sqlIndex);
                     }
 
@@ -447,6 +466,8 @@ public final class DatabaseHelper {
             @Override
             public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
                 IMLog.v("database version upgrade from %s to %s", oldVersion, newVersion);
+
+                // 数据库升级时，如果涉及到消息表的升级，需要遍历当前存在的所有消息表(每一个会话都是单独的消息表)
             }
         };
     }
@@ -464,6 +485,7 @@ public final class DatabaseHelper {
         return "create table " + TABLE_NAME_CONVERSATION + " (" +
                 ColumnsConversation.C_LOCAL_ID + " integer primary key autoincrement not null," +
                 ColumnsConversation.C_LOCAL_SEQ + " integer not null," +
+                ColumnsConversation.C_LOCAL_CONVERSATION_TYPE + " integer not null," +
                 ColumnsConversation.C_TARGET_USER_ID + " integer not null," +
                 ColumnsConversation.C_REMOTE_MSG_START + " integer not null default 0," +
                 ColumnsConversation.C_REMOTE_MSG_END + " integer not null default 0," +
@@ -492,19 +514,78 @@ public final class DatabaseHelper {
     private String[] getSQLIndexTableConversation() {
         return new String[]{
                 "create index " + TABLE_NAME_CONVERSATION + "_index_local_seq on " + TABLE_NAME_CONVERSATION + "(" + ColumnsConversation.C_LOCAL_SEQ + ")",
+                "create index " + TABLE_NAME_CONVERSATION + "_index_local_conversation_type on " + TABLE_NAME_CONVERSATION + "(" + ColumnsConversation.C_LOCAL_CONVERSATION_TYPE + ")",
                 "create index " + TABLE_NAME_CONVERSATION + "_index_target_user_id on " + TABLE_NAME_CONVERSATION + "(" + ColumnsConversation.C_TARGET_USER_ID + ")",
         };
+    }
+
+    /**
+     * @param conversationType
+     * @param targetUserId
+     * @see IMConstants.ConversationType
+     */
+    private static String getTableNameMessage(final int conversationType, long targetUserId) {
+        return TABLE_NAME_MESSAGE_PREFIX + conversationType + "_" + targetUserId;
+    }
+
+    /**
+     * 获取目标会话对应的消息表的表名，如果表不存在会创建对应的表。每一个会话都是用一个单独的消息表。
+     *
+     * @param conversationType
+     * @param targetUserId
+     * @return
+     * @see IMConstants.ConversationType
+     */
+    @NonNull
+    public String createTableMessageIfNeed(final int conversationType, long targetUserId) {
+        final String tableName = getTableNameMessage(conversationType, targetUserId);
+        Object create = mTableMessageCreateFlagMap.get(tableName);
+        if (create != null) {
+            return tableName;
+        }
+
+        synchronized (mTableMessageCreateFlagMap) {
+            create = mTableMessageCreateFlagMap.get(tableName);
+            if (create != null) {
+                return tableName;
+            }
+
+            // create table message and index
+            final SQLiteDatabase db = mDBHelper.getWritableDatabase();
+            db.beginTransaction();
+            try {
+
+                // 创建消息表
+                db.execSQL(getSQLCreateTableMessage(tableName));
+                // 创建消息表索引
+                for (String sqlIndex : getSQLIndexTableMessage(tableName)) {
+                    db.execSQL(sqlIndex);
+                }
+
+                db.setTransactionSuccessful();
+            } catch (Throwable e) {
+                IMLog.e(e);
+                throw e;
+            } finally {
+                db.endTransaction();
+            }
+
+            mTableMessageCreateFlagMap.put(tableName, Boolean.TRUE);
+        }
+
+        return tableName;
     }
 
     /**
      * 消息表创建语句(数据库最新版本)
      */
     @NonNull
-    private String getSQLCreateTableMessage() {
-        return "create table " + TABLE_NAME_MESSAGE + " (" +
+    private String getSQLCreateTableMessage(String tableNameMessage) {
+        return "create table if not exists " + tableNameMessage + " (" +
                 ColumnsMessage.C_LOCAL_ID + " integer primary key autoincrement not null," +
                 ColumnsMessage.C_LOCAL_SEQ + " integer not null," +
-                ColumnsMessage.C_LOCAL_CONVERSATION_ID + " integer not null," +
+                ColumnsMessage.C_LOCAL_CONVERSATION_TYPE + " integer not null," +
+                ColumnsMessage.C_LOCAL_TARGET_USER_ID + " integer not null," +
                 ColumnsMessage.C_FROM_USER_ID + " integer not null default 0," +
                 ColumnsMessage.C_TO_USER_ID + " integer not null," +
                 ColumnsMessage.C_REMOTE_MSG_ID + " integer not null," +
@@ -532,17 +613,18 @@ public final class DatabaseHelper {
      * 消息表创建索引语句(数据库最新版本)
      */
     @NonNull
-    private String[] getSQLIndexTableMessage() {
+    private String[] getSQLIndexTableMessage(String tableNameMessage) {
         return new String[]{
-                "create index " + TABLE_NAME_MESSAGE + "_index_local_seq on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_LOCAL_SEQ + ")",
-                "create index " + TABLE_NAME_MESSAGE + "_index_local_conversation_id on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_LOCAL_CONVERSATION_ID + ")",
-                "create index " + TABLE_NAME_MESSAGE + "_index_from_user_id on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_FROM_USER_ID + ")",
-                "create index " + TABLE_NAME_MESSAGE + "_index_to_user_id on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_TO_USER_ID + ")",
-                "create index " + TABLE_NAME_MESSAGE + "_index_remote_msg_id on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_REMOTE_MSG_ID + ")",
-                "create index " + TABLE_NAME_MESSAGE + "_index_msg_type on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_MSG_TYPE + ")",
-                "create index " + TABLE_NAME_MESSAGE + "_index_local_send_status on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_LOCAL_SEND_STATUS + ")",
-                "create index " + TABLE_NAME_MESSAGE + "_index_local_action_msg on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_LOCAL_ACTION_MSG + ")",
-                "create index " + TABLE_NAME_MESSAGE + "_index_local_block_id on " + TABLE_NAME_MESSAGE + "(" + ColumnsMessage.C_LOCAL_BLOCK_ID + ")",
+                "create index if not exists " + tableNameMessage + "_index_local_seq on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_SEQ + ")",
+                "create index if not exists " + tableNameMessage + "_index_local_conversation_type on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_CONVERSATION_TYPE + ")",
+                "create index if not exists " + tableNameMessage + "_index_local_target_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_TARGET_USER_ID + ")",
+                "create index if not exists " + tableNameMessage + "_index_from_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_FROM_USER_ID + ")",
+                "create index if not exists " + tableNameMessage + "_index_to_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_TO_USER_ID + ")",
+                "create index if not exists " + tableNameMessage + "_index_remote_msg_id on " + tableNameMessage + "(" + ColumnsMessage.C_REMOTE_MSG_ID + ")",
+                "create index if not exists " + tableNameMessage + "_index_msg_type on " + tableNameMessage + "(" + ColumnsMessage.C_MSG_TYPE + ")",
+                "create index if not exists " + tableNameMessage + "_index_local_send_status on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_SEND_STATUS + ")",
+                "create index if not exists " + tableNameMessage + "_index_local_action_msg on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_ACTION_MSG + ")",
+                "create index if not exists " + tableNameMessage + "_index_local_block_id on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_BLOCK_ID + ")",
         };
     }
 

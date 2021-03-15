@@ -23,6 +23,12 @@ public class Conversation {
     public final StateProp<Long> localSeq = new StateProp<>();
 
     /**
+     * @see ColumnsConversation#C_LOCAL_CONVERSATION_TYPE
+     */
+    @NonNull
+    public final StateProp<Integer> localConversationType = new StateProp<>();
+
+    /**
      * @see ColumnsConversation#C_TARGET_USER_ID
      */
     @NonNull
@@ -139,6 +145,9 @@ public class Conversation {
         if (!this.localSeq.isUnset()) {
             target.put(ColumnsConversation.C_LOCAL_SEQ, this.localSeq.get());
         }
+        if (!this.localConversationType.isUnset()) {
+            target.put(ColumnsConversation.C_LOCAL_CONVERSATION_TYPE, this.localConversationType.get());
+        }
         if (!this.targetUserId.isUnset()) {
             target.put(ColumnsConversation.C_TARGET_USER_ID, this.targetUserId.get());
         }
@@ -207,6 +216,7 @@ public class Conversation {
             return new String[]{
                     ColumnsConversation.C_LOCAL_ID,
                     ColumnsConversation.C_LOCAL_SEQ,
+                    ColumnsConversation.C_LOCAL_CONVERSATION_TYPE,
                     ColumnsConversation.C_TARGET_USER_ID,
                     ColumnsConversation.C_REMOTE_MSG_START,
                     ColumnsConversation.C_REMOTE_MSG_END,
@@ -235,6 +245,7 @@ public class Conversation {
             int index = -1;
             target.localId.set(cursor.getLong(++index));
             target.localSeq.set(cursor.getLong(++index));
+            target.localConversationType.set(cursor.getInt(++index));
             target.targetUserId.set(cursor.getLong(++index));
             target.remoteMessageStart.set(cursor.getLong(++index));
             target.remoteMessageEnd.set(cursor.getLong(++index));
