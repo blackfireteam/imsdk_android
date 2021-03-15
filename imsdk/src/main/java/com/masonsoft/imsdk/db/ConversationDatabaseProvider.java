@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.idonans.core.Singleton;
 import com.idonans.core.util.IOUtil;
+import com.masonsoft.imsdk.IMConstants;
 import com.masonsoft.imsdk.IMLog;
 
 import java.util.ArrayList;
@@ -42,7 +43,6 @@ public class ConversationDatabaseProvider {
     @NonNull
     public TinyPage<Conversation> pageQueryConversation(
             final long sessionUserId,
-            final int conversationType,
             final long seq,
             final int limit,
             final boolean includeDelete,
@@ -59,16 +59,15 @@ public class ConversationDatabaseProvider {
             final StringBuilder selection = new StringBuilder();
             final List<String> selectionArgs = new ArrayList<>();
 
-            selection.append(" " + DatabaseHelper.ColumnsConversation.C_CONVERSATION_TYPE + "=? ");
-            selectionArgs.add(String.valueOf(conversationType));
+            selection.append(" " + DatabaseHelper.ColumnsConversation.C_LOCAL_ID + ">0 ");
 
             if (seq > 0) {
-                selection.append(" and " + DatabaseHelper.ColumnsConversation.C_SEQ + "<? ");
+                selection.append(" and " + DatabaseHelper.ColumnsConversation.C_LOCAL_SEQ + "<? ");
                 selectionArgs.add(String.valueOf(seq));
             }
 
             if (!includeDelete) {
-                selection.append(" and " + DatabaseHelper.ColumnsConversation.C_DELETE + "=0 ");
+                selection.append(" and " + DatabaseHelper.ColumnsConversation.C_LOCAL_DELETE + "=0 ");
             }
 
             cursor = db.query(
@@ -78,7 +77,7 @@ public class ConversationDatabaseProvider {
                     selectionArgs.toArray(new String[]{}),
                     null,
                     null,
-                    DatabaseHelper.ColumnsConversation.C_SEQ + " desc",
+                    DatabaseHelper.ColumnsConversation.C_LOCAL_SEQ + " desc",
                     String.valueOf(limit + 1) // 此处多查询一条用来计算 hasMore
             );
 
@@ -100,8 +99,8 @@ public class ConversationDatabaseProvider {
             result.items = items;
         }
 
-        IMLog.v("found %s conversations[hasMore:%s] with sessionUserId:%s, conversationType:%s, seq:%s, limit:%s",
-                result.items.size(), result.hasMore, sessionUserId, conversationType, seq, limit);
+        IMLog.v("found %s conversations[hasMore:%s] with sessionUserId:%s, seq:%s, limit:%s",
+                result.items.size(), result.hasMore, sessionUserId, seq, limit);
         return result;
     }
 
@@ -109,7 +108,10 @@ public class ConversationDatabaseProvider {
      * @return 没有找到返回 null
      */
     @Nullable
-    public Conversation getConversation(final long sessionUserId, final long conversationId, @Nullable ColumnsSelector<Conversation> columnsSelector) {
+    public Conversation getConversation(
+            final long sessionUserId,
+            final long conversationId,
+            @Nullable ColumnsSelector<Conversation> columnsSelector) {
         if (columnsSelector == null) {
             columnsSelector = Conversation.COLUMNS_SELECTOR_ALL;
         }
@@ -118,13 +120,18 @@ public class ConversationDatabaseProvider {
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
 
+            //noinspection StringBufferReplaceableByString
+            final StringBuilder selection = new StringBuilder();
+            final List<String> selectionArgs = new ArrayList<>();
+
+            selection.append(" " + DatabaseHelper.ColumnsConversation.C_LOCAL_ID + "=? ");
+            selectionArgs.add(String.valueOf(conversationId));
+
             cursor = db.query(
                     DatabaseHelper.TABLE_NAME_CONVERSATION,
                     columnsSelector.queryColumns(),
-                    DatabaseHelper.ColumnsConversation.C_ID + "=?",
-                    new String[]{
-                            String.valueOf(conversationId)
-                    },
+                    selection.toString(),
+                    selectionArgs.toArray(new String[]{}),
                     null,
                     null,
                     null,
@@ -152,7 +159,10 @@ public class ConversationDatabaseProvider {
      * @return 没有找到返回 null
      */
     @Nullable
-    public Conversation getConversation(final long sessionUserId, final long targetUserId, final int conversationType, @Nullable ColumnsSelector<Conversation> columnsSelector) {
+    public Conversation getConversationByTargetUserId(
+            final long sessionUserId,
+            final long targetUserId,
+            @Nullable ColumnsSelector<Conversation> columnsSelector) {
         if (columnsSelector == null) {
             columnsSelector = Conversation.COLUMNS_SELECTOR_ALL;
         }
@@ -161,15 +171,18 @@ public class ConversationDatabaseProvider {
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
 
+            //noinspection StringBufferReplaceableByString
+            final StringBuilder selection = new StringBuilder();
+            final List<String> selectionArgs = new ArrayList<>();
+
+            selection.append(" " + DatabaseHelper.ColumnsConversation.C_TARGET_USER_ID + "=? ");
+            selectionArgs.add(String.valueOf(targetUserId));
+
             cursor = db.query(
                     DatabaseHelper.TABLE_NAME_CONVERSATION,
                     columnsSelector.queryColumns(),
-                    DatabaseHelper.ColumnsConversation.C_TARGET_USER_ID + "=? and "
-                            + DatabaseHelper.ColumnsConversation.C_CONVERSATION_TYPE + "=?",
-                    new String[]{
-                            String.valueOf(targetUserId),
-                            String.valueOf(conversationType)
-                    },
+                    selection.toString(),
+                    selectionArgs.toArray(new String[]{}),
                     null,
                     null,
                     null,
@@ -178,7 +191,8 @@ public class ConversationDatabaseProvider {
 
             if (cursor.moveToNext()) {
                 Conversation result = columnsSelector.cursorToObjectWithQueryColumns(cursor);
-                IMLog.v("conversation found with sessionUserId:%s, targetUserId:%s, conversationType:%s", sessionUserId, targetUserId, conversationType);
+                IMLog.v("conversation found with sessionUserId:%s, targetUserId:%s",
+                        sessionUserId, targetUserId);
                 return result;
             }
         } catch (Throwable e) {
@@ -188,8 +202,8 @@ public class ConversationDatabaseProvider {
         }
 
         // conversation not found
-        IMLog.v("conversation not found with sessionUserId:%s, targetUserId:%s, conversationType:%s",
-                sessionUserId, targetUserId, conversationType);
+        IMLog.v("conversation not found with sessionUserId:%s, targetUserId:%s",
+                sessionUserId, targetUserId);
         return null;
     }
 
@@ -197,13 +211,15 @@ public class ConversationDatabaseProvider {
      * @param conversation
      * @return 更新成功返回 true, 否则返回 false.
      */
-    public boolean updateConversation(final long sessionUserId, final Conversation conversation) {
+    public boolean updateConversation(
+            final long sessionUserId,
+            final Conversation conversation) {
         if (conversation == null) {
             IMLog.e(new IllegalArgumentException("conversation is null"));
             return false;
         }
 
-        if (conversation.id.isUnset()) {
+        if (conversation.localId.isUnset()) {
             IMLog.e(new IllegalArgumentException("conversation id is unset"));
             return false;
         }
@@ -211,24 +227,32 @@ public class ConversationDatabaseProvider {
         try {
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
+
+            //noinspection StringBufferReplaceableByString
+            final StringBuilder where = new StringBuilder();
+            final List<String> whereArgs = new ArrayList<>();
+
+            where.append(" " + DatabaseHelper.ColumnsConversation.C_LOCAL_ID + "=? ");
+            whereArgs.add(String.valueOf(conversation.localId.get()));
+
             int rowsAffected = db.update(
                     DatabaseHelper.TABLE_NAME_CONVERSATION,
                     conversation.toContentValues(),
-                    DatabaseHelper.ColumnsConversation.C_ID + "=?",
-                    new String[]{String.valueOf(conversation.id.get())}
+                    where.toString(),
+                    whereArgs.toArray(new String[]{})
             );
             if (rowsAffected != 1) {
                 IMLog.e(
                         new IllegalAccessException("update conversation fail"),
                         "unexpected. update conversation with sessionUserId:% conversationId:%s affected %s rows",
                         sessionUserId,
-                        conversation.id.get(),
+                        conversation.localId.get(),
                         rowsAffected
                 );
             } else {
                 IMLog.v("update conversation with sessionUserId:%s conversationId:%s affected %s rows",
                         sessionUserId,
-                        conversation.id.get(),
+                        conversation.localId.get(),
                         rowsAffected);
             }
             return rowsAffected > 0;
@@ -243,22 +267,21 @@ public class ConversationDatabaseProvider {
      *
      * @see #updateConversation(long, Conversation)
      */
-    public boolean deleteAllConversation(final long sessionUserId, int conversationType) {
+    public boolean deleteAllConversation(final long sessionUserId) {
         try {
             final ContentValues updateContentValues = new ContentValues();
-            updateContentValues.put(DatabaseHelper.ColumnsConversation.C_DELETE, 1);
+            updateContentValues.put(DatabaseHelper.ColumnsConversation.C_LOCAL_DELETE, IMConstants.DELETE.YES);
 
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
             int rowsAffected = db.update(
                     DatabaseHelper.TABLE_NAME_CONVERSATION,
                     updateContentValues,
-                    DatabaseHelper.ColumnsConversation.C_CONVERSATION_TYPE + "=?",
-                    new String[]{String.valueOf(conversationType)}
+                    null,
+                    null
             );
-            IMLog.v("delete all conversation with sessionUserId:%s conversationType:%s affected %s rows",
+            IMLog.v("delete all conversation with sessionUserId:%s affected %s rows",
                     sessionUserId,
-                    conversationType,
                     rowsAffected);
             return true;
         } catch (Throwable e) {

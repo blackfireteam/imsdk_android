@@ -10,4 +10,15 @@ public final class IMConstants {
      */
     public static final String GLOBAL_NAMESPACE = "_msimsdk_20210308_";
 
+    public interface DELETE {
+        /**
+         * 已删除
+         */
+        int YES = 1;
+        /**
+         * 未删除
+         */
+        int NO = 0;
+    }
+
 }

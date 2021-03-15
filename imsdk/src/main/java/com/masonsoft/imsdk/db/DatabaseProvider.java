@@ -24,7 +24,11 @@ public class DatabaseProvider {
     private DatabaseProvider() {
     }
 
-    public DatabaseHelper getDBHelper(long sessionNamespace) {
+    public DatabaseHelper getDBHelper(long sessionUserId) {
+        return getDBHelper("uid:" + sessionUserId);
+    }
+
+    public DatabaseHelper getDBHelper(String sessionNamespace) {
         synchronized (mDBHelpers) {
             String key = String.valueOf(sessionNamespace);
             DatabaseHelper dbHelper = mDBHelpers.get(key);
