@@ -45,8 +45,11 @@ public class ConversationDatabaseProvider {
             final long sessionUserId,
             final long seq,
             final int limit,
+            final int conversationType,
             final boolean includeDelete,
             @Nullable ColumnsSelector<Conversation> columnsSelector) {
+        IMConstants.ConversationType.check(conversationType);
+
         if (columnsSelector == null) {
             columnsSelector = Conversation.COLUMNS_SELECTOR_ALL;
         }
@@ -59,7 +62,8 @@ public class ConversationDatabaseProvider {
             final StringBuilder selection = new StringBuilder();
             final List<String> selectionArgs = new ArrayList<>();
 
-            selection.append(" " + DatabaseHelper.ColumnsConversation.C_LOCAL_ID + ">0 ");
+            selection.append(" " + DatabaseHelper.ColumnsConversation.C_LOCAL_CONVERSATION_TYPE + "=? ");
+            selectionArgs.add(String.valueOf(conversationType));
 
             if (seq > 0) {
                 selection.append(" and " + DatabaseHelper.ColumnsConversation.C_LOCAL_SEQ + "<? ");
@@ -99,8 +103,8 @@ public class ConversationDatabaseProvider {
             result.items = items;
         }
 
-        IMLog.v("found %s conversations[hasMore:%s] with sessionUserId:%s, seq:%s, limit:%s",
-                result.items.size(), result.hasMore, sessionUserId, seq, limit);
+        IMLog.v("found %s conversations[hasMore:%s] with sessionUserId:%s, conversationType:%s, seq:%s, limit:%s",
+                result.items.size(), result.hasMore, sessionUserId, conversationType, seq, limit);
         return result;
     }
 
@@ -162,7 +166,10 @@ public class ConversationDatabaseProvider {
     public Conversation getConversationByTargetUserId(
             final long sessionUserId,
             final long targetUserId,
+            final int conversationType,
             @Nullable ColumnsSelector<Conversation> columnsSelector) {
+        IMConstants.ConversationType.check(conversationType);
+
         if (columnsSelector == null) {
             columnsSelector = Conversation.COLUMNS_SELECTOR_ALL;
         }
@@ -171,12 +178,14 @@ public class ConversationDatabaseProvider {
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
 
-            //noinspection StringBufferReplaceableByString
             final StringBuilder selection = new StringBuilder();
             final List<String> selectionArgs = new ArrayList<>();
 
             selection.append(" " + DatabaseHelper.ColumnsConversation.C_TARGET_USER_ID + "=? ");
             selectionArgs.add(String.valueOf(targetUserId));
+
+            selection.append(" " + DatabaseHelper.ColumnsConversation.C_LOCAL_CONVERSATION_TYPE + "=? ");
+            selectionArgs.add(String.valueOf(conversationType));
 
             cursor = db.query(
                     DatabaseHelper.TABLE_NAME_CONVERSATION,
@@ -191,8 +200,8 @@ public class ConversationDatabaseProvider {
 
             if (cursor.moveToNext()) {
                 Conversation result = columnsSelector.cursorToObjectWithQueryColumns(cursor);
-                IMLog.v("conversation found with sessionUserId:%s, targetUserId:%s",
-                        sessionUserId, targetUserId);
+                IMLog.v("conversation found with sessionUserId:%s, targetUserId:%s, conversationType:%s",
+                        sessionUserId, targetUserId, conversationType);
                 return result;
             }
         } catch (Throwable e) {
@@ -202,8 +211,8 @@ public class ConversationDatabaseProvider {
         }
 
         // conversation not found
-        IMLog.v("conversation not found with sessionUserId:%s, targetUserId:%s",
-                sessionUserId, targetUserId);
+        IMLog.v("conversation not found with sessionUserId:%s, targetUserId:%s, conversationType:%s",
+                sessionUserId, targetUserId, conversationType);
         return null;
     }
 

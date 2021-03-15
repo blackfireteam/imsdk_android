@@ -10,25 +10,38 @@ public final class IMConstants {
      */
     public static final String GLOBAL_NAMESPACE = "_msimsdk_20210308_";
 
-    public interface DELETE {
+    public static class DELETE {
         /**
          * 已删除
          */
-        int YES = 1;
+        public static final int YES = 1;
         /**
          * 未删除
          */
-        int NO = 0;
+        public static final int NO = 0;
+
+        public static void check(int delete) {
+            if (delete != YES
+                    && delete != NO) {
+                throw new IllegalArgumentException("invalid delete:" + delete);
+            }
+        }
     }
 
     /**
      * 会话类型
      */
-    public interface ConversationType {
+    public static class ConversationType {
         /**
          * 单聊
          */
-        int C2C = 0;
+        public static final int C2C = 0;
+
+        public static void check(int conversationType) {
+            if (conversationType != C2C) {
+                throw new IllegalArgumentException("invalid conversationType:" + conversationType);
+            }
+        }
     }
 
 }
