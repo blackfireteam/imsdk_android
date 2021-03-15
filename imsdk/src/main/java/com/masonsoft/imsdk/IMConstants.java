@@ -10,21 +10,22 @@ public final class IMConstants {
      */
     public static final String GLOBAL_NAMESPACE = "_msimsdk_20210308_";
 
-    public static class DELETE {
-        /**
-         * 已删除
-         */
-        public static final int YES = 1;
-        /**
-         * 未删除
-         */
-        public static final int NO = 0;
+    /**
+     * 数据库中记录的逻辑 true
+     */
+    public static final int TRUE = 1;
+    /**
+     * 数据库中记录的逻辑 false
+     */
+    public static final int FALSE = 0;
 
-        public static void check(int delete) {
-            if (delete != YES
-                    && delete != NO) {
-                throw new IllegalArgumentException("invalid delete:" + delete);
-            }
+    /**
+     * @see #TRUE
+     * @see #FALSE
+     */
+    public static void checkLogicTrueOrFalse(int logicTrueOfFalse) {
+        if (logicTrueOfFalse != TRUE && logicTrueOfFalse != FALSE) {
+            throw new IllegalArgumentException("invalid logicTrueOfFalse:" + logicTrueOfFalse);
         }
     }
 
@@ -42,6 +43,33 @@ public final class IMConstants {
                 throw new IllegalArgumentException("invalid conversationType:" + conversationType);
             }
         }
+    }
+
+    /**
+     * 消息的发送状态
+     */
+    public static class SendStatus {
+
+        /**
+         * 待发送
+         */
+        public static final int IDLE = 0;
+
+        /**
+         * 发送中
+         */
+        public static final int SENDING = 1;
+
+        /**
+         * 发送成功
+         */
+        public static final int SUCCESS = 2;
+
+        /**
+         * 发送失败
+         */
+        public static final int FAIL = 3;
+
     }
 
 }

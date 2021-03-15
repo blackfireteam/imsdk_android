@@ -247,23 +247,6 @@ public final class DatabaseHelper {
         String C_LOCAL_SEQ = "c_local_seq";
 
         /**
-         * 所属会话的类型
-         *
-         * @see #C_LOCAL_TARGET_USER_ID
-         * @since db version 1
-         */
-        String C_LOCAL_CONVERSATION_TYPE = "c_local_conversation_type";
-
-        /**
-         * 所属会话的目标用户 id
-         *
-         * @see #C_LOCAL_CONVERSATION_TYPE
-         * @since db version 1
-         */
-        @Local
-        String C_LOCAL_TARGET_USER_ID = "c_local_target_user_id";
-
-        /**
          * 消息的发送方
          *
          * @since db version 1
@@ -413,6 +396,7 @@ public final class DatabaseHelper {
         /**
          * 消息发送状态
          *
+         * @see IMConstants.SendStatus
          * @since db version 1
          */
         @Local
@@ -420,12 +404,16 @@ public final class DatabaseHelper {
 
         /**
          * 该消息是否是一条指令消息。指令消息不会显示在屏幕上。（如撤回消息是一条指令消息）
+         *
+         * @since db version 1
          */
         @Local
         String C_LOCAL_ACTION_MSG = "c_local_action_msg";
 
         /**
          * 消息所属 block。相同 block 的消息是连续的。
+         *
+         * @since db version 1
          */
         @Local
         String C_LOCAL_BLOCK_ID = "c_local_block_id";
@@ -584,8 +572,6 @@ public final class DatabaseHelper {
         return "create table if not exists " + tableNameMessage + " (" +
                 ColumnsMessage.C_LOCAL_ID + " integer primary key autoincrement not null," +
                 ColumnsMessage.C_LOCAL_SEQ + " integer not null," +
-                ColumnsMessage.C_LOCAL_CONVERSATION_TYPE + " integer not null," +
-                ColumnsMessage.C_LOCAL_TARGET_USER_ID + " integer not null," +
                 ColumnsMessage.C_FROM_USER_ID + " integer not null default 0," +
                 ColumnsMessage.C_TO_USER_ID + " integer not null," +
                 ColumnsMessage.C_REMOTE_MSG_ID + " integer not null," +
@@ -616,8 +602,6 @@ public final class DatabaseHelper {
     private String[] getSQLIndexTableMessage(String tableNameMessage) {
         return new String[]{
                 "create index if not exists " + tableNameMessage + "_index_local_seq on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_SEQ + ")",
-                "create index if not exists " + tableNameMessage + "_index_local_conversation_type on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_CONVERSATION_TYPE + ")",
-                "create index if not exists " + tableNameMessage + "_index_local_target_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_TARGET_USER_ID + ")",
                 "create index if not exists " + tableNameMessage + "_index_from_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_FROM_USER_ID + ")",
                 "create index if not exists " + tableNameMessage + "_index_to_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_TO_USER_ID + ")",
                 "create index if not exists " + tableNameMessage + "_index_remote_msg_id on " + tableNameMessage + "(" + ColumnsMessage.C_REMOTE_MSG_ID + ")",

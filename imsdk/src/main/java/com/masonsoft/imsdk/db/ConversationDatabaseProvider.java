@@ -217,6 +217,70 @@ public class ConversationDatabaseProvider {
     }
 
     /**
+     * 插入一条会话。新会话插入成功时，会自动设置会话的 localId
+     *
+     * @return
+     */
+    public boolean insertConversation(
+            final long sessionUserId,
+            final Conversation conversation) {
+        if (conversation == null) {
+            IMLog.e(new IllegalArgumentException("conversation is null"));
+            return false;
+        }
+
+        if (!conversation.localId.isUnset()) {
+            IMLog.e(
+                    new IllegalArgumentException("invalid conversation localId"),
+                    "conversation localId:%s, you may need use update instead of insert",
+                    conversation.localId.get()
+            );
+            return false;
+        }
+
+        if (conversation.localConversationType.isUnset()) {
+            IMLog.e(
+                    new IllegalArgumentException("invalid conversation localConversationType"),
+                    "conversation localConversationType is unset"
+            );
+            return false;
+        }
+
+        if (conversation.targetUserId.isUnset()) {
+            IMLog.e(
+                    new IllegalArgumentException("invalid conversation targetUserId"),
+                    "conversation targetUserId is unset"
+            );
+            return false;
+        }
+
+        try {
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
+
+            long rowId = db.insert(
+                    DatabaseHelper.TABLE_NAME_CONVERSATION,
+                    null,
+                    conversation.toContentValues());
+            if (rowId == -1) {
+                IMLog.e(
+                        new IllegalAccessError("insert conversation fail"),
+                        "fail to insert conversation with sessionUserId:%s, localConversationType:%s, targetUserId:%s",
+                        sessionUserId, conversation.localConversationType.get(), conversation.targetUserId.get()
+                );
+                return false;
+            }
+
+            // 自增主键
+            conversation.localId.set(rowId);
+            return true;
+        } catch (Throwable e) {
+            IMLog.e(e);
+        }
+        return false;
+    }
+
+    /**
      * @param conversation
      * @return 更新成功返回 true, 否则返回 false.
      */
@@ -229,7 +293,7 @@ public class ConversationDatabaseProvider {
         }
 
         if (conversation.localId.isUnset()) {
-            IMLog.e(new IllegalArgumentException("conversation id is unset"));
+            IMLog.e(new IllegalArgumentException("conversation localId is unset"));
             return false;
         }
 
@@ -253,13 +317,13 @@ public class ConversationDatabaseProvider {
             if (rowsAffected != 1) {
                 IMLog.e(
                         new IllegalAccessException("update conversation fail"),
-                        "unexpected. update conversation with sessionUserId:% conversationId:%s affected %s rows",
+                        "unexpected. update conversation with sessionUserId:% conversation localId:%s affected %s rows",
                         sessionUserId,
                         conversation.localId.get(),
                         rowsAffected
                 );
             } else {
-                IMLog.v("update conversation with sessionUserId:%s conversationId:%s affected %s rows",
+                IMLog.v("update conversation with sessionUserId:%s conversation localId:%s affected %s rows",
                         sessionUserId,
                         conversation.localId.get(),
                         rowsAffected);
@@ -279,7 +343,7 @@ public class ConversationDatabaseProvider {
     public boolean deleteAllConversation(final long sessionUserId) {
         try {
             final ContentValues updateContentValues = new ContentValues();
-            updateContentValues.put(DatabaseHelper.ColumnsConversation.C_LOCAL_DELETE, IMConstants.DELETE.YES);
+            updateContentValues.put(DatabaseHelper.ColumnsConversation.C_LOCAL_DELETE, IMConstants.TRUE);
 
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
