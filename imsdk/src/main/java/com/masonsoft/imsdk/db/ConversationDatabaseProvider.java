@@ -119,6 +119,7 @@ public class ConversationDatabaseProvider {
         if (columnsSelector == null) {
             columnsSelector = Conversation.COLUMNS_SELECTOR_ALL;
         }
+
         Cursor cursor = null;
         try {
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
@@ -173,6 +174,7 @@ public class ConversationDatabaseProvider {
         if (columnsSelector == null) {
             columnsSelector = Conversation.COLUMNS_SELECTOR_ALL;
         }
+
         Cursor cursor = null;
         try {
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
