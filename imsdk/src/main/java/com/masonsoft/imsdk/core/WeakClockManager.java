@@ -24,6 +24,10 @@ public class WeakClockManager {
         }
     };
 
+    public static WeakClockManager getInstance() {
+        return INSTANCE.get();
+    }
+
     private final ClockObservable mClockObservable = new ClockObservable();
     // 用来检查当前计时器状态的 queue (关闭或者开启计时器)
     private final TaskQueue mClockStateCheckQueue = new TaskQueue(1);
@@ -40,6 +44,10 @@ public class WeakClockManager {
 
     private final Handler mClockQueue = new Handler(mClockQueueThread.getLooper());
     private ClockTask mClockTask;
+
+    // clock 任务之间执行的最大间隔. 默认 5 秒.
+    private static final long CLOCK_INTERVAL_DEFAULT = 5000L;
+    private long mClockInterval = CLOCK_INTERVAL_DEFAULT;
     //////////////////////////////////////////////////
     //////////////////////////////////////////////////
     //////////////////////////////////////////////////
@@ -71,6 +79,13 @@ public class WeakClockManager {
             }
         }
 
+        @Override
+        public void registerObserver(ClockObserver observer) {
+            super.registerObserver(observer);
+
+            invalidateClockState();
+        }
+
         private boolean isEmpty() {
             return size() == 0;
         }
@@ -82,12 +97,10 @@ public class WeakClockManager {
      */
     private void startClock() {
         synchronized (mClockQueue) {
-            if (mClockTask != null) {
-                mClockTask.setAbort();
+            if (mClockTask == null || mClockTask.isAbort()) {
+                mClockTask = new ClockTask();
+                mClockQueue.post(mClockTask);
             }
-
-            mClockTask = new ClockTask();
-            mClockQueue.post(mClockTask);
         }
     }
 
@@ -120,6 +133,14 @@ public class WeakClockManager {
                 IMLog.v("WeakClockManager clock task tick [%s] ...", timeMs);
                 mClockObservable.notifyOnClock();
                 IMLog.v("WeakClockManager clock task tick [%s] ... ok", timeMs);
+
+                final long timeDiff = System.currentTimeMillis() - timeMs;
+                long timeDelay = mClockInterval - timeDiff;
+                if (timeDelay <= 0) {
+                    timeDelay = CLOCK_INTERVAL_DEFAULT;
+                }
+                IMLog.v("WeakClockManager clock task tick [%s] ... ok post with delay:%s", timeMs, timeDelay);
+                mClockQueue.postDelayed(this, timeDelay);
             } catch (Throwable e) {
                 IMLog.e(e);
             }
