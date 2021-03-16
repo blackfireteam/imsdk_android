@@ -6,6 +6,8 @@ import com.idonans.core.manager.StorageManager;
 
 /**
  * 简单数据的 key-value 加密存储
+ *
+ * @since 1.0
  */
 public class KeyValueStorage {
 

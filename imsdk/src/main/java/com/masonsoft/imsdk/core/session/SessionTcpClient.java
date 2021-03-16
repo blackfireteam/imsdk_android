@@ -27,6 +27,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * 维护长连接的可用性，包括在长连接上进行 Session 认证，发送心跳等。
+ *
+ * @since 1.0
  */
 public class SessionTcpClient extends NettyTcpClient {
 

@@ -8,6 +8,11 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.db.DatabaseHelper.ColumnsConversation;
 import com.masonsoft.imsdk.lang.StateProp;
 
+/**
+ * 会话
+ *
+ * @since 1.0
+ */
 public class Conversation {
 
     /**

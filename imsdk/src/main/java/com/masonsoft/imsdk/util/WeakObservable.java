@@ -5,6 +5,9 @@ import androidx.core.util.Consumer;
 
 import java.util.List;
 
+/**
+ * @since 1.0
+ */
 public class WeakObservable<T> {
 
     private final ReadWriteWeakSet<T> mObservers = new ReadWriteWeakSet<>();

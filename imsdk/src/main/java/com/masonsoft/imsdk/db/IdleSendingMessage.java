@@ -9,6 +9,8 @@ import com.masonsoft.imsdk.lang.StateProp;
 
 /**
  * 将所有消息表(按照会话分表)中待发送与发送中的消息记录一个统一的副本。相当于一个持久化的发送队列。
+ *
+ * @since 1.0
  */
 public class IdleSendingMessage {
 

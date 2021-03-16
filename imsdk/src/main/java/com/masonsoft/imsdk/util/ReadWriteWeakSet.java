@@ -9,6 +9,9 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+/**
+ * @since 1.0
+ */
 public class ReadWriteWeakSet<T> {
 
     private final WeakHashMap<T, Boolean> mWeakMap = new WeakHashMap<>();

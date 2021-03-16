@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 /**
  * 带状态的对象属性定义。指定判断属性是否已经设置值。
+ *
+ * @since 1.0
  */
 public class StateProp<T> {
 

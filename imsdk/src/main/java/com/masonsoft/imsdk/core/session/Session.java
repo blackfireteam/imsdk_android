@@ -9,6 +9,8 @@ import com.idonans.core.util.TextUtil;
 /**
  * 发起或者保持会话的必要信息。包括链接使用的 token，传输数据使用的加密信息，动态的长连接地址信息等。
  * 所有信息为只读，如果其中任意的信息发生了变更，需要重新创建会话。
+ *
+ * @since 1.0
  */
 public final class Session {
 

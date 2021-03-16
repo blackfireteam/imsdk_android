@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 
 /**
  * IMSDK 内的统一日志输出
+ *
+ * @since 1.0
  */
 public class IMLog {
 

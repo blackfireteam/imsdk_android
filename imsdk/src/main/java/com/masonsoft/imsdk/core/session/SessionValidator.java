@@ -6,6 +6,8 @@ import com.masonsoft.imsdk.IMManager;
 
 /**
  * 验证当前 Session 的有效性
+ *
+ * @since 1.0
  */
 public class SessionValidator {
 

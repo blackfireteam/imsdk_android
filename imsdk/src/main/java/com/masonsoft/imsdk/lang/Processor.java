@@ -2,6 +2,9 @@ package com.masonsoft.imsdk.lang;
 
 import androidx.annotation.Nullable;
 
+/**
+ * @since 1.0
+ */
 public interface Processor<T> {
 
     /**

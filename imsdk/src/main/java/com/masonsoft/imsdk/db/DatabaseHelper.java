@@ -17,6 +17,8 @@ import java.util.Map;
 
 /**
  * 每一个登录用户分别属于单独的数据库文件
+ *
+ * @since 1.0
  */
 public final class DatabaseHelper {
 

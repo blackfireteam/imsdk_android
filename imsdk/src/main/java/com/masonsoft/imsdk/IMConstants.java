@@ -2,6 +2,8 @@ package com.masonsoft.imsdk;
 
 /**
  * IMSDK 相关常量
+ *
+ * @since 1.0
  */
 public final class IMConstants {
 

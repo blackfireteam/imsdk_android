@@ -5,6 +5,9 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.Message;
 
+/**
+ * @since 1.0
+ */
 public class MessageWrapper {
 
     @NonNull

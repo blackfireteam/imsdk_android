@@ -16,6 +16,8 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * 本地在长连接上发送的消息包（带有发送状态的消息）
+ *
+ * @since 1.0
  */
 public abstract class MessagePacket implements Processor<MessageWrapper> {
 

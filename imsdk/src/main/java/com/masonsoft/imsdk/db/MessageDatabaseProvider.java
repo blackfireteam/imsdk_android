@@ -16,6 +16,8 @@ import java.util.List;
 
 /**
  * 消息表(每一个会话是一个单独的消息表)
+ *
+ * @since 1.0
  */
 public class MessageDatabaseProvider {
 

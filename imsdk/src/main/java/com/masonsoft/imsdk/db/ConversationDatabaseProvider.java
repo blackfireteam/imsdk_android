@@ -17,6 +17,8 @@ import java.util.List;
 
 /**
  * 会话表
+ *
+ * @since 1.0
  */
 public class ConversationDatabaseProvider {
 

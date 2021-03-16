@@ -7,6 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  * 这是一个本地属性
+ *
+ * @since 1.0
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.SOURCE)

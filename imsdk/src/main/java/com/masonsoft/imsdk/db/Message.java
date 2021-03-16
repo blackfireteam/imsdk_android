@@ -8,6 +8,11 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.db.DatabaseHelper.ColumnsMessage;
 import com.masonsoft.imsdk.lang.StateProp;
 
+/**
+ * 消息
+ *
+ * @since 1.0
+ */
 public class Message {
 
     /**

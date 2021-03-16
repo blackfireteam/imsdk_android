@@ -6,6 +6,8 @@ import com.masonsoft.imsdk.IMLog;
 
 /**
  * 生成唯一的本地 Sign
+ *
+ * @since 1.0
  */
 public class SignGenerator {
 

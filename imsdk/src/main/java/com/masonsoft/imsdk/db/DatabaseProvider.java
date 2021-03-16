@@ -6,6 +6,9 @@ import com.idonans.core.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @since 1.0
+ */
 public class DatabaseProvider {
 
     private static final Singleton<DatabaseProvider> INSTANCE = new Singleton<DatabaseProvider>() {

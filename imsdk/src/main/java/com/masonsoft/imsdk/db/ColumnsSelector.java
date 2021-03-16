@@ -4,6 +4,11 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
+/**
+ * 自定义列查询与解析
+ *
+ * @since 1.0
+ */
 public interface ColumnsSelector<T> {
 
     /**

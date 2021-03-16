@@ -25,6 +25,8 @@ package com.masonsoft.imsdk.db;
  *     <td>预留功能位</td>
  *   </tr>
  * </table>
+ *
+ * @since 1.0
  */
 public class Sequence {
 

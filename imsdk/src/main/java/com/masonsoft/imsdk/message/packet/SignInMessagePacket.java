@@ -11,6 +11,8 @@ import com.masonsoft.imsdk.proto.ProtoMessage;
 
 /**
  * 在长连接上的登录消息包
+ *
+ * @since 1.0
  */
 public class SignInMessagePacket extends MessagePacket {
 

@@ -7,6 +7,8 @@ import com.masonsoft.imsdk.message.MessageWrapper;
 
 /**
  * 长连接上的消息收发池
+ *
+ * @since 1.0
  */
 public class IMMessageManager {
 
