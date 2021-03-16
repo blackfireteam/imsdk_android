@@ -27,6 +27,7 @@ public class WeakClockManagerTest {
         IMLog.setLogLevel(Log.VERBOSE);
 
         doTest();
+        System.gc();
 
         Threads.sleepQuietly(30 * 1000);
     }
@@ -36,6 +37,18 @@ public class WeakClockManagerTest {
         WeakClockManager.ClockObserver clockObserver2 = WeakClockManagerTest::onClock2;
         WeakClockManager.getInstance().getClockObservable().registerObserver(clockObserver1);
         WeakClockManager.getInstance().getClockObservable().registerObserver(clockObserver2);
+        WeakClockManager.getInstance().getClockObservable().registerObserver(new WeakClockManager.ClockObserver() {
+            @Override
+            public void onClock() {
+                System.out.println("Anonymous clock observer 1 run " + System.currentTimeMillis());
+            }
+        });
+        WeakClockManager.getInstance().getClockObservable().registerObserver(new WeakClockManager.ClockObserver() {
+            @Override
+            public void onClock() {
+                System.out.println("Anonymous clock observer 2 run " + System.currentTimeMillis());
+            }
+        });
     }
 
 }
