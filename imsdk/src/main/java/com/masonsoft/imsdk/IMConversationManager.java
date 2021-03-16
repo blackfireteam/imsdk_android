@@ -3,6 +3,7 @@ package com.masonsoft.imsdk;
 import androidx.annotation.NonNull;
 
 import com.idonans.core.Singleton;
+import com.masonsoft.imsdk.core.IMProcessValidator;
 
 /**
  * 处理会话相关内容。包括查询会话列表，监听会话更新等。
@@ -14,17 +15,15 @@ public class IMConversationManager {
     private static final Singleton<IMConversationManager> INSTANCE = new Singleton<IMConversationManager>() {
         @Override
         protected IMConversationManager create() {
+            //noinspection InstantiationOfUtilityClass
             return new IMConversationManager();
         }
     };
 
-    /**
-     * 获取 IMConversationManager 单例
-     *
-     * @see IMManager#getConversationManager()
-     */
     @NonNull
-    static IMConversationManager getInstance() {
+    public static IMConversationManager getInstance() {
+        IMProcessValidator.validateProcess();
+
         return INSTANCE.get();
     }
 

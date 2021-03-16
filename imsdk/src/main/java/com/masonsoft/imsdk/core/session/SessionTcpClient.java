@@ -5,8 +5,8 @@ import androidx.annotation.Nullable;
 
 import com.idonans.core.Charsets;
 import com.masonsoft.imsdk.IMLog;
+import com.masonsoft.imsdk.IMMessageQueueManager;
 import com.masonsoft.imsdk.IMSessionManager;
-import com.masonsoft.imsdk.IMManager;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.NettyTcpClient;
 import com.masonsoft.imsdk.lang.MultiProcessor;
@@ -102,7 +102,7 @@ public class SessionTcpClient extends NettyTcpClient {
             public void onSessionUserIdChanged() {
             }
         };
-        IMManager.getInstance().getSessionManager().getSessionObservable().registerObserver(mSessionObserver);
+        IMSessionManager.getInstance().getSessionObservable().registerObserver(mSessionObserver);
         validateSession();
     }
 
@@ -328,7 +328,7 @@ public class SessionTcpClient extends NettyTcpClient {
                 IMLog.e(new IllegalStateException("is not sign in, but received message"), "message wrapper:%s", messageWrapper);
                 return;
             }
-            IMManager.getInstance().getMessageManager().enqueueReceivedMessage(sessionUserId, messageWrapper);
+            IMMessageQueueManager.getInstance().enqueueReceivedMessage(sessionUserId, messageWrapper);
         }
     }
 

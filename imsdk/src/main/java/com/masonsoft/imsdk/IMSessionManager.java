@@ -10,6 +10,7 @@ import com.idonans.core.Singleton;
 import com.idonans.core.thread.Threads;
 import com.idonans.core.util.AbortUtil;
 import com.idonans.core.util.IOUtil;
+import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.KeyValueStorage;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
@@ -30,13 +31,10 @@ public class IMSessionManager {
         }
     };
 
-    /**
-     * 获取 IMSessionManager 单例
-     *
-     * @see IMManager#getSessionManager()
-     */
     @NonNull
-    static IMSessionManager getInstance() {
+    public static IMSessionManager getInstance() {
+        IMProcessValidator.validateProcess();
+
         return INSTANCE.get();
     }
 

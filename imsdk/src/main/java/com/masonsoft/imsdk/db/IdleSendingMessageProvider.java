@@ -10,6 +10,7 @@ import com.idonans.core.Singleton;
 import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.IMConstants;
 import com.masonsoft.imsdk.IMLog;
+import com.masonsoft.imsdk.core.IMProcessValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,8 @@ public class IdleSendingMessageProvider {
     };
 
     public static IdleSendingMessageProvider getInstance() {
+        IMProcessValidator.validateProcess();
+
         return INSTANCE.get();
     }
 

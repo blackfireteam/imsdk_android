@@ -3,33 +3,31 @@ package com.masonsoft.imsdk;
 import androidx.annotation.NonNull;
 
 import com.idonans.core.Singleton;
+import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.message.MessageWrapper;
 
 /**
- * 长连接上的消息收发池
+ * 消息收发队列
  *
  * @since 1.0
  */
-public class IMMessageManager {
+public class IMMessageQueueManager {
 
-    private static final Singleton<IMMessageManager> INSTANCE = new Singleton<IMMessageManager>() {
+    private static final Singleton<IMMessageQueueManager> INSTANCE = new Singleton<IMMessageQueueManager>() {
         @Override
-        protected IMMessageManager create() {
-            return new IMMessageManager();
+        protected IMMessageQueueManager create() {
+            return new IMMessageQueueManager();
         }
     };
 
-    /**
-     * 获取 IMMessageManager 单例
-     *
-     * @see IMManager#getMessageManager()
-     */
     @NonNull
-    static IMMessageManager getInstance() {
+    public static IMMessageQueueManager getInstance() {
+        IMProcessValidator.validateProcess();
+
         return INSTANCE.get();
     }
 
-    private IMMessageManager() {
+    private IMMessageQueueManager() {
     }
 
     /**

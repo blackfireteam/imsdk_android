@@ -3,7 +3,7 @@ package com.masonsoft.imsdk;
 import androidx.annotation.NonNull;
 
 import com.idonans.core.Singleton;
-import com.idonans.core.manager.ProcessManager;
+import com.masonsoft.imsdk.core.IMProcessValidator;
 
 /**
  * IM 统一管理类, 核心类, 业务层使用 IM 功能的最外层入口。包括登录，消息，会话等 IM 强相关功能。
@@ -16,47 +16,19 @@ public class IMManager {
     private static final Singleton<IMManager> INSTANCE = new Singleton<IMManager>() {
         @Override
         protected IMManager create() {
+            //noinspection InstantiationOfUtilityClass
             return new IMManager();
         }
     };
 
-    /**
-     * 获取 IMManager 单例
-     */
     @NonNull
     public static IMManager getInstance() {
-        // 进程检查，如果不是主进程，抛出异常.
-        if (!ProcessManager.getInstance().isMainProcess()) {
-            throw new IllegalAccessError("current process is not main process");
-        }
+        IMProcessValidator.validateProcess();
 
         return INSTANCE.get();
     }
 
     private IMManager() {
-    }
-
-    /**
-     * 获取 IMConversationManager 单例
-     */
-    @NonNull
-    public IMConversationManager getConversationManager() {
-        return IMConversationManager.getInstance();
-    }
-
-    /**
-     * 获取 IMSessionManager 单例
-     */
-    @NonNull
-    public IMSessionManager getSessionManager() {
-        return IMSessionManager.getInstance();
-    }
-
-    /**
-     * 获取 IMMessageManager 单例
-     */
-    public IMMessageManager getMessageManager() {
-        return IMMessageManager.getInstance();
     }
 
 }

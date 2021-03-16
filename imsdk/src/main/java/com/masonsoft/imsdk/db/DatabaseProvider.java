@@ -2,6 +2,7 @@ package com.masonsoft.imsdk.db;
 
 
 import com.idonans.core.Singleton;
+import com.masonsoft.imsdk.core.IMProcessValidator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,8 @@ public class DatabaseProvider {
     };
 
     public static DatabaseProvider getInstance() {
+        IMProcessValidator.validateProcess();
+
         return INSTANCE.get();
     }
 
