@@ -19,7 +19,7 @@ public class IMConversationManager {
     };
 
     /**
-     * 获取 MSIMConversationManager 单例
+     * 获取 IMConversationManager 单例
      *
      * @see IMManager#getConversationManager()
      */

@@ -18,7 +18,7 @@ public class IMMessageManager {
     };
 
     /**
-     * 获取 MSIMMessageManager 单例
+     * 获取 IMMessageManager 单例
      *
      * @see IMManager#getMessageManager()
      */

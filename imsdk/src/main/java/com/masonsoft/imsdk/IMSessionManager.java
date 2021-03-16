@@ -31,7 +31,7 @@ public class IMSessionManager {
     };
 
     /**
-     * 获取 MSIMSessionManager 单例
+     * 获取 IMSessionManager 单例
      *
      * @see IMManager#getSessionManager()
      */
