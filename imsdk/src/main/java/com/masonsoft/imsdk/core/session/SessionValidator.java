@@ -2,7 +2,7 @@ package com.masonsoft.imsdk.core.session;
 
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.IMManager;
+import com.masonsoft.imsdk.IMSessionManager;
 
 /**
  * 验证当前 Session 的有效性
@@ -22,7 +22,7 @@ public class SessionValidator {
             return false;
         }
 
-        return IMManager.getInstance().getSessionManager().getSession() == session;
+        return IMSessionManager.getInstance().getSession() == session;
     }
 
 }
