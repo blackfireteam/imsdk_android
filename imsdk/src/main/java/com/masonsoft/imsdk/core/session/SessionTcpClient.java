@@ -11,6 +11,7 @@ import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.NettyTcpClient;
 import com.masonsoft.imsdk.lang.MultiProcessor;
 import com.masonsoft.imsdk.message.MessageWrapper;
+import com.masonsoft.imsdk.message.SessionMessageWrapper;
 import com.masonsoft.imsdk.message.packet.MessagePacket;
 import com.masonsoft.imsdk.message.packet.PingMessagePacket;
 import com.masonsoft.imsdk.message.packet.SignInMessagePacket;
@@ -328,7 +329,7 @@ public class SessionTcpClient extends NettyTcpClient {
                 IMLog.e(new IllegalStateException("is not sign in, but received message"), "message wrapper:%s", messageWrapper);
                 return;
             }
-            IMMessageQueueManager.getInstance().enqueueReceivedMessage(sessionUserId, messageWrapper);
+            IMMessageQueueManager.getInstance().enqueueReceivedMessage(new SessionMessageWrapper(sessionUserId, messageWrapper));
         }
     }
 

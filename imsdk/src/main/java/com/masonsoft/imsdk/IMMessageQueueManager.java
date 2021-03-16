@@ -3,8 +3,10 @@ package com.masonsoft.imsdk;
 import androidx.annotation.NonNull;
 
 import com.idonans.core.Singleton;
+import com.idonans.core.thread.TaskQueue;
 import com.masonsoft.imsdk.core.IMProcessValidator;
-import com.masonsoft.imsdk.message.MessageWrapper;
+import com.masonsoft.imsdk.lang.MultiProcessor;
+import com.masonsoft.imsdk.message.SessionMessageWrapper;
 
 /**
  * 消息收发队列
@@ -27,16 +29,44 @@ public class IMMessageQueueManager {
         return INSTANCE.get();
     }
 
+    // 处理服务器下发的消息
+    private final MultiProcessor<SessionMessageWrapper> mReceivedMessageProcessor = new MultiProcessor<>();
+    private final TaskQueue mReceivedMessageQueue = new TaskQueue(1);
+
     private IMMessageQueueManager() {
     }
 
+    @NonNull
+    public MultiProcessor<SessionMessageWrapper> getReceivedMessageProcessor() {
+        return mReceivedMessageProcessor;
+    }
+
     /**
-     * 收到服务器发送的消息
-     *
-     * @param sessionUserId 收到消息的长连接上认证成功的用户 id
+     * 收到服务器下发的消息
      */
-    public void enqueueReceivedMessage(long sessionUserId, @NonNull MessageWrapper messageWrapper) {
-        // TODO
+    public void enqueueReceivedMessage(@NonNull SessionMessageWrapper sessionMessageWrapper) {
+        mReceivedMessageQueue.enqueue(new ReceivedMessageTask(sessionMessageWrapper));
+    }
+
+    private class ReceivedMessageTask implements Runnable {
+
+        @NonNull
+        private final SessionMessageWrapper mSessionMessageWrapper;
+
+        private ReceivedMessageTask(@NonNull SessionMessageWrapper sessionMessageWrapper) {
+            mSessionMessageWrapper = sessionMessageWrapper;
+        }
+
+        @Override
+        public void run() {
+            try {
+                if (!mReceivedMessageProcessor.doProcess(mSessionMessageWrapper)) {
+                    throw new IllegalAccessError("ReceivedMessageTask SessionMessageWrapper do process fail");
+                }
+            } catch (Throwable e) {
+                IMLog.v(e, "SessionMessageWrapper:%s", mSessionMessageWrapper.toShortString());
+            }
+        }
     }
 
 }
