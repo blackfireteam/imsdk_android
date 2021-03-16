@@ -24,6 +24,8 @@ public final class DatabaseHelper {
     private static final int DB_VERSION = 1;
     // 会话表
     public static final String TABLE_NAME_CONVERSATION = "t_conversation";
+    // 消息发送队列表
+    public static final String TABLE_NAME_IDLE_SENDING_MESSAGE = "t_idle_sending_message";
 
     // 消息表前缀, 每一个会话使用一个单独的消息表
     private static final String TABLE_NAME_MESSAGE_PREFIX = "t_message_";
@@ -420,6 +422,47 @@ public final class DatabaseHelper {
     }
 
     /**
+     * 将所有消息表(按照会话分表)中待发送与发送中的消息记录一个统一的副本。相当于一个持久化的发送队列。
+     */
+    public interface ColumnsIdleSendingMessage {
+
+        /**
+         * 自增主键
+         *
+         * @since db version 1
+         */
+        @Local
+        String C_LOCAL_ID = "c_local_id";
+
+        /**
+         * 消息所属会话的类型。<br>
+         * C_CONVERSATION_TYPE, C_TARGET_USER_ID, C_MESSAGE_LOCAL_ID 三者唯一确定了一条消息记录
+         *
+         * @see ColumnsConversation#C_LOCAL_CONVERSATION_TYPE
+         * @since db version 1
+         */
+        String C_CONVERSATION_TYPE = "c_conversation_type";
+
+        /**
+         * 消息所属会话的 target user id<br>
+         * C_CONVERSATION_TYPE, C_TARGET_USER_ID, C_MESSAGE_LOCAL_ID 三者唯一确定了一条消息记录
+         *
+         * @see ColumnsConversation#C_TARGET_USER_ID
+         * @since db version 1
+         */
+        String C_TARGET_USER_ID = "c_target_user_id";
+
+        /**
+         * 消息的本地 id. 对应消息表的 local id(消息表的自增主键)<br>
+         * C_CONVERSATION_TYPE, C_TARGET_USER_ID, C_MESSAGE_LOCAL_ID 三者唯一确定了一条消息记录
+         *
+         * @see ColumnsMessage#C_LOCAL_ID
+         * @since db version 1
+         */
+        String C_MESSAGE_LOCAL_ID = "c_message_local_id";
+    }
+
+    /**
      * 不同的 sessionNamespace 使用不同的数据库文件。
      * <p>
      * <pre>
@@ -440,6 +483,13 @@ public final class DatabaseHelper {
                     db.execSQL(getSQLCreateTableConversation());
                     // 创建会话表索引
                     for (String sqlIndex : getSQLIndexTableConversation()) {
+                        db.execSQL(sqlIndex);
+                    }
+
+                    // 创建消息发送队列表
+                    db.execSQL(getSQLCreateTableIdleSendingMessage());
+                    // 创建消息发送队列表索引
+                    for (String sqlIndex : getSQLIndexTableIdleSendingMessage()) {
                         db.execSQL(sqlIndex);
                     }
 
@@ -517,7 +567,7 @@ public final class DatabaseHelper {
     }
 
     /**
-     * 获取目标会话对应的消息表的表名，如果表不存在会创建对应的表。每一个会话都是用一个单独的消息表。
+     * 获取目标会话对应的消息表的表名，如果表不存在会创建对应的表。每一个会话都使用一个单独的消息表。
      *
      * @param conversationType
      * @param targetUserId
@@ -609,6 +659,31 @@ public final class DatabaseHelper {
                 "create index if not exists " + tableNameMessage + "_index_local_send_status on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_SEND_STATUS + ")",
                 "create index if not exists " + tableNameMessage + "_index_local_action_msg on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_ACTION_MSG + ")",
                 "create index if not exists " + tableNameMessage + "_index_local_block_id on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_BLOCK_ID + ")",
+        };
+    }
+
+    /**
+     * 消息发送队列表创建语句(数据库最新版本)
+     */
+    @NonNull
+    private String getSQLCreateTableIdleSendingMessage() {
+        return "create table " + TABLE_NAME_IDLE_SENDING_MESSAGE + " (" +
+                ColumnsIdleSendingMessage.C_LOCAL_ID + " integer primary key autoincrement not null," +
+                ColumnsIdleSendingMessage.C_CONVERSATION_TYPE + " integer not null," +
+                ColumnsIdleSendingMessage.C_TARGET_USER_ID + " integer not null," +
+                ColumnsIdleSendingMessage.C_MESSAGE_LOCAL_ID + " integer not null" +
+                ")";
+    }
+
+    /**
+     * 消息发送队列表创建索引语句(数据库最新版本)
+     */
+    @NonNull
+    private String[] getSQLIndexTableIdleSendingMessage() {
+        return new String[]{
+                "create index " + TABLE_NAME_IDLE_SENDING_MESSAGE + "_index_conversation_type on " + TABLE_NAME_IDLE_SENDING_MESSAGE + "(" + ColumnsIdleSendingMessage.C_CONVERSATION_TYPE + ")",
+                "create index " + TABLE_NAME_IDLE_SENDING_MESSAGE + "_index_target_user_id on " + TABLE_NAME_IDLE_SENDING_MESSAGE + "(" + ColumnsIdleSendingMessage.C_TARGET_USER_ID + ")",
+                "create index " + TABLE_NAME_IDLE_SENDING_MESSAGE + "_index_message_local_id on " + TABLE_NAME_IDLE_SENDING_MESSAGE + "(" + ColumnsIdleSendingMessage.C_MESSAGE_LOCAL_ID + ")",
         };
     }
 
