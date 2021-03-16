@@ -33,6 +33,7 @@ public final class IMConstants {
      * 会话类型
      */
     public static class ConversationType {
+
         /**
          * 单聊
          */
@@ -42,6 +43,13 @@ public final class IMConstants {
             if (conversationType != C2C) {
                 throw new IllegalArgumentException("invalid conversationType:" + conversationType);
             }
+        }
+
+        public static String toHumanString(int conversationType) {
+            if (conversationType == C2C) {
+                return "C2C";
+            }
+            return String.valueOf(conversationType);
         }
     }
 
@@ -70,6 +78,29 @@ public final class IMConstants {
          */
         public static final int FAIL = 3;
 
+        public static void check(int sendStatus) {
+            if (sendStatus != IDLE
+                    && sendStatus != SENDING
+                    && sendStatus != SUCCESS
+                    && sendStatus != FAIL) {
+                throw new IllegalArgumentException("invalid sendStatus:" + sendStatus);
+            }
+        }
+
+        public static String toHumanString(int sendStatus) {
+            switch (sendStatus) {
+                case IDLE:
+                    return "IDLE";
+                case SENDING:
+                    return "SENDING";
+                case SUCCESS:
+                    return "SUCCESS";
+                case FAIL:
+                    return "FAIL";
+                default:
+                    return String.valueOf(sendStatus);
+            }
+        }
     }
 
 }
