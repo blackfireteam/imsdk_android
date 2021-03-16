@@ -57,4 +57,13 @@ public class ReadWriteWeakSet<T> {
         }
     }
 
+    public int size() {
+        mReadLock.lock();
+        try {
+            return mWeakMap.size();
+        } finally {
+            mReadLock.unlock();
+        }
+    }
+
 }

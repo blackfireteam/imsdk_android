@@ -34,4 +34,8 @@ public class WeakObservable<T> {
         }
     }
 
+    protected int size() {
+        return mObservers.size();
+    }
+
 }
