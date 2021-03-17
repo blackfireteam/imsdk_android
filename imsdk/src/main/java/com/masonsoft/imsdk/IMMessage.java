@@ -117,6 +117,12 @@ public class IMMessage {
      * 消息的发送状态
      */
     @NonNull
-    public final StateProp<Integer> state = new StateProp<>();
+    public final StateProp<Integer> sendState = new StateProp<>();
+
+    /**
+     * 消息的发送进度. 范围 [0, 1]
+     */
+    @NonNull
+    public final StateProp<Float> sendProgress = new StateProp<>();
 
 }
