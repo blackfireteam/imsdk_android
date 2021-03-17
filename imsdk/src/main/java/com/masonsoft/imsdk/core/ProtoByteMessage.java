@@ -10,7 +10,7 @@ import com.masonsoft.imsdk.core.proto.ProtoMessage;
  *
  * @since 1.0
  */
-public class Message {
+public class ProtoByteMessage {
 
     /**
      * proto buff 编码
@@ -25,7 +25,7 @@ public class Message {
     @NonNull
     private final byte[] mData;
 
-    public Message(int type, @NonNull byte[] data) {
+    public ProtoByteMessage(int type, @NonNull byte[] data) {
         this.mType = type;
         this.mData = data;
     }
@@ -44,7 +44,7 @@ public class Message {
 
     @NonNull
     public String toShortString() {
-        return String.format("Message[type:%s, data length:%s]", mType, mData.length);
+        return String.format("ProtoByteMessage[type:%s, data length:%s]", mType, mData.length);
     }
 
     @Override
@@ -125,13 +125,13 @@ public class Message {
         public static final int CHAT_LIST = 15;
 
         /**
-         * 将 message 解码为 ProtoMessage 内定义的实体对象。如果解码失败，返回 null.
+         * 将 ProtoByteMessage 解码为 ProtoMessage 内定义的实体对象。如果解码失败，返回 null.
          */
         @Nullable
-        public static Object decode(@NonNull Message message) {
+        public static Object decode(@NonNull ProtoByteMessage protoByteMessage) {
             try {
-                final int type = message.getType();
-                final byte[] data = message.getData();
+                final int type = protoByteMessage.getType();
+                final byte[] data = protoByteMessage.getData();
                 switch (type) {
                     case PING:
                         return ProtoMessage.Ping.parseFrom(data);
@@ -171,77 +171,77 @@ public class Message {
             } catch (Throwable e) {
                 IMLog.e(e);
             }
-            IMLog.e(new IllegalAccessError(), "fail to decode message:%s", message.toString());
+            IMLog.e(new IllegalAccessError(), "fail to decode protoByteMessage:%s", protoByteMessage.toString());
             return null;
         }
 
         /**
-         * 将 ProtoMessage 内定义的实体对象编码为 message. 如果编码失败，返回 null.
+         * 将 ProtoMessage 内定义的实体对象编码为 ProtoByteMessage. 如果编码失败，返回 null.
          */
         @Nullable
-        public static Message encode(@NonNull Object protoMessageObject) {
+        public static ProtoByteMessage encode(@NonNull Object protoMessageObject) {
             if (protoMessageObject instanceof ProtoMessage.Ping) {
-                return new Message(PING, ((ProtoMessage.Ping) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(PING, ((ProtoMessage.Ping) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.ImLogin) {
-                return new Message(IM_LOGIN, ((ProtoMessage.ImLogin) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(IM_LOGIN, ((ProtoMessage.ImLogin) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.ImLogout) {
-                return new Message(IM_LOGOUT, ((ProtoMessage.ImLogout) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(IM_LOGOUT, ((ProtoMessage.ImLogout) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.Result) {
-                return new Message(RESULT, ((ProtoMessage.Result) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(RESULT, ((ProtoMessage.Result) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.ChatS) {
-                return new Message(CHAT_S, ((ProtoMessage.ChatS) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(CHAT_S, ((ProtoMessage.ChatS) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.ChatSR) {
-                return new Message(CHAT_S_R, ((ProtoMessage.ChatSR) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(CHAT_S_R, ((ProtoMessage.ChatSR) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.ChatR) {
-                return new Message(CHAT_R, ((ProtoMessage.ChatR) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(CHAT_R, ((ProtoMessage.ChatR) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.ChatRBatch) {
-                return new Message(CHAT_R_BATCH, ((ProtoMessage.ChatRBatch) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(CHAT_R_BATCH, ((ProtoMessage.ChatRBatch) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.GetHistory) {
-                return new Message(GET_HISTORY, ((ProtoMessage.GetHistory) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(GET_HISTORY, ((ProtoMessage.GetHistory) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.Revoke) {
-                return new Message(REVOKE, ((ProtoMessage.Revoke) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(REVOKE, ((ProtoMessage.Revoke) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.MsgRead) {
-                return new Message(MSG_READ, ((ProtoMessage.MsgRead) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(MSG_READ, ((ProtoMessage.MsgRead) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.LastReadMsg) {
-                return new Message(LAST_READ_MSG, ((ProtoMessage.LastReadMsg) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(LAST_READ_MSG, ((ProtoMessage.LastReadMsg) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.DelChat) {
-                return new Message(DEL_CHAT, ((ProtoMessage.DelChat) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(DEL_CHAT, ((ProtoMessage.DelChat) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.GetChatList) {
-                return new Message(GET_CHAT_LIST, ((ProtoMessage.GetChatList) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(GET_CHAT_LIST, ((ProtoMessage.GetChatList) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.ChatItem) {
-                return new Message(CHAT_ITEM, ((ProtoMessage.ChatItem) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(CHAT_ITEM, ((ProtoMessage.ChatItem) protoMessageObject).toByteArray());
             }
 
             if (protoMessageObject instanceof ProtoMessage.ChatList) {
-                return new Message(CHAT_LIST, ((ProtoMessage.ChatList) protoMessageObject).toByteArray());
+                return new ProtoByteMessage(CHAT_LIST, ((ProtoMessage.ChatList) protoMessageObject).toByteArray());
             }
 
             IMLog.e(new IllegalAccessError(), "unknown proto message object: %s", protoMessageObject);

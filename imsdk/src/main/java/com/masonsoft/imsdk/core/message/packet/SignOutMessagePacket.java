@@ -3,7 +3,7 @@ package com.masonsoft.imsdk.core.message.packet;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.Message;
+import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.message.MessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
@@ -15,8 +15,8 @@ import com.masonsoft.imsdk.core.proto.ProtoMessage;
  */
 public class SignOutMessagePacket extends TimeoutMessagePacket {
 
-    private SignOutMessagePacket(Message message, long sign) {
-        super(message, sign);
+    private SignOutMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
+        super(protoByteMessage, sign);
     }
 
     @Override
@@ -52,8 +52,8 @@ public class SignOutMessagePacket extends TimeoutMessagePacket {
     public static SignOutMessagePacket create() {
         final long sign = SignGenerator.next();
         return new SignOutMessagePacket(
-                new Message(
-                        Message.Type.IM_LOGOUT,
+                new ProtoByteMessage(
+                        ProtoByteMessage.Type.IM_LOGOUT,
                         ProtoMessage.ImLogout.newBuilder()
                                 .setSign(sign)
                                 .build()

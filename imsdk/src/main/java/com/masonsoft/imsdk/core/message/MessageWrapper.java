@@ -3,7 +3,7 @@ package com.masonsoft.imsdk.core.message;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.Message;
+import com.masonsoft.imsdk.core.ProtoByteMessage;
 
 /**
  * @since 1.0
@@ -11,18 +11,18 @@ import com.masonsoft.imsdk.core.Message;
 public class MessageWrapper {
 
     @NonNull
-    private final Message mOrigin;
+    private final ProtoByteMessage mOrigin;
 
     @Nullable
     private final Object mProtoMessageObject;
 
-    public MessageWrapper(@NonNull Message origin) {
+    public MessageWrapper(@NonNull ProtoByteMessage origin) {
         mOrigin = origin;
-        mProtoMessageObject = Message.Type.decode(origin);
+        mProtoMessageObject = ProtoByteMessage.Type.decode(origin);
     }
 
     @NonNull
-    public Message getOrigin() {
+    public ProtoByteMessage getOrigin() {
         return mOrigin;
     }
 

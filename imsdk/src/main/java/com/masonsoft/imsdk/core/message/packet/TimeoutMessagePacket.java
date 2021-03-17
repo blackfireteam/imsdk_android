@@ -1,7 +1,7 @@
 package com.masonsoft.imsdk.core.message.packet;
 
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.Message;
+import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.WeakClockManager;
 
 /**
@@ -32,12 +32,12 @@ public abstract class TimeoutMessagePacket extends MessagePacket {
      */
     private long mTimeoutMs = DEFAULT_MESSAGE_TIMEOUT_MS;
 
-    public TimeoutMessagePacket(Message message) {
-        super(message);
+    public TimeoutMessagePacket(ProtoByteMessage protoByteMessage) {
+        super(protoByteMessage);
     }
 
-    public TimeoutMessagePacket(Message message, long sign) {
-        super(message, sign);
+    public TimeoutMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
+        super(protoByteMessage, sign);
     }
 
     public long getSendTimeMs() {

@@ -4,7 +4,7 @@ import androidx.annotation.Nullable;
 
 import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.Message;
+import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.message.MessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
@@ -21,8 +21,8 @@ public class SignInMessagePacket extends TimeoutMessagePacket {
      */
     private long mSessionUserId;
 
-    private SignInMessagePacket(Message message, long sign) {
-        super(message, sign);
+    private SignInMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
+        super(protoByteMessage, sign);
     }
 
     public long getSessionUserId() {
@@ -78,8 +78,8 @@ public class SignInMessagePacket extends TimeoutMessagePacket {
     public static SignInMessagePacket create(final String token) {
         final long sign = SignGenerator.next();
         return new SignInMessagePacket(
-                new Message(
-                        Message.Type.IM_LOGIN,
+                new ProtoByteMessage(
+                        ProtoByteMessage.Type.IM_LOGIN,
                         ProtoMessage.ImLogin.newBuilder()
                                 .setSign(sign)
                                 .setToken(token)

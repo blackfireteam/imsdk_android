@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.Message;
+import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.message.MessageWrapper;
@@ -57,7 +57,7 @@ public abstract class MessagePacket implements Processor<MessageWrapper> {
     /**
      * 原始消息内容
      */
-    private final Message mMessage;
+    private final ProtoByteMessage mProtoByteMessage;
 
     /**
      * 消息包的本地 sign(唯一)
@@ -75,12 +75,12 @@ public abstract class MessagePacket implements Processor<MessageWrapper> {
     private long mErrorCode;
     private String mErrorMessage;
 
-    public MessagePacket(final Message message) {
-        this(message, SignGenerator.next());
+    public MessagePacket(final ProtoByteMessage protoByteMessage) {
+        this(protoByteMessage, SignGenerator.next());
     }
 
-    public MessagePacket(final Message message, final long sign) {
-        mMessage = message;
+    public MessagePacket(final ProtoByteMessage protoByteMessage, final long sign) {
+        mProtoByteMessage = protoByteMessage;
         mSign = sign;
     }
 
@@ -104,8 +104,8 @@ public abstract class MessagePacket implements Processor<MessageWrapper> {
         throw new IllegalStateException("unknown state " + state);
     }
 
-    public Message getMessage() {
-        return mMessage;
+    public ProtoByteMessage getProtoByteMessage() {
+        return mProtoByteMessage;
     }
 
     public int getState() {

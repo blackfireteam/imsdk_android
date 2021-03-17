@@ -105,4 +105,11 @@ public final class IMConstants {
         }
     }
 
+    /**
+     * 消息的类型
+     */
+    public static class MessageType {
+
+    }
+
 }

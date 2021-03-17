@@ -7,7 +7,7 @@ import com.idonans.core.Charsets;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
-import com.masonsoft.imsdk.core.Message;
+import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.NettyTcpClient;
 import com.masonsoft.imsdk.core.message.MessageWrapper;
 import com.masonsoft.imsdk.core.message.SessionMessageWrapper;
@@ -128,7 +128,7 @@ public class SessionTcpClient extends NettyTcpClient {
         final String aesKey = mSession.getAesKey();
 
         // 请求登录的消息需要加密
-        if (messageType == Message.Type.IM_LOGIN) {
+        if (messageType == ProtoByteMessage.Type.IM_LOGIN) {
             return crypt(messageData, aesKey, true);
         }
 
@@ -171,7 +171,7 @@ public class SessionTcpClient extends NettyTcpClient {
         // 发送心跳包
         // 在已经登录的情况下才发送心跳包
         if (isOnline()) {
-            sendMessageQuietly(PingMessagePacket.create().getMessage());
+            sendMessageQuietly(PingMessagePacket.create().getProtoByteMessage());
         }
     }
 
@@ -197,12 +197,12 @@ public class SessionTcpClient extends NettyTcpClient {
     }
 
     @Override
-    protected void sendMessage(@NonNull Message message) throws Throwable {
+    protected void sendMessage(@NonNull ProtoByteMessage protoByteMessage) throws Throwable {
         // 在发送长连接消息之前，检查当前 Session 的状态
         validateSession();
 
         synchronized (mSession) {
-            super.sendMessage(message);
+            super.sendMessage(protoByteMessage);
         }
     }
 
@@ -282,7 +282,7 @@ public class SessionTcpClient extends NettyTcpClient {
             }
 
             messagePacket.moveToState(MessagePacket.STATE_GOING);
-            final boolean writeSuccess = sendMessageQuietly(messagePacket.getMessage());
+            final boolean writeSuccess = sendMessageQuietly(messagePacket.getProtoByteMessage());
             if (writeSuccess) {
                 messagePacket.moveToState(MessagePacket.STATE_WAIT_RESULT);
             } else {
@@ -297,8 +297,8 @@ public class SessionTcpClient extends NettyTcpClient {
     }
 
     @Override
-    protected void onMessageReceived(@NonNull Message message) {
-        super.onMessageReceived(message);
+    protected void onMessageReceived(@NonNull ProtoByteMessage protoByteMessage) {
+        super.onMessageReceived(protoByteMessage);
 
         // 在接收到长连接消息时，检查当前 Session 的状态
         validateSession();
@@ -309,12 +309,12 @@ public class SessionTcpClient extends NettyTcpClient {
                         new IllegalStateException("message received, current tcp state or connection is not ready or active"),
                         "tcp state:%s, message:%s",
                         stateToString(getState()),
-                        message.toString()
+                        protoByteMessage.toString()
                 );
                 return;
             }
 
-            final MessageWrapper messageWrapper = new MessageWrapper(message);
+            final MessageWrapper messageWrapper = new MessageWrapper(protoByteMessage);
 
             // 优先本地消费(直接消费，快速响应)
             if (mLocalMessageProcessor.doProcess(messageWrapper)) {

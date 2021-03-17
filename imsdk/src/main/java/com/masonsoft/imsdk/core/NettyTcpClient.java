@@ -157,9 +157,9 @@ public abstract class NettyTcpClient extends TcpClient {
     /**
      * 消息编码，将 Message 编码为 byte[] 并输出
      */
-    private class MessageEncoder extends MessageToByteEncoder<Message> {
+    private class MessageEncoder extends MessageToByteEncoder<ProtoByteMessage> {
         @Override
-        protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) throws Exception {
+        protected void encode(ChannelHandlerContext ctx, ProtoByteMessage msg, ByteBuf out) throws Exception {
             IMLog.v("MessageEncoder %s", msg);
             out.writeBytes(message2Bytes(msg));
         }
@@ -180,7 +180,7 @@ public abstract class NettyTcpClient extends TcpClient {
      * 对消息内容进行加密，如果加密成功，返回加密后的 data, 否则返回 null. 默认返回 null(不加密).
      * 如果需要对不同的消息类型选择是否开启加密，可以通过 messageType 判断消息类型。
      *
-     * @see Message#getType()
+     * @see ProtoByteMessage#getType()
      */
     protected byte[] encryptMessage(int messageType, byte[] messageData) {
         return null;
@@ -216,8 +216,8 @@ public abstract class NettyTcpClient extends TcpClient {
         return ZipUtil.inflate(messageData);
     }
 
-    protected byte[] message2Bytes(Message message) {
-        final int messageType = message.getType();
+    protected byte[] message2Bytes(ProtoByteMessage protoByteMessage) {
+        final int messageType = protoByteMessage.getType();
         if (messageType < 0) {
             throw new IllegalAccessError("message2Bytes invalid message type " + messageType);
         }
@@ -225,7 +225,7 @@ public abstract class NettyTcpClient extends TcpClient {
             throw new IllegalAccessError("message2Bytes message type too large " + messageType + ", max:" + MAX_MESSAGE_TYPE_VALUE);
         }
 
-        byte[] tmpMessageData = message.getData();
+        byte[] tmpMessageData = protoByteMessage.getData();
         byte[] messageData = deflateMessage(messageType, tmpMessageData);
         // 是否压缩 0 or 1
         final int isZip;
@@ -303,9 +303,9 @@ public abstract class NettyTcpClient extends TcpClient {
                 messageData = inflateMessage(messageData);
             }
 
-            final Message message = new Message(messageType, messageData);
-            IMLog.v("bytes2Message %s", message);
-            out.add(message);
+            final ProtoByteMessage protoByteMessage = new ProtoByteMessage(messageType, messageData);
+            IMLog.v("bytes2Message %s", protoByteMessage);
+            out.add(protoByteMessage);
         }
     }
 
@@ -471,9 +471,9 @@ public abstract class NettyTcpClient extends TcpClient {
         IMLog.v("onDisconnected");
     }
 
-    private class MessageReader extends SimpleChannelInboundHandler<Message> {
+    private class MessageReader extends SimpleChannelInboundHandler<ProtoByteMessage> {
         @Override
-        protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception {
+        protected void channelRead0(ChannelHandlerContext ctx, ProtoByteMessage msg) throws Exception {
             if (msg != null) {
                 onMessageReceived(msg);
             }
@@ -483,8 +483,8 @@ public abstract class NettyTcpClient extends TcpClient {
     /**
      * 读取到服务器发送的原始消息
      */
-    protected void onMessageReceived(@NonNull Message message) {
-        IMLog.v("onMessageReceived %s", message);
+    protected void onMessageReceived(@NonNull ProtoByteMessage protoByteMessage) {
+        IMLog.v("onMessageReceived %s", protoByteMessage);
     }
 
     private class ExceptionHandler extends ChannelInboundHandlerAdapter {
@@ -501,9 +501,9 @@ public abstract class NettyTcpClient extends TcpClient {
     /**
      * 在长连接上发送消息，如果当前长连接处于不可发送的状态，将抛出异常.
      *
-     * @see #sendMessageQuietly(Message)
+     * @see #sendMessageQuietly(ProtoByteMessage)
      */
-    protected void sendMessage(@NonNull Message message) throws Throwable {
+    protected void sendMessage(@NonNull ProtoByteMessage protoByteMessage) throws Throwable {
         try {
             checkState(STATE_CONNECTED);
             Objects.requireNonNull(mChannelHandlerContext);
@@ -512,7 +512,7 @@ public abstract class NettyTcpClient extends TcpClient {
             if (!channel.isActive()) {
                 throw new IllegalStateException("channel is not active");
             }
-            mChannelHandlerContext.writeAndFlush(message);
+            mChannelHandlerContext.writeAndFlush(protoByteMessage);
         } catch (Throwable e) {
             if (getState() == STATE_CONNECTED) {
                 // 如果当前链接状态为已连接，则强制关闭长连接.
@@ -528,11 +528,11 @@ public abstract class NettyTcpClient extends TcpClient {
      * 当返回 false 时，表示消息发送失败。当返回 true 时，并不能说明消息发送成功，消息是否发送成功需要以消息回执为准。
      * 返回 true 时，仅说明消息已经写入到了 TCP 链接中。
      *
-     * @see #sendMessage(Message)
+     * @see #sendMessage(ProtoByteMessage)
      */
-    protected boolean sendMessageQuietly(@NonNull Message message) {
+    protected boolean sendMessageQuietly(@NonNull ProtoByteMessage protoByteMessage) {
         try {
-            sendMessage(message);
+            sendMessage(protoByteMessage);
             return true;
         } catch (Throwable e) {
             IMLog.v(e, "sendMessageQuietly fail");
