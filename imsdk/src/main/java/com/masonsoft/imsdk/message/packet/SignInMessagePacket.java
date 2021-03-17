@@ -14,7 +14,7 @@ import com.masonsoft.imsdk.proto.ProtoMessage;
  *
  * @since 1.0
  */
-public class SignInMessagePacket extends MessagePacket {
+public class SignInMessagePacket extends TimeoutMessagePacket {
 
     /**
      * 登录信息中对应的用户 id.(服务器返回的)
@@ -40,24 +40,26 @@ public class SignInMessagePacket extends MessagePacket {
             if (result.getSign() == getSign()) {
                 // 校验 sign 是否相等
 
-                final int state = getState();
-                if (state != STATE_WAIT_RESULT) {
-                    IMLog.e("SignInMessagePacket unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
-                    return false;
-                }
-
-                if (result.getCode() != 0) {
-                    setErrorCode(result.getCode());
-                    setErrorMessage(result.getMsg());
-                    moveToState(STATE_FAIL);
-                } else {
-                    final long sessionUserId = result.getUid();
-                    if (sessionUserId <= 0) {
-                        IMLog.e("SignInMessagePacket unexpected. accept with same sign:%s and invalid user id:%s", getSign(), sessionUserId);
+                synchronized (getStateLock()) {
+                    final int state = getState();
+                    if (state != STATE_WAIT_RESULT) {
+                        IMLog.e("SignInMessagePacket unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
                         return false;
                     }
-                    mSessionUserId = sessionUserId;
-                    moveToState(STATE_SUCCESS);
+
+                    if (result.getCode() != 0) {
+                        setErrorCode(result.getCode());
+                        setErrorMessage(result.getMsg());
+                        moveToState(STATE_FAIL);
+                    } else {
+                        final long sessionUserId = result.getUid();
+                        if (sessionUserId <= 0) {
+                            IMLog.e("SignInMessagePacket unexpected. accept with same sign:%s and invalid user id:%s", getSign(), sessionUserId);
+                            return false;
+                        }
+                        mSessionUserId = sessionUserId;
+                        moveToState(STATE_SUCCESS);
+                    }
                 }
                 return true;
             }

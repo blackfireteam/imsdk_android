@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.IMLog;
 import com.masonsoft.imsdk.core.Message;
+import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.lang.Processor;
 import com.masonsoft.imsdk.message.MessageWrapper;
@@ -20,11 +21,6 @@ import java.lang.annotation.RetentionPolicy;
  * @since 1.0
  */
 public abstract class MessagePacket implements Processor<MessageWrapper> {
-
-    /**
-     * 发送消息的默认超时时间, 60 秒
-     */
-    private static final long DEFAULT_MESSAGE_TIMEOUT_MS = 60 * 1000;
 
     /**
      * 消息包的发送状态：等待发送
@@ -74,22 +70,6 @@ public abstract class MessagePacket implements Processor<MessageWrapper> {
     @SendState
     private int mState = STATE_IDLE;
 
-    /**
-     * 消息的实际发送时间，毫秒
-     *
-     * @see #mTimeoutMs
-     * @see #validateTimeout()
-     */
-    private long mSendTimeMs;
-
-    /**
-     * 消息的超时时间，毫秒
-     *
-     * @see #mSendTimeMs
-     * @see #validateTimeout()
-     */
-    private long mTimeoutMs = DEFAULT_MESSAGE_TIMEOUT_MS;
-
     private final StateObservable mStateObservable = new StateObservable();
 
     private long mErrorCode;
@@ -136,18 +116,6 @@ public abstract class MessagePacket implements Processor<MessageWrapper> {
         return mSign;
     }
 
-    public long getSendTimeMs() {
-        return mSendTimeMs;
-    }
-
-    public void setTimeoutMs(long timeoutMs) {
-        mTimeoutMs = timeoutMs;
-    }
-
-    public long getTimeoutMs() {
-        return mTimeoutMs;
-    }
-
     public StateObservable getStateObservable() {
         return mStateObservable;
     }
@@ -168,10 +136,18 @@ public abstract class MessagePacket implements Processor<MessageWrapper> {
         return mErrorMessage;
     }
 
+    protected final Object getStateLock() {
+        return mStateLock;
+    }
+
     public void moveToState(@SendState int state) {
         synchronized (mStateLock) {
             if (mState > state) {
-                throw new IllegalStateException("MessagePacketSend[" + mSign + "] fail to move state " + stateToString(mState) + " -> " + stateToString(state));
+                Throwable e = new IllegalStateException("MessagePacket[" + mSign + "] fail to move state " + stateToString(mState) + " -> " + stateToString(state));
+                IMLog.e(e);
+                if (RuntimeMode.isDebug()) {
+                    throw new RuntimeException(e);
+                }
             }
             if (mState != state) {
                 final int oldState = mState;
@@ -188,33 +164,11 @@ public abstract class MessagePacket implements Processor<MessageWrapper> {
      * @param newState 迁移后的状态(当前状态)
      */
     protected void onStateChanged(int oldState, int newState) {
-        IMLog.i("MessagePacketSend[" + mSign + "] state changed %s -> %s",
+        IMLog.i("MessagePacket[" + mSign + "] state changed %s -> %s",
                 stateToString(oldState),
                 stateToString(newState));
 
-        if (newState == STATE_WAIT_RESULT) {
-            // 消息已经从长连接上发送出去，等待服务器响应。此时记录一个时间，用来计算超时。
-            mSendTimeMs = System.currentTimeMillis();
-        }
-
         mStateObservable.notifyStateChanged(this, oldState, newState);
-    }
-
-    /**
-     * 验证消息是否超时，如果超时，则将状态置为发送失败
-     */
-    public void validateTimeout() {
-        synchronized (mStateLock) {
-            if (mState == STATE_WAIT_RESULT) {
-                // 仅在处于 STATE_WAIT_RESULT 状态时才检查 timeout
-                final long diff = System.currentTimeMillis() - mSendTimeMs;
-                if (diff > mTimeoutMs) {
-                    // 已经超时，设置状态为发送失败
-                    IMLog.i("MessagePacketSend[" + mSign + "] timeout");
-                    moveToState(STATE_FAIL);
-                }
-            }
-        }
     }
 
     /**

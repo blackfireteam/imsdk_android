@@ -13,7 +13,7 @@ import com.masonsoft.imsdk.proto.ProtoMessage;
  *
  * @since 1.0
  */
-public class SignOutMessagePacket extends MessagePacket {
+public class SignOutMessagePacket extends TimeoutMessagePacket {
 
     private SignOutMessagePacket(Message message, long sign) {
         super(message, sign);
@@ -27,18 +27,20 @@ public class SignOutMessagePacket extends MessagePacket {
             if (result.getSign() == getSign()) {
                 // 校验 sign 是否相等
 
-                final int state = getState();
-                if (state != STATE_WAIT_RESULT) {
-                    IMLog.e("SignOutMessagePacket unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
-                    return false;
-                }
+                synchronized (getStateLock()) {
+                    final int state = getState();
+                    if (state != STATE_WAIT_RESULT) {
+                        IMLog.e("SignOutMessagePacket unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                        return false;
+                    }
 
-                if (result.getCode() != 0) {
-                    setErrorCode(result.getCode());
-                    setErrorMessage(result.getMsg());
-                    moveToState(STATE_FAIL);
-                } else {
-                    moveToState(STATE_SUCCESS);
+                    if (result.getCode() != 0) {
+                        setErrorCode(result.getCode());
+                        setErrorMessage(result.getMsg());
+                        moveToState(STATE_FAIL);
+                    } else {
+                        moveToState(STATE_SUCCESS);
+                    }
                 }
                 return true;
             }
