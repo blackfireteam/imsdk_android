@@ -2,6 +2,7 @@ package com.masonsoft.imsdk;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.core.IMConstants.MessageType;
 import com.masonsoft.imsdk.lang.StateProp;
 
 /**
@@ -52,6 +53,8 @@ public class IMMessage {
 
     /**
      * 消息的类型
+     *
+     * @see MessageType
      */
     @NonNull
     public final StateProp<Integer> type = new StateProp<>();
