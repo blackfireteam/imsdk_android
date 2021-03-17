@@ -45,6 +45,9 @@ public class WeakClockManager {
     private final Handler mClockQueue = new Handler(mClockQueueThread.getLooper());
     private ClockTask mClockTask;
 
+    // 开启或者关闭 clock 的锁
+    private final Object START_OR_STOP_CLOCK_LOCK = new Object();
+
     // clock 任务之间执行的最大间隔. 默认 2 秒.
     private static final long CLOCK_INTERVAL_DEFAULT_MS = 2000L;
     private long mClockIntervalMs = CLOCK_INTERVAL_DEFAULT_MS;
@@ -100,6 +103,14 @@ public class WeakClockManager {
             return size() == 0;
         }
 
+    }
+
+    public void setClockIntervalMs(long clockIntervalMs) {
+        mClockIntervalMs = clockIntervalMs;
+        synchronized (START_OR_STOP_CLOCK_LOCK) {
+            stopClock();
+            startClock();
+        }
     }
 
     /**
@@ -189,7 +200,7 @@ public class WeakClockManager {
         @Override
         public void run() {
             try {
-                synchronized (mClockStateCheckQueue) {
+                synchronized (START_OR_STOP_CLOCK_LOCK) {
                     if (mClockObservable.isEmpty()) {
                         stopClock();
                     } else {
