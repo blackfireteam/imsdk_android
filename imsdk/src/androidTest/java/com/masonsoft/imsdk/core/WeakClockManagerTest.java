@@ -15,11 +15,12 @@ public class WeakClockManagerTest {
 
     private static void onClock1() {
         System.out.println("hello, clock observer 1 run " + System.currentTimeMillis());
-        Threads.sleepQuietly(1000L);
+        Threads.sleepQuietly(System.currentTimeMillis() % 1000L);
     }
 
     private static void onClock2() {
         System.out.println("hello, clock observer 2 run " + System.currentTimeMillis());
+        Threads.sleepQuietly((long) (Math.random() * 2000L));
     }
 
     @Test
