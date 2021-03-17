@@ -1,9 +1,11 @@
-package com.masonsoft.imsdk;
+package com.masonsoft.imsdk.core;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.masonsoft.imsdk.BuildConfig;
 
 /**
  * IMSDK 内的统一日志输出

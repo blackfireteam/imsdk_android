@@ -1,12 +1,11 @@
-package com.masonsoft.imsdk;
+package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 
 import com.idonans.core.Singleton;
 import com.idonans.core.thread.TaskQueue;
-import com.masonsoft.imsdk.core.IMProcessValidator;
+import com.masonsoft.imsdk.core.message.SessionMessageWrapper;
 import com.masonsoft.imsdk.lang.MultiProcessor;
-import com.masonsoft.imsdk.message.SessionMessageWrapper;
 
 /**
  * 消息收发队列

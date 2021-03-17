@@ -1,6 +1,6 @@
-package com.masonsoft.imsdk.message.packet;
+package com.masonsoft.imsdk.core.message.packet;
 
-import com.masonsoft.imsdk.IMLog;
+import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.WeakClockManager;
 

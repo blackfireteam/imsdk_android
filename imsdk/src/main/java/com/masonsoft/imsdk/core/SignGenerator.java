@@ -2,8 +2,6 @@ package com.masonsoft.imsdk.core;
 
 import android.os.SystemClock;
 
-import com.masonsoft.imsdk.IMLog;
-
 /**
  * 生成唯一的本地 Sign
  *

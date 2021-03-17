@@ -1,9 +1,8 @@
-package com.masonsoft.imsdk;
+package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 
 import com.idonans.core.Singleton;
-import com.masonsoft.imsdk.core.IMProcessValidator;
 
 /**
  * 处理会话相关内容。包括查询会话列表，监听会话更新等。

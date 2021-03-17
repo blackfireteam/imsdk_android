@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk;
+package com.masonsoft.imsdk.core;
 
 import android.text.TextUtils;
 
@@ -10,8 +10,6 @@ import com.idonans.core.Singleton;
 import com.idonans.core.thread.Threads;
 import com.idonans.core.util.AbortUtil;
 import com.idonans.core.util.IOUtil;
-import com.masonsoft.imsdk.core.IMProcessValidator;
-import com.masonsoft.imsdk.core.KeyValueStorage;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.util.WeakObservable;

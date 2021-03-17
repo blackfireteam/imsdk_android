@@ -9,7 +9,6 @@ import androidx.annotation.WorkerThread;
 import com.idonans.core.SimpleAbortSignal;
 import com.idonans.core.Singleton;
 import com.idonans.core.thread.TaskQueue;
-import com.masonsoft.imsdk.IMLog;
 import com.masonsoft.imsdk.util.WeakObservable;
 
 /**

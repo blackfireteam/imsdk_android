@@ -1,6 +1,6 @@
 package com.masonsoft.imsdk.sample;
 
-import com.masonsoft.imsdk.db.Sequence;
+import com.masonsoft.imsdk.core.db.Sequence;
 
 import org.junit.Test;
 

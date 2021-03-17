@@ -2,8 +2,6 @@ package com.masonsoft.imsdk.core;
 
 import android.util.Log;
 
-import com.masonsoft.imsdk.IMLog;
-
 public class RuntimeMode {
 
     /**

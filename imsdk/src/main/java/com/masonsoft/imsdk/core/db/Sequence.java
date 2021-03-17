@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.db;
+package com.masonsoft.imsdk.core.db;
 
 /**
  * 生成数据库序列值(在不同的表或者不同的会话中，序列值可能会重复).<br/>

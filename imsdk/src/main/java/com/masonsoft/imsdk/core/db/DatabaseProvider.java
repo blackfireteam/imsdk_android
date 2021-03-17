@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.db;
+package com.masonsoft.imsdk.core.db;
 
 
 import com.idonans.core.Singleton;

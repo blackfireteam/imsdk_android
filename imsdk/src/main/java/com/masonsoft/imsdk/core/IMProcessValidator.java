@@ -1,7 +1,6 @@
 package com.masonsoft.imsdk.core;
 
 import com.idonans.core.manager.ProcessManager;
-import com.masonsoft.imsdk.IMLog;
 
 public class IMProcessValidator {
 

@@ -5,7 +5,6 @@ import android.util.Log;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.idonans.core.thread.Threads;
-import com.masonsoft.imsdk.IMLog;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

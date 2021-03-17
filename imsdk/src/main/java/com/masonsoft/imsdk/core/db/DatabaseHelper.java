@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.db;
+package com.masonsoft.imsdk.core.db;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -7,10 +7,10 @@ import androidx.annotation.NonNull;
 
 import com.idonans.core.manager.ProcessManager;
 import com.idonans.core.util.ContextUtil;
-import com.masonsoft.imsdk.IMConstants;
-import com.masonsoft.imsdk.IMLog;
 import com.masonsoft.imsdk.annotation.Local;
 import com.masonsoft.imsdk.annotation.Remote;
+import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMLog;
 
 import java.util.HashMap;
 import java.util.Map;

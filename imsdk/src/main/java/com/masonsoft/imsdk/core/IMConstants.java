@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk;
+package com.masonsoft.imsdk.core;
 
 /**
  * IMSDK 相关常量

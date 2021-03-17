@@ -4,18 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.idonans.core.Charsets;
-import com.masonsoft.imsdk.IMLog;
-import com.masonsoft.imsdk.IMMessageQueueManager;
-import com.masonsoft.imsdk.IMSessionManager;
+import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.core.IMMessageQueueManager;
+import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.NettyTcpClient;
+import com.masonsoft.imsdk.core.message.MessageWrapper;
+import com.masonsoft.imsdk.core.message.SessionMessageWrapper;
+import com.masonsoft.imsdk.core.message.packet.MessagePacket;
+import com.masonsoft.imsdk.core.message.packet.PingMessagePacket;
+import com.masonsoft.imsdk.core.message.packet.SignInMessagePacket;
+import com.masonsoft.imsdk.core.message.packet.SignOutMessagePacket;
 import com.masonsoft.imsdk.lang.MultiProcessor;
-import com.masonsoft.imsdk.message.MessageWrapper;
-import com.masonsoft.imsdk.message.SessionMessageWrapper;
-import com.masonsoft.imsdk.message.packet.MessagePacket;
-import com.masonsoft.imsdk.message.packet.PingMessagePacket;
-import com.masonsoft.imsdk.message.packet.SignInMessagePacket;
-import com.masonsoft.imsdk.message.packet.SignOutMessagePacket;
 import com.masonsoft.imsdk.util.WeakObservable;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;

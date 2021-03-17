@@ -1,13 +1,13 @@
-package com.masonsoft.imsdk.message.packet;
+package com.masonsoft.imsdk.core.message.packet;
 
 import androidx.annotation.Nullable;
 
 import com.idonans.core.thread.Threads;
-import com.masonsoft.imsdk.IMLog;
+import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.SignGenerator;
-import com.masonsoft.imsdk.message.MessageWrapper;
-import com.masonsoft.imsdk.proto.ProtoMessage;
+import com.masonsoft.imsdk.core.message.MessageWrapper;
+import com.masonsoft.imsdk.core.proto.ProtoMessage;
 
 /**
  * 在长连接上的登录消息包

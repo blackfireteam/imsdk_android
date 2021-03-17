@@ -3,8 +3,7 @@ package com.masonsoft.imsdk.core;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.IMLog;
-import com.masonsoft.imsdk.proto.ProtoMessage;
+import com.masonsoft.imsdk.core.proto.ProtoMessage;
 
 /**
  * 传输于长连接上的原始消息

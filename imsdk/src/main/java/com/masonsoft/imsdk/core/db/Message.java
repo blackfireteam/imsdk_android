@@ -1,11 +1,11 @@
-package com.masonsoft.imsdk.db;
+package com.masonsoft.imsdk.core.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.db.DatabaseHelper.ColumnsMessage;
+import com.masonsoft.imsdk.core.db.DatabaseHelper.ColumnsMessage;
 import com.masonsoft.imsdk.lang.StateProp;
 
 /**

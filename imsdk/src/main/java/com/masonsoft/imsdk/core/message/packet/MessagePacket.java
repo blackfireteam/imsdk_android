@@ -1,15 +1,15 @@
-package com.masonsoft.imsdk.message.packet;
+package com.masonsoft.imsdk.core.message.packet;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.IMLog;
+import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.Message;
 import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.SignGenerator;
+import com.masonsoft.imsdk.core.message.MessageWrapper;
 import com.masonsoft.imsdk.lang.Processor;
-import com.masonsoft.imsdk.message.MessageWrapper;
 import com.masonsoft.imsdk.util.WeakObservable;
 
 import java.lang.annotation.Retention;

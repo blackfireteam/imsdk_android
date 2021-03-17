@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.db;
+package com.masonsoft.imsdk.core.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -9,8 +9,8 @@ import androidx.annotation.Nullable;
 
 import com.idonans.core.Singleton;
 import com.idonans.core.util.IOUtil;
-import com.masonsoft.imsdk.IMConstants;
-import com.masonsoft.imsdk.IMLog;
+import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.RuntimeMode;
 

@@ -3,6 +3,7 @@ package com.masonsoft.imsdk.db;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.masonsoft.imsdk.core.SignGenerator;
+import com.masonsoft.imsdk.core.db.Sequence;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

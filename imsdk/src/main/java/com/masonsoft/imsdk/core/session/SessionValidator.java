@@ -2,7 +2,7 @@ package com.masonsoft.imsdk.core.session;
 
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.IMSessionManager;
+import com.masonsoft.imsdk.core.IMSessionManager;
 
 /**
  * 验证当前 Session 的有效性
