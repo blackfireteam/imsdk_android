@@ -123,6 +123,30 @@ public class ProtoByteMessage {
          * 会话列表(并不一定包含全部会话)
          */
         public static final int CHAT_LIST = 15;
+        /**
+         * 获取用户的 profile
+         */
+        public static final int GET_PROFILE = 16;
+        /**
+         * 批量获取用户的 profile
+         */
+        public static final int GET_PROFILES = 17;
+        /**
+         * 用户信息
+         */
+        public static final int PROFILE = 18;
+        /**
+         * 批量用户信息
+         */
+        public static final int PROFILE_LIST = 19;
+        /**
+         * block 指定用户
+         */
+        public static final int BLOCK_U = 20;
+        /**
+         * unblock 指定用户
+         */
+        public static final int UNBLOCK_U = 21;
 
         /**
          * 将 ProtoByteMessage 解码为 ProtoMessage 内定义的实体对象。如果解码失败，返回 null.
@@ -165,6 +189,18 @@ public class ProtoByteMessage {
                         return ProtoMessage.ChatItem.parseFrom(data);
                     case CHAT_LIST:
                         return ProtoMessage.ChatList.parseFrom(data);
+                    case GET_PROFILE:
+                        return ProtoMessage.GetProfile.parseFrom(data);
+                    case GET_PROFILES:
+                        return ProtoMessage.GetProfiles.parseFrom(data);
+                    case PROFILE:
+                        return ProtoMessage.Profile.parseFrom(data);
+                    case PROFILE_LIST:
+                        return ProtoMessage.ProfileList.parseFrom(data);
+                    case BLOCK_U:
+                        return ProtoMessage.BlockU.parseFrom(data);
+                    case UNBLOCK_U:
+                        return ProtoMessage.UnblockU.parseFrom(data);
                     default:
                         throw new IllegalAccessError("unknown type:" + type);
                 }
@@ -242,6 +278,30 @@ public class ProtoByteMessage {
 
             if (protoMessageObject instanceof ProtoMessage.ChatList) {
                 return new ProtoByteMessage(CHAT_LIST, ((ProtoMessage.ChatList) protoMessageObject).toByteArray());
+            }
+
+            if (protoMessageObject instanceof ProtoMessage.GetProfile) {
+                return new ProtoByteMessage(GET_PROFILE, ((ProtoMessage.GetProfile) protoMessageObject).toByteArray());
+            }
+
+            if (protoMessageObject instanceof ProtoMessage.GetProfiles) {
+                return new ProtoByteMessage(GET_PROFILES, ((ProtoMessage.GetProfiles) protoMessageObject).toByteArray());
+            }
+
+            if (protoMessageObject instanceof ProtoMessage.Profile) {
+                return new ProtoByteMessage(PROFILE, ((ProtoMessage.Profile) protoMessageObject).toByteArray());
+            }
+
+            if (protoMessageObject instanceof ProtoMessage.ProfileList) {
+                return new ProtoByteMessage(PROFILE_LIST, ((ProtoMessage.ProfileList) protoMessageObject).toByteArray());
+            }
+
+            if (protoMessageObject instanceof ProtoMessage.BlockU) {
+                return new ProtoByteMessage(BLOCK_U, ((ProtoMessage.BlockU) protoMessageObject).toByteArray());
+            }
+
+            if (protoMessageObject instanceof ProtoMessage.UnblockU) {
+                return new ProtoByteMessage(UNBLOCK_U, ((ProtoMessage.UnblockU) protoMessageObject).toByteArray());
             }
 
             IMLog.e(new IllegalAccessError(), "unknown proto message object: %s", protoMessageObject);
