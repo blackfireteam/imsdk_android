@@ -3,7 +3,7 @@ package com.masonsoft.imsdk.core.message.packet;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.ProtoByteMessage;
-import com.masonsoft.imsdk.core.message.MessageWrapper;
+import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 
 /**
@@ -18,7 +18,7 @@ public class PingMessagePacket extends MessagePacket {
     }
 
     @Override
-    public boolean doProcess(@Nullable MessageWrapper target) {
+    public boolean doProcess(@Nullable ProtoByteMessageWrapper target) {
         // 心跳消息包没有回执
         return false;
     }

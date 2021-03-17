@@ -8,7 +8,7 @@ import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.SignGenerator;
-import com.masonsoft.imsdk.core.message.MessageWrapper;
+import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.lang.Processor;
 import com.masonsoft.imsdk.util.WeakObservable;
 
@@ -20,7 +20,7 @@ import java.lang.annotation.RetentionPolicy;
  *
  * @since 1.0
  */
-public abstract class MessagePacket implements Processor<MessageWrapper> {
+public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper> {
 
     /**
      * 消息包的发送状态：等待发送
@@ -175,7 +175,7 @@ public abstract class MessagePacket implements Processor<MessageWrapper> {
      * 处理服务器返回的消息，如果处理成功返回 true, 否则返回 false。(仅处理服务器对当前消息的回执)
      */
     @Override
-    public abstract boolean doProcess(@Nullable MessageWrapper target);
+    public abstract boolean doProcess(@Nullable ProtoByteMessageWrapper target);
 
     public interface StateObserver {
         void onStateChanged(MessagePacket packet, int oldState, int newState);

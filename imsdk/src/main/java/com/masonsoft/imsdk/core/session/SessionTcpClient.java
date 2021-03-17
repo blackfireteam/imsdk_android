@@ -9,8 +9,8 @@ import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.NettyTcpClient;
-import com.masonsoft.imsdk.core.message.MessageWrapper;
-import com.masonsoft.imsdk.core.message.SessionMessageWrapper;
+import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
+import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.PingMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignInMessagePacket;
@@ -67,7 +67,7 @@ public class SessionTcpClient extends NettyTcpClient {
     /**
      * 用来处理服务器返回的与登录，退出登录相关的消息
      */
-    private final MultiProcessor<MessageWrapper> mLocalMessageProcessor;
+    private final MultiProcessor<ProtoByteMessageWrapper> mLocalMessageProcessor;
 
     private final Observable mObservable = new Observable();
 
@@ -314,10 +314,10 @@ public class SessionTcpClient extends NettyTcpClient {
                 return;
             }
 
-            final MessageWrapper messageWrapper = new MessageWrapper(protoByteMessage);
+            final ProtoByteMessageWrapper protoByteMessageWrapper = new ProtoByteMessageWrapper(protoByteMessage);
 
             // 优先本地消费(直接消费，快速响应)
-            if (mLocalMessageProcessor.doProcess(messageWrapper)) {
+            if (mLocalMessageProcessor.doProcess(protoByteMessageWrapper)) {
                 return;
             }
 
@@ -326,10 +326,10 @@ public class SessionTcpClient extends NettyTcpClient {
             final long sessionUserId = mSignInMessagePacket.getSessionUserId();
             if (!mSignInMessagePacket.isSignIn()) {
                 // 当前没有正确登录，但是收到了意外地消息
-                IMLog.e(new IllegalStateException("is not sign in, but received message"), "message wrapper:%s", messageWrapper);
+                IMLog.e(new IllegalStateException("is not sign in, but received message"), "message wrapper:%s", protoByteMessageWrapper);
                 return;
             }
-            IMMessageQueueManager.getInstance().enqueueReceivedMessage(new SessionMessageWrapper(sessionUserId, messageWrapper));
+            IMMessageQueueManager.getInstance().enqueueReceivedMessage(new SessionProtoByteMessageWrapper(sessionUserId, protoByteMessageWrapper));
         }
     }
 

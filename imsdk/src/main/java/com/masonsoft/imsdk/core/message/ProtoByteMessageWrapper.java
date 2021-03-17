@@ -8,7 +8,7 @@ import com.masonsoft.imsdk.core.ProtoByteMessage;
 /**
  * @since 1.0
  */
-public class MessageWrapper {
+public class ProtoByteMessageWrapper {
 
     @NonNull
     private final ProtoByteMessage mOrigin;
@@ -16,7 +16,7 @@ public class MessageWrapper {
     @Nullable
     private final Object mProtoMessageObject;
 
-    public MessageWrapper(@NonNull ProtoByteMessage origin) {
+    public ProtoByteMessageWrapper(@NonNull ProtoByteMessage origin) {
         mOrigin = origin;
         mProtoMessageObject = ProtoByteMessage.Type.decode(origin);
     }
@@ -39,7 +39,7 @@ public class MessageWrapper {
     }
 
     public String toShortString() {
-        return String.format("MessageWrapper[origin:%s, proto message object:%s]", mOrigin, getProtoMessageObjectShortString());
+        return String.format("ProtoByteMessageWrapper[origin:%s, proto message object:%s]", mOrigin, getProtoMessageObjectShortString());
     }
 
     @Override

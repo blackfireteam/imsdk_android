@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.idonans.core.Singleton;
 import com.idonans.core.thread.TaskQueue;
-import com.masonsoft.imsdk.core.message.SessionMessageWrapper;
+import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.lang.MultiProcessor;
 
 /**
@@ -31,7 +31,7 @@ public class IMMessageQueueManager {
     ///////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////
     // 处理服务器下发的消息
-    private final MultiProcessor<SessionMessageWrapper> mReceivedMessageProcessor = new MultiProcessor<>();
+    private final MultiProcessor<SessionProtoByteMessageWrapper> mReceivedMessageProcessor = new MultiProcessor<>();
     private final TaskQueue mReceivedMessageQueue = new TaskQueue(1);
     ///////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////
@@ -45,34 +45,34 @@ public class IMMessageQueueManager {
     }
 
     @NonNull
-    public MultiProcessor<SessionMessageWrapper> getReceivedMessageProcessor() {
+    public MultiProcessor<SessionProtoByteMessageWrapper> getReceivedMessageProcessor() {
         return mReceivedMessageProcessor;
     }
 
     /**
      * 收到服务器下发的消息
      */
-    public void enqueueReceivedMessage(@NonNull SessionMessageWrapper sessionMessageWrapper) {
-        mReceivedMessageQueue.enqueue(new ReceivedMessageTask(sessionMessageWrapper));
+    public void enqueueReceivedMessage(@NonNull SessionProtoByteMessageWrapper sessionProtoByteMessageWrapper) {
+        mReceivedMessageQueue.enqueue(new ReceivedMessageTask(sessionProtoByteMessageWrapper));
     }
 
     private class ReceivedMessageTask implements Runnable {
 
         @NonNull
-        private final SessionMessageWrapper mSessionMessageWrapper;
+        private final SessionProtoByteMessageWrapper mSessionProtoByteMessageWrapper;
 
-        private ReceivedMessageTask(@NonNull SessionMessageWrapper sessionMessageWrapper) {
-            mSessionMessageWrapper = sessionMessageWrapper;
+        private ReceivedMessageTask(@NonNull SessionProtoByteMessageWrapper sessionProtoByteMessageWrapper) {
+            mSessionProtoByteMessageWrapper = sessionProtoByteMessageWrapper;
         }
 
         @Override
         public void run() {
             try {
-                if (!mReceivedMessageProcessor.doProcess(mSessionMessageWrapper)) {
+                if (!mReceivedMessageProcessor.doProcess(mSessionProtoByteMessageWrapper)) {
                     throw new IllegalAccessError("ReceivedMessageTask SessionMessageWrapper do process fail");
                 }
             } catch (Throwable e) {
-                IMLog.v(e, "SessionMessageWrapper:%s", mSessionMessageWrapper.toShortString());
+                IMLog.v(e, "SessionMessageWrapper:%s", mSessionProtoByteMessageWrapper.toShortString());
             }
         }
     }

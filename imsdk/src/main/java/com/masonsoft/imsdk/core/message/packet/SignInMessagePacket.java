@@ -6,7 +6,7 @@ import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.SignGenerator;
-import com.masonsoft.imsdk.core.message.MessageWrapper;
+import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 
 /**
@@ -30,7 +30,7 @@ public class SignInMessagePacket extends TimeoutMessagePacket {
     }
 
     @Override
-    public boolean doProcess(@Nullable MessageWrapper target) {
+    public boolean doProcess(@Nullable ProtoByteMessageWrapper target) {
         // check thread state
         Threads.mustNotUi();
 
