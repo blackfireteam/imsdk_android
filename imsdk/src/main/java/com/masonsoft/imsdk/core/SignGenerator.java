@@ -33,7 +33,7 @@ public class SignGenerator {
                     return timeMicroSeconds;
                 }
                 if (timeMicroSeconds < sLastTimeMicroSeconds) {
-                    IMLog.e(
+                    IMLog.w(
                             new IllegalAccessError("SignGenerator#next timeMicroSeconds is less than sLastTimeMicroSeconds"),
                             "timeMicroSeconds:%s, sLastTimeMicroSeconds:%s",
                             timeMicroSeconds, sLastTimeMicroSeconds);

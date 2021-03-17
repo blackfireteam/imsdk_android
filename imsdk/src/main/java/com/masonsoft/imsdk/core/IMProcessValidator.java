@@ -1,7 +1,5 @@
 package com.masonsoft.imsdk.core;
 
-import android.util.Log;
-
 import com.idonans.core.manager.ProcessManager;
 import com.masonsoft.imsdk.IMLog;
 
@@ -17,9 +15,7 @@ public class IMProcessValidator {
         if (!ProcessManager.getInstance().isMainProcess()) {
             final Throwable e = new IllegalAccessError("current process is not main process");
             IMLog.e(e);
-
-            // 如果运行在 debug 模式下，则直接抛出异常
-            if (IMLog.getLogLevel() <= Log.DEBUG) {
+            if (RuntimeMode.isDebug()) {
                 throw new RuntimeException(e);
             }
         }

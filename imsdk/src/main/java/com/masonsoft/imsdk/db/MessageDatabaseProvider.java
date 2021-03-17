@@ -11,6 +11,7 @@ import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.IMConstants;
 import com.masonsoft.imsdk.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
+import com.masonsoft.imsdk.core.RuntimeMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +92,9 @@ public class MessageDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
+            if (RuntimeMode.isDebug()) {
+                throw new RuntimeException(e);
+            }
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -158,6 +162,9 @@ public class MessageDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
+            if (RuntimeMode.isDebug()) {
+                throw new RuntimeException(e);
+            }
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -217,6 +224,9 @@ public class MessageDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
+            if (RuntimeMode.isDebug()) {
+                throw new RuntimeException(e);
+            }
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -281,6 +291,9 @@ public class MessageDatabaseProvider {
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
+            if (RuntimeMode.isDebug()) {
+                throw new RuntimeException(e);
+            }
         }
         return false;
     }
@@ -342,6 +355,9 @@ public class MessageDatabaseProvider {
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);
+            if (RuntimeMode.isDebug()) {
+                throw new RuntimeException(e);
+            }
         }
         return false;
     }

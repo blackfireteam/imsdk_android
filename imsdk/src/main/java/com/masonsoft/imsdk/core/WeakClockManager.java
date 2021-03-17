@@ -45,9 +45,12 @@ public class WeakClockManager {
     private final Handler mClockQueue = new Handler(mClockQueueThread.getLooper());
     private ClockTask mClockTask;
 
-    // clock 任务之间执行的最大间隔. 默认 5 秒.
-    private static final long CLOCK_INTERVAL_DEFAULT = 5000L;
-    private long mClockInterval = CLOCK_INTERVAL_DEFAULT;
+    // clock 任务之间执行的最大间隔. 默认 2 秒.
+    private static final long CLOCK_INTERVAL_DEFAULT_MS = 2000L;
+    private long mClockIntervalMs = CLOCK_INTERVAL_DEFAULT_MS;
+    // 上一次开始执行 clock 任务的时间点
+    private long mLastClockTimeMs;
+    private final Object CLOCK_TASK_LOCK = new Object();
     //////////////////////////////////////////////////
     //////////////////////////////////////////////////
     //////////////////////////////////////////////////
@@ -68,14 +71,21 @@ public class WeakClockManager {
     public class ClockObservable extends WeakObservable<ClockObserver> {
 
         public void notifyOnClock() {
-            final boolean[] isEmpty = new boolean[]{true};
-            forEach(clockObserver -> {
-                isEmpty[0] = false;
-                clockObserver.onClock();
-            });
-            if (isEmpty[0]) {
-                IMLog.v("clock observer may empty, invalidate clock state.");
-                invalidateClockState();
+            try {
+                final boolean[] isEmpty = new boolean[]{true};
+                forEach(clockObserver -> {
+                    isEmpty[0] = false;
+                    clockObserver.onClock();
+                });
+                if (isEmpty[0]) {
+                    IMLog.v("clock observer may empty, invalidate clock state.");
+                    invalidateClockState();
+                }
+            } catch (Throwable e) {
+                IMLog.e(e);
+                if (RuntimeMode.isDebug()) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
@@ -129,20 +139,42 @@ public class WeakClockManager {
                 if (isAbort()) {
                     return;
                 }
-                final long timeMs = System.currentTimeMillis();
-                IMLog.v("WeakClockManager clock task tick [%s] ...", timeMs);
-                mClockObservable.notifyOnClock();
-                IMLog.v("WeakClockManager clock task tick [%s] ... ok", timeMs);
+                synchronized (CLOCK_TASK_LOCK) {
+                    final long timeStartMs = System.currentTimeMillis();
+                    final long diffMs = timeStartMs - mLastClockTimeMs;
 
-                final long timeDiff = System.currentTimeMillis() - timeMs;
-                long timeDelay = mClockInterval - timeDiff;
-                if (timeDelay <= 0) {
-                    timeDelay = CLOCK_INTERVAL_DEFAULT;
+                    // 是否执行本轮的 tick 调用
+                    boolean tick = false;
+                    if (diffMs < 0) {
+                        // unexpected logic, workaround with just tick.
+                        IMLog.e("unexpected. ClockTask run invalid diffMs:%s", diffMs);
+                        tick = true;
+                    } else {
+                        tick = diffMs >= mClockIntervalMs;
+                    }
+
+                    if (tick) {
+                        // 执行本轮 tick, 记录下本轮 tick 的开始时间
+                        mLastClockTimeMs = timeStartMs;
+
+                        IMLog.v("WeakClockManager clock task tick [%s] ...", timeStartMs);
+                        mClockObservable.notifyOnClock();
+                        IMLog.v("WeakClockManager clock task tick [%s] ... ok", timeStartMs);
+                    }
+
+                    long diffDelayMs = mClockIntervalMs - (System.currentTimeMillis() - mLastClockTimeMs);
+                    if (diffDelayMs < 0) {
+                        diffDelayMs = 0;
+                    }
+
+                    IMLog.v("WeakClockManager clock task tick [%s] ... ok post with delay:%s", timeStartMs, diffDelayMs);
+                    mClockQueue.postDelayed(this, diffDelayMs);
                 }
-                IMLog.v("WeakClockManager clock task tick [%s] ... ok post with delay:%s", timeMs, timeDelay);
-                mClockQueue.postDelayed(this, timeDelay);
             } catch (Throwable e) {
                 IMLog.e(e);
+                if (RuntimeMode.isDebug()) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
