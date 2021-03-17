@@ -28,9 +28,17 @@ public class WeakClockManagerTest {
         IMLog.setLogLevel(Log.VERBOSE);
 
         doTest();
-        System.gc();
+
+        Threads.sleepQuietly(10 * 1000);
+        System.out.println("set clock interval ms to 500");
+        WeakClockManager.getInstance().setClockIntervalMs(500L);
+
+        Threads.sleepQuietly(10 * 1000);
+        System.out.println("clear weak clock manager all clock observable");
+        WeakClockManager.getInstance().getClockObservable().unregisterAll();
 
         Threads.sleepQuietly(30 * 1000);
+        System.out.println("test clock end");
     }
 
     private void doTest() {
