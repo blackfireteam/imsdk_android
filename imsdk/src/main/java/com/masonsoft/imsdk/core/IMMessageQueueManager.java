@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.idonans.core.Singleton;
 import com.idonans.core.thread.TaskQueue;
+import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.lang.MultiProcessor;
 
@@ -36,7 +38,7 @@ public class IMMessageQueueManager {
     ///////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////
     // 处理本地发送的消息
-    // TODO
+    private final MultiProcessor<IMSessionMessage> mSendMessageProcessor = new MultiProcessor<>();
     private final TaskQueue mSendMessageQueue = new TaskQueue(1);
     ///////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////
@@ -69,10 +71,51 @@ public class IMMessageQueueManager {
         public void run() {
             try {
                 if (!mReceivedMessageProcessor.doProcess(mSessionProtoByteMessageWrapper)) {
-                    throw new IllegalAccessError("ReceivedMessageTask SessionMessageWrapper do process fail");
+                    throw new IllegalAccessError("ReceivedMessageTask SessionProtoByteMessageWrapper do process fail");
                 }
             } catch (Throwable e) {
-                IMLog.v(e, "SessionMessageWrapper:%s", mSessionProtoByteMessageWrapper.toShortString());
+                IMLog.v(e, "SessionProtoByteMessageWrapper:%s", mSessionProtoByteMessageWrapper.toShortString());
+                if (RuntimeMode.isDebug()) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    @NonNull
+    public MultiProcessor<IMSessionMessage> getSendMessageProcessor() {
+        return mSendMessageProcessor;
+    }
+
+    /**
+     * 本地发送新消息或重发一个失败的消息
+     */
+    public void enqueueSendMessage(@NonNull IMMessage imMessage) {
+        // sessionUserId 可能是无效值
+        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+        mSendMessageQueue.enqueue(new SendMessageTask(new IMSessionMessage(sessionUserId, imMessage)));
+    }
+
+    private class SendMessageTask implements Runnable {
+
+        @NonNull
+        private final IMSessionMessage mIMSessionMessage;
+
+        private SendMessageTask(@NonNull IMSessionMessage imSessionMessage) {
+            mIMSessionMessage = imSessionMessage;
+        }
+
+        @Override
+        public void run() {
+            try {
+                if (!mSendMessageProcessor.doProcess(mIMSessionMessage)) {
+                    throw new IllegalAccessError("SendMessageTask IMSessionMessage do process fail");
+                }
+            } catch (Throwable e) {
+                IMLog.v(e, "IMSessionMessage:%s", mIMSessionMessage.toShortString());
+                if (RuntimeMode.isDebug()) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }

@@ -13,12 +13,6 @@ import com.masonsoft.imsdk.lang.StateProp;
 public class IMMessage {
 
     /**
-     * 消息发送或接收时，对应的本地登录用户 id.
-     */
-    @NonNull
-    public final StateProp<Long> sessionUserId = new StateProp<>();
-
-    /**
      * 消息 id, 在一个会话中消息 id 是唯一的.
      */
     @NonNull
@@ -124,5 +118,33 @@ public class IMMessage {
      */
     @NonNull
     public final StateProp<Float> sendProgress = new StateProp<>();
+
+    @NonNull
+    public String toShortString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("IMMessage");
+        if (this.id.isUnset()) {
+            builder.append(", id:unset");
+        } else {
+            builder.append(", id:").append(this.id.get());
+        }
+        if (this.type.isUnset()) {
+            builder.append(", type:unset");
+        } else {
+            builder.append(", type:").append(this.type.get());
+        }
+        if (this.seq.isUnset()) {
+            builder.append(", seq:unset");
+        } else {
+            builder.append(", seq:").append(this.seq.get());
+        }
+        return builder.toString();
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return toShortString();
+    }
 
 }
