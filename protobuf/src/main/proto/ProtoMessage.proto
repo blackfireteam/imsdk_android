@@ -1,5 +1,7 @@
 syntax = "proto3";
-option java_package = "com.masonsoft.imsdk.proto";
+option java_package = "com.masonsoft.imsdk.core.proto";
+
+// 最近修改时间-2021-03-15 11:03:02
 
 //0
 message Ping
@@ -23,7 +25,7 @@ message Result
   int64 sign = 1;//信息标示，原路返回
   int64 code = 2;
   string msg = 3;
-  int64 now_time = 4; //当前服务器时间戳
+  int64 now_time = 4; //当前服务器时间戳(精确到秒)
   int64 uid = 5;//鉴权时返回的uid
 }
 //4
@@ -55,18 +57,19 @@ message ChatR
   int64 from_uid = 2; //谁发的
   int64 to_uid = 3; //发给谁
   int64 msg_id = 4; //消息id
-  int64 msg_time = 5; //消息时间（以服务器为准 精确到秒的时间戳）
-  int64 sput = 6; //sender_profile_update_time 发送人的profile更新时间
-  int64 type = 7;// 消息类型
-  string title = 8; //消息内容
-  string body = 9; //消息内容
-  string thumb = 10; //封面图
-  int64 width = 11; //封面图的宽度
-  int64 height = 12; //封面图的高度
-  int64 duration = 13;//时长
-  double lat = 14;//纬度
-  double lng = 15;//经度
-  int64 zoom = 16;//地图缩放层级
+  int64 msg_time = 5; //消息时间（以服务器为准 精确到百万分之一秒的时间戳）
+  int64 sput = 6; //sender_profile_update_time 发送人的profile更新时间（精确到秒的时间戳）
+  bool new_msg = 7; //是否显示 new message
+  int64 type = 8;// 消息类型
+  string title = 9; //消息内容
+  string body = 10; //消息内容
+  string thumb = 11; //封面图
+  int64 width = 12; //封面图的宽度
+  int64 height = 13; //封面图的高度
+  int64 duration = 14;//时长
+  double lat = 15;//纬度
+  double lng = 16;//经度
+  int64 zoom = 17;//地图缩放层级
 }
 //7
 message ChatRBatch
@@ -101,21 +104,24 @@ message MsgRead
 //11 消息已读状态发生变更通知（客户端收到这个才去变更）
 message LastReadMsg
 {
-  int64 from_uid = 1;// 谁的会话
-  int64 msg_id = 2;// 最后一条已读消息
-  int64 unread = 3;//还有多少条未读消息
+  int64 sign = 1;
+  int64 from_uid = 2;// 谁的会话
+  int64 msg_id = 3;// 我发给对方的消息中，最后一条已读消息（被动通知 会有这个）
+  int64 unread = 4;//对方发给我的消息中，还有多少条未读消息（主动调用MsgRead 一方会收到这个）
+  int64 update_time = 5;//服务器收到已读回执的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
 }
-//12
+//12 该proto 既是请求，也是返回，返回时带update_time, 请求时不带update_time
 message DelChat
 {
   int64 sign = 1; //客户端自定义标识，服务器会原样返回
   int64 to_uid = 2;// 删除谁的
+  int64 update_time = 3;//服务器删除会话的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
 }
 //13
 message GetChatList
 {
   int64 sign = 1; //客户端自定义标识，服务器会原样返回
-  int64 msg_id = 2;// 客户端本地保存的会话列表的最新一个会话的msg id
+  int64 update_time = 2;// 客户端本地保存的会话列表的最新一个会话的变动时间（精确到百万分之一秒的时间戳）
 }
 //14
 message ChatItem
@@ -139,28 +145,31 @@ message ChatItem
 message ChatList
 {
   repeated ChatItem chat_items = 1;
-  int64 update_time = 2;//有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值
+  int64 update_time = 2;//有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
 }
 //16
 message GetProfile
 {
-  int64 uid = 1;
-  int64 update_time = 2;
+  int64 sign = 1;//信息标示，原路返回
+  int64 uid = 2;
+  int64 update_time = 3;//profile的更新时间 精确到秒的时间戳
 }
 //17
 message GetProfiles
 {
-  repeated GetProfile get_profiles = 1;
+  int64 sign = 1;//信息标示，原路返回
+  repeated GetProfile get_profiles = 2;
 }
 //18
 message Profile
 {
-  int64 uid = 1;
-  int64 update_time = 2;
-  string nick_name = 3;
-  string avatar = 4;
-  bool gold = 5;
-  bool verified = 6;
+  int64 sign = 1;//信息标示，原路返回
+  int64 uid = 2;
+  int64 update_time = 3;//profile的更新时间 精确到秒的时间戳
+  string nick_name = 4;
+  string avatar = 5;
+  bool gold = 6;
+  bool verified = 7;
 }
 //19
 message ProfileList
