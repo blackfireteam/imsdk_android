@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.IMConstants;
 
@@ -13,7 +14,7 @@ public class IMMessageFactory {
      * 文本消息
      */
     @NonNull
-    public static IMMessage createTextMessage(@NonNull String text) {
+    public static IMMessage createTextMessage(@Nullable String text) {
         final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.TEXT);
         target.body.set(text);
@@ -26,7 +27,7 @@ public class IMMessageFactory {
      * @param localImagePath 图片的本地完整路径
      */
     @NonNull
-    public static IMMessage createImageMessage(@NonNull String localImagePath) {
+    public static IMMessage createImageMessage(@Nullable String localImagePath) {
         final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.IMAGE);
         target.body.set(localImagePath);

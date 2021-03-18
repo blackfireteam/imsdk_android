@@ -9,6 +9,11 @@ import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.lang.StateProp;
 
+/**
+ * 检查指定消息类型
+ *
+ * @see InternalSendMessageTypeValidateProcessor
+ */
 public abstract class SendMessageTypeValidateProcessor extends SendMessageNotNullValidateProcessor {
 
     @Nullable
@@ -44,6 +49,9 @@ public abstract class SendMessageTypeValidateProcessor extends SendMessageNotNul
         return false;
     }
 
+    /**
+     * @see MessageType
+     */
     protected abstract boolean doTypeProcess(@NonNull IMSessionMessage target, int type);
 
 }
