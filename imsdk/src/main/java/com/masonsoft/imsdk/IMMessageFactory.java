@@ -35,6 +35,23 @@ public class IMMessageFactory {
     }
 
     /**
+     * 图片消息
+     *
+     * @param localImagePath 图片的本地完整路径
+     * @param width          图片的宽度
+     * @param height         图片的高度
+     */
+    @NonNull
+    public static IMMessage createImageMessage(@Nullable String localImagePath, int width, int height) {
+        final IMMessage target = new IMMessage();
+        target.type.set(IMConstants.MessageType.IMAGE);
+        target.body.set(localImagePath);
+        target.width.set(width);
+        target.height.set(height);
+        return target;
+    }
+
+    /**
      * 复制一份具有相同内容的 IMMessage
      */
     @NonNull
