@@ -52,6 +52,16 @@ public final class IMConstants {
              */
             public static final int MAX_LENGTH = 8000;
         }
+
+        /**
+         * 发送图片消息的配置选项
+         */
+        public static class Image {
+            /**
+             * 图片文件大小的限制
+             */
+            public static final int MAX_FILE_SIZE = 28 * 1024 * 1024;
+        }
     }
 
     /**

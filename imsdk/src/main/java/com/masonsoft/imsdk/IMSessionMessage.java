@@ -46,30 +46,69 @@ public class IMSessionMessage {
      */
     public interface EnqueueCallback {
 
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
         /**
          * 非法的会话用户 id.
          */
         int ERROR_CODE_INVALID_SESSION_USER_ID = 1;
 
+        //////////////////////////////////////////
+        //////////////////////////////////////////
         /**
          * 文字消息，文字内容未设置
          */
-        int ERROR_CODE_TEXT_MESSAGE_TEXT_UNSET = 2;
+        int ERROR_CODE_TEXT_MESSAGE_TEXT_UNSET = 10;
 
         /**
          * 文字消息，文字内容为空.
          */
-        int ERROR_CODE_TEXT_MESSAGE_TEXT_EMPTY = 3;
+        int ERROR_CODE_TEXT_MESSAGE_TEXT_EMPTY = 11;
 
         /**
          * 文字消息，文字内容过长
          */
-        int ERROR_CODE_TEXT_MESSAGE_TEXT_TOO_LARGE = 4;
+        int ERROR_CODE_TEXT_MESSAGE_TEXT_TOO_LARGE = 12;
 
+        //////////////////////////////////////////
+        //////////////////////////////////////////
+        /**
+         * 图片消息，图片地址未设置
+         */
+        int ERROR_CODE_IMAGE_MESSAGE_IMAGE_PATH_UNSET = 20;
+        /**
+         * 图片消息，图片地址非法
+         */
+        int ERROR_CODE_IMAGE_MESSAGE_IMAGE_PATH_INVALID = 21;
+
+        /**
+         * 图片消息，图片文件太大
+         */
+        int ERROR_CODE_IMAGE_MESSAGE_IMAGE_FILE_SIZE_TOO_LARGE = 22;
+
+        /**
+         * 图片格式不支持
+         */
+        int ERROR_CODE_IMAGE_MESSAGE_IMAGE_FORMAT_NOT_SUPPORT = 23;
+
+        /**
+         * 图片消息，图片宽度或者高度不合法
+         */
+        int ERROR_CODE_IMAGE_MESSAGE_IMAGE_WIDTH_OR_HEIGHT_INVALID = 24;
+
+        //////////////////////////////////////////
+        //////////////////////////////////////////
         /**
          * 未知错误
          */
         int ERROR_CODE_UNKNOWN = 1000;
+
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////
 
         /**
          * 消息持久化成功，此时消息尚未正式发送到网络，但是消息 id，seq 等关键信息已经产生。<br>
