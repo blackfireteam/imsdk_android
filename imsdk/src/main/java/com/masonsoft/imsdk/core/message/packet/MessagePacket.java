@@ -57,6 +57,7 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
     /**
      * 原始消息内容
      */
+    @NonNull
     private final ProtoByteMessage mProtoByteMessage;
 
     /**
@@ -75,11 +76,11 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
     private long mErrorCode;
     private String mErrorMessage;
 
-    public MessagePacket(final ProtoByteMessage protoByteMessage) {
+    public MessagePacket(@NonNull final ProtoByteMessage protoByteMessage) {
         this(protoByteMessage, SignGenerator.next());
     }
 
-    public MessagePacket(final ProtoByteMessage protoByteMessage, final long sign) {
+    public MessagePacket(@NonNull final ProtoByteMessage protoByteMessage, final long sign) {
         mProtoByteMessage = protoByteMessage;
         mSign = sign;
     }
@@ -104,6 +105,7 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
         throw new IllegalStateException("unknown state " + state);
     }
 
+    @NonNull
     public ProtoByteMessage getProtoByteMessage() {
         return mProtoByteMessage;
     }

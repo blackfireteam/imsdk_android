@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.core.message.packet;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.ProtoByteMessage;
@@ -13,7 +14,7 @@ import com.masonsoft.imsdk.core.proto.ProtoMessage;
  */
 public class PingMessagePacket extends MessagePacket {
 
-    private PingMessagePacket(ProtoByteMessage protoByteMessage) {
+    public PingMessagePacket(@NonNull ProtoByteMessage protoByteMessage) {
         super(protoByteMessage);
     }
 
@@ -23,6 +24,7 @@ public class PingMessagePacket extends MessagePacket {
         return false;
     }
 
+    @NonNull
     public static PingMessagePacket create() {
         return new PingMessagePacket(ProtoByteMessage.Type.encode(ProtoMessage.Ping.newBuilder().build()));
     }

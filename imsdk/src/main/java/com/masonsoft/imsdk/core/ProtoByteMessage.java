@@ -212,9 +212,9 @@ public class ProtoByteMessage {
         }
 
         /**
-         * 将 ProtoMessage 内定义的实体对象编码为 ProtoByteMessage. 如果编码失败，返回 null.
+         * 将 ProtoMessage 内定义的实体对象编码为 ProtoByteMessage. 如果编码失败，将抛出异常.
          */
-        @Nullable
+        @NonNull
         public static ProtoByteMessage encode(@NonNull Object protoMessageObject) {
             if (protoMessageObject instanceof ProtoMessage.Ping) {
                 return new ProtoByteMessage(PING, ((ProtoMessage.Ping) protoMessageObject).toByteArray());
@@ -304,8 +304,8 @@ public class ProtoByteMessage {
                 return new ProtoByteMessage(UNBLOCK_U, ((ProtoMessage.UnblockU) protoMessageObject).toByteArray());
             }
 
-            IMLog.e(new IllegalAccessError(), "unknown proto message object: %s", protoMessageObject);
-            return null;
+            final Throwable e = new IllegalArgumentException("unknown proto message object: " + protoMessageObject);
+            throw new RuntimeException(e);
         }
     }
 

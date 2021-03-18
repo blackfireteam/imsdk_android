@@ -52,13 +52,10 @@ public class SignOutMessagePacket extends TimeoutMessagePacket {
     public static SignOutMessagePacket create() {
         final long sign = SignGenerator.next();
         return new SignOutMessagePacket(
-                new ProtoByteMessage(
-                        ProtoByteMessage.Type.IM_LOGOUT,
+                ProtoByteMessage.Type.encode(
                         ProtoMessage.ImLogout.newBuilder()
                                 .setSign(sign)
-                                .build()
-                                .toByteArray()
-                ),
+                                .build()),
                 sign
         );
     }

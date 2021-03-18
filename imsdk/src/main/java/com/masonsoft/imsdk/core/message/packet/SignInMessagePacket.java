@@ -78,14 +78,10 @@ public class SignInMessagePacket extends TimeoutMessagePacket {
     public static SignInMessagePacket create(final String token) {
         final long sign = SignGenerator.next();
         return new SignInMessagePacket(
-                new ProtoByteMessage(
-                        ProtoByteMessage.Type.IM_LOGIN,
-                        ProtoMessage.ImLogin.newBuilder()
-                                .setSign(sign)
-                                .setToken(token)
-                                .build()
-                                .toByteArray()
-                ),
+                ProtoByteMessage.Type.encode(ProtoMessage.ImLogin.newBuilder()
+                        .setSign(sign)
+                        .setToken(token)
+                        .build()),
                 sign
         );
     }
