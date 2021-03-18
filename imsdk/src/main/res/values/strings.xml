@@ -8,5 +8,9 @@
     <string name="msimsdk_enqueue_callback_error_image_message_image_file_size_too_large">图片文件大小不能超过 %1$s</string>
     <string name="msimsdk_enqueue_callback_error_image_message_image_format_not_support">图片格式不支持</string>
     <string name="msimsdk_enqueue_callback_error_image_message_image_width_or_height_invalid">图片宽度或高度不正确</string>
+    <string name="msimsdk_enqueue_callback_error_audio_message_audio_path_unset">语音地址未设置</string>
+    <string name="msimsdk_enqueue_callback_error_audio_message_audio_path_invalid">语音地址不正确</string>
+    <string name="msimsdk_enqueue_callback_error_audio_message_audio_file_size_too_large">语音文件大小不能超过 %1$s</string>
+    <string name="msimsdk_enqueue_callback_error_audio_message_audio_duration_invalid">语音时长不正确</string>
     <string name="msimsdk_enqueue_callback_error_unknown">未知错误</string>
 </resources>

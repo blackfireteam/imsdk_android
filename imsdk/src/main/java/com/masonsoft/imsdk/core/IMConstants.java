@@ -62,6 +62,16 @@ public final class IMConstants {
              */
             public static final int MAX_FILE_SIZE = 28 * 1024 * 1024;
         }
+
+        /**
+         * 发送语音消息的配置选项
+         */
+        public static class Audio {
+            /**
+             * 语音文件大小的限制
+             */
+            public static final int MAX_FILE_SIZE = 28 * 1024 * 1024;
+        }
     }
 
     /**

@@ -78,6 +78,7 @@ public class IMSessionMessage {
          * 图片消息，图片地址未设置
          */
         int ERROR_CODE_IMAGE_MESSAGE_IMAGE_PATH_UNSET = 20;
+
         /**
          * 图片消息，图片地址非法
          */
@@ -97,6 +98,28 @@ public class IMSessionMessage {
          * 图片消息，图片宽度或者高度不合法
          */
         int ERROR_CODE_IMAGE_MESSAGE_IMAGE_WIDTH_OR_HEIGHT_INVALID = 24;
+
+        //////////////////////////////////////////
+        //////////////////////////////////////////
+        /**
+         * 语音消息，语音地址未设置
+         */
+        int ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_UNSET = 30;
+
+        /**
+         * 语音消息，语音地址非法
+         */
+        int ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_INVALID = 31;
+
+        /**
+         * 语音消息，语音文件太大
+         */
+        int ERROR_CODE_AUDIO_MESSAGE_AUDIO_FILE_SIZE_TOO_LARGE = 32;
+
+        /**
+         * 语音消息，语音时长非法
+         */
+        int ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID = 33;
 
         //////////////////////////////////////////
         //////////////////////////////////////////
