@@ -97,9 +97,7 @@ public class ConversationDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            if (RuntimeMode.isDebug()) {
-                throw new RuntimeException(e);
-            }
+            RuntimeMode.throwIfDebug(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -159,9 +157,7 @@ public class ConversationDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            if (RuntimeMode.isDebug()) {
-                throw new RuntimeException(e);
-            }
+            RuntimeMode.throwIfDebug(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -220,9 +216,7 @@ public class ConversationDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            if (RuntimeMode.isDebug()) {
-                throw new RuntimeException(e);
-            }
+            RuntimeMode.throwIfDebug(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -293,9 +287,7 @@ public class ConversationDatabaseProvider {
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
-            if (RuntimeMode.isDebug()) {
-                throw new RuntimeException(e);
-            }
+            RuntimeMode.throwIfDebug(e);
         }
         return false;
     }
@@ -351,9 +343,7 @@ public class ConversationDatabaseProvider {
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);
-            if (RuntimeMode.isDebug()) {
-                throw new RuntimeException(e);
-            }
+            RuntimeMode.throwIfDebug(e);
         }
         return false;
     }
@@ -382,9 +372,7 @@ public class ConversationDatabaseProvider {
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
-            if (RuntimeMode.isDebug()) {
-                throw new RuntimeException(e);
-            }
+            RuntimeMode.throwIfDebug(e);
         }
         return false;
     }

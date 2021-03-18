@@ -85,9 +85,7 @@ public class WeakClockManager {
                 }
             } catch (Throwable e) {
                 IMLog.e(e);
-                if (RuntimeMode.isDebug()) {
-                    throw new RuntimeException(e);
-                }
+                RuntimeMode.throwIfDebug(e);
             }
         }
 
@@ -182,9 +180,7 @@ public class WeakClockManager {
                 }
             } catch (Throwable e) {
                 IMLog.e(e);
-                if (RuntimeMode.isDebug()) {
-                    throw new RuntimeException(e);
-                }
+                RuntimeMode.throwIfDebug(e);
             }
         }
     }

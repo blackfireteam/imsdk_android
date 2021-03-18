@@ -8,6 +8,8 @@ import com.masonsoft.imsdk.lang.StateProp;
 /**
  * 会话中的一条消息
  *
+ * @see IMMessageFactory
+ * @see IMMessageFactory#copy(IMMessage)
  * @since 1.0
  */
 public class IMMessage {

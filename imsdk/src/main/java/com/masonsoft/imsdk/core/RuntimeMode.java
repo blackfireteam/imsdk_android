@@ -11,4 +11,10 @@ public class RuntimeMode {
         return IMLog.getLogLevel() <= Log.DEBUG;
     }
 
+    public static void throwIfDebug(Throwable e) {
+        if (isDebug()) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

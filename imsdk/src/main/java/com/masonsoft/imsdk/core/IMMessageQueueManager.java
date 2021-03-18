@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.idonans.core.Singleton;
 import com.idonans.core.thread.TaskQueue;
 import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.lang.MultiProcessor;
@@ -75,9 +76,7 @@ public class IMMessageQueueManager {
                 }
             } catch (Throwable e) {
                 IMLog.v(e, "SessionProtoByteMessageWrapper:%s", mSessionProtoByteMessageWrapper.toShortString());
-                if (RuntimeMode.isDebug()) {
-                    throw new RuntimeException(e);
-                }
+                RuntimeMode.throwIfDebug(e);
             }
         }
     }
@@ -90,10 +89,10 @@ public class IMMessageQueueManager {
     /**
      * 本地发送新消息或重发一个失败的消息
      */
-    public void enqueueSendMessage(@NonNull IMMessage imMessage) {
+    public void enqueueSendMessage(@NonNull IMMessage imMessage, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
         // sessionUserId 可能是无效值
         final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        mSendMessageQueue.enqueue(new SendMessageTask(new IMSessionMessage(sessionUserId, imMessage)));
+        mSendMessageQueue.enqueue(new SendMessageTask(new IMSessionMessage(sessionUserId, IMMessageFactory.copy(imMessage), enqueueCallback)));
     }
 
     private class SendMessageTask implements Runnable {
@@ -113,9 +112,7 @@ public class IMMessageQueueManager {
                 }
             } catch (Throwable e) {
                 IMLog.v(e, "IMSessionMessage:%s", mIMSessionMessage.toShortString());
-                if (RuntimeMode.isDebug()) {
-                    throw new RuntimeException(e);
-                }
+                RuntimeMode.throwIfDebug(e);
             }
         }
     }

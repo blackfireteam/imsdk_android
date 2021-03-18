@@ -85,9 +85,7 @@ public class IdleSendingMessageProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            if (RuntimeMode.isDebug()) {
-                throw new RuntimeException(e);
-            }
+            RuntimeMode.throwIfDebug(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -148,9 +146,7 @@ public class IdleSendingMessageProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            if (RuntimeMode.isDebug()) {
-                throw new RuntimeException(e);
-            }
+            RuntimeMode.throwIfDebug(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -216,9 +212,7 @@ public class IdleSendingMessageProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            if (RuntimeMode.isDebug()) {
-                throw new RuntimeException(e);
-            }
+            RuntimeMode.throwIfDebug(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -304,9 +298,7 @@ public class IdleSendingMessageProvider {
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
-            if (RuntimeMode.isDebug()) {
-                throw new RuntimeException(e);
-            }
+            RuntimeMode.throwIfDebug(e);
         }
         return false;
     }
@@ -353,9 +345,7 @@ public class IdleSendingMessageProvider {
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);
-            if (RuntimeMode.isDebug()) {
-                throw new RuntimeException(e);
-            }
+            RuntimeMode.throwIfDebug(e);
         }
         return false;
     }
