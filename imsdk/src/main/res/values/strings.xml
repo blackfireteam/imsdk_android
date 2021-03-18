@@ -12,5 +12,12 @@
     <string name="msimsdk_enqueue_callback_error_audio_message_audio_path_invalid">语音地址不正确</string>
     <string name="msimsdk_enqueue_callback_error_audio_message_audio_file_size_too_large">语音文件大小不能超过 %1$s</string>
     <string name="msimsdk_enqueue_callback_error_audio_message_audio_duration_invalid">语音时长不正确</string>
+    <string name="msimsdk_enqueue_callback_error_video_message_video_path_unset">视频地址未设置</string>
+    <string name="msimsdk_enqueue_callback_error_video_message_video_path_invalid">视频地址不正确</string>
+    <string name="msimsdk_enqueue_callback_error_video_message_video_file_size_too_large">视频文件大小不能超过 %1$s</string>
+    <string name="msimsdk_enqueue_callback_error_video_message_video_duration_invalid">视频时长不正确</string>
+    <string name="msimsdk_enqueue_callback_error_video_message_video_thumb_path_unset">视频封面地址未设置</string>
+    <string name="msimsdk_enqueue_callback_error_video_message_video_thumb_path_invalid">视频封面地址不正确</string>
+    <string name="msimsdk_enqueue_callback_error_video_message_video_thumb_file_size_too_large">视频封面文件大小不能超过 %1$s</string>
     <string name="msimsdk_enqueue_callback_error_unknown">未知错误</string>
 </resources>

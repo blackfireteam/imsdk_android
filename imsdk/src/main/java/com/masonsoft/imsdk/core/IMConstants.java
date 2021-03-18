@@ -42,7 +42,7 @@ public final class IMConstants {
             /**
              * 发送文字时，是否 trim 前后的空白字符
              */
-            public static final boolean TRIM = true;
+            public static final boolean TRIM_REQUIRED = true;
             /**
              * 是否允许发送空内容
              */
@@ -68,9 +68,35 @@ public final class IMConstants {
          */
         public static class Audio {
             /**
+             * 是否必须要 duration(语音时长) 参数
+             */
+            public static final boolean DURATION_REQUIRED = false;
+            /**
              * 语音文件大小的限制
              */
             public static final int MAX_FILE_SIZE = 28 * 1024 * 1024;
+        }
+
+        /**
+         * 发送视频消息的配置选项
+         */
+        public static class Video {
+            /**
+             * 是否必须要 thumb(视频封面图) 参数
+             */
+            public static final boolean THUMB_REQUIRED = false;
+            /**
+             * 是否必须要 duration(视频时长) 参数
+             */
+            public static final boolean DURATION_REQUIRED = false;
+            /**
+             * 视频文件大小的限制
+             */
+            public static final int MAX_FILE_SIZE = 100 * 1024 * 1024;
+            /**
+             * 视频封面图文件大小的限制
+             */
+            public static final int MAX_THUMB_FILE_SIZE = 28 * 1024 * 1024;
         }
     }
 

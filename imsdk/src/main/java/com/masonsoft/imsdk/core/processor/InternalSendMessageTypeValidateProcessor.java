@@ -14,6 +14,7 @@ public class InternalSendMessageTypeValidateProcessor extends MultiProcessor<IMS
         addLastProcessor(new SendMessageTypeTextValidateProcessor());
         addLastProcessor(new SendMessageTypeImageValidateProcessor());
         addLastProcessor(new SendMessageTypeAudioValidateProcessor());
+        addLastProcessor(new SendMessageTypeVideoValidateProcessor());
     }
 
 }

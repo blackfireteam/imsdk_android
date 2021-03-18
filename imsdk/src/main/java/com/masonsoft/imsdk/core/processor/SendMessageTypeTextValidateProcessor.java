@@ -38,7 +38,7 @@ public class SendMessageTypeTextValidateProcessor extends SendMessageTypeValidat
             body.set(text);
         }
 
-        if (IMConstants.SendMessageOption.Text.TRIM) {
+        if (IMConstants.SendMessageOption.Text.TRIM_REQUIRED) {
             text = text.trim();
             // 去掉首尾空白字符后，应用变更
             body.set(text);

@@ -51,16 +51,19 @@ public class SendMessageTypeAudioValidateProcessor extends SendMessageTypeValida
             return true;
         }
 
-        final StateProp<Long> duration = target.getIMMessage().duration;
-        if (duration.isUnset()
-                || duration.get() == null
-                || duration.get() <= 0) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_duration_invalid)
-            );
-            return true;
+        if (IMConstants.SendMessageOption.Audio.DURATION_REQUIRED) {
+            // 必须要有合法的时长参数
+            final StateProp<Long> duration = target.getIMMessage().duration;
+            if (duration.isUnset()
+                    || duration.get() == null
+                    || duration.get() <= 0) {
+                target.getEnqueueCallback().onEnqueueFail(
+                        target,
+                        IMSessionMessage.EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID,
+                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_duration_invalid)
+                );
+                return true;
+            }
         }
 
         if (URLUtil.isNetworkUrl(audioPath)) {

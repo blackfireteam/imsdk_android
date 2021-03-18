@@ -124,6 +124,38 @@ public class IMSessionMessage {
         //////////////////////////////////////////
         //////////////////////////////////////////
         /**
+         * 视频消息，视频地址未设置
+         */
+        int ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_UNSET = 40;
+
+        /**
+         * 视频消息，视频地址非法
+         */
+        int ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_INVALID = 41;
+
+        /**
+         * 视频消息，视频文件太大
+         */
+        int ERROR_CODE_VIDEO_MESSAGE_VIDEO_FILE_SIZE_TOO_LARGE = 42;
+
+        /**
+         * 视频消息，视频时长非法
+         */
+        int ERROR_CODE_VIDEO_MESSAGE_VIDEO_DURATION_INVALID = 43;
+
+        /**
+         * 视频消息，视频封面图未设置
+         */
+        int ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_UNSET = 44;
+
+        /**
+         * 视频消息，视频封面图非法
+         */
+        int ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_INVALID = 45;
+
+        //////////////////////////////////////////
+        //////////////////////////////////////////
+        /**
          * 未知错误
          */
         int ERROR_CODE_UNKNOWN = 1000;
