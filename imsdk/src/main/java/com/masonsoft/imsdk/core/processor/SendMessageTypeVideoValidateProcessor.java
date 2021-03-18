@@ -82,7 +82,7 @@ public class SendMessageTypeVideoValidateProcessor extends SendMessageTypeValida
         }
 
         if (validateLocalVideoPath) {
-            // 校验语音文件是否存在并且文件的大小的是否合法
+            // 校验视频文件是否存在并且文件的大小的是否合法
             final File videoFile = new File(videoPath);
             if (!videoFile.exists() || !videoFile.isFile()) {
                 target.getEnqueueCallback().onEnqueueFail(
