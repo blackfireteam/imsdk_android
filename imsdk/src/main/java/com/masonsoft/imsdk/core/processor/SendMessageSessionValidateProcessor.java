@@ -1,29 +1,18 @@
 package com.masonsoft.imsdk.core.processor;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.RuntimeMode;
-import com.masonsoft.imsdk.lang.Processor;
 
 /**
  * 校验待发送消息的 session 合法性
  */
-public class SendMessageSessionValidateProcessor implements Processor<IMSessionMessage> {
+public class SendMessageSessionValidateProcessor extends SendMessageNotNullValidateProcessor {
 
     @Override
-    public boolean doProcess(@Nullable IMSessionMessage target) {
-        if (target == null) {
-            // unexpected
-            final Throwable e = new NullPointerException("SendMessageSessionValidateProcessor doProcess target is null");
-            IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
-            return false;
-        }
-
+    protected boolean doNotNullProcess(@NonNull IMSessionMessage target) {
         if (target.getSessionUserId() <= 0) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
