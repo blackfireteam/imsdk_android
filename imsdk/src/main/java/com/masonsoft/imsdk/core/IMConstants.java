@@ -32,6 +32,29 @@ public final class IMConstants {
     }
 
     /**
+     * 发送消息的配置选项
+     */
+    public static class SendMessageOption {
+        /**
+         * 发送文字消息的配置选项
+         */
+        public static class Text {
+            /**
+             * 发送文字时，是否 trim 前后的空白字符
+             */
+            public static final boolean TRIM = true;
+            /**
+             * 是否允许发送空内容
+             */
+            public static final boolean ALLOW_EMPTY = false;
+            /**
+             * 最大允许发送的字符数量
+             */
+            public static final int MAX_LENGTH = 8000;
+        }
+    }
+
+    /**
      * 会话类型
      */
     public static class ConversationType {

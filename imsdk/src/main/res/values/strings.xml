@@ -1,4 +1,7 @@
 <resources>
     <string name="msimsdk_enqueue_callback_error_invalid_session_user_id">未登录</string>
+    <string name="msimsdk_enqueue_callback_error_text_message_text_unset">文字内容未设置</string>
+    <string name="msimsdk_enqueue_callback_error_text_message_text_empty">文字内容为空</string>
+    <string name="msimsdk_enqueue_callback_error_text_message_text_too_large">文字内容不能超过 %1$s 字符</string>
     <string name="msimsdk_enqueue_callback_error_unknown">未知错误</string>
 </resources>

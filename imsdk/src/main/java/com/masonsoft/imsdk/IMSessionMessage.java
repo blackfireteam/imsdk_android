@@ -52,14 +52,24 @@ public class IMSessionMessage {
         int ERROR_CODE_INVALID_SESSION_USER_ID = 1;
 
         /**
-         * 非法的消息内容.
+         * 文字消息，文字内容未设置
          */
-        int ERROR_CODE_INVALID_MESSAGE_CONTENT = 2;
+        int ERROR_CODE_TEXT_MESSAGE_TEXT_UNSET = 2;
+
+        /**
+         * 文字消息，文字内容为空.
+         */
+        int ERROR_CODE_TEXT_MESSAGE_TEXT_EMPTY = 3;
+
+        /**
+         * 文字消息，文字内容过长
+         */
+        int ERROR_CODE_TEXT_MESSAGE_TEXT_TOO_LARGE = 4;
 
         /**
          * 未知错误
          */
-        int ERROR_CODE_UNKNOWN = 3;
+        int ERROR_CODE_UNKNOWN = 1000;
 
         /**
          * 消息持久化成功，此时消息尚未正式发送到网络，但是消息 id，seq 等关键信息已经产生。<br>
@@ -72,9 +82,7 @@ public class IMSessionMessage {
          * 当收到此入库失败的回调时，应当以适宜的方式提示用户发送的消息格式不正确，或者缺少必要的条件(包括没有找到合法的登录用户信息等)，
          * UI 上对应的输入框不适宜关闭.
          *
-         * @see #ERROR_CODE_INVALID_SESSION_USER_ID
-         * @see #ERROR_CODE_INVALID_MESSAGE_CONTENT
-         * @see #ERROR_CODE_UNKNOWN
+         * @param errorCode 错误码，见 {@linkplain EnqueueCallback}.ERROR_CODE_* 定义, 例如：{@linkplain EnqueueCallback#ERROR_CODE_INVALID_SESSION_USER_ID}
          */
         void onEnqueueFail(@NonNull IMSessionMessage imSessionMessage, int errorCode, String errorMessage);
     }
