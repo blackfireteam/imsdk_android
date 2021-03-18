@@ -1,3 +1,4 @@
 <resources>
     <string name="msimsdk_enqueue_callback_error_invalid_session_user_id">未登录</string>
+    <string name="msimsdk_enqueue_callback_error_unknown">未知错误</string>
 </resources>

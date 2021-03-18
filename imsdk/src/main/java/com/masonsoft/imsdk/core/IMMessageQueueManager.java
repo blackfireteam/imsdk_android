@@ -7,7 +7,9 @@ import com.idonans.core.thread.TaskQueue;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.IMSessionMessage;
+import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
+import com.masonsoft.imsdk.core.processor.SendMessageSessionValidateProcessor;
 import com.masonsoft.imsdk.lang.MultiProcessor;
 
 /**
@@ -45,6 +47,7 @@ public class IMMessageQueueManager {
     ///////////////////////////////////////////////////////////////
 
     private IMMessageQueueManager() {
+        mSendMessageProcessor.addFirstProcessor(new SendMessageSessionValidateProcessor());
     }
 
     @NonNull
@@ -108,11 +111,24 @@ public class IMMessageQueueManager {
         public void run() {
             try {
                 if (!mSendMessageProcessor.doProcess(mIMSessionMessage)) {
-                    throw new IllegalAccessError("SendMessageTask IMSessionMessage do process fail");
+                    Throwable e = new IllegalAccessError("SendMessageTask IMSessionMessage do process fail");
+                    IMLog.v(e);
+
+                    mIMSessionMessage.getEnqueueCallback().onEnqueueFail(
+                            mIMSessionMessage,
+                            IMSessionMessage.EnqueueCallback.ERROR_CODE_UNKNOWN,
+                            I18nResources.getString(R.string.msimsdk_enqueue_callback_error_unknown)
+                    );
                 }
             } catch (Throwable e) {
                 IMLog.v(e, "IMSessionMessage:%s", mIMSessionMessage.toShortString());
                 RuntimeMode.throwIfDebug(e);
+
+                mIMSessionMessage.getEnqueueCallback().onEnqueueFail(
+                        mIMSessionMessage,
+                        IMSessionMessage.EnqueueCallback.ERROR_CODE_UNKNOWN,
+                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_unknown)
+                );
             }
         }
     }

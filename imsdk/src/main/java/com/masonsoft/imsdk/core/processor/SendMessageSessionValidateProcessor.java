@@ -9,6 +9,9 @@ import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.lang.Processor;
 
+/**
+ * 校验待发送消息的 session 合法性
+ */
 public class SendMessageSessionValidateProcessor implements Processor<IMSessionMessage> {
 
     @Override
