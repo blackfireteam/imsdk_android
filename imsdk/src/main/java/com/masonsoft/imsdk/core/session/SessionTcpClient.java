@@ -7,8 +7,8 @@ import com.idonans.core.Charsets;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
-import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.NettyTcpClient;
+import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
@@ -326,7 +326,7 @@ public class SessionTcpClient extends NettyTcpClient {
             final long sessionUserId = mSignInMessagePacket.getSessionUserId();
             if (!mSignInMessagePacket.isSignIn()) {
                 // 当前没有正确登录，但是收到了意外地消息
-                IMLog.e(new IllegalStateException("is not sign in, but received message"), "message wrapper:%s", protoByteMessageWrapper);
+                IMLog.e(new IllegalStateException("is not sign in, but received message"), "protoByteMessageWrapper:%s", protoByteMessageWrapper);
                 return;
             }
             IMMessageQueueManager.getInstance().enqueueReceivedMessage(new SessionProtoByteMessageWrapper(sessionUserId, protoByteMessageWrapper));
