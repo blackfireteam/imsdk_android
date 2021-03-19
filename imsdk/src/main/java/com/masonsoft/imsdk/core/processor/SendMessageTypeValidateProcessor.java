@@ -13,6 +13,7 @@ import com.masonsoft.imsdk.lang.StateProp;
  * 检查指定消息类型
  *
  * @see InternalSendMessageTypeValidateProcessor
+ * @since 1.0
  */
 public abstract class SendMessageTypeValidateProcessor extends SendMessageNotNullValidateProcessor {
 

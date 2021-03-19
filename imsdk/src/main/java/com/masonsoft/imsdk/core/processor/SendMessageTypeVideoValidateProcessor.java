@@ -16,6 +16,8 @@ import java.io.File;
 
 /**
  * 发送视频类型的消息合法性检查
+ *
+ * @since 1.0
  */
 public class SendMessageTypeVideoValidateProcessor extends SendMessageTypeValidateProcessor {
 

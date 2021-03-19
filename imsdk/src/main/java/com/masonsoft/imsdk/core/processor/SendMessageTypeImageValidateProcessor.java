@@ -17,6 +17,8 @@ import java.io.File;
 
 /**
  * 发送图片类型的消息合法性检查
+ *
+ * @since 1.0
  */
 public class SendMessageTypeImageValidateProcessor extends SendMessageTypeValidateProcessor {
 

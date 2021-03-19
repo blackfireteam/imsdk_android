@@ -7,6 +7,8 @@ import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 
 /**
  * 校验收到消息的 session 合法性
+ *
+ * @since 1.0
  */
 public class ReceivedMessageSessionValidateProcessor extends ReceivedMessageNotNullValidateProcessor {
 

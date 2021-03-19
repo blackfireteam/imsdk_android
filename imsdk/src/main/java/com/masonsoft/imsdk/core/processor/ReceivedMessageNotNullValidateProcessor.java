@@ -7,6 +7,9 @@ import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.lang.Processor;
 
+/**
+ * @since 1.0
+ */
 public abstract class ReceivedMessageNotNullValidateProcessor implements Processor<SessionProtoByteMessageWrapper> {
 
     @Override

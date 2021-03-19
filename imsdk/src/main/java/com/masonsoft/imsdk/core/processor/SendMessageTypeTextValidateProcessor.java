@@ -12,6 +12,8 @@ import com.masonsoft.imsdk.lang.StateProp;
 
 /**
  * 发送文字类型的消息合法性检查
+ *
+ * @since 1.0
  */
 public class SendMessageTypeTextValidateProcessor extends SendMessageTypeValidateProcessor {
 

@@ -7,6 +7,9 @@ import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.lang.Processor;
 
+/**
+ * @since 1.0
+ */
 public abstract class SendMessageNotNullValidateProcessor implements Processor<IMSessionMessage> {
 
     @Override

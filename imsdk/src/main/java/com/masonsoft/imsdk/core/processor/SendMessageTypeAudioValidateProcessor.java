@@ -16,6 +16,8 @@ import java.io.File;
 
 /**
  * 发送语音类型的消息合法性检查
+ *
+ * @since 1.0
  */
 public class SendMessageTypeAudioValidateProcessor extends SendMessageTypeValidateProcessor {
 
