@@ -7,7 +7,7 @@ public class IMSessionMessage {
     private final long mSessionUserId;
     private long mToUserId;
 
-    // 是否是重发消息，重发消息时不会重新生成消息 id 与 seq
+    // 是否是重发消息，重发消息时不会重新生成消息 id, seq 与 timeMs
     private final boolean mResend;
 
     @NonNull
@@ -102,9 +102,9 @@ public class IMSessionMessage {
         int ERROR_CODE_INVALID_MESSAGE_SEQ = 5;
 
         /**
-         * 非法的消息发送状态.
+         * 非法的消息时间.
          */
-        int ERROR_CODE_INVALID_MESSAGE_SEND_STATE = 6;
+        int ERROR_CODE_INVALID_MESSAGE_TIME = 6;
 
         //////////////////////////////////////////
         //////////////////////////////////////////

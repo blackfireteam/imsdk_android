@@ -20,6 +20,7 @@ public class SendMessageRecoveryProcessor extends SendMessageNotNullValidateProc
         if (validateSendUser(target)) {
             return true;
         }
+
         if (validateToUser(target)) {
             return true;
         }
@@ -32,7 +33,11 @@ public class SendMessageRecoveryProcessor extends SendMessageNotNullValidateProc
             return true;
         }
 
-        return recoveryOthers(target);
+        if (validateTimeMs(target)) {
+            return true;
+        }
+
+        return validateOthers(target);
     }
 
     /**
@@ -151,16 +156,40 @@ public class SendMessageRecoveryProcessor extends SendMessageNotNullValidateProc
     }
 
     /**
-     * 重置其它字段
+     * 验证 timeMs
      */
-    private boolean recoveryOthers(@NonNull IMSessionMessage target) {
+    private boolean validateTimeMs(@NonNull IMSessionMessage target) {
+        final IMMessage imMessage = target.getIMMessage();
+        if (target.isResend()) {
+            // 重新发送的消息需要有正确的时间
+            final StateProp<Long> timeMs = imMessage.timeMs;
+            if (timeMs.isUnset()
+                    || timeMs.get() == null
+                    || timeMs.get() <= 0) {
+                target.getEnqueueCallback().onEnqueueFail(
+                        target,
+                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_TIME,
+                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_time)
+                );
+                return true;
+            }
+        } else {
+            // 新消息重置 timeMs
+            imMessage.timeMs.clear();
+        }
+
+        return false;
+    }
+
+    /**
+     * 验证其它字段
+     */
+    private boolean validateOthers(@NonNull IMSessionMessage target) {
         final IMMessage imMessage = target.getIMMessage();
         // 重置发送状态
         imMessage.sendState.clear();
         // 重置发送进度
         imMessage.sendProgress.clear();
-        // 重置消息产生的时间
-        imMessage.timeMs.clear();
 
         return false;
     }
