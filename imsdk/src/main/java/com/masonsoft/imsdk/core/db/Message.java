@@ -58,10 +58,10 @@ public class Message {
     public final StateProp<Long> localTimeMs = new StateProp<>();
 
     /**
-     * @see ColumnsMessage#C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY
+     * @see ColumnsMessage#C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY_MS
      */
     @NonNull
-    public final StateProp<Long> remoteFromUserProfileLastModify = new StateProp<>();
+    public final StateProp<Long> remoteFromUserProfileLastModifyMs = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_MSG_TYPE
@@ -92,6 +92,12 @@ public class Message {
      */
     @NonNull
     public final StateProp<String> thumb = new StateProp<>();
+
+    /**
+     * @see ColumnsMessage#C_LOCAL_THUMB_ORIGIN
+     */
+    @NonNull
+    public final StateProp<String> localThumbOrigin = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_WIDTH
@@ -171,8 +177,8 @@ public class Message {
         if (!this.localTimeMs.isUnset()) {
             target.put(ColumnsMessage.C_LOCAL_TIME_MS, this.localTimeMs.get());
         }
-        if (!this.remoteFromUserProfileLastModify.isUnset()) {
-            target.put(ColumnsMessage.C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY, this.remoteFromUserProfileLastModify.get());
+        if (!this.remoteFromUserProfileLastModifyMs.isUnset()) {
+            target.put(ColumnsMessage.C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY_MS, this.remoteFromUserProfileLastModifyMs.get());
         }
         if (!this.messageType.isUnset()) {
             target.put(ColumnsMessage.C_MSG_TYPE, this.messageType.get());
@@ -188,6 +194,9 @@ public class Message {
         }
         if (!this.thumb.isUnset()) {
             target.put(ColumnsMessage.C_THUMB, this.thumb.get());
+        }
+        if (!this.localThumbOrigin.isUnset()) {
+            target.put(ColumnsMessage.C_LOCAL_THUMB_ORIGIN, this.localThumbOrigin.get());
         }
         if (!this.width.isUnset()) {
             target.put(ColumnsMessage.C_WIDTH, this.width.get());
@@ -235,12 +244,13 @@ public class Message {
                     ColumnsMessage.C_REMOTE_MSG_ID,
                     ColumnsMessage.C_REMOTE_MSG_TIME,
                     ColumnsMessage.C_LOCAL_TIME_MS,
-                    ColumnsMessage.C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY,
+                    ColumnsMessage.C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY_MS,
                     ColumnsMessage.C_MSG_TYPE,
                     ColumnsMessage.C_TITLE,
                     ColumnsMessage.C_BODY,
                     ColumnsMessage.C_LOCAL_BODY_ORIGIN,
                     ColumnsMessage.C_THUMB,
+                    ColumnsMessage.C_LOCAL_THUMB_ORIGIN,
                     ColumnsMessage.C_WIDTH,
                     ColumnsMessage.C_HEIGHT,
                     ColumnsMessage.C_DURATION,
@@ -265,12 +275,13 @@ public class Message {
             target.remoteMessageId.set(cursor.getLong(++index));
             target.remoteMessageTime.set(cursor.getLong(++index));
             target.localTimeMs.set(cursor.getLong(++index));
-            target.remoteFromUserProfileLastModify.set(cursor.getLong(++index));
+            target.remoteFromUserProfileLastModifyMs.set(cursor.getLong(++index));
             target.messageType.set(cursor.getLong(++index));
             target.title.set(cursor.getString(++index));
             target.body.set(cursor.getString(++index));
             target.localBodyOrigin.set(cursor.getString(++index));
             target.thumb.set(cursor.getString(++index));
+            target.localThumbOrigin.set(cursor.getString(++index));
             target.width.set(cursor.getInt(++index));
             target.height.set(cursor.getInt(++index));
             target.duration.set(cursor.getLong(++index));

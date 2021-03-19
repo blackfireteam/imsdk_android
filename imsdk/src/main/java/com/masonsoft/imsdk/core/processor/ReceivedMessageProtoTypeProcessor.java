@@ -26,13 +26,15 @@ public abstract class ReceivedMessageProtoTypeProcessor<T> extends ReceivedMessa
         if (protoMessageObject != null) {
             if (mProtoMessageObjectType.isInstance(protoMessageObject)) {
                 //noinspection unchecked
-                return doNotNullProtoMessageObjectProcess((T) protoMessageObject);
+                return doNotNullProtoMessageObjectProcess(target, (T) protoMessageObject);
             }
         }
 
         return false;
     }
 
-    protected abstract boolean doNotNullProtoMessageObjectProcess(@NonNull T protoMessageObject);
+    protected abstract boolean doNotNullProtoMessageObjectProcess(
+            @NonNull SessionProtoByteMessageWrapper target,
+            @NonNull T protoMessageObject);
 
 }

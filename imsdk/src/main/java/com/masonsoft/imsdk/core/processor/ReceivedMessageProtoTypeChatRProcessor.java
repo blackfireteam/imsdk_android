@@ -2,6 +2,9 @@ package com.masonsoft.imsdk.core.processor;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.core.db.Message;
+import com.masonsoft.imsdk.core.db.MessageFactory;
+import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 
 /**
@@ -16,7 +19,12 @@ public class ReceivedMessageProtoTypeChatRProcessor extends ReceivedMessageProto
     }
 
     @Override
-    protected boolean doNotNullProtoMessageObjectProcess(@NonNull ProtoMessage.ChatR protoMessageObject) {
+    protected boolean doNotNullProtoMessageObjectProcess(
+            @NonNull SessionProtoByteMessageWrapper target,
+            @NonNull ProtoMessage.ChatR protoMessageObject) {
+        final Message message = MessageFactory.create(protoMessageObject);
+
+        // TODO 撤回的消息类型需要交给消息发送队列处理
         return false;
     }
 

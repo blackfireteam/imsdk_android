@@ -242,7 +242,6 @@ public final class DatabaseHelper {
 
         /**
          * 消息的排序字段.此字段有索引但是不唯一。(根据逻辑可能会产生重复，但是概率极小).
-         * 在同一个会话中是唯一的。
          *
          * @see Sequence
          * @since db version 1
@@ -277,7 +276,7 @@ public final class DatabaseHelper {
         String C_REMOTE_MSG_ID = "c_remote_msg_id";
 
         /**
-         * 消息时间(秒)
+         * 消息时间(微秒)
          *
          * @since db version 1
          */
@@ -293,12 +292,13 @@ public final class DatabaseHelper {
         String C_LOCAL_TIME_MS = "c_local_time_ms";
 
         /**
-         * 消息发送者的个人信息的最后更新时间。用来校验本地缓存是否需要更新。
+         * 消息发送者的个人信息的最后更新时间。用来校验本地缓存是否需要更新。<br>
+         * 服务器时间是秒，本地转存储为毫秒格式(放大 1000 倍).
          *
          * @since db version 1
          */
         @Remote("sput")
-        String C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY = "c_remote_from_user_profile_last_modify";
+        String C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY_MS = "c_remote_from_user_profile_last_modify_ms";
 
         /**
          * 消息类型，用来区分消息内容是哪一种格式. 当一条消息被撤回时，它的消息类型会发生变化(已撤回的消息是一个单独的消息类型).
@@ -330,6 +330,8 @@ public final class DatabaseHelper {
         /**
          * 原始消息内容(当消息是从本地发出时，如果该消息需要中转处理，则该字段存储原始的内容)。
          * 例如：当发送一条图片消息时，此字段存储原始的本地文件地址。
+         *
+         * @since db version 1
          */
         @Local
         String C_LOCAL_BODY_ORIGIN = "c_local_body_origin";
@@ -342,6 +344,15 @@ public final class DatabaseHelper {
         @Remote("thumb")
         @Local
         String C_THUMB = "c_thumb";
+
+        /**
+         * 原始消息内容：thumb(当消息是从本地发出时，如果该消息需要中转处理，则该字段存储原始的 thumb 内容)。
+         * 例如：当发送一条视频信息时，此字段存储原始的封面图的本地文件地址。
+         *
+         * @since db version 1
+         */
+        @Local
+        String C_LOCAL_THUMB_ORIGIN = "c_local_thumb_origin";
 
         /**
          * 宽度
@@ -629,12 +640,13 @@ public final class DatabaseHelper {
                 ColumnsMessage.C_REMOTE_MSG_ID + " integer not null," +
                 ColumnsMessage.C_REMOTE_MSG_TIME + " integer not null default 0," +
                 ColumnsMessage.C_LOCAL_TIME_MS + " integer not null," +
-                ColumnsMessage.C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY + " integer not null default 0," +
+                ColumnsMessage.C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY_MS + " integer not null default 0," +
                 ColumnsMessage.C_MSG_TYPE + " integer not null," +
                 ColumnsMessage.C_TITLE + " text," +
                 ColumnsMessage.C_BODY + " text," +
                 ColumnsMessage.C_LOCAL_BODY_ORIGIN + " text," +
                 ColumnsMessage.C_THUMB + " text," +
+                ColumnsMessage.C_LOCAL_THUMB_ORIGIN + " text," +
                 ColumnsMessage.C_WIDTH + " integer not null default 0," +
                 ColumnsMessage.C_HEIGHT + " integer not null default 0," +
                 ColumnsMessage.C_DURATION + " integer not null default 0," +
