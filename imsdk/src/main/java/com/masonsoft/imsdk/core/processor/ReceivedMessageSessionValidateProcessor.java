@@ -3,7 +3,6 @@ package com.masonsoft.imsdk.core.processor;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 
 /**
@@ -17,7 +16,6 @@ public class ReceivedMessageSessionValidateProcessor extends ReceivedMessageNotN
             // unexpected
             final Throwable e = new IllegalArgumentException("invalid SessionProtoByteMessageWrapper sessionUserId:" + target.getSessionUserId());
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
             return true;
         }
 

@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.lang.Processor;
 
 public abstract class SendMessageNotNullValidateProcessor implements Processor<IMSessionMessage> {
@@ -16,7 +15,6 @@ public abstract class SendMessageNotNullValidateProcessor implements Processor<I
             // unexpected
             final Throwable e = new NullPointerException("SendMessageNotNullValidateProcessor doProcess target is null");
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
             return false;
         }
 
