@@ -40,7 +40,7 @@ public class IMMessage {
 
     /**
      * 消息产生的时间, 单位毫秒.<br>
-     * 如果是本地发送的新消息，该时间是发送时的本地时间.<br>
+     * 如果是本地发送的新消息，该时间是发送入库时的本地时间.<br>
      * 如果该消息是收到的服务器下发的消息, 并且该消息在本地不存在，则该时间是这一条
      * 服务器下发的消息上的服务器时间。
      */
@@ -120,6 +120,29 @@ public class IMMessage {
      */
     @NonNull
     public final StateProp<Float> sendProgress = new StateProp<>();
+
+    /**
+     * 使用 input 对象的内容替换当前内容
+     */
+    public void apply(@NonNull IMMessage input) {
+        this.id.apply(input.id);
+        this.seq.apply(input.seq);
+        this.fromUserId.apply(input.fromUserId);
+        this.toUserId.apply(input.toUserId);
+        this.timeMs.apply(input.timeMs);
+        this.type.apply(input.type);
+        this.title.apply(input.title);
+        this.body.apply(input.body);
+        this.thumb.apply(input.thumb);
+        this.width.apply(input.width);
+        this.height.apply(input.height);
+        this.duration.apply(input.duration);
+        this.lat.apply(input.lat);
+        this.lng.apply(input.lng);
+        this.zoom.apply(input.zoom);
+        this.sendState.apply(input.sendState);
+        this.sendProgress.apply(input.sendProgress);
+    }
 
     @NonNull
     public String toShortString() {

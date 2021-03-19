@@ -11,7 +11,7 @@ import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.processor.InternalSendMessageTypeValidateProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedMessageSessionValidateProcessor;
-import com.masonsoft.imsdk.core.processor.SendMessageSessionValidateProcessor;
+import com.masonsoft.imsdk.core.processor.SendMessageRecoveryProcessor;
 import com.masonsoft.imsdk.lang.MultiProcessor;
 
 /**
@@ -51,7 +51,7 @@ public class IMMessageQueueManager {
     private IMMessageQueueManager() {
         mReceivedMessageProcessor.addFirstProcessor(new ReceivedMessageSessionValidateProcessor());
 
-        mSendMessageProcessor.addFirstProcessor(new SendMessageSessionValidateProcessor());
+        mSendMessageProcessor.addFirstProcessor(new SendMessageRecoveryProcessor());
         mSendMessageProcessor.addLastProcessor(new InternalSendMessageTypeValidateProcessor());
     }
 
@@ -80,10 +80,11 @@ public class IMMessageQueueManager {
         public void run() {
             try {
                 if (!mReceivedMessageProcessor.doProcess(mSessionProtoByteMessageWrapper)) {
-                    throw new IllegalAccessError("ReceivedMessageTask SessionProtoByteMessageWrapper do process fail");
+                    Throwable e = new IllegalAccessError("ReceivedMessageTask SessionProtoByteMessageWrapper do process fail");
+                    IMLog.v(e);
                 }
             } catch (Throwable e) {
-                IMLog.v(e, "SessionProtoByteMessageWrapper:%s", mSessionProtoByteMessageWrapper.toShortString());
+                IMLog.e(e, "SessionProtoByteMessageWrapper:%s", mSessionProtoByteMessageWrapper.toShortString());
                 RuntimeMode.throwIfDebug(e);
             }
         }
@@ -95,12 +96,33 @@ public class IMMessageQueueManager {
     }
 
     /**
-     * 本地发送新消息或重发一个失败的消息
+     * 本地重发一个失败的消息
      */
-    public void enqueueSendMessage(@NonNull IMMessage imMessage, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
+    public void enqueueResendMessage(@NonNull IMMessage imMessage, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
+        this.enqueueSendMessage(imMessage, 0, true, enqueueCallback);
+    }
+
+    /**
+     * 本地发送新消息
+     */
+    private void enqueueSendMessage(@NonNull IMMessage imMessage, long toUserId, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
+        this.enqueueSendMessage(imMessage, toUserId, false, enqueueCallback);
+    }
+
+    private void enqueueSendMessage(@NonNull IMMessage imMessage, long toUserId, boolean resend, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
         // sessionUserId 可能是无效值
         final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        mSendMessageQueue.enqueue(new SendMessageTask(new IMSessionMessage(sessionUserId, IMMessageFactory.copy(imMessage), enqueueCallback)));
+        mSendMessageQueue.enqueue(
+                new SendMessageTask(
+                        new IMSessionMessage(
+                                sessionUserId,
+                                toUserId,
+                                resend,
+                                IMMessageFactory.copy(imMessage),
+                                enqueueCallback
+                        )
+                )
+        );
     }
 
     private class SendMessageTask implements Runnable {
@@ -126,7 +148,7 @@ public class IMMessageQueueManager {
                     );
                 }
             } catch (Throwable e) {
-                IMLog.v(e, "IMSessionMessage:%s", mIMSessionMessage.toShortString());
+                IMLog.e(e, "IMSessionMessage:%s", mIMSessionMessage.toShortString());
                 RuntimeMode.throwIfDebug(e);
 
                 mIMSessionMessage.getEnqueueCallback().onEnqueueFail(

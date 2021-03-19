@@ -5,19 +5,43 @@ import androidx.annotation.NonNull;
 public class IMSessionMessage {
 
     private final long mSessionUserId;
+    private long mToUserId;
+
+    // 是否是重发消息，重发消息时不会重新生成消息 id 与 seq
+    private final boolean mResend;
+
     @NonNull
     private final IMMessage mIMMessage;
     @NonNull
     private final EnqueueCallback mEnqueueCallback;
 
-    public IMSessionMessage(long sessionUserId, @NonNull IMMessage imMessage, @NonNull EnqueueCallback enqueueCallback) {
+    public IMSessionMessage(
+            long sessionUserId,
+            long toUserId,
+            boolean resend,
+            @NonNull IMMessage imMessage,
+            @NonNull EnqueueCallback enqueueCallback) {
         mSessionUserId = sessionUserId;
+        mToUserId = toUserId;
+        mResend = resend;
         mIMMessage = imMessage;
         mEnqueueCallback = enqueueCallback;
     }
 
     public long getSessionUserId() {
         return mSessionUserId;
+    }
+
+    public long getToUserId() {
+        return mToUserId;
+    }
+
+    public void setToUserId(long toUserId) {
+        mToUserId = toUserId;
+    }
+
+    public boolean isResend() {
+        return mResend;
     }
 
     @NonNull
@@ -32,7 +56,9 @@ public class IMSessionMessage {
 
     @NonNull
     public String toShortString() {
-        return "IMSessionMessage sessionUserId:" + this.mSessionUserId + ", " + this.mIMMessage.toShortString();
+        return "IMSessionMessage sessionUserId:" + this.mSessionUserId
+                + ", toUserId:" + mToUserId
+                + ", " + this.mIMMessage.toShortString();
     }
 
     @Override
@@ -54,6 +80,31 @@ public class IMSessionMessage {
          * 非法的会话用户 id.
          */
         int ERROR_CODE_INVALID_SESSION_USER_ID = 1;
+
+        /**
+         * 非法的发送者用户 id.
+         */
+        int ERROR_CODE_INVALID_FROM_USER_ID = 2;
+
+        /**
+         * 非法的接收者用户 id.
+         */
+        int ERROR_CODE_INVALID_TO_USER_ID = 3;
+
+        /**
+         * 非法的消息 id.
+         */
+        int ERROR_CODE_INVALID_MESSAGE_ID = 4;
+
+        /**
+         * 非法的消息 seq.
+         */
+        int ERROR_CODE_INVALID_MESSAGE_SEQ = 5;
+
+        /**
+         * 非法的消息发送状态.
+         */
+        int ERROR_CODE_INVALID_MESSAGE_SEND_STATE = 6;
 
         //////////////////////////////////////////
         //////////////////////////////////////////
