@@ -42,7 +42,7 @@ public class IMMessageQueueManager {
     private final TaskQueue mReceivedMessageQueue = new TaskQueue(1);
     ///////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////
-    // 处理本地发送的消息
+    // 处理本地发送的消息, 消息入库之后交由消息上传队列处理
     private final MultiProcessor<IMSessionMessage> mSendMessageProcessor = new MultiProcessor<>();
     private final TaskQueue mSendMessageQueue = new TaskQueue(1);
     ///////////////////////////////////////////////////////////////
