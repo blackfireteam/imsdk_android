@@ -25,8 +25,16 @@ public class SendMessageTypeAudioValidateProcessor extends SendMessageTypeValida
 
     @Override
     protected boolean doTypeProcess(@NonNull IMSessionMessage target, int type) {
-        final StateProp<String> body = target.getIMMessage().body;
-        if (body.isUnset()) {
+        if (validateAudio(target)) {
+            return true;
+        }
+
+        return validateDuration(target);
+    }
+
+    private boolean validateAudio(@NonNull IMSessionMessage target) {
+        final StateProp<String> audio = target.getIMMessage().body;
+        if (audio.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
                     IMSessionMessage.EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_UNSET,
@@ -35,12 +43,12 @@ public class SendMessageTypeAudioValidateProcessor extends SendMessageTypeValida
             return true;
         }
 
-        String audioPath = body.get();
+        String audioPath = audio.get();
         if (audioPath != null) {
             audioPath = audioPath.trim();
 
             // 应用文件地址变更
-            body.set(audioPath);
+            audio.set(audioPath);
         }
         if (TextUtils.isEmpty(audioPath)) {
             target.getEnqueueCallback().onEnqueueFail(
@@ -49,21 +57,6 @@ public class SendMessageTypeAudioValidateProcessor extends SendMessageTypeValida
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_path_invalid)
             );
             return true;
-        }
-
-        if (IMConstants.SendMessageOption.Audio.DURATION_REQUIRED) {
-            // 必须要有合法的时长参数
-            final StateProp<Long> duration = target.getIMMessage().duration;
-            if (duration.isUnset()
-                    || duration.get() == null
-                    || duration.get() <= 0) {
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_duration_invalid)
-                );
-                return true;
-            }
         }
 
         if (URLUtil.isNetworkUrl(audioPath)) {
@@ -75,7 +68,7 @@ public class SendMessageTypeAudioValidateProcessor extends SendMessageTypeValida
             audioPath = audioPath.substring(6);
 
             // 应用文件地址变更
-            body.set(audioPath);
+            audio.set(audioPath);
         }
 
         // 校验语音文件是否存在并且文件的大小的是否合法
@@ -96,6 +89,27 @@ public class SendMessageTypeAudioValidateProcessor extends SendMessageTypeValida
                     target,
                     IMSessionMessage.EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_FILE_SIZE_TOO_LARGE,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_file_size_too_large, maxFileSizeAsHumanString)
+            );
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean validateDuration(@NonNull IMSessionMessage target) {
+        if (!IMConstants.SendMessageOption.Audio.DURATION_REQUIRED) {
+            return false;
+        }
+
+        // 必须要有合法的时长参数
+        final StateProp<Long> duration = target.getIMMessage().duration;
+        if (duration.isUnset()
+                || duration.get() == null
+                || duration.get() <= 0) {
+            target.getEnqueueCallback().onEnqueueFail(
+                    target,
+                    IMSessionMessage.EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID,
+                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_duration_invalid)
             );
             return true;
         }
