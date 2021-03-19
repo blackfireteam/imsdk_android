@@ -146,12 +146,17 @@ public class IMSessionMessage {
         /**
          * 视频消息，视频封面图未设置
          */
-        int ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_UNSET = 44;
+        int ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_UNSET = 44;
 
         /**
          * 视频消息，视频封面图非法
          */
-        int ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_INVALID = 45;
+        int ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_INVALID = 45;
+
+        /**
+         * 视频消息，视频封面文件太大
+         */
+        int ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FILE_SIZE_TOO_LARGE = 46;
 
         //////////////////////////////////////////
         //////////////////////////////////////////
