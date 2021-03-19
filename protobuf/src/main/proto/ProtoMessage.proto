@@ -1,7 +1,7 @@
 syntax = "proto3";
 option java_package = "com.masonsoft.imsdk.core.proto";
 
-// 最近修改时间-2021-03-15 11:03:02
+// 最近修改时间-2021-03-18 16:53:02
 
 //0
 message Ping
