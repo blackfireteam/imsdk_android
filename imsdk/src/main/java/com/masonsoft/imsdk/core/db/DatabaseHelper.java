@@ -653,9 +653,9 @@ public final class DatabaseHelper {
         return "create table if not exists " + tableNameMessage + " (" +
                 ColumnsMessage.C_LOCAL_ID + " integer primary key autoincrement not null," +
                 ColumnsMessage.C_LOCAL_SEQ + " integer not null," +
-                ColumnsMessage.C_FROM_USER_ID + " integer not null default 0," +
+                ColumnsMessage.C_FROM_USER_ID + " integer not null," +
                 ColumnsMessage.C_TO_USER_ID + " integer not null," +
-                ColumnsMessage.C_REMOTE_MSG_ID + " integer not null," +
+                ColumnsMessage.C_REMOTE_MSG_ID + " integer not null default 0," +
                 ColumnsMessage.C_REMOTE_MSG_TIME + " integer not null default 0," +
                 ColumnsMessage.C_LOCAL_TIME_MS + " integer not null," +
                 ColumnsMessage.C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY_MS + " integer not null default 0," +
@@ -668,13 +668,13 @@ public final class DatabaseHelper {
                 ColumnsMessage.C_WIDTH + " integer not null default 0," +
                 ColumnsMessage.C_HEIGHT + " integer not null default 0," +
                 ColumnsMessage.C_DURATION + " integer not null default 0," +
-                ColumnsMessage.C_LAT + " double," +
-                ColumnsMessage.C_LNG + " double," +
+                ColumnsMessage.C_LAT + " double not null default 0," +
+                ColumnsMessage.C_LNG + " double not null default 0," +
                 ColumnsMessage.C_ZOOM + " integer not null default 0," +
                 ColumnsMessage.C_ERROR_CODE + " integer not null default 0," +
                 ColumnsMessage.C_ERROR_MESSAGE + " text," +
                 ColumnsMessage.C_LOCAL_SEND_STATUS + " integer not null default 0," +
-                ColumnsMessage.C_LOCAL_ACTION_MSG + " integer not null," +
+                ColumnsMessage.C_LOCAL_ACTION_MSG + " integer not null default 0," +
                 ColumnsMessage.C_LOCAL_BLOCK_ID + " integer not null default 0" +
                 ")";
     }
