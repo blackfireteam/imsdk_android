@@ -192,6 +192,10 @@ public class SendMessageRecoveryProcessor extends SendMessageNotNullValidateProc
         // 重置发送进度
         imMessage.sendProgress.clear();
 
+        // 重置错误码 与 错误提示信息
+        imMessage.errorCode.clear();
+        imMessage.errorMessage.clear();
+
         return false;
     }
 
