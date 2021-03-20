@@ -60,7 +60,7 @@ public abstract class NettyTcpClient extends TcpClient {
     /**
      * 如果数据长度(Message Data)超过此值，则会触发压缩.
      */
-    private static final int MAX_PLAIN_DATA_LENGTH = 20480;
+    private static final int MAX_PLAIN_DATA_LENGTH = 5000;
     /**
      * 数据包长度的上限
      */
