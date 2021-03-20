@@ -163,19 +163,19 @@ public class IMMessage {
         final StringBuilder builder = new StringBuilder();
         builder.append("IMMessage");
         if (this.id.isUnset()) {
-            builder.append(", id:unset");
+            builder.append(" id:unset");
         } else {
-            builder.append(", id:").append(this.id.get());
+            builder.append(" id:").append(this.id.get());
         }
         if (this.type.isUnset()) {
-            builder.append(", type:unset");
+            builder.append(" type:unset");
         } else {
-            builder.append(", type:").append(this.type.get());
+            builder.append(" type:").append(this.type.get());
         }
         if (this.seq.isUnset()) {
-            builder.append(", seq:unset");
+            builder.append(" seq:unset");
         } else {
-            builder.append(", seq:").append(this.seq.get());
+            builder.append(" seq:").append(this.seq.get());
         }
         return builder.toString();
     }

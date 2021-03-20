@@ -107,7 +107,7 @@ public class IMMessageQueueManager {
     /**
      * 本地发送新消息
      */
-    private void enqueueSendMessage(@NonNull IMMessage imMessage, long toUserId, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
+    public void enqueueSendMessage(@NonNull IMMessage imMessage, long toUserId, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
         this.enqueueSendMessage(imMessage, toUserId, false, enqueueCallback);
     }
 
