@@ -409,6 +409,24 @@ public final class DatabaseHelper {
         String C_ZOOM = "c_zoom";
 
         /**
+         * 错误码
+         *
+         * @since db version 1
+         */
+        @Remote("code")
+        @Local
+        String C_ERROR_CODE = "c_error_code";
+
+        /**
+         * 错误描述
+         *
+         * @since db version 1
+         */
+        @Remote("msg")
+        @Local
+        String C_ERROR_MESSAGE = "c_error_message";
+
+        /**
          * 消息发送状态
          *
          * @see IMConstants.SendStatus
@@ -653,6 +671,8 @@ public final class DatabaseHelper {
                 ColumnsMessage.C_LAT + " double," +
                 ColumnsMessage.C_LNG + " double," +
                 ColumnsMessage.C_ZOOM + " integer not null default 0," +
+                ColumnsMessage.C_ERROR_CODE + " integer not null default 0," +
+                ColumnsMessage.C_ERROR_MESSAGE + " text," +
                 ColumnsMessage.C_LOCAL_SEND_STATUS + " integer not null default 0," +
                 ColumnsMessage.C_LOCAL_ACTION_MSG + " integer not null," +
                 ColumnsMessage.C_LOCAL_BLOCK_ID + " integer not null" +

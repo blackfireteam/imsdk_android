@@ -136,6 +136,18 @@ public class Message {
     public final StateProp<Integer> zoom = new StateProp<>();
 
     /**
+     * @see ColumnsMessage#C_ERROR_CODE
+     */
+    @NonNull
+    public final StateProp<Integer> errorCode = new StateProp<>();
+
+    /**
+     * @see ColumnsMessage#C_ERROR_MESSAGE
+     */
+    @NonNull
+    public final StateProp<String> errorMessage = new StateProp<>();
+
+    /**
      * @see ColumnsMessage#C_LOCAL_SEND_STATUS
      */
     @NonNull
@@ -216,6 +228,12 @@ public class Message {
         if (!this.zoom.isUnset()) {
             target.put(ColumnsMessage.C_ZOOM, this.zoom.get());
         }
+        if (!this.errorCode.isUnset()) {
+            target.put(ColumnsMessage.C_ERROR_CODE, this.errorCode.get());
+        }
+        if (!this.errorMessage.isUnset()) {
+            target.put(ColumnsMessage.C_ERROR_MESSAGE, this.errorMessage.get());
+        }
         if (!this.localSendStatus.isUnset()) {
             target.put(ColumnsMessage.C_LOCAL_SEND_STATUS, this.localSendStatus.get());
         }
@@ -257,6 +275,8 @@ public class Message {
                     ColumnsMessage.C_LAT,
                     ColumnsMessage.C_LNG,
                     ColumnsMessage.C_ZOOM,
+                    ColumnsMessage.C_ERROR_CODE,
+                    ColumnsMessage.C_ERROR_MESSAGE,
                     ColumnsMessage.C_LOCAL_SEND_STATUS,
                     ColumnsMessage.C_LOCAL_ACTION_MSG,
                     ColumnsMessage.C_LOCAL_BLOCK_ID,
@@ -288,6 +308,8 @@ public class Message {
             target.lat.set(cursor.getDouble(++index));
             target.lng.set(cursor.getDouble(++index));
             target.zoom.set(cursor.getInt(++index));
+            target.errorCode.set(cursor.getInt(++index));
+            target.errorMessage.set(cursor.getString(++index));
             target.localSendStatus.set(cursor.getInt(++index));
             target.localActionMessage.set(cursor.getInt(++index));
             target.localBlockId.set(cursor.getLong(++index));

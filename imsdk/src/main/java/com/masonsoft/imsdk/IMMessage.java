@@ -110,6 +110,18 @@ public class IMMessage {
     public final StateProp<Integer> zoom = new StateProp<>();
 
     /**
+     * 消息发送失败时的错误码
+     */
+    @NonNull
+    public final StateProp<Integer> errorCode = new StateProp<>();
+
+    /**
+     * 消息发送失败时的错误描述信息
+     */
+    @NonNull
+    public final StateProp<String> errorMessage = new StateProp<>();
+
+    /**
      * 消息的发送状态
      */
     @NonNull
@@ -140,6 +152,8 @@ public class IMMessage {
         this.lat.apply(input.lat);
         this.lng.apply(input.lng);
         this.zoom.apply(input.zoom);
+        this.errorCode.apply(input.errorCode);
+        this.errorMessage.apply(input.errorMessage);
         this.sendState.apply(input.sendState);
         this.sendProgress.apply(input.sendProgress);
     }
