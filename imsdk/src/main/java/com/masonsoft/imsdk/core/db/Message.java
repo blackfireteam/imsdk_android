@@ -151,7 +151,7 @@ public class Message {
      * @see ColumnsMessage#C_LOCAL_SEND_STATUS
      */
     @NonNull
-    public final StateProp<Long> localSendStatus = new StateProp<>();
+    public final StateProp<Integer> localSendStatus = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_LOCAL_ACTION_MSG
@@ -341,7 +341,7 @@ public class Message {
             target.zoom.set(cursor.getLong(++index));
             target.errorCode.set(cursor.getLong(++index));
             target.errorMessage.set(cursor.getString(++index));
-            target.localSendStatus.set(cursor.getLong(++index));
+            target.localSendStatus.set(cursor.getInt(++index));
             target.localActionMessage.set(cursor.getLong(++index));
             target.localBlockId.set(cursor.getLong(++index));
             return target;

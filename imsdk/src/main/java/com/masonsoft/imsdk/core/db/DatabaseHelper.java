@@ -675,7 +675,7 @@ public final class DatabaseHelper {
                 ColumnsMessage.C_ERROR_MESSAGE + " text," +
                 ColumnsMessage.C_LOCAL_SEND_STATUS + " integer not null default 0," +
                 ColumnsMessage.C_LOCAL_ACTION_MSG + " integer not null," +
-                ColumnsMessage.C_LOCAL_BLOCK_ID + " integer not null" +
+                ColumnsMessage.C_LOCAL_BLOCK_ID + " integer not null default 0" +
                 ")";
     }
 

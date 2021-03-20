@@ -39,6 +39,39 @@ public class IdleSendingMessage {
     public final StateProp<Long> messageLocalId = new StateProp<>();
 
     @NonNull
+    public String toShortString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("IdleSendingMessage");
+        if (this.localId.isUnset()) {
+            builder.append(" localId:unset");
+        } else {
+            builder.append(" localId:").append(this.localId.get());
+        }
+        if (this.conversationType.isUnset()) {
+            builder.append(" conversationType:unset");
+        } else {
+            builder.append(" conversationType:").append(this.conversationType.get());
+        }
+        if (this.targetUserId.isUnset()) {
+            builder.append(" targetUserId:unset");
+        } else {
+            builder.append(" targetUserId:").append(this.targetUserId.get());
+        }
+        if (this.messageLocalId.isUnset()) {
+            builder.append(" messageLocalId:unset");
+        } else {
+            builder.append(" messageLocalId:").append(this.messageLocalId.get());
+        }
+        return builder.toString();
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return this.toShortString();
+    }
+
+    @NonNull
     public ContentValues toContentValues() {
         final ContentValues target = new ContentValues();
         if (!this.localId.isUnset()) {

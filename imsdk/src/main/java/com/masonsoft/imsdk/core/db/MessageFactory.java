@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 
 /**
@@ -70,6 +71,18 @@ public class MessageFactory {
         target.errorCode.apply(input.errorCode);
         target.errorMessage.apply(input.errorMessage);
         target.localSendStatus.apply(input.sendState);
+
+        if (input.type.isUnset() || input.type.get() == null) {
+            // 如果没有设置 type, 默认为是指令消息
+            final Throwable e = new IllegalArgumentException("IMMessage type is unset or is null," +
+                    " set localActionMessage as TRUE: " + input);
+            IMLog.e(e);
+            target.localActionMessage.set(IMConstants.TRUE);
+        } else if (IMConstants.MessageType.isActionMessage(input.type.get())) {
+            target.localActionMessage.set(IMConstants.TRUE);
+        } else {
+            target.localActionMessage.set(IMConstants.FALSE);
+        }
 
         return target;
     }

@@ -27,7 +27,7 @@ public class SendMessageTypeImageValidateProcessor extends SendMessageTypeValida
     }
 
     @Override
-    protected boolean doTypeProcess(@NonNull IMSessionMessage target, int type) {
+    protected boolean doTypeProcess(@NonNull IMSessionMessage target, long type) {
         final StateProp<String> body = target.getIMMessage().body;
         if (body.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
@@ -62,8 +62,8 @@ public class SendMessageTypeImageValidateProcessor extends SendMessageTypeValida
         // 是否需要解码图片尺寸信息
         boolean requireDecodeImageSize = true;
 
-        final StateProp<Integer> width = target.getIMMessage().width;
-        final StateProp<Integer> height = target.getIMMessage().height;
+        final StateProp<Long> width = target.getIMMessage().width;
+        final StateProp<Long> height = target.getIMMessage().height;
         if (!width.isUnset() && width.get() != null && width.get() > 0
                 && !height.isUnset() && height.get() != null && height.get() > 0) {
             // 已经设置了合法的宽高值
@@ -119,8 +119,8 @@ public class SendMessageTypeImageValidateProcessor extends SendMessageTypeValida
                 }
 
                 // 设置图片宽高值
-                width.set(imageSize[0]);
-                height.set(imageSize[1]);
+                width.set((long) imageSize[0]);
+                height.set((long) imageSize[1]);
             }
         }
 

@@ -26,7 +26,7 @@ public class SendMessageTypeVideoValidateProcessor extends SendMessageTypeValida
     }
 
     @Override
-    protected boolean doTypeProcess(@NonNull IMSessionMessage target, int type) {
+    protected boolean doTypeProcess(@NonNull IMSessionMessage target, long type) {
         // 验证视频信息
         if (validateVideo(target)) {
             return true;

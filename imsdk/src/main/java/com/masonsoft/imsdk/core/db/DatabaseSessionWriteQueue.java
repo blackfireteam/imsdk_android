@@ -24,6 +24,10 @@ public class DatabaseSessionWriteQueue {
         }
     };
 
+    public static DatabaseSessionWriteQueue getInstance() {
+        return INSTANCE.get();
+    }
+
     private final Map<DatabaseHelper, TaskQueue> mSessionWriteQueue = new HashMap<>();
 
     private DatabaseSessionWriteQueue() {
