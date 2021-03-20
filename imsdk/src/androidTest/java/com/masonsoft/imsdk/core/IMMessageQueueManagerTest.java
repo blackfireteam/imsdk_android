@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk.core;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -7,6 +9,7 @@ import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.IMSessionMessage;
+import com.masonsoft.imsdk.core.session.Session;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,10 +21,19 @@ public class IMMessageQueueManagerTest {
     public void testEnqueueSendMessage() {
         // 测试发送一条新消息
 
+        IMLog.setLogLevel(Log.VERBOSE);
+        final Session session = new Session(
+                "123123123123123",
+                "112.112.112.112",
+                1908
+        );
+        IMSessionManager.getInstance().setSession(session);
+        IMSessionManager.getInstance().setSessionUserId(session, 1);
+
         final IMMessage message = IMMessageFactory.createTextMessage("hello, text message");
         IMMessageQueueManager.getInstance().enqueueSendMessage(
                 message,
-                1,
+                2,
                 new IMSessionMessage.EnqueueCallback() {
                     @Override
                     public void onEnqueueSuccess(@NonNull IMSessionMessage imSessionMessage) {
