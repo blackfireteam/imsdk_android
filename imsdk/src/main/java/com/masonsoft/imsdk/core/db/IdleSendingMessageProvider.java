@@ -231,7 +231,7 @@ public class IdleSendingMessageProvider {
      *
      * @return 插入成功返回 true, 否则返回 false.
      */
-    public boolean insertConversation(
+    public boolean insertIdleSendingMessage(
             final long sessionUserId,
             final IdleSendingMessage idleSendingMessage) {
         if (idleSendingMessage == null) {

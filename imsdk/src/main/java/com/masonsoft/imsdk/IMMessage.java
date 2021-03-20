@@ -53,7 +53,7 @@ public class IMMessage {
      * @see MessageType
      */
     @NonNull
-    public final StateProp<Integer> type = new StateProp<>();
+    public final StateProp<Long> type = new StateProp<>();
 
     /**
      * 消息内容：title
@@ -77,13 +77,13 @@ public class IMMessage {
      * 消息内容：width
      */
     @NonNull
-    public final StateProp<Integer> width = new StateProp<>();
+    public final StateProp<Long> width = new StateProp<>();
 
     /**
      * 消息内容：height
      */
     @NonNull
-    public final StateProp<Integer> height = new StateProp<>();
+    public final StateProp<Long> height = new StateProp<>();
 
     /**
      * 消息内容：duration
@@ -107,13 +107,13 @@ public class IMMessage {
      * 消息内容：zoom
      */
     @NonNull
-    public final StateProp<Integer> zoom = new StateProp<>();
+    public final StateProp<Long> zoom = new StateProp<>();
 
     /**
      * 消息发送失败时的错误码
      */
     @NonNull
-    public final StateProp<Integer> errorCode = new StateProp<>();
+    public final StateProp<Long> errorCode = new StateProp<>();
 
     /**
      * 消息发送失败时的错误描述信息
@@ -125,7 +125,7 @@ public class IMMessage {
      * 消息的发送状态
      */
     @NonNull
-    public final StateProp<Integer> sendState = new StateProp<>();
+    public final StateProp<Long> sendState = new StateProp<>();
 
     /**
      * 消息的发送进度. 范围 [0, 1]

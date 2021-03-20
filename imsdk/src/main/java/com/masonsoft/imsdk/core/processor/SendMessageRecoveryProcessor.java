@@ -66,6 +66,9 @@ public class SendMessageRecoveryProcessor extends SendMessageNotNullValidateProc
                 );
                 return true;
             }
+        } else {
+            // 设置消息发送者
+            target.getIMMessage().fromUserId.set(target.getSessionUserId());
         }
 
         return false;

@@ -43,8 +43,8 @@ public class IMMessageFactory {
     @NonNull
     public static IMMessage createImageMessage(
             String localImagePath,
-            int width,
-            int height) {
+            long width,
+            long height) {
         final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.IMAGE);
         target.body.set(localImagePath);
@@ -80,8 +80,8 @@ public class IMMessageFactory {
     public static IMMessage createVideoMessage(
             String localVideoPath,
             long duration,
-            int width,
-            int height,
+            long width,
+            long height,
             String localVideoThumbPath) {
         final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.VIDEO);

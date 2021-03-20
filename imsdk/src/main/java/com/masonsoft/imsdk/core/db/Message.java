@@ -103,13 +103,13 @@ public class Message {
      * @see ColumnsMessage#C_WIDTH
      */
     @NonNull
-    public final StateProp<Integer> width = new StateProp<>();
+    public final StateProp<Long> width = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_HEIGHT
      */
     @NonNull
-    public final StateProp<Integer> height = new StateProp<>();
+    public final StateProp<Long> height = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_DURATION
@@ -133,13 +133,13 @@ public class Message {
      * @see ColumnsMessage#C_ZOOM
      */
     @NonNull
-    public final StateProp<Integer> zoom = new StateProp<>();
+    public final StateProp<Long> zoom = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_ERROR_CODE
      */
     @NonNull
-    public final StateProp<Integer> errorCode = new StateProp<>();
+    public final StateProp<Long> errorCode = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_ERROR_MESSAGE
@@ -151,19 +151,50 @@ public class Message {
      * @see ColumnsMessage#C_LOCAL_SEND_STATUS
      */
     @NonNull
-    public final StateProp<Integer> localSendStatus = new StateProp<>();
+    public final StateProp<Long> localSendStatus = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_LOCAL_ACTION_MSG
      */
     @NonNull
-    public final StateProp<Integer> localActionMessage = new StateProp<>();
+    public final StateProp<Long> localActionMessage = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_LOCAL_BLOCK_ID
      */
     @NonNull
     public final StateProp<Long> localBlockId = new StateProp<>();
+
+    /**
+     * 使用 input 对象的内容替换当前内容
+     */
+    public void apply(@NonNull Message input) {
+        this.localId.apply(input.localId);
+        this.localSeq.apply(input.localSeq);
+        this.fromUserId.apply(input.fromUserId);
+        this.toUserId.apply(input.toUserId);
+        this.remoteMessageId.apply(input.remoteMessageId);
+        this.remoteMessageTime.apply(input.remoteMessageTime);
+        this.localTimeMs.apply(input.localTimeMs);
+        this.remoteFromUserProfileLastModifyMs.apply(input.remoteFromUserProfileLastModifyMs);
+        this.messageType.apply(input.messageType);
+        this.title.apply(input.title);
+        this.body.apply(input.body);
+        this.localBodyOrigin.apply(input.localBodyOrigin);
+        this.thumb.apply(input.thumb);
+        this.localThumbOrigin.apply(input.localThumbOrigin);
+        this.width.apply(input.width);
+        this.height.apply(input.height);
+        this.duration.apply(input.duration);
+        this.lat.apply(input.lat);
+        this.lng.apply(input.lng);
+        this.zoom.apply(input.zoom);
+        this.errorCode.apply(input.errorCode);
+        this.errorMessage.apply(input.errorMessage);
+        this.localSendStatus.apply(input.localSendStatus);
+        this.localActionMessage.apply(input.localActionMessage);
+        this.localBlockId.apply(input.localBlockId);
+    }
 
     @NonNull
     public ContentValues toContentValues() {
@@ -302,16 +333,16 @@ public class Message {
             target.localBodyOrigin.set(cursor.getString(++index));
             target.thumb.set(cursor.getString(++index));
             target.localThumbOrigin.set(cursor.getString(++index));
-            target.width.set(cursor.getInt(++index));
-            target.height.set(cursor.getInt(++index));
+            target.width.set(cursor.getLong(++index));
+            target.height.set(cursor.getLong(++index));
             target.duration.set(cursor.getLong(++index));
             target.lat.set(cursor.getDouble(++index));
             target.lng.set(cursor.getDouble(++index));
-            target.zoom.set(cursor.getInt(++index));
-            target.errorCode.set(cursor.getInt(++index));
+            target.zoom.set(cursor.getLong(++index));
+            target.errorCode.set(cursor.getLong(++index));
             target.errorMessage.set(cursor.getString(++index));
-            target.localSendStatus.set(cursor.getInt(++index));
-            target.localActionMessage.set(cursor.getInt(++index));
+            target.localSendStatus.set(cursor.getLong(++index));
+            target.localActionMessage.set(cursor.getLong(++index));
             target.localBlockId.set(cursor.getLong(++index));
             return target;
         }
