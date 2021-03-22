@@ -32,7 +32,7 @@ public class Sequence {
 
     @SuppressWarnings("NumericOverflow")
     private static final long TIME_MASK = (Long.MAX_VALUE >> 3) & (Long.MAX_VALUE << 5);
-    private static final long INDEX_MASK = 0x1FL;
+    private static final long INDEX_MASK = 0xFL;
 
     private static int sIndex;
     private static final Object INDEX_LOCK = new Object();
@@ -50,7 +50,7 @@ public class Sequence {
 
     private static int nextIndex() {
         synchronized (INDEX_LOCK) {
-            sIndex = (sIndex + 1) % 0x20;
+            sIndex = (sIndex + 1) % 0x10;
             return sIndex;
         }
     }
