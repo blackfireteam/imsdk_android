@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingDefaultResource">
-    <item android:drawable="@android:color/black" android:state_selected="true" />
-    <item android:drawable="@android:color/white" />
+    <item android:drawable="@color/imsdk_sample_color_button_background_enable" android:state_enabled="true" />
+    <item android:drawable="@color/imsdk_sample_color_button_background_disable" />
 </selector>

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.idonans.core.FormValidator;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
@@ -31,6 +32,15 @@ public class SignInFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = ImsdkSampleSignInFragmentBinding.inflate(inflater, container, false);
+        FormValidator.bind(
+                new FormValidator.InputView[]{
+                        FormValidator.InputViewFactory.create(mBinding.editText),
+                },
+                new FormValidator.SubmitView[]{
+                        FormValidator.SubmitViewFactory.create(mBinding.submit),
+                }
+        );
+
         return mBinding.getRoot();
     }
 

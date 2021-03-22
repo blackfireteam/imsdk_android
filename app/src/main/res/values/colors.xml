@@ -2,4 +2,6 @@
 <resources>
     <color name="imsdk_sample_color_red_dot">#FFff0000</color>
     <color name="imsdk_sample_color_white_grey_background">#FFf0f0f0</color>
+    <color name="imsdk_sample_color_button_background_disable">#ff999999</color>
+    <color name="imsdk_sample_color_button_background_enable">#ff282828</color>
 </resources>
