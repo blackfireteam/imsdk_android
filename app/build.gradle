@@ -16,6 +16,10 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -51,6 +55,8 @@ dependencies {
     implementation rootProject.ext.bcfg.deps.okhttp
     implementation rootProject.ext.bcfg.deps.rxjava
     implementation rootProject.ext.bcfg.deps.rxandroid
+
+    debugImplementation rootProject.ext.bcfg.deps.leakcanary
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

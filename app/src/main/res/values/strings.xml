@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">imsdk_android</string>
+    <string name="app_name">IMSDK Sample</string>
+    <string name="switch_text">Switch</string>
 </resources>

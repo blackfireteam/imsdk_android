@@ -19,8 +19,7 @@ public class PlainTest {
         System.out.println(Long.toBinaryString(maxLong));
         System.out.println(Long.toBinaryString(timeNowMicro));
 
-        final boolean top = true;
-        final long sequence = Sequence.create(top, timeNowMicro);
+        final long sequence = Sequence.create(timeNowMicro);
         System.out.println(Long.toBinaryString(sequence));
     }
 
