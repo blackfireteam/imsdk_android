@@ -11,8 +11,12 @@
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
         android:hint="@string/imsdk_sample_edit_hint_phone"
+        android:imeOptions="actionGo"
         android:importantForAutofill="no"
+        android:includeFontPadding="false"
         android:inputType="phone"
+        android:maxLines="1"
+        android:singleLine="true"
         app:layout_constraintBottom_toTopOf="@id/submit"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />

@@ -7,4 +7,5 @@
     <string name="imsdk_sample_tab_mine">我的</string>
     <string name="imsdk_sample_sign_in_submit_text">登录</string>
     <string name="imsdk_sample_edit_hint_phone">手机号码</string>
+    <string name="imsdk_sample_input_error_empty_phone">手机号码不能为空</string>
 </resources>

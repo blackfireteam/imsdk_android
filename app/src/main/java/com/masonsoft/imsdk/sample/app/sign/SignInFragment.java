@@ -2,16 +2,21 @@ package com.masonsoft.imsdk.sample.app.sign;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.idonans.core.FormValidator;
+import com.idonans.core.util.ToastUtil;
+import com.idonans.lang.util.ViewUtil;
 import com.masonsoft.imsdk.sample.Constants;
+import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
@@ -40,8 +45,41 @@ public class SignInFragment extends Fragment {
                         FormValidator.SubmitViewFactory.create(mBinding.submit),
                 }
         );
+        mBinding.editText.setOnEditorActionListener((v, actionId, event) -> {
+            SampleLog.v("onEditorAction actionId:%s, event:%s", actionId, event);
+            if (actionId == EditorInfo.IME_ACTION_GO) {
+                onSubmit();
+                return true;
+            }
+            return false;
+        });
+        ViewUtil.onClick(mBinding.submit, v -> onSubmit());
 
         return mBinding.getRoot();
+    }
+
+    private void onSubmit() {
+        SampleLog.v("onSubmit");
+
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(Constants.Tip.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            return;
+        }
+
+        if (mBinding == null) {
+            SampleLog.e(Constants.Tip.BINDING_IS_NULL);
+            return;
+        }
+
+        final String phone = mBinding.editText.getText().toString().trim();
+        if (TextUtils.isEmpty(phone)) {
+            ToastUtil.show(getString(R.string.imsdk_sample_input_error_empty_phone));
+            return;
+        }
+
+        SampleLog.v("submit with phone:%s", phone);
+        // TODO 登录
     }
 
     private void onSignInSuccess() {
