@@ -9,6 +9,7 @@ import com.idonans.core.thread.Threads;
 import com.idonans.systeminsets.SystemUiHelper;
 import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
+import com.masonsoft.imsdk.sample.app.sign.SignInActivity;
 
 public class SplashActivity extends FragmentDelegateActivity {
 
@@ -31,7 +32,7 @@ public class SplashActivity extends FragmentDelegateActivity {
 
         setFragmentDelegate(FRAGMENT_TAG_SPLASH, SplashFragment::newInstance);
 
-        Threads.postUi(new RedirectToMain(this), 1500L);
+        Threads.postUi(new RedirectTask(this), 1500L);
     }
 
     @Override
@@ -68,13 +69,28 @@ public class SplashActivity extends FragmentDelegateActivity {
             return;
         }
 
-        MainActivity.start(this);
+        if (hasValidSession()) {
+            // 已经登录，跳转到主页
+            MainActivity.start(this);
+        } else {
+            // 没有登录，跳转到登录页
+            SignInActivity.start(this);
+        }
+
         finish();
     }
 
-    private static class RedirectToMain extends WeakAbortSignal implements Runnable {
+    /**
+     * 如果存在有效的登录信息，返回 true, 否则返回 false.
+     */
+    private boolean hasValidSession() {
+        // TODO
+        return false;
+    }
 
-        public RedirectToMain(@Nullable SplashActivity splashActivity) {
+    private static class RedirectTask extends WeakAbortSignal implements Runnable {
+
+        public RedirectTask(@Nullable SplashActivity splashActivity) {
             super(splashActivity);
         }
 

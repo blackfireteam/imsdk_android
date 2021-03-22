@@ -1,24 +1,28 @@
-package com.masonsoft.imsdk.sample.app.main;
+package com.masonsoft.imsdk.sample.app.sign;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+
 import com.idonans.systeminsets.SystemUiHelper;
 import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
 
-public class MainActivity extends FragmentDelegateActivity {
+/**
+ * 登录
+ */
+public class SignInActivity extends FragmentDelegateActivity {
 
     public static void start(Context context) {
-        Intent starter = new Intent(context, MainActivity.class);
-        starter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent starter = new Intent(context, SignInActivity.class);
         context.startActivity(starter);
     }
 
-    private static final String FRAGMENT_TAG_MAIN = "fragment_main_20210322";
+    private static final String FRAGMENT_TAG_SIGN_IN = "fragment_sign_in_20210322";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         SystemUiHelper.from(getWindow())
@@ -29,7 +33,7 @@ public class MainActivity extends FragmentDelegateActivity {
                 .setLightNavigationBar()
                 .apply();
 
-        setFragmentDelegate(FRAGMENT_TAG_MAIN, MainFragment::newInstance);
+        setFragmentDelegate(FRAGMENT_TAG_SIGN_IN, SignInFragment::newInstance);
     }
 
 }
