@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="imsdk_sample_color_red_dot">#FFff0000</color>
+    <color name="imsdk_sample_color_white_grey_background">#FFf0f0f0</color>
 </resources>

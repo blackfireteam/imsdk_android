@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.conversation.ConversationFragment;
 import com.masonsoft.imsdk.sample.app.discover.DiscoverFragment;
@@ -28,6 +29,11 @@ public class MainFragment extends Fragment {
 
     @Nullable
     private ImsdkSampleMainFragmentBinding mBinding;
+    private final int[] mTitleResIds = {
+            R.string.imsdk_sample_tab_discover,
+            R.string.imsdk_sample_tab_conversation,
+            R.string.imsdk_sample_tab_mine
+    };
 
     @Nullable
     @Override
@@ -37,10 +43,11 @@ public class MainFragment extends Fragment {
         mBinding.pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                onMainPageSelected(position);
+                syncTabSelected(position);
             }
         });
-        mBinding.mainBottomBar.setOnTabClickListener(this::onMainTabClick);
+        mBinding.mainBottomBar.setOnTabClickListener(this::syncTabSelected);
+        syncTabSelected(0);
 
         return mBinding.getRoot();
     }
@@ -52,18 +59,16 @@ public class MainFragment extends Fragment {
         mBinding = null;
     }
 
-    private void onMainPageSelected(int position) {
-        SampleLog.v("onMainPageSelected position:%s", position);
+    private void syncTabSelected(int index) {
+        SampleLog.v("syncTabSelected index:%s", index);
         if (mBinding != null) {
-            mBinding.mainBottomBar.setCurrentItem(position);
-        }
-    }
-
-    private void onMainTabClick(int index) {
-        SampleLog.v("onMainTabClick index:%s", index);
-        if (mBinding != null) {
-            mBinding.pager.setCurrentItem(index, false);
-            mBinding.mainBottomBar.setCurrentItem(index);
+            mBinding.mainTopBar.setTitle(getString(mTitleResIds[index]));
+            if (mBinding.pager.getCurrentItem() != index) {
+                mBinding.pager.setCurrentItem(index, false);
+            }
+            if (mBinding.mainBottomBar.getCurrentItem() != index) {
+                mBinding.mainBottomBar.setCurrentItem(index);
+            }
         }
     }
 

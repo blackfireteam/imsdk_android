@@ -24,9 +24,19 @@ public class DiscoverFragment extends Fragment {
     }
 
     @Nullable
+    private ImsdkSampleDiscoverFragmentBinding mBinding;
+
+    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return ImsdkSampleDiscoverFragmentBinding.inflate(inflater, container, false).getRoot();
+        mBinding = ImsdkSampleDiscoverFragmentBinding.inflate(inflater, container, false);
+        return mBinding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
     }
 
 }

@@ -24,9 +24,19 @@ public class MineFragment extends Fragment {
     }
 
     @Nullable
+    private ImsdkSampleMineFragmentBinding mBinding;
+
+    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return ImsdkSampleMineFragmentBinding.inflate(inflater, container, false).getRoot();
+        mBinding = ImsdkSampleMineFragmentBinding.inflate(inflater, container, false);
+        return mBinding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
     }
 
 }

@@ -24,9 +24,19 @@ public class ConversationFragment extends Fragment {
     }
 
     @Nullable
+    private ImsdkSampleConversationFragmentBinding mBinding;
+
+    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return ImsdkSampleConversationFragmentBinding.inflate(inflater, container, false).getRoot();
+        mBinding = ImsdkSampleConversationFragmentBinding.inflate(inflater, container, false);
+        return mBinding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
     }
 
 }
