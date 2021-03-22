@@ -50,6 +50,7 @@ dependencies {
     implementation rootProject.ext.bcfg.deps.idonans_appcontext
     implementation rootProject.ext.bcfg.deps.idonans_core
     implementation rootProject.ext.bcfg.deps.idonans_systeminsets
+    implementation rootProject.ext.bcfg.deps.idonans_lang
     implementation rootProject.ext.bcfg.deps.androidx_constraintlayout
     implementation rootProject.ext.bcfg.deps.androidx_appcompat
     implementation rootProject.ext.bcfg.deps.material

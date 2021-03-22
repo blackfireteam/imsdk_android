@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.idonans.lang.util.ViewUtil;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetMainBottomBarBinding;
 
 public class MainBottomBar extends FrameLayout {
@@ -32,6 +33,10 @@ public class MainBottomBar extends FrameLayout {
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    private static final int TAB_DISCOVER = 0;
+    private static final int TAB_CONVERSATION = 1;
+    private static final int TAB_MINE = 2;
+
     private int mCurrentItem = 0;
     private ImsdkSampleWidgetMainBottomBarBinding mBinding;
     private OnTabClickListener mOnTabClickListener;
@@ -45,7 +50,21 @@ public class MainBottomBar extends FrameLayout {
         mBinding = ImsdkSampleWidgetMainBottomBarBinding.inflate(LayoutInflater.from(context), this, true);
         syncCurrentItem();
 
-        // TODO click tab ?
+        ViewUtil.onClick(mBinding.tabDiscoverText, v -> {
+            if (mOnTabClickListener != null) {
+                mOnTabClickListener.onTabClick(TAB_DISCOVER);
+            }
+        });
+        ViewUtil.onClick(mBinding.tabConversationText, v -> {
+            if (mOnTabClickListener != null) {
+                mOnTabClickListener.onTabClick(TAB_CONVERSATION);
+            }
+        });
+        ViewUtil.onClick(mBinding.tabMineText, v -> {
+            if (mOnTabClickListener != null) {
+                mOnTabClickListener.onTabClick(TAB_MINE);
+            }
+        });
     }
 
     public int getCurrentItem() {

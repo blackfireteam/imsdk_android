@@ -8,7 +8,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.sample.app.conversation.ConversationFragment;
+import com.masonsoft.imsdk.sample.app.discover.DiscoverFragment;
+import com.masonsoft.imsdk.sample.app.mine.MineFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMainFragmentBinding;
 
 public class MainFragment extends Fragment {
@@ -21,14 +27,69 @@ public class MainFragment extends Fragment {
     }
 
     @Nullable
+    private ImsdkSampleMainFragmentBinding mBinding;
+
+    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return ImsdkSampleMainFragmentBinding.inflate(inflater, container, false).getRoot();
+        mBinding = ImsdkSampleMainFragmentBinding.inflate(inflater, container, false);
+        mBinding.pager.setAdapter(new DataAdapter());
+        mBinding.pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                onMainPageSelected(position);
+            }
+        });
+        mBinding.mainBottomBar.setOnTabClickListener(this::onMainTabClick);
+
+        return mBinding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        mBinding = null;
+    }
+
+    private void onMainPageSelected(int position) {
+        SampleLog.v("onMainPageSelected position:%s", position);
+        if (mBinding != null) {
+            mBinding.mainBottomBar.setCurrentItem(position);
+        }
+    }
+
+    private void onMainTabClick(int index) {
+        SampleLog.v("onMainTabClick index:%s", index);
+        if (mBinding != null) {
+            mBinding.pager.setCurrentItem(index, false);
+            mBinding.mainBottomBar.setCurrentItem(index);
+        }
+    }
+
+    private class DataAdapter extends FragmentStateAdapter {
+        public DataAdapter() {
+            super(MainFragment.this);
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            if (position == 0) {
+                return DiscoverFragment.newInstance();
+            } else if (position == 1) {
+                return ConversationFragment.newInstance();
+            } else if (position == 2) {
+                return MineFragment.newInstance();
+            } else {
+                throw new IllegalArgumentException("unexpected position:" + position);
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return 3;
+        }
     }
 
 }
