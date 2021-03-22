@@ -26,4 +26,9 @@ public class MainFragment extends Fragment {
         return ImsdkSampleMainFragmentBinding.inflate(inflater, container, false).getRoot();
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
 }

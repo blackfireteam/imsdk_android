@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:layout_gravity="bottom"
+    tools:layout_height="@dimen/imsdk_sample_main_bottom_bar_height">
+
+    <TextView
+        android:id="@+id/tab_discover_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/imsdk_sample_tab_discover"
+        app:drawableTopCompat="@drawable/imsdk_sample_ic_contact_selector"
+        app:layout_constraintEnd_toStartOf="@id/tab_conversation_text"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tab_conversation_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/imsdk_sample_tab_conversation"
+        app:drawableTopCompat="@drawable/imsdk_sample_ic_conversation_selector"
+        app:layout_constraintEnd_toStartOf="@id/tab_mine_text"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/tab_discover_text" />
+
+    <TextView
+        android:id="@+id/tab_mine_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/imsdk_sample_tab_mine"
+        app:drawableTopCompat="@drawable/imsdk_sample_ic_mine_selector"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/tab_conversation_text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
