@@ -1,22 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:background="@color/imsdk_sample_color_white_grey_background" />
 
-    <com.masonsoft.imsdk.sample.widget.MainTopBar
-        android:id="@+id/main_top_bar"
+    <com.idonans.systeminsets.SystemInsetsFrameLayout
+        android:id="@+id/main_top_bar_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/imsdk_sample_main_top_bar_height" />
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:systemInsetPaddingTop="24dp"
+        app:systemInsetPaddingTopNotConsume="true">
 
-    <com.masonsoft.imsdk.sample.widget.MainBottomBar
-        android:id="@+id/main_bottom_bar"
+        <com.masonsoft.imsdk.sample.widget.MainTopBar
+            android:id="@+id/main_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/imsdk_sample_main_top_bar_height" />
+    </com.idonans.systeminsets.SystemInsetsFrameLayout>
+
+    <com.idonans.systeminsets.SystemInsetsFrameLayout
+        android:id="@+id/main_bottom_bar_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/imsdk_sample_main_bottom_bar_height"
-        android:layout_gravity="bottom" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@android:color/white"
+        app:systemInsetPaddingBottom="48dp"
+        app:systemInsetPaddingBottomNotConsume="true">
+
+        <com.masonsoft.imsdk.sample.widget.MainBottomBar
+            android:id="@+id/main_bottom_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/imsdk_sample_main_bottom_bar_height" />
+    </com.idonans.systeminsets.SystemInsetsFrameLayout>
 
 </FrameLayout>

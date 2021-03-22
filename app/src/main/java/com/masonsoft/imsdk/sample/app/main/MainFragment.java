@@ -49,6 +49,10 @@ public class MainFragment extends Fragment {
         mBinding.mainBottomBar.setOnTabClickListener(this::syncTabSelected);
         syncTabSelected(0);
 
+        mBinding.mainBottomBarContainer.setOnSystemInsetsListener((left, top, right, bottom) ->
+                SampleLog.v("mainBottomBarContainer onSystemInsets: left:%s, top:%s, right:%s, bottom:%s", left, top, right, bottom)
+        );
+
         return mBinding.getRoot();
     }
 

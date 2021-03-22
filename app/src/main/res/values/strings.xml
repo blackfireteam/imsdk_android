@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">IMSDK Sample</string>
     <string name="imsdk_sample_base_on">BaseOn</string>
-    <string name="switch_text">Switch</string>
+    <string name="imsdk_sample_empty_text_hint" />
     <string name="imsdk_sample_tab_discover">发现</string>
     <string name="imsdk_sample_tab_conversation">会话</string>
     <string name="imsdk_sample_tab_mine">我的</string>

@@ -22,6 +22,7 @@ public class MainActivity extends FragmentDelegateActivity {
 
         SystemUiHelper.from(getWindow())
                 .layoutStatusBar()
+                .layoutNavigationBar()
                 .layoutStable()
                 .setLightStatusBar()
                 .setLightNavigationBar()

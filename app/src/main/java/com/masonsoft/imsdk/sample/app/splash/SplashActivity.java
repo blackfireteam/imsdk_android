@@ -23,6 +23,7 @@ public class SplashActivity extends FragmentDelegateActivity {
 
         SystemUiHelper.from(getWindow())
                 .layoutStatusBar()
+                .layoutNavigationBar()
                 .layoutStable()
                 .setLightStatusBar()
                 .setLightNavigationBar()
