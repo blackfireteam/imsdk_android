@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.main;
+package com.masonsoft.imsdk.sample.app.main;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

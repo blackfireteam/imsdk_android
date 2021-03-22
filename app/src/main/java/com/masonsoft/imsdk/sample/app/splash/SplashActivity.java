@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.splash;
+package com.masonsoft.imsdk.sample.app.splash;
 
 import android.os.Bundle;
 
@@ -8,7 +8,7 @@ import com.idonans.core.WeakAbortSignal;
 import com.idonans.core.thread.Threads;
 import com.idonans.systeminsets.SystemUiHelper;
 import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
-import com.masonsoft.imsdk.sample.main.MainActivity;
+import com.masonsoft.imsdk.sample.app.main.MainActivity;
 
 public class SplashActivity extends FragmentDelegateActivity {
 

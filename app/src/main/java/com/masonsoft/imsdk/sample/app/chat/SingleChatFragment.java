@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.chat;
+package com.masonsoft.imsdk.sample.app.chat;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.splash;
+package com.masonsoft.imsdk.sample.app.splash;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
