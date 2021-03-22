@@ -1,19 +1,20 @@
-package com.masonsoft.imsdk.sample;
+package com.masonsoft.imsdk.sample.main;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.idonans.systeminsets.SystemUiHelper;
+import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentDelegateActivity {
 
     public static void start(Context context) {
         Intent starter = new Intent(context, MainActivity.class);
         context.startActivity(starter);
     }
+
+    private static final String FRAGMENT_TAG_MAIN = "fragment_main_20210322";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
                 .setLightNavigationBar()
                 .apply();
 
-        setContentView(R.layout.imsdk_sample_main_activity);
+        setFragmentDelegate(FRAGMENT_TAG_MAIN, MainFragment::newInstance);
     }
 
 }

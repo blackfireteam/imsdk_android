@@ -1,16 +1,18 @@
-package com.masonsoft.imsdk.sample;
+package com.masonsoft.imsdk.sample.splash;
 
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.idonans.core.WeakAbortSignal;
 import com.idonans.core.thread.Threads;
 import com.idonans.systeminsets.SystemUiHelper;
-import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSplashActivityBinding;
+import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
+import com.masonsoft.imsdk.sample.main.MainActivity;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends FragmentDelegateActivity {
+
+    private static final String FRAGMENT_TAG_SPLASH = "fragment_splash_20210322";
 
     private boolean mPendingRedirect;
     private boolean mStarted;
@@ -26,17 +28,9 @@ public class SplashActivity extends AppCompatActivity {
                 .setLightNavigationBar()
                 .apply();
 
-        final ImsdkSampleSplashActivityBinding binding = ImsdkSampleSplashActivityBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        binding.imsdkNameText.setText(com.masonsoft.imsdk.BuildConfig.LIB_NAME);
-        binding.imsdkVersionText.setText(buildImsdkVersionText());
+        setFragmentDelegate(FRAGMENT_TAG_SPLASH, SplashFragment::newInstance);
 
         Threads.postUi(new RedirectToMain(this), 1500L);
-    }
-
-    private static String buildImsdkVersionText() {
-        return com.masonsoft.imsdk.BuildConfig.LIB_VERSION_NAME + "(" + com.masonsoft.imsdk.BuildConfig.LIB_VERSION_CODE + ")";
     }
 
     @Override
