@@ -3,6 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <com.masonsoft.imsdk.sample.widget.MainTopBar
         android:id="@+id/main_top_bar"
         android:layout_width="match_parent"
@@ -14,8 +19,4 @@
         android:layout_height="@dimen/imsdk_sample_main_bottom_bar_height"
         android:layout_gravity="bottom" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 </FrameLayout>
