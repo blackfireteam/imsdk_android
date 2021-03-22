@@ -19,15 +19,38 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/app_version_text"
+        android:id="@+id/base_on_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textColor="#ff666666"
+        android:layout_marginTop="20dp"
+        android:text="@string/imsdk_sample_base_on"
+        android:textColor="#ffe0e0e0"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_name_text"
-        tools:text="1.0" />
+        app:layout_constraintTop_toBottomOf="@id/app_name_text" />
 
+    <TextView
+        android:id="@+id/imsdk_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="#ffc1c1c1"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/base_on_text"
+        tools:text="IMSDK" />
+
+    <TextView
+        android:id="@+id/imsdk_version_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="#ffc1c1c1"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imsdk_name_text"
+        tools:text="1.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
