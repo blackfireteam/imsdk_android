@@ -15,7 +15,22 @@ public class SystemInsetsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewCompat.requestApplyInsets(view);
+
+        if (view.isAttachedToWindow()) {
+            ViewCompat.requestApplyInsets(view);
+        } else {
+            view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View v) {
+                    ViewCompat.requestApplyInsets(v);
+                    v.removeOnAttachStateChangeListener(this);
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View v) {
+                }
+            });
+        }
     }
 
 }
