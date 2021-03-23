@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import com.idonans.core.FormValidator;
 import com.idonans.core.util.ToastUtil;
 import com.idonans.lang.util.ViewUtil;
+import com.masonsoft.imsdk.core.IMSessionManager;
+import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -79,7 +81,25 @@ public class SignInFragment extends Fragment {
         }
 
         SampleLog.v("submit with phone:%s", phone);
-        // TODO 登录
+
+        //////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////
+        // TODO 临时使用固定的测试信息登录
+        final String debugToken = "9999999999999";
+        final String debugAesKey = null;
+        final String debugHost = "172.16.10.1";
+        final int debugPort = 9009;
+        final Session session = new Session(
+                debugToken,
+                debugAesKey,
+                debugHost,
+                debugPort
+        );
+        IMSessionManager.getInstance().setSession(session);
+
+        onSignInSuccess();
     }
 
     private void onSignInSuccess() {
