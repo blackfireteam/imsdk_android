@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMineFragmentBinding;
 
@@ -29,6 +30,8 @@ public class MineFragment extends SystemInsetsFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        SampleLog.v("onCreateView %s", getClass());
+
         mBinding = ImsdkSampleMineFragmentBinding.inflate(inflater, container, false);
         return mBinding.getRoot();
     }

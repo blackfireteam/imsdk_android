@@ -41,6 +41,7 @@ public class MainFragment extends SystemInsetsFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = ImsdkSampleMainFragmentBinding.inflate(inflater, container, false);
+        mBinding.pager.setOffscreenPageLimit(3);
         mBinding.pager.setAdapter(new DataAdapter());
         mBinding.pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override

@@ -35,6 +35,8 @@ public class DiscoverFragment extends SystemInsetsFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        SampleLog.v("onCreateView %s", getClass());
+
         mBinding = ImsdkSampleDiscoverFragmentBinding.inflate(inflater, container, false);
         mBinding.topSystemInsets.setOnSystemInsetsListener(new SystemInsetsLayout.OnSystemInsetsListener() {
             @Override
