@@ -1,15 +1,12 @@
 package com.masonsoft.imsdk.sample.app.chat;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.masonsoft.imsdk.core.IMConstants.ConversationType;
+import com.masonsoft.imsdk.sample.Constants;
 
 /**
  * 单聊页面
@@ -18,15 +15,24 @@ import com.masonsoft.imsdk.core.IMConstants.ConversationType;
  */
 public class SingleChatFragment extends Fragment {
 
+    public static SingleChatFragment newInstance(long targetUserId) {
+        Bundle args = new Bundle();
+        args.putLong(Constants.ExtrasKey.TARGET_USER_ID, targetUserId);
+        SingleChatFragment fragment = new SingleChatFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    private long mTargetUserId;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        final Bundle args = getArguments();
+        if (args != null) {
+            mTargetUserId = args.getLong(Constants.ExtrasKey.TARGET_USER_ID, mTargetUserId);
+        }
     }
 
 }
