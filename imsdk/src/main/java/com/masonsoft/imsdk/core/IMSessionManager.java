@@ -40,6 +40,7 @@ public class IMSessionManager {
 
     private final SessionObservable mSessionObservable = new SessionObservable();
 
+    private final Object mSessionLock = new Object();
     @Nullable
     private Session mSession;
     private long mSessionUserId;
@@ -54,21 +55,55 @@ public class IMSessionManager {
      * 设置当前的登录信息。设置为 null 表示退出登录.
      */
     public void setSession(@Nullable Session session) {
-        if (mSession != session) {
+        boolean notifySessionChanged = false;
+        synchronized (mSessionLock) {
+            if (mSession != session) {
+                notifySessionChanged = true;
+
+                if (mSessionTcpClientProxy != null) {
+                    mSessionTcpClientProxy.setAbort();
+                    mSessionTcpClientProxy = null;
+                }
+
+                mSession = session;
+                // 重新设置 session 时，清除 session user id.
+                mSessionUserId = 0;
+
+                // 从历史记录中恢复可能存在的 token 与 session user id 的对应关系
+                tryRestoreSessionUserIdFromDB(session);
+
+                if (mSession != null) {
+                    mSessionTcpClientProxy = new SessionTcpClientProxy(mSession);
+                }
+            }
+        }
+
+        if (notifySessionChanged) {
+            mSessionObservable.notifySessionChanged();
+        }
+    }
+
+    /**
+     * 销毁长连接
+     */
+    public void destroySessionTcpClient() {
+        synchronized (mSessionLock) {
             if (mSessionTcpClientProxy != null) {
                 mSessionTcpClientProxy.setAbort();
                 mSessionTcpClientProxy = null;
             }
+        }
+    }
 
-            mSession = session;
-            // 重新设置 session 时，清除 session user id.
-            mSessionUserId = 0;
-
-            // 从历史记录中恢复可能存在的 token 与 session user id 的对应关系
-            tryRestoreSessionUserIdFromDB(session);
-
-            mSessionObservable.notifySessionChanged();
-
+    /**
+     * 终止旧的长连接，建立新的长连接(如果存在有效的登录信息)
+     */
+    public void recreateSessionTcpClient() {
+        synchronized (mSessionLock) {
+            if (mSessionTcpClientProxy != null) {
+                mSessionTcpClientProxy.setAbort();
+                mSessionTcpClientProxy = null;
+            }
             if (mSession != null) {
                 mSessionTcpClientProxy = new SessionTcpClientProxy(mSession);
             }
@@ -101,18 +136,25 @@ public class IMSessionManager {
 
     private void setSessionUserId(@Nullable final Session session, final long sessionUserId, final boolean acceptSave) {
         boolean trySave = false;
-        if (mSession == session) {
-            if (mSessionUserId != sessionUserId) {
-                mSessionUserId = sessionUserId;
-                mSessionObservable.notifySessionUserIdChanged();
+        boolean notifySessionUserIdChanged = false;
+        synchronized (mSessionLock) {
+            if (mSession == session) {
+                if (mSessionUserId != sessionUserId) {
+                    mSessionUserId = sessionUserId;
+                    notifySessionUserIdChanged = true;
+                    trySave = true;
+                }
+            } else {
                 trySave = true;
             }
-        } else {
-            trySave = true;
         }
 
         if (acceptSave && trySave) {
             trySaveSessionUserIdToDB(session, sessionUserId);
+        }
+
+        if (notifySessionUserIdChanged) {
+            mSessionObservable.notifySessionUserIdChanged();
         }
     }
 
