@@ -3,17 +3,17 @@ package com.masonsoft.imsdk.sample.app.chat;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.masonsoft.imsdk.core.IMConstants.ConversationType;
 import com.masonsoft.imsdk.sample.Constants;
+import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 
 /**
  * 单聊页面
  *
  * @see ConversationType#C2C
  */
-public class SingleChatFragment extends Fragment {
+public class SingleChatFragment extends SystemInsetsFragment {
 
     public static SingleChatFragment newInstance(long targetUserId) {
         Bundle args = new Bundle();

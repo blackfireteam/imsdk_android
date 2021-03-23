@@ -7,14 +7,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
+import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMineFragmentBinding;
 
 /**
  * 我的
  */
-public class MineFragment extends Fragment {
+public class MineFragment extends SystemInsetsFragment {
 
     public static MineFragment newInstance() {
         Bundle args = new Bundle();

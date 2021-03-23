@@ -11,14 +11,16 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.idonans.systeminsets.SystemInsetsLayout;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.conversation.ConversationFragment;
 import com.masonsoft.imsdk.sample.app.discover.DiscoverFragment;
 import com.masonsoft.imsdk.sample.app.mine.MineFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMainFragmentBinding;
 
-public class MainFragment extends Fragment {
+public class MainFragment extends SystemInsetsFragment {
 
     public static MainFragment newInstance() {
         Bundle args = new Bundle();
@@ -49,6 +51,12 @@ public class MainFragment extends Fragment {
         mBinding.mainBottomBar.setOnTabClickListener(this::syncTabSelected);
         syncTabSelected(0);
 
+        mBinding.mainTopBarContainer.setOnSystemInsetsListener(new SystemInsetsLayout.OnSystemInsetsListener() {
+            @Override
+            public void onSystemInsets(int left, int top, int right, int bottom) {
+                SampleLog.v("mainTopBarContainer onSystemInsets: left:%s, top:%s, right:%s, bottom:%s", left, top, right, bottom);
+            }
+        });
         mBinding.mainBottomBarContainer.setOnSystemInsetsListener((left, top, right, bottom) ->
                 SampleLog.v("mainBottomBarContainer onSystemInsets: left:%s, top:%s, right:%s, bottom:%s", left, top, right, bottom)
         );

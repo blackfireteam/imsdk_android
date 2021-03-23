@@ -7,14 +7,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
+import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleConversationFragmentBinding;
 
 /**
  * 会话
  */
-public class ConversationFragment extends Fragment {
+public class ConversationFragment extends SystemInsetsFragment {
 
     public static ConversationFragment newInstance() {
         Bundle args = new Bundle();

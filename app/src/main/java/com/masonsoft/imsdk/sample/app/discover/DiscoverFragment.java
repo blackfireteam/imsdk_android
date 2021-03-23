@@ -8,18 +8,19 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.idonans.lang.util.ViewUtil;
+import com.idonans.systeminsets.SystemInsetsLayout;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleDiscoverFragmentBinding;
 
 /**
  * 发现
  */
-public class DiscoverFragment extends Fragment {
+public class DiscoverFragment extends SystemInsetsFragment {
 
     public static DiscoverFragment newInstance() {
         Bundle args = new Bundle();
@@ -35,6 +36,12 @@ public class DiscoverFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = ImsdkSampleDiscoverFragmentBinding.inflate(inflater, container, false);
+        mBinding.topSystemInsets.setOnSystemInsetsListener(new SystemInsetsLayout.OnSystemInsetsListener() {
+            @Override
+            public void onSystemInsets(int left, int top, int right, int bottom) {
+                SampleLog.v("DiscoverFragment topSystemInsets onSystemInsets left:%s, top:%s, right:%s, bottom:%s", left, top, right, bottom);
+            }
+        });
 
         ViewUtil.onClick(mBinding.user100, v -> {
             startSingleChat(100L);

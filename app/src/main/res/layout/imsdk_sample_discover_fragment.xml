@@ -6,12 +6,25 @@
     android:layout_height="match_parent"
     android:background="@color/imsdk_sample_color_white_grey_background">
 
+    <com.idonans.systeminsets.SystemInsetsFrameLayout
+        android:id="@+id/top_system_insets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:systemInsetPaddingTop="all"
+        app:systemInsetPaddingTopNotConsume="true">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/imsdk_sample_main_top_bar_height" />
+    </com.idonans.systeminsets.SystemInsetsFrameLayout>
+
     <Button
         android:id="@+id/user_100"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="user: 100"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_system_insets"
         tools:ignore="HardcodedText" />
 
     <Button

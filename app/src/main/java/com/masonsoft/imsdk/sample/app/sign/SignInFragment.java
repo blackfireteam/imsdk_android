@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.idonans.core.FormValidator;
 import com.idonans.core.util.ToastUtil;
@@ -20,10 +19,11 @@ import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
 
-public class SignInFragment extends Fragment {
+public class SignInFragment extends SystemInsetsFragment {
 
     public static SignInFragment newInstance() {
         Bundle args = new Bundle();

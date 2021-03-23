@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
+import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSplashFragmentBinding;
 
-public class SplashFragment extends Fragment {
+public class SplashFragment extends SystemInsetsFragment {
 
     public static SplashFragment newInstance() {
         Bundle args = new Bundle();

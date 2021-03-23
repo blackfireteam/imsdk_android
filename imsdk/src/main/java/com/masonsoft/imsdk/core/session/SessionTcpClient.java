@@ -72,7 +72,6 @@ public class SessionTcpClient extends NettyTcpClient {
     private final Observable mObservable = new Observable();
 
     public SessionTcpClient(@NonNull Session session) {
-        super(session.getTcpHost(), session.getTcpPort());
         mSession = session;
 
         mSignInMessagePacket = SignInMessagePacket.create(mSession.getToken());
@@ -103,8 +102,13 @@ public class SessionTcpClient extends NettyTcpClient {
             public void onSessionUserIdChanged() {
             }
         };
+
         IMSessionManager.getInstance().getSessionObservable().registerObserver(mSessionObserver);
         validateSession();
+
+        if (getState() == STATE_IDLE) {
+            connect(session.getTcpHost(), session.getTcpPort());
+        }
     }
 
     public Observable getObservable() {

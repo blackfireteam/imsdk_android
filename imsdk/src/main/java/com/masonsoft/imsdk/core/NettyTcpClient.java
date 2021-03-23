@@ -75,7 +75,7 @@ public abstract class NettyTcpClient extends TcpClient {
     @Nullable
     private ChannelHandlerContext mChannelHandlerContext;
 
-    public NettyTcpClient(final String host, final int port) {
+    public void connect(final String host, final int port) {
         checkState(STATE_IDLE);
 
         mEventLoopGroup = new NioEventLoopGroup();
@@ -108,8 +108,8 @@ public abstract class NettyTcpClient extends TcpClient {
                         .addLast(new ExceptionHandler());
             }
         });
+        moveToState(STATE_CONNECTING);
         Threads.postBackground(() -> {
-            moveToState(STATE_CONNECTING);
             try {
                 final InetSocketAddress inetSocketAddress = new InetSocketAddress(host, port);
                 bootstrap.remoteAddress(inetSocketAddress);
