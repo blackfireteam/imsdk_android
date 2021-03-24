@@ -90,7 +90,7 @@ public abstract class NettyTcpClient extends TcpClient {
             @Override
             protected void initChannel(NioSocketChannel ch) {
                 if (debugNettyPackage()) {
-                    ch.pipeline().addLast(new LoggingHandler(LogLevel.TRACE));
+                    ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
                 }
                 ch.pipeline()
                         .addLast(
