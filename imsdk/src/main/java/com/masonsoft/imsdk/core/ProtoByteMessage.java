@@ -147,6 +147,14 @@ public class ProtoByteMessage {
          * unblock 指定用户
          */
         public static final int UNBLOCK_U = 21;
+        /**
+         * 通知客户端用户上线事件
+         */
+        public static final int PROFILE_ONLINE = 50;
+        /**
+         * 通知客户端用户下线事件
+         */
+        public static final int USR_OFFLINE = 52;
 
         /**
          * 将 ProtoByteMessage 解码为 ProtoMessage 内定义的实体对象。如果解码失败，返回 null.
@@ -201,6 +209,10 @@ public class ProtoByteMessage {
                         return ProtoMessage.BlockU.parseFrom(data);
                     case UNBLOCK_U:
                         return ProtoMessage.UnblockU.parseFrom(data);
+                    case PROFILE_ONLINE:
+                        return ProtoMessage.ProfileOnline.parseFrom(data);
+                    case USR_OFFLINE:
+                        return ProtoMessage.UsrOffline.parseFrom(data);
                     default:
                         throw new IllegalAccessError("unknown type:" + type);
                 }
@@ -302,6 +314,14 @@ public class ProtoByteMessage {
 
             if (protoMessageObject instanceof ProtoMessage.UnblockU) {
                 return new ProtoByteMessage(UNBLOCK_U, ((ProtoMessage.UnblockU) protoMessageObject).toByteArray());
+            }
+
+            if (protoMessageObject instanceof ProtoMessage.ProfileOnline) {
+                return new ProtoByteMessage(PROFILE_ONLINE, ((ProtoMessage.ProfileOnline) protoMessageObject).toByteArray());
+            }
+
+            if (protoMessageObject instanceof ProtoMessage.UsrOffline) {
+                return new ProtoByteMessage(USR_OFFLINE, ((ProtoMessage.UsrOffline) protoMessageObject).toByteArray());
             }
 
             final Throwable e = new IllegalArgumentException("unknown proto message object: " + protoMessageObject);
