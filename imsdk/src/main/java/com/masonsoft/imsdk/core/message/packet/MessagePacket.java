@@ -145,7 +145,9 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
     public void moveToState(@SendState int state) {
         synchronized (mStateLock) {
             if (mState > state) {
-                Throwable e = new IllegalStateException("MessagePacket[" + mSign + "] fail to move state " + stateToString(mState) + " -> " + stateToString(state));
+                final Object packet = MessagePacket.this;
+                final Throwable e = new IllegalStateException(packet.getClass() + "@" + System.identityHashCode(packet)
+                        + "[" + mSign + "] fail to move state " + stateToString(mState) + " -> " + stateToString(state));
                 IMLog.e(e);
                 RuntimeMode.throwIfDebug(e);
             }
