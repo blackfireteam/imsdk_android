@@ -2,7 +2,7 @@ package com.masonsoft.imsdk.core.message.packet;
 
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.ProtoByteMessage;
-import com.masonsoft.imsdk.core.WeakClockManager;
+import com.masonsoft.imsdk.core.observable.ClockObservable;
 
 /**
  * 能够计算超时的消息发送包
@@ -53,7 +53,7 @@ public abstract class TimeoutMessagePacket extends MessagePacket {
     }
 
     // timeout 计时器监听
-    private final WeakClockManager.ClockObserver mClockObserver = this::validateTimeout;
+    private final ClockObservable.ClockObserver mClockObserver = this::validateTimeout;
 
     @Override
     protected void onStateChanged(int oldState, int newState) {
@@ -70,13 +70,13 @@ public abstract class TimeoutMessagePacket extends MessagePacket {
 
     private void registerClockObserver() {
         synchronized (mClockObserver) {
-            WeakClockManager.getInstance().getClockObservable().registerObserver(mClockObserver);
+            ClockObservable.DEFAULT.registerObserver(mClockObserver);
         }
     }
 
     private void unregisterClockObserver() {
         synchronized (mClockObserver) {
-            WeakClockManager.getInstance().getClockObservable().unregisterObserver(mClockObserver);
+            ClockObservable.DEFAULT.unregisterObserver(mClockObserver);
         }
     }
 

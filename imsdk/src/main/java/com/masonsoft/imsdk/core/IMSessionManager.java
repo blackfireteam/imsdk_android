@@ -11,6 +11,7 @@ import com.idonans.core.thread.Threads;
 import com.idonans.core.util.AbortUtil;
 import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.core.observable.SessionObservable;
+import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 
@@ -206,14 +207,14 @@ public class IMSessionManager {
         });
     }
 
-    public class SessionTcpClientProxy extends SimpleAbortSignal implements SessionTcpClient.Observer {
+    public class SessionTcpClientProxy extends SimpleAbortSignal implements SessionTcpClientObservable.SessionTcpClientObserver {
 
         @Nullable
         private SessionTcpClient mSessionTcpClient;
 
         private SessionTcpClientProxy(@NonNull Session session) {
             mSessionTcpClient = new SessionTcpClient(session);
-            mSessionTcpClient.getObservable().registerObserver(this);
+            SessionTcpClientObservable.DEFAULT.registerObserver(this);
         }
 
         @Override
