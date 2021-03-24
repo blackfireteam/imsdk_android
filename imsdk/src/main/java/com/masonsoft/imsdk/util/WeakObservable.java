@@ -24,7 +24,7 @@ public class WeakObservable<T> {
         mObservers.removeAll();
     }
 
-    protected void forEach(@NonNull Consumer<T> consumer) {
+    public void forEach(@NonNull Consumer<T> consumer) {
         final List<T> observers = mObservers.getAll();
         for (T observer : observers) {
             if (observer == null) {
@@ -34,7 +34,7 @@ public class WeakObservable<T> {
         }
     }
 
-    protected int size() {
+    public int size() {
         return mObservers.size();
     }
 

@@ -52,8 +52,8 @@ dependencies {
     implementation rootProject.ext.bcfg.deps.idonans_appcontext
     implementation rootProject.ext.bcfg.deps.idonans_core
     implementation rootProject.ext.bcfg.deps.idonans_lang
-    implementation rootProject.ext.bcfg.deps.idonans_systeminsets
     implementation rootProject.ext.bcfg.deps.idonans_backstack
+    implementation rootProject.ext.bcfg.deps.idonans_systeminsets
     implementation rootProject.ext.bcfg.deps.idonans_uniontype
     implementation rootProject.ext.bcfg.deps.idonans_dynamic
 
