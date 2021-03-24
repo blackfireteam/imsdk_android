@@ -90,7 +90,9 @@ public abstract class TcpClient implements Closeable {
     protected void moveToState(@State int state) {
         synchronized (mStateLock) {
             if (mState > state) {
-                throw new IllegalStateException("TcpClient fail to move state " + stateToString(mState) + " -> " + stateToString(state));
+                throw new IllegalStateException(Objects.defaultObjectTag(TcpClient.this)
+                        + " fail to move state "
+                        + stateToString(mState) + " -> " + stateToString(state));
             }
             if (mState != state) {
                 final int oldState = mState;
@@ -108,7 +110,8 @@ public abstract class TcpClient implements Closeable {
     protected void checkState(@State int state) {
         synchronized (mStateLock) {
             if (mState != state) {
-                throw new IllegalStateException("required " + stateToString(state) + " but " + stateToString(mState));
+                throw new IllegalStateException(Objects.defaultObjectTag(TcpClient.this)
+                        + " required " + stateToString(state) + " but " + stateToString(mState));
             }
         }
     }
