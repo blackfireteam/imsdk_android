@@ -166,7 +166,7 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
      * @param newState 迁移后的状态(当前状态)
      */
     protected void onStateChanged(int oldState, int newState) {
-        IMLog.i("MessagePacket[" + mSign + "] state changed %s -> %s",
+        IMLog.i(Objects.defaultObjectTag(MessagePacket.this) + "[" + mSign + "] state changed %s -> %s",
                 stateToString(oldState),
                 stateToString(newState));
 
@@ -182,9 +182,8 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
     @NonNull
     public String toShortString() {
         return String.format(
-                "%s@%s{sign:%s,state:%s}",
-                getClass().getSimpleName(),
-                System.identityHashCode(this),
+                "%s{sign:%s,state:%s}",
+                Objects.defaultObjectTag(this),
                 mSign,
                 stateToString(mState)
         );
