@@ -82,7 +82,7 @@ public class IMMessageQueueManager {
         public void run() {
             try {
                 if (!mReceivedMessageProcessor.doProcess(mSessionProtoByteMessageWrapper)) {
-                    Throwable e = new IllegalAccessError("ReceivedMessageTask SessionProtoByteMessageWrapper do process fail");
+                    Throwable e = new IllegalAccessError("ReceivedMessageTask SessionProtoByteMessageWrapper do process fail " + mSessionProtoByteMessageWrapper.toShortString());
                     IMLog.v(e);
                 }
             } catch (Throwable e) {
