@@ -9,8 +9,8 @@ import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
+import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.lang.Processor;
-import com.masonsoft.imsdk.util.WeakObservable;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -71,7 +71,7 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
     @SendState
     private int mState = STATE_IDLE;
 
-    private final StateObservable mStateObservable = new StateObservable();
+    private final MessagePacketStateObservable mMessagePacketStateObservable = new MessagePacketStateObservable();
 
     private long mErrorCode;
     private String mErrorMessage;
@@ -118,8 +118,8 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
         return mSign;
     }
 
-    public StateObservable getStateObservable() {
-        return mStateObservable;
+    public MessagePacketStateObservable getMessagePacketStateObservable() {
+        return mMessagePacketStateObservable;
     }
 
     public void setErrorCode(long errorCode) {
@@ -168,7 +168,7 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
                 stateToString(oldState),
                 stateToString(newState));
 
-        mStateObservable.notifyStateChanged(this, oldState, newState);
+        mMessagePacketStateObservable.notifyStateChanged(this, oldState, newState);
     }
 
     /**
@@ -176,16 +176,6 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
      */
     @Override
     public abstract boolean doProcess(@Nullable ProtoByteMessageWrapper target);
-
-    public interface StateObserver {
-        void onStateChanged(MessagePacket packet, int oldState, int newState);
-    }
-
-    public static class StateObservable extends WeakObservable<StateObserver> {
-        public void notifyStateChanged(MessagePacket packet, int oldState, int newState) {
-            forEach(stateObserver -> stateObserver.onStateChanged(packet, oldState, newState));
-        }
-    }
 
     @NonNull
     public String toShortString() {
