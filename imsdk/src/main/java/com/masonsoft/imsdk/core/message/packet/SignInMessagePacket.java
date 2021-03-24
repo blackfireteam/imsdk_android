@@ -8,6 +8,7 @@ import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
+import com.masonsoft.imsdk.util.Objects;
 
 /**
  * 在长连接上的登录消息包
@@ -43,13 +44,16 @@ public class SignInMessagePacket extends TimeoutMessagePacket {
                 synchronized (getStateLock()) {
                     final int state = getState();
                     if (state != STATE_WAIT_RESULT) {
-                        IMLog.e("SignInMessagePacket unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                        IMLog.e(Objects.defaultObjectTag(SignInMessagePacket.this)
+                                + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
                         return false;
                     }
 
                     if (result.getCode() != 0) {
                         setErrorCode(result.getCode());
                         setErrorMessage(result.getMsg());
+                        IMLog.e(Objects.defaultObjectTag(SignInMessagePacket.this) +
+                                " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
                         moveToState(STATE_FAIL);
                     } else {
                         final long sessionUserId = result.getUid();
@@ -57,6 +61,7 @@ public class SignInMessagePacket extends TimeoutMessagePacket {
                             IMLog.e("SignInMessagePacket unexpected. accept with same sign:%s and invalid user id:%s", getSign(), sessionUserId);
                             return false;
                         }
+                        IMLog.v(Objects.defaultObjectTag(SignInMessagePacket.this) + " sign in success, sessionUserId:%s", sessionUserId);
                         mSessionUserId = sessionUserId;
                         moveToState(STATE_SUCCESS);
                     }
