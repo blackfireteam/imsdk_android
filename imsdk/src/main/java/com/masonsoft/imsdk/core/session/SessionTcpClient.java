@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 import com.idonans.core.Charsets;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
-import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.NettyTcpClient;
 import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
@@ -15,8 +14,10 @@ import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.PingMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignInMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignOutMessagePacket;
+import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
+import com.masonsoft.imsdk.core.observable.SessionObservable;
+import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
 import com.masonsoft.imsdk.lang.MultiProcessor;
-import com.masonsoft.imsdk.util.WeakObservable;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -39,7 +40,7 @@ public class SessionTcpClient extends NettyTcpClient {
     @NonNull
     private final Session mSession;
     @SuppressWarnings("FieldCanBeLocal")
-    private final IMSessionManager.SessionObserver mSessionObserver;
+    private final SessionObservable.SessionObserver mSessionObserver;
 
     /**
      * @see #onConnected()
@@ -59,17 +60,15 @@ public class SessionTcpClient extends NettyTcpClient {
 
     // 监听登录消息包的状态变化
     @SuppressWarnings("FieldCanBeLocal")
-    private final MessagePacket.StateObserver mSignInMessagePacketStateObserver;
+    private final MessagePacketStateObservable.MessagePacketStateObserver mSignInMessagePacketStateObserver;
     // 监听退出登录消息包的状态变化
     @SuppressWarnings("FieldCanBeLocal")
-    private final MessagePacket.StateObserver mSignOutMessagePacketStateObserver;
+    private final MessagePacketStateObservable.MessagePacketStateObserver mSignOutMessagePacketStateObserver;
 
     /**
      * 用来处理服务器返回的与登录，退出登录相关的消息
      */
     private final MultiProcessor<ProtoByteMessageWrapper> mLocalMessageProcessor;
-
-    private final Observable mObservable = new Observable();
 
     public SessionTcpClient(@NonNull Session session) {
         mSession = session;
@@ -79,20 +78,20 @@ public class SessionTcpClient extends NettyTcpClient {
 
         mSignInMessagePacketStateObserver = (packet, oldState, newState) -> {
             // 登录的消息包发生状态变化
-            mObservable.notifySignInStateChanged();
+            SessionTcpClientObservable.DEFAULT.notifySignInStateChanged();
         };
-        mSignInMessagePacket.getStateObservable().registerObserver(mSignInMessagePacketStateObserver);
+        mSignInMessagePacket.getMessagePacketStateObservable().registerObserver(mSignInMessagePacketStateObserver);
         mSignOutMessagePacketStateObserver = (packet, oldState, newState) -> {
             // 退出登录的消息包发生状态变化
-            mObservable.notifySignOutStateChanged();
+            SessionTcpClientObservable.DEFAULT.notifySignOutStateChanged();
         };
-        mSignOutMessagePacket.getStateObservable().registerObserver(mSignOutMessagePacketStateObserver);
+        mSignOutMessagePacket.getMessagePacketStateObservable().registerObserver(mSignOutMessagePacketStateObserver);
 
         mLocalMessageProcessor = new MultiProcessor<>();
         mLocalMessageProcessor.addLastProcessor(mSignInMessagePacket);
         mLocalMessageProcessor.addLastProcessor(mSignOutMessagePacket);
 
-        mSessionObserver = new IMSessionManager.SessionObserver() {
+        mSessionObserver = new SessionObservable.SessionObserver() {
             @Override
             public void onSessionChanged() {
                 validateSession();
@@ -102,17 +101,12 @@ public class SessionTcpClient extends NettyTcpClient {
             public void onSessionUserIdChanged() {
             }
         };
-
-        IMSessionManager.getInstance().getSessionObservable().registerObserver(mSessionObserver);
+        SessionObservable.DEFAULT.registerObserver(mSessionObserver);
         validateSession();
 
         if (getState() == STATE_IDLE) {
             connect(session.getTcpHost(), session.getTcpPort());
         }
-    }
-
-    public Observable getObservable() {
-        return mObservable;
     }
 
     /**
@@ -355,29 +349,7 @@ public class SessionTcpClient extends NettyTcpClient {
     protected void onStateChanged(int oldState, int newState) {
         super.onStateChanged(oldState, newState);
 
-        mObservable.notifyConnectionStateChanged();
-    }
-
-    public interface Observer {
-        void onConnectionStateChanged();
-
-        void onSignInStateChanged();
-
-        void onSignOutStateChanged();
-    }
-
-    public static class Observable extends WeakObservable<Observer> {
-        public void notifyConnectionStateChanged() {
-            forEach(Observer::onConnectionStateChanged);
-        }
-
-        public void notifySignInStateChanged() {
-            forEach(Observer::onSignInStateChanged);
-        }
-
-        public void notifySignOutStateChanged() {
-            forEach(Observer::onSignOutStateChanged);
-        }
+        SessionTcpClientObservable.DEFAULT.notifyConnectionStateChanged();
     }
 
 }

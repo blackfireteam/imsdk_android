@@ -6,9 +6,9 @@ import com.masonsoft.imsdk.util.WeakObservable;
 /**
  * @see MessagePacket
  */
-public class MessagePacketStateObservable extends WeakObservable<MessagePacketStateObservable.StateObserver> {
+public class MessagePacketStateObservable extends WeakObservable<MessagePacketStateObservable.MessagePacketStateObserver> {
 
-    public interface StateObserver {
+    public interface MessagePacketStateObserver {
         void onStateChanged(MessagePacket packet, int oldState, int newState);
     }
 
