@@ -65,6 +65,9 @@ dependencies {
     implementation rootProject.ext.bcfg.deps.rxjava
     implementation rootProject.ext.bcfg.deps.rxandroid
 
+    implementation 'androidx.emoji:emoji-appcompat:1.1.0'
+    implementation 'androidx.emoji:emoji-bundled:1.1.0'
+
     debugImplementation rootProject.ext.bcfg.deps.leakcanary
 
     testImplementation 'junit:junit:4.13.2'
