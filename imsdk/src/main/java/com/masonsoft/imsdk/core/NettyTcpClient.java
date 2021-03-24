@@ -119,7 +119,7 @@ public abstract class NettyTcpClient extends TcpClient {
                     dispatchDisconnected();
                 }
             } catch (Throwable e) {
-                IMLog.e(e, "NettyTcpClient connect fail");
+                IMLog.e(e, "NettyTcpClient connect fail host:%s, port:%s", host, port);
                 dispatchDisconnected();
             }
         });
