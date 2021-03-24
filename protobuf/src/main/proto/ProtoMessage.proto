@@ -1,7 +1,7 @@
 syntax = "proto3";
 option java_package = "com.masonsoft.imsdk.core.proto";
 
-// 最近修改时间-2021-03-18 16:53:02
+// 最近修改时间-2021-03-24 11:11:02
 
 //0
 message Ping
@@ -186,19 +186,18 @@ message UnblockU
 {
   int64 to_uid = 1;//unblock谁
 }
-//22
-message GetChatListOnlineUids
+//50  for demo: 通知客户端用户上线事件
+message ProfileOnline
 {
-  int64 sign = 1;
+  int64 uid = 1;
+  int64 update_time = 2;//profile的更新时间 精确到秒的时间戳
+  string nick_name = 3;
+  string avatar = 4;
+  bool gold = 5;
+  bool verified = 6;
 }
-//23
-message OnlineUids
+//52 for demo：通知客户端用户下线事件
+message UsrOffline
 {
-  repeated int64 uids = 2;
-}
-//24
-message IsOnline
-{
-  int64 sign = 1;
-  int64 uid = 2;
+  int64 uid = 1;
 }
