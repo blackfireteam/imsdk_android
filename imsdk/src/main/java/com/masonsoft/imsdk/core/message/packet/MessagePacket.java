@@ -11,6 +11,7 @@ import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.lang.Processor;
+import com.masonsoft.imsdk.util.Objects;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -145,8 +146,7 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
     public void moveToState(@SendState int state) {
         synchronized (mStateLock) {
             if (mState > state) {
-                final Object packet = MessagePacket.this;
-                final Throwable e = new IllegalStateException(packet.getClass() + "@" + System.identityHashCode(packet)
+                final Throwable e = new IllegalStateException(Objects.defaultObjectTag(MessagePacket.this)
                         + "[" + mSign + "] fail to move state " + stateToString(mState) + " -> " + stateToString(state));
                 IMLog.e(e);
                 RuntimeMode.throwIfDebug(e);

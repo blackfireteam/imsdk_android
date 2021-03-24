@@ -2,6 +2,8 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.IntDef;
 
+import com.masonsoft.imsdk.util.Objects;
+
 import java.io.Closeable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -118,7 +120,7 @@ public abstract class TcpClient implements Closeable {
      * @param newState 迁移后的状态(当前状态)
      */
     protected void onStateChanged(int oldState, int newState) {
-        IMLog.i("TcpClient state changed %s -> %s",
+        IMLog.i(Objects.defaultObjectTag(TcpClient.this) + " state changed %s -> %s",
                 stateToString(oldState),
                 stateToString(newState));
     }
