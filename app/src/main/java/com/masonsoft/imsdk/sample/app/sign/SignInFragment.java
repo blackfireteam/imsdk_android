@@ -87,10 +87,10 @@ public class SignInFragment extends SystemInsetsFragment {
         //////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////
         // TODO 临时使用固定的测试信息登录
-        final String debugToken = "9999999999999";
+        final String debugToken = "89g3Is+0vDBz7grDz95N4A==";
         final String debugAesKey = null;
         final String debugHost = "192.168.50.254";
-        final int debugPort = 18788;
+        final int debugPort = 18888;
         final Session session = new Session(
                 debugToken,
                 debugAesKey,
