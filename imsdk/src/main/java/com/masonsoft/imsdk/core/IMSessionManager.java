@@ -10,9 +10,9 @@ import com.idonans.core.Singleton;
 import com.idonans.core.thread.Threads;
 import com.idonans.core.util.AbortUtil;
 import com.idonans.core.util.IOUtil;
+import com.masonsoft.imsdk.core.observable.SessionObservable;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
-import com.masonsoft.imsdk.util.WeakObservable;
 
 /**
  * 处理登录状态相关内容，当登录状态发生变更时，将强制断开长连接然后发起新的长连接(如果有登录信息)。
@@ -37,8 +37,6 @@ public class IMSessionManager {
     }
 
     private static final String KEY_SESSION_USER_ID_BY_TOKEN_PREFIX = "SessionUserIdByToken_20210306_";
-
-    private final SessionObservable mSessionObservable = new SessionObservable();
 
     private final Object mSessionLock = new Object();
     @Nullable
@@ -79,7 +77,7 @@ public class IMSessionManager {
         }
 
         if (notifySessionChanged) {
-            mSessionObservable.notifySessionChanged();
+            SessionObservable.DEFAULT.notifySessionChanged();
         }
     }
 
@@ -154,7 +152,7 @@ public class IMSessionManager {
         }
 
         if (notifySessionUserIdChanged) {
-            mSessionObservable.notifySessionUserIdChanged();
+            SessionObservable.DEFAULT.notifySessionUserIdChanged();
         }
     }
 
@@ -206,27 +204,6 @@ public class IMSessionManager {
                 IMLog.e(e);
             }
         });
-    }
-
-    @NonNull
-    public SessionObservable getSessionObservable() {
-        return mSessionObservable;
-    }
-
-    public interface SessionObserver {
-        void onSessionChanged();
-
-        void onSessionUserIdChanged();
-    }
-
-    public static class SessionObservable extends WeakObservable<SessionObserver> {
-        public void notifySessionChanged() {
-            forEach(SessionObserver::onSessionChanged);
-        }
-
-        public void notifySessionUserIdChanged() {
-            forEach(SessionObserver::onSessionUserIdChanged);
-        }
     }
 
     public class SessionTcpClientProxy extends SimpleAbortSignal implements SessionTcpClient.Observer {

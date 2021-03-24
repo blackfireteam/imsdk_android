@@ -38,4 +38,8 @@ public class WeakObservable<T> {
         return mObservers.size();
     }
 
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
 }

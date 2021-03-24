@@ -4,6 +4,8 @@ import com.masonsoft.imsdk.util.WeakObservable;
 
 /**
  * Session 信息的变更
+ *
+ * @see com.masonsoft.imsdk.core.IMSessionManager
  */
 public class SessionObservable extends WeakObservable<SessionObservable.SessionObserver> {
 
