@@ -122,6 +122,7 @@ public class SessionTcpClient extends NettyTcpClient {
         dispatchDisconnected();
     }
 
+    /*
     @Override
     protected byte[] encryptMessage(int messageType, byte[] messageData) {
         final String aesKey = mSession.getAesKey();
@@ -133,6 +134,7 @@ public class SessionTcpClient extends NettyTcpClient {
 
         return super.encryptMessage(messageType, messageData);
     }
+    */
 
     @NonNull
     @Override
