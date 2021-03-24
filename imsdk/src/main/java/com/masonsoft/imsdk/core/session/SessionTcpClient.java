@@ -18,6 +18,7 @@ import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.observable.SessionObservable;
 import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
 import com.masonsoft.imsdk.lang.MultiProcessor;
+import com.masonsoft.imsdk.util.Objects;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -304,7 +305,8 @@ public class SessionTcpClient extends NettyTcpClient {
         synchronized (mSession) {
             if (getState() != STATE_CONNECTED) {
                 IMLog.e(
-                        new IllegalStateException("message received, current tcp state or connection is not ready or active"),
+                        new IllegalStateException(Objects.defaultObjectTag(SessionTcpClient.this)
+                                + " message received, current tcp state or connection is not ready or active"),
                         "tcp state:%s, message:%s",
                         stateToString(getState()),
                         protoByteMessage.toString()
@@ -324,7 +326,9 @@ public class SessionTcpClient extends NettyTcpClient {
             final long sessionUserId = mSignInMessagePacket.getSessionUserId();
             if (!mSignInMessagePacket.isSignIn()) {
                 // 当前没有正确登录，但是收到了意外地消息
-                IMLog.e(new IllegalStateException("is not sign in, but received message"), "protoByteMessageWrapper:%s", protoByteMessageWrapper);
+                IMLog.e(new IllegalStateException(
+                        Objects.defaultObjectTag(SessionTcpClient.this) +
+                                " is not sign in, but received message"), "protoByteMessageWrapper:%s", protoByteMessageWrapper);
                 return;
             }
             IMMessageQueueManager.getInstance().enqueueReceivedMessage(new SessionProtoByteMessageWrapper(sessionUserId, protoByteMessageWrapper));
@@ -335,6 +339,7 @@ public class SessionTcpClient extends NettyTcpClient {
      * 登录
      */
     private void signIn() {
+        IMLog.v(Objects.defaultObjectTag(this) + " signIn");
         sendMessagePacketQuietly(mSignInMessagePacket, false);
     }
 
@@ -342,6 +347,7 @@ public class SessionTcpClient extends NettyTcpClient {
      * 退出登录
      */
     public void signOut() {
+        IMLog.v(Objects.defaultObjectTag(this) + " signOut");
         sendMessagePacketQuietly(mSignOutMessagePacket, false);
     }
 
