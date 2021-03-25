@@ -36,7 +36,8 @@ public class UserCacheAvatar extends ImageLayout {
     }
 
     public UserCacheAvatar(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, R.style.UserCacheAvatar);
+        super(context, attrs, defStyleAttr);
+        initFromAttributes(context, attrs, defStyleAttr, R.style.UserCacheAvatar);
     }
 
     public UserCacheAvatar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
