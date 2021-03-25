@@ -65,6 +65,12 @@ dependencies {
     implementation rootProject.ext.bcfg.deps.rxjava
     implementation rootProject.ext.bcfg.deps.rxandroid
 
+    implementation rootProject.ext.bcfg.deps.fresco
+    implementation rootProject.ext.bcfg.deps.fresco_anim_gif
+    implementation rootProject.ext.bcfg.deps.fresco_anim_webp
+    implementation rootProject.ext.bcfg.deps.fresco_support_webp
+    implementation rootProject.ext.bcfg.deps.fresco_okhttp
+
     implementation 'androidx.emoji:emoji-appcompat:1.1.0'
     implementation 'androidx.emoji:emoji-bundled:1.1.0'
     implementation 'com.github.tbruyelle:rxpermissions:0.12'
