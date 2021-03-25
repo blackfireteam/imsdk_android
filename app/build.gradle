@@ -67,6 +67,7 @@ dependencies {
 
     implementation 'androidx.emoji:emoji-appcompat:1.1.0'
     implementation 'androidx.emoji:emoji-bundled:1.1.0'
+    implementation 'com.github.tbruyelle:rxpermissions:0.12'
 
     debugImplementation rootProject.ext.bcfg.deps.leakcanary
 

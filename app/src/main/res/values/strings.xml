@@ -10,4 +10,5 @@
     <string name="imsdk_sample_input_error_empty_phone">手机号码不能为空</string>
     <string name="imsdk_sample_chat_input_hint">发送聊天内容</string>
     <string name="imsdk_sample_chat_input_submit">发送</string>
+    <string name="imsdk_sample_tip_text_network_error">网络不给力</string>
 </resources>

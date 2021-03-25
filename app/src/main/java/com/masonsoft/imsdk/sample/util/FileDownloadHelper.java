@@ -1,0 +1,276 @@
+package com.masonsoft.imsdk.sample.util;
+
+import android.text.TextUtils;
+import android.webkit.URLUtil;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.idonans.core.Progress;
+import com.idonans.core.WeakAbortSignal;
+import com.idonans.core.thread.TaskQueue;
+import com.idonans.core.thread.Threads;
+import com.idonans.core.util.FileUtil;
+import com.idonans.core.util.IOUtil;
+import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.sample.common.SafetyRunnable;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+
+import javax.annotation.concurrent.ThreadSafe;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
+/**
+ * 下载文件到本地
+ */
+@ThreadSafe
+public class FileDownloadHelper {
+
+    private static final boolean DEBUG = false;
+
+    public interface OnFileDownloadListener {
+        void onDownloadSuccess(String id, String localFilePath, String serverUrl);
+
+        void onDownloadFail(String id, String serverUrl, Throwable e);
+    }
+
+    public static class OnSampleFileDownloadListener implements OnFileDownloadListener {
+        private final boolean mRunOnUi;
+        private final OnFileDownloadListener mOut;
+
+        public OnSampleFileDownloadListener(boolean runOnUi, OnFileDownloadListener out) {
+            mRunOnUi = runOnUi;
+            mOut = out;
+        }
+
+        @Override
+        public void onDownloadSuccess(String id, String localFilePath, String serverUrl) {
+            if (mRunOnUi) {
+                Threads.runOnUi(() -> {
+                    if (mOut != null) {
+                        mOut.onDownloadSuccess(id, localFilePath, serverUrl);
+                    }
+                });
+            } else {
+                if (mOut != null) {
+                    mOut.onDownloadSuccess(id, localFilePath, serverUrl);
+                }
+            }
+        }
+
+        @Override
+        public void onDownloadFail(String id, String serverUrl, Throwable e) {
+            if (mRunOnUi) {
+                Threads.runOnUi(() -> {
+                    if (mOut != null) {
+                        mOut.onDownloadFail(id, serverUrl, e);
+                    }
+                });
+            } else {
+                if (mOut != null) {
+                    mOut.onDownloadFail(id, serverUrl, e);
+                }
+            }
+        }
+    }
+
+    public interface OnFileDownloadProgressListener {
+        void onDownloadProgress(String id, String serverUrl, @NonNull Progress progress);
+    }
+
+    public static class OnSampleFileDownloadProgressListener implements OnFileDownloadProgressListener {
+        private final boolean mRunOnUi;
+        private final OnFileDownloadProgressListener mOut;
+
+        public OnSampleFileDownloadProgressListener(boolean runOnUi, OnFileDownloadProgressListener out) {
+            mRunOnUi = runOnUi;
+            mOut = out;
+        }
+
+        @Override
+        public void onDownloadProgress(String id, String serverUrl, @NonNull Progress progress) {
+            if (mRunOnUi) {
+                Threads.runOnUi(() -> {
+                    if (mOut != null) {
+                        mOut.onDownloadProgress(id, serverUrl, progress);
+                    }
+                });
+            } else {
+                if (mOut != null) {
+                    mOut.onDownloadProgress(id, serverUrl, progress);
+                }
+            }
+        }
+    }
+
+    @Nullable
+    private OnFileDownloadListener mOnFileDownloadListener;
+    @Nullable
+    private OnFileDownloadProgressListener mOnFileDownloadProgressListener;
+
+    private final TaskQueue mTaskQueue = new TaskQueue(2);
+
+    public FileDownloadHelper() {
+    }
+
+    public void setOnFileDownloadListener(@Nullable OnFileDownloadListener listener) {
+        mOnFileDownloadListener = listener;
+    }
+
+    public void setOnFileDownloadProgressListener(@Nullable OnFileDownloadProgressListener listener) {
+        mOnFileDownloadProgressListener = listener;
+    }
+
+    public void enqueueFileDownload(String id, String serverUrl) {
+        mTaskQueue.enqueue(new SafetyRunnable(new DownloadTask(id, serverUrl, this)));
+    }
+
+    public void blockingFileUpload(String id, String localFilePath) {
+        new DownloadTask(id, localFilePath, this).run();
+    }
+
+    public static class DownloadTask extends WeakAbortSignal implements Runnable {
+
+        private final String mId;
+        private final String mServerUrl;
+
+        public DownloadTask(String id, String serverUrl, @Nullable FileDownloadHelper object) {
+            super(object);
+            if (serverUrl != null) {
+                serverUrl = serverUrl.trim();
+            }
+            this.mId = id;
+            this.mServerUrl = serverUrl;
+        }
+
+        @Nullable
+        private FileDownloadHelper getFileUploadHelper() {
+            if (isAbort()) {
+                return null;
+            }
+            return (FileDownloadHelper) getObject();
+        }
+
+        private void notifyDownloadFail(Throwable e) {
+            if (DEBUG) {
+                SampleLog.v(e, "notifyDownloadFail, mId:%s, mServerUrl:%s", mId, mServerUrl);
+            }
+            FileDownloadHelper fileUploadHelper = getFileUploadHelper();
+            if (fileUploadHelper != null) {
+                OnFileDownloadListener listener = fileUploadHelper.mOnFileDownloadListener;
+                if (listener != null) {
+                    listener.onDownloadFail(mId, mServerUrl, e);
+                }
+            }
+        }
+
+        private void notifyDownloadSuccess(String localFilePath) {
+            if (DEBUG) {
+                SampleLog.v("notifyDownloadSuccess, mId:%s, mServerUrl:%s, localFilePath:%s", mId, mServerUrl, localFilePath);
+            }
+            FileDownloadHelper fileDownloadHelper = getFileUploadHelper();
+            if (fileDownloadHelper != null) {
+                OnFileDownloadListener listener = fileDownloadHelper.mOnFileDownloadListener;
+                if (listener != null) {
+                    listener.onDownloadSuccess(mId, localFilePath, mServerUrl);
+                }
+            }
+        }
+
+        private void notifyDownloadProgress(long currentSize, long totalSize) {
+            if (DEBUG) {
+                SampleLog.v("notifyDownloadProgress [%s/%s], mId:%s, mServerUrl:%s",
+                        currentSize, totalSize, mId, mServerUrl);
+            }
+            if (currentSize > totalSize && totalSize >= 0) {
+                Throwable e = new IllegalArgumentException("notifyDownloadProgress invalid args currentSize:" + currentSize + ", totalSize:" + totalSize);
+                SampleLog.e(e);
+                currentSize = totalSize;
+            }
+            final Progress progress = new Progress(totalSize, currentSize);
+            FileDownloadHelper fileUploadHelper = getFileUploadHelper();
+            if (fileUploadHelper != null) {
+                OnFileDownloadProgressListener listener = fileUploadHelper.mOnFileDownloadProgressListener;
+                if (listener != null) {
+                    listener.onDownloadProgress(mId, mServerUrl, progress);
+                }
+            }
+        }
+
+        @Override
+        public void run() {
+            if (DEBUG) {
+                SampleLog.v("DownloadTask::run, mId:%s, mServerUrl:%s", mId, mServerUrl);
+            }
+
+            File errorFile = null;
+            Response response = null;
+            InputStream is = null;
+
+            try {
+                if (TextUtils.isEmpty(mServerUrl)) {
+                    throw new IllegalArgumentException("server url is empty");
+                }
+
+                // 下载文件
+                final String fileExtension = FileUtil.getFileExtensionFromUrl(mServerUrl);
+                if (TextUtils.isEmpty(fileExtension)) {
+                    throw new IllegalArgumentException("DownloadTask run fail to get fileExtension from " + mServerUrl);
+                }
+                // 本地生成唯一文件名
+                final String unionFilename = FilenameUtil.createUnionFilename(fileExtension);
+                final File dir = FileUtil.getAppMediaDir();
+                if (dir == null) {
+                    throw new IllegalArgumentException("DownloadTask run fail to get app media dir");
+                }
+                final File localFile = new File(dir, unionFilename);
+                errorFile = localFile;
+
+                Progress progress = new Progress() {
+                    @Override
+                    protected void onUpdate() {
+                        super.onUpdate();
+                        notifyDownloadProgress(getCurrent(), getTotal());
+                    }
+                };
+                if (URLUtil.isNetworkUrl(mServerUrl)) {
+                    OkHttpClient httpClient = OkHttpClientUtil.createDefaultOkHttpClient();
+                    Request request = new Request.Builder().url(mServerUrl).get().build();
+                    response = httpClient.newCall(request).execute();
+                    ResponseBody responseBody = response.body();
+
+                    progress.set(responseBody.contentLength(), 0);
+                    is = responseBody.byteStream();
+                } else {
+                    File serverUrlAsFile = new File(mServerUrl);
+                    progress.set(serverUrlAsFile.length(), 0);
+                    is = new FileInputStream(serverUrlAsFile);
+                }
+
+                SampleLog.v("DownloadTask run start download, %s -> %s", mServerUrl, localFile.getAbsolutePath());
+                IOUtil.copy(is, localFile, this, progress);
+                errorFile = null;
+                SampleLog.v("DownloadTask run start download onSuccess, %s -> %s", mServerUrl, localFile.getAbsolutePath());
+
+                notifyDownloadSuccess(localFile.getAbsolutePath());
+            } catch (Throwable e) {
+                SampleLog.e(e);
+                notifyDownloadFail(e);
+            } finally {
+                FileUtil.deleteFileQuietly(errorFile);
+                IOUtil.closeQuietly(is);
+                IOUtil.closeQuietly(response);
+            }
+            if (DEBUG) {
+                SampleLog.v("DownloadTask::run:end, mId:%s, mServerUrl:%s", mId, mServerUrl);
+            }
+        }
+    }
+
+}
