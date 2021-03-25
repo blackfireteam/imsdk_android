@@ -64,4 +64,18 @@ public class StateProp<T> {
         this.mProp = origin.mProp;
     }
 
+    @NonNull
+    public String toShortString() {
+        if (mProp == UNSET) {
+            return "StateProp:unset";
+        }
+        return "StateProp:" + mProp;
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return toShortString();
+    }
+
 }
