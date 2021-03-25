@@ -14,7 +14,7 @@ public class MicroLifecycleRealHelper {
         requestPauseOthers(self, null);
     }
 
-    public static void requestPauseOthers(MicroLifecycleComponentManager.MicroLifecycleComponent self, Class type) {
+    public static void requestPauseOthers(MicroLifecycleComponentManager.MicroLifecycleComponent self, Class<?> type) {
         try {
             Collection<MicroLifecycleComponentManager.MicroLifecycleComponent> components = self.getMicroLifecycleComponentManager().copyComponents();
             for (MicroLifecycleComponentManager.MicroLifecycleComponent item : components) {
