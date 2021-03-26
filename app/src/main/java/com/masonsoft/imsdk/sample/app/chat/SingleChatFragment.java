@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk.sample.app.chat;
 
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,9 @@ public class SingleChatFragment extends SystemInsetsFragment {
         mBinding = ImsdkSampleSingleChatFragmentBinding.inflate(inflater, container, false);
 
         ViewUtil.onClick(mBinding.topBarBack, v -> BackStackUtil.requestBackPressed(SingleChatFragment.this));
+        mBinding.topBarTitle.setTargetUserId(mTargetUserId);
+
+        mBinding.keyboardEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3000)});
 
         return mBinding.getRoot();
     }

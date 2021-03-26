@@ -35,6 +35,23 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/imsdk_sample_ic_arrow_left" />
 
+            <com.masonsoft.imsdk.sample.widget.UserCacheName
+                android:id="@+id/top_bar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginStart="100dp"
+                android:layout_marginEnd="100dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="titletitletitletitletitletitletitletitletitletitletitletitletitletitletitletitletitle" />
+
             <ImageView
                 android:id="@+id/top_bar_more"
                 android:layout_width="wrap_content"
