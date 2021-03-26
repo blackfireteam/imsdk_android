@@ -9,11 +9,11 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImMessageTextSendBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 
-public class ImMessageTextSendViewHolder extends ImMessageTextViewHolder {
+public class IMMessageTextSendViewHolder extends IMMessageTextViewHolder {
 
     private final ImsdkSampleUnionTypeImMessageTextSendBinding mBinding;
 
-    public ImMessageTextSendViewHolder(@NonNull Host host) {
+    public IMMessageTextSendViewHolder(@NonNull Host host) {
         super(host, R.layout.imsdk_sample_union_type_im_message_text_send);
         mBinding = ImsdkSampleUnionTypeImMessageTextSendBinding.bind(itemView);
     }

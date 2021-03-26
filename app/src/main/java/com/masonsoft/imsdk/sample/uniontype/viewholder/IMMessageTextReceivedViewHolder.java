@@ -17,12 +17,12 @@ import com.xmqvip.xiaomaiquan.module.userprofile.UserProfileActivity;
 
 import butterknife.BindView;
 
-public class ImMessageTextReceivedViewHolder extends ImMessageTextViewHolder {
+public class IMMessageTextReceivedViewHolder extends IMMessageTextViewHolder {
 
     @BindView(R.id.avatar)
     UserCacheAvatar mAvatar;
 
-    public ImMessageTextReceivedViewHolder(@NonNull Host host) {
+    public IMMessageTextReceivedViewHolder(@NonNull Host host) {
         super(host, R.layout.union_type_app_impl_im_message_text_received);
     }
 

@@ -15,20 +15,20 @@ import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
 
-public abstract class ImMessageTextViewHolder extends ImMessageViewHolder {
+public abstract class IMMessageTextViewHolder extends IMMessageViewHolder {
 
     @BindView(R.id.message_time)
     TextView mMessageTime;
     @BindView(R.id.message_text)
     TextView mMessageText;
 
-    public ImMessageTextViewHolder(@NonNull Host host, int layout) {
+    public IMMessageTextViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
 
         mMessageTime = itemView.findViewById(R.id.message_time);
     }
 
-    public ImMessageTextViewHolder(@NonNull Host host, @NonNull View itemView) {
+    public IMMessageTextViewHolder(@NonNull Host host, @NonNull View itemView) {
         super(host, itemView);
     }
 
@@ -48,7 +48,7 @@ public abstract class ImMessageTextViewHolder extends ImMessageViewHolder {
             public boolean onDoubleTap(MotionEvent e) {
                 UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();
                 if (listener != null) {
-                    listener.onItemClick(ImMessageTextViewHolder.this);
+                    listener.onItemClick(IMMessageTextViewHolder.this);
                 }
                 return true;
             }

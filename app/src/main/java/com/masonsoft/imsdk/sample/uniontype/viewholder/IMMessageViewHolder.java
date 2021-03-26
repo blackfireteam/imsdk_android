@@ -35,7 +35,7 @@ import com.tbruyelle.rxpermissions3.RxPermissions;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-public abstract class ImMessageViewHolder extends UnionTypeViewHolder {
+public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
 
     protected static final boolean DEBUG = false;
 
@@ -91,11 +91,11 @@ public abstract class ImMessageViewHolder extends UnionTypeViewHolder {
                 });
     }
 
-    public ImMessageViewHolder(@NonNull Host host, int layout) {
+    public IMMessageViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
     }
 
-    public ImMessageViewHolder(@NonNull Host host, @NonNull View itemView) {
+    public IMMessageViewHolder(@NonNull Host host, @NonNull View itemView) {
         super(host, itemView);
     }
 

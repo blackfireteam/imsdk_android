@@ -9,27 +9,27 @@ import androidx.annotation.Nullable;
 
 import com.idonans.lang.DisposableHolder;
 
-public abstract class ImMessageDynamicFrameLayout extends FrameLayout {
+public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
 
     protected final boolean DEBUG = false;
 
     private final DisposableHolder mRequestHolder = new DisposableHolder();
     private long mTargetLocalMessageId;
 
-    public ImMessageDynamicFrameLayout(Context context) {
+    public IMMessageDynamicFrameLayout(Context context) {
         this(context, null);
     }
 
-    public ImMessageDynamicFrameLayout(Context context, AttributeSet attrs) {
+    public IMMessageDynamicFrameLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ImMessageDynamicFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IMMessageDynamicFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initFromAttributes(context, attrs, defStyleAttr, 0);
     }
 
-    public ImMessageDynamicFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public IMMessageDynamicFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
