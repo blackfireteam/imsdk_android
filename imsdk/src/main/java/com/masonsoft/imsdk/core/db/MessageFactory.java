@@ -27,7 +27,7 @@ public class MessageFactory {
         // 将服务器返回的秒转换为毫秒
         target.remoteFromUserProfileLastModifyMs.set(input.getSput() * 1000);
 
-        target.messageType.set(input.getType());
+        target.messageType.set((int) input.getType());
         target.title.set(input.getTitle());
         target.body.set(input.getBody());
         target.thumb.set(input.getThumb());
@@ -38,7 +38,7 @@ public class MessageFactory {
         target.lng.set(input.getLng());
         target.zoom.set(input.getZoom());
 
-        if (IMConstants.MessageType.isActionMessage(input.getType())) {
+        if (IMConstants.MessageType.isActionMessage((int) input.getType())) {
             // 消息类型不可见，是一种指令消息
             target.localActionMessage.set(IMConstants.TRUE);
         } else {
@@ -52,6 +52,9 @@ public class MessageFactory {
     @NonNull
     public static Message create(@NonNull IMMessage input) {
         final Message target = new Message();
+        target._sessionUserId.apply(input._sessionUserId);
+        target._conversationType.apply(input._conversationType);
+        target._targetUserId.apply(input._targetUserId);
         target.localId.apply(input.id);
         target.localSeq.apply(input.seq);
         target.fromUserId.apply(input.fromUserId);

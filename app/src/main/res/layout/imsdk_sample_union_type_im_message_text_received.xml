@@ -26,7 +26,7 @@
         android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
-        <View
+        <com.masonsoft.imsdk.sample.widget.UserCacheAvatar
             android:id="@+id/avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"

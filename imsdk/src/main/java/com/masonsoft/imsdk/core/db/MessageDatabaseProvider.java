@@ -171,7 +171,8 @@ public class MessageDatabaseProvider {
             );
 
             while (cursor.moveToNext()) {
-                Message item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                final Message item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                item.applyLogicField(sessionUserId, conversationType, targetUserId);
                 items.add(item);
             }
         } catch (Throwable e) {
@@ -248,6 +249,7 @@ public class MessageDatabaseProvider {
 
             if (cursor.moveToNext()) {
                 final Message item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                item.applyLogicField(sessionUserId, conversationType, targetUserId);
 
                 IMLog.v(
                         "found message with sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
@@ -327,6 +329,7 @@ public class MessageDatabaseProvider {
 
             if (cursor.moveToNext()) {
                 final Message item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                item.applyLogicField(sessionUserId, conversationType, targetUserId);
 
                 IMLog.v(
                         "found message with sessionUserId:%s, conversationType:%s, targetUserId:%s, remoteMessageId:%s",

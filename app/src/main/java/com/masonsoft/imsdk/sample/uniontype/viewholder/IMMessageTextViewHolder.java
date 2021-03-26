@@ -12,24 +12,25 @@ import androidx.core.view.GestureDetectorCompat;
 
 import com.idonans.uniontype.Host;
 import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
 
 public abstract class IMMessageTextViewHolder extends IMMessageViewHolder {
 
-    @BindView(R.id.message_time)
-    TextView mMessageTime;
-    @BindView(R.id.message_text)
-    TextView mMessageText;
+    private final TextView mMessageTime;
+    private final TextView mMessageText;
 
     public IMMessageTextViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
-
         mMessageTime = itemView.findViewById(R.id.message_time);
+        mMessageText = itemView.findViewById(R.id.message_text);
     }
 
     public IMMessageTextViewHolder(@NonNull Host host, @NonNull View itemView) {
         super(host, itemView);
+        mMessageTime = itemView.findViewById(R.id.message_time);
+        mMessageText = itemView.findViewById(R.id.message_text);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -41,7 +42,7 @@ public abstract class IMMessageTextViewHolder extends IMMessageViewHolder {
         final IMMessage imMessage = itemObject.object;
 
         updateMessageTimeView(mMessageTime, itemObject);
-        mMessageText.setText(imMessage.msgText);
+        mMessageText.setText(imMessage.body.getOrDefault(null));
 
         GestureDetectorCompat gestureDetectorCompat = new GestureDetectorCompat(mMessageText.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override

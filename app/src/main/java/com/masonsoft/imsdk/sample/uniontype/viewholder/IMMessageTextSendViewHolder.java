@@ -25,8 +25,7 @@ public class IMMessageTextSendViewHolder extends IMMessageTextViewHolder {
         //noinspection unchecked
         final DataObject<IMMessage> itemObject = (DataObject<IMMessage>) originObject;
         final IMMessage imMessage = itemObject.object;
-
-        mSendStatusView.setTargetLocalMessageId(imMessage.id);
+        mBinding.sendStatusView.setMessage(imMessage);
     }
 
 }

@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.sample.SampleLog;
 
 public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
 
@@ -40,6 +41,29 @@ public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
                 IMMessageDynamicFrameLayout.this.onMessageUpdate(imMessage);
             }
         };
+    }
+
+    public void setMessage(@NonNull IMMessage imMessage) {
+        if (imMessage._sessionUserId.isUnset()) {
+            SampleLog.e(new IllegalArgumentException("unexpected imMessage._sessionUserId.isUnset()"));
+            return;
+        }
+        if (imMessage._conversationType.isUnset()) {
+            SampleLog.e(new IllegalArgumentException("unexpected imMessage._conversationType.isUnset()"));
+            return;
+        }
+        if (imMessage._targetUserId.isUnset()) {
+            SampleLog.e(new IllegalArgumentException("unexpected imMessage._targetUserId.isUnset()"));
+            return;
+        }
+        if (imMessage.id.isUnset()) {
+            SampleLog.e(new IllegalArgumentException("unexpected imMessage.id.isUnset()"));
+            return;
+        }
+        setMessage(imMessage._sessionUserId.get(),
+                imMessage._conversationType.get(),
+                imMessage._targetUserId.get(),
+                imMessage.id.get());
     }
 
     public void setMessage(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {

@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.annotation.LogicField;
 import com.masonsoft.imsdk.core.db.DatabaseHelper.ColumnsMessage;
 import com.masonsoft.imsdk.lang.StateProp;
 
@@ -14,6 +15,27 @@ import com.masonsoft.imsdk.lang.StateProp;
  * @since 1.0
  */
 public class Message {
+
+    /**
+     * 消息所属的 sessionUserId
+     */
+    @NonNull
+    @LogicField
+    public final StateProp<Long> _sessionUserId = new StateProp<>();
+
+    /**
+     * 消息所属会话的 conversationType
+     */
+    @NonNull
+    @LogicField
+    public final StateProp<Integer> _conversationType = new StateProp<>();
+
+    /**
+     * 消息所属会话的 targetUserId
+     */
+    @NonNull
+    @LogicField
+    public final StateProp<Long> _targetUserId = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_LOCAL_ID
@@ -157,7 +179,7 @@ public class Message {
      * @see ColumnsMessage#C_LOCAL_ACTION_MSG
      */
     @NonNull
-    public final StateProp<Long> localActionMessage = new StateProp<>();
+    public final StateProp<Integer> localActionMessage = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_LOCAL_BLOCK_ID
@@ -169,6 +191,21 @@ public class Message {
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
         builder.append("Message");
+        if (this._sessionUserId.isUnset()) {
+            builder.append(" _sessionUserId:unset");
+        } else {
+            builder.append(" _sessionUserId:").append(this._sessionUserId.get());
+        }
+        if (this._conversationType.isUnset()) {
+            builder.append(" _conversationType:unset");
+        } else {
+            builder.append(" _conversationType:").append(this._conversationType.get());
+        }
+        if (this._targetUserId.isUnset()) {
+            builder.append(" _targetUserId:unset");
+        } else {
+            builder.append(" _targetUserId:").append(this._targetUserId.get());
+        }
         if (this.localId.isUnset()) {
             builder.append(" localId:unset");
         } else {
@@ -198,10 +235,19 @@ public class Message {
         return this.toShortString();
     }
 
+    public void applyLogicField(long _sessionUserId, int _conversationType, long _targetUserId) {
+        this._sessionUserId.set(_sessionUserId);
+        this._conversationType.set(_conversationType);
+        this._targetUserId.set(_targetUserId);
+    }
+
     /**
      * 使用 input 对象的内容替换当前内容
      */
     public void apply(@NonNull Message input) {
+        this._sessionUserId.apply(input._sessionUserId);
+        this._conversationType.apply(input._conversationType);
+        this._targetUserId.apply(input._targetUserId);
         this.localId.apply(input.localId);
         this.localSeq.apply(input.localSeq);
         this.fromUserId.apply(input.fromUserId);
@@ -375,7 +421,7 @@ public class Message {
             target.errorCode.set(cursor.getLong(++index));
             target.errorMessage.set(cursor.getString(++index));
             target.localSendStatus.set(cursor.getInt(++index));
-            target.localActionMessage.set(cursor.getLong(++index));
+            target.localActionMessage.set(cursor.getInt(++index));
             target.localBlockId.set(cursor.getLong(++index));
             return target;
         }

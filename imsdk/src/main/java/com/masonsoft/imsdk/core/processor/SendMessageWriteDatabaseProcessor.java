@@ -54,8 +54,7 @@ public class SendMessageWriteDatabaseProcessor extends SendMessageNotNullValidat
                     sessionUserId,
                     conversationType,
                     targetUserId,
-                    localMessageId,
-                    null);
+                    localMessageId);
             if (dbMessage == null) {
                 // 消息没有找到
                 target.getEnqueueCallback().onEnqueueFail(

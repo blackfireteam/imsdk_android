@@ -107,6 +107,9 @@ public class IMMessageFactory {
     @NonNull
     public static IMMessage create(@NonNull Message input) {
         final IMMessage target = new IMMessage();
+        target._sessionUserId.apply(input._sessionUserId);
+        target._conversationType.apply(input._conversationType);
+        target._targetUserId.apply(input._targetUserId);
         target.id.apply(input.localId);
         target.seq.apply(input.localSeq);
         target.fromUserId.apply(input.fromUserId);

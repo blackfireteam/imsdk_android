@@ -2,6 +2,7 @@ package com.masonsoft.imsdk;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.annotation.LogicField;
 import com.masonsoft.imsdk.core.IMConstants.MessageType;
 import com.masonsoft.imsdk.lang.StateProp;
 
@@ -13,6 +14,27 @@ import com.masonsoft.imsdk.lang.StateProp;
  * @since 1.0
  */
 public class IMMessage {
+
+    /**
+     * 消息所属的 sessionUserId
+     */
+    @NonNull
+    @LogicField
+    public final StateProp<Long> _sessionUserId = new StateProp<>();
+
+    /**
+     * 消息所属会话的 conversationType
+     */
+    @NonNull
+    @LogicField
+    public final StateProp<Integer> _conversationType = new StateProp<>();
+
+    /**
+     * 消息所属会话的 targetUserId
+     */
+    @NonNull
+    @LogicField
+    public final StateProp<Long> _targetUserId = new StateProp<>();
 
     /**
      * 消息 id, 在一个会话中消息 id 是唯一的.
@@ -135,10 +157,19 @@ public class IMMessage {
     @NonNull
     public final StateProp<Float> sendProgress = new StateProp<>();
 
+    public void applyLogicField(long _sessionUserId, int _conversationType, long _targetUserId) {
+        this._sessionUserId.set(_sessionUserId);
+        this._conversationType.set(_conversationType);
+        this._targetUserId.set(_targetUserId);
+    }
+
     /**
      * 使用 input 对象的内容替换当前内容
      */
     public void apply(@NonNull IMMessage input) {
+        this._sessionUserId.apply(input._sessionUserId);
+        this._conversationType.apply(input._conversationType);
+        this._targetUserId.apply(input._targetUserId);
         this.id.apply(input.id);
         this.seq.apply(input.seq);
         this.fromUserId.apply(input.fromUserId);
@@ -164,6 +195,21 @@ public class IMMessage {
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
         builder.append("IMMessage");
+        if (this._sessionUserId.isUnset()) {
+            builder.append(" _sessionUserId:unset");
+        } else {
+            builder.append(" _sessionUserId:").append(this._sessionUserId.get());
+        }
+        if (this._conversationType.isUnset()) {
+            builder.append(" _conversationType:unset");
+        } else {
+            builder.append(" _conversationType:").append(this._conversationType.get());
+        }
+        if (this._targetUserId.isUnset()) {
+            builder.append(" _targetUserId:unset");
+        } else {
+            builder.append(" _targetUserId:").append(this._targetUserId.get());
+        }
         if (this.id.isUnset()) {
             builder.append(" id:unset");
         } else {

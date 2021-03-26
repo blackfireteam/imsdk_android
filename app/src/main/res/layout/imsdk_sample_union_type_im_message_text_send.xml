@@ -28,7 +28,7 @@
         android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
-        <View
+        <com.masonsoft.imsdk.sample.widget.IMMessageSendStatusView
             android:id="@+id/send_status_view"
             android:layout_width="42dp"
             android:layout_height="22dp"
@@ -53,7 +53,7 @@
             android:textSize="15sp"
             tools:text="hihihihihihihihihiihihihihihihihihihi" />
 
-        <View
+        <com.masonsoft.imsdk.sample.widget.UserCacheAvatar
             android:id="@+id/avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
