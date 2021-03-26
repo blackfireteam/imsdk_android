@@ -165,6 +165,39 @@ public class Message {
     @NonNull
     public final StateProp<Long> localBlockId = new StateProp<>();
 
+    @NonNull
+    public String toShortString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Message");
+        if (this.localId.isUnset()) {
+            builder.append(" localId:unset");
+        } else {
+            builder.append(" localId:").append(this.localId.get());
+        }
+        if (this.fromUserId.isUnset()) {
+            builder.append(" fromUserId:unset");
+        } else {
+            builder.append(" fromUserId:").append(this.fromUserId.get());
+        }
+        if (this.toUserId.isUnset()) {
+            builder.append(" toUserId:unset");
+        } else {
+            builder.append(" toUserId:").append(this.toUserId.get());
+        }
+        if (this.localBlockId.isUnset()) {
+            builder.append(" localBlockId:unset");
+        } else {
+            builder.append(" localBlockId:").append(this.localBlockId.get());
+        }
+        return builder.toString();
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return this.toShortString();
+    }
+
     /**
      * 使用 input 对象的内容替换当前内容
      */

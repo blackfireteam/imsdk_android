@@ -14,6 +14,7 @@ import com.idonans.core.util.ContextUtil;
 import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.db.ColumnsSelector;
 import com.masonsoft.imsdk.core.observable.UserInfoObservable;
@@ -31,46 +32,52 @@ public class UserCacheManager {
     };
 
     public static UserCacheManager getInstance() {
+        IMProcessValidator.validateProcess();
+
         return INSTANCE.get();
     }
 
-    private static final int MEMORY_CACHE_SIZE = 100;
+    private static class MemoryFullCache {
 
-    @NonNull
-    private final LruCache<Long, UserInfo> mFullCaches = new LruCache<>(MEMORY_CACHE_SIZE);
+        private static final MemoryFullCache DEFAULT = new MemoryFullCache();
+
+        private static final int MEMORY_CACHE_SIZE = 100;
+        @NonNull
+        private final LruCache<Long, UserInfo> mFullCaches = new LruCache<>(MEMORY_CACHE_SIZE);
+
+        private void addFullCache(@NonNull UserInfo userInfo) {
+            if (userInfo.uid.isUnset()) {
+                IMLog.e("uid is unset %s", userInfo);
+                return;
+            }
+            mFullCaches.put(userInfo.uid.get(), userInfo);
+        }
+
+        private void removeFullCache(long userId) {
+            mFullCaches.remove(userId);
+        }
+
+        @Nullable
+        private UserInfo getFullCache(long userId) {
+            return mFullCaches.get(userId);
+        }
+    }
 
     private UserCacheManager() {
     }
 
-    private void addFullCache(@NonNull UserInfo userInfo) {
-        if (userInfo.uid.isUnset()) {
-            IMLog.e("uid is unset %s", userInfo);
-            return;
-        }
-        mFullCaches.put(userInfo.uid.get(), userInfo);
-    }
-
-    private void removeFullCache(long userId) {
-        mFullCaches.remove(userId);
-    }
-
-    @Nullable
-    private UserInfo getFullCache(long userId) {
-        return mFullCaches.get(userId);
-    }
-
     @Nullable
     public UserInfo getByUserId(long userId) {
-        UserInfo cache = getFullCache(userId);
+        final UserInfo cache = MemoryFullCache.DEFAULT.getFullCache(userId);
         if (cache != null) {
             IMLog.v("getByUserId cache hint userId:%s", userId);
             return cache;
         }
 
         IMLog.v("getByUserId cache miss, try read from db, userId:%s", userId);
-        UserInfo user = DatabaseProvider.getInstance().getTargetUser(userId, null);
+        final UserInfo user = DatabaseProvider.getInstance().getTargetUser(userId, null);
         if (user != null) {
-            addFullCache(user);
+            MemoryFullCache.DEFAULT.addFullCache(user);
         }
 
         return user;
@@ -111,7 +118,7 @@ public class UserCacheManager {
             // ignore
         }
 
-        removeFullCache(userId);
+        MemoryFullCache.DEFAULT.removeFullCache(userId);
         UserInfoObservable.DEFAULT.notifyUserInfoChanged(userId);
     }
 

@@ -1,8 +1,5 @@
 package com.masonsoft.imsdk.core.observable;
 
-import androidx.annotation.WorkerThread;
-
-import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.WeakClockManager;
@@ -16,14 +13,10 @@ public class ClockObservable extends WeakObservable<ClockObservable.ClockObserve
     public static final ClockObservable DEFAULT = new ClockObservable();
 
     public interface ClockObserver {
-        @WorkerThread
         void onClock();
     }
 
-    @WorkerThread
     public void notifyOnClock() {
-        Threads.mustNotUi();
-
         try {
             final boolean[] isEmpty = new boolean[]{true};
             forEach(clockObserver -> {

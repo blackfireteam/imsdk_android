@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.collection.LruCache;
 
 import com.idonans.core.Singleton;
 import com.idonans.core.util.IOUtil;
@@ -12,6 +13,7 @@ import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.RuntimeMode;
+import com.masonsoft.imsdk.core.observable.MessageObservable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,88 @@ public class MessageDatabaseProvider {
         IMProcessValidator.validateProcess();
 
         return INSTANCE.get();
+    }
+
+    private static class MemoryFullCache {
+
+        private static final MemoryFullCache DEFAULT = new MemoryFullCache();
+
+        private static final int MEMORY_CACHE_SIZE = 500;
+        @NonNull
+        private final LruCache<String, Message> mFullCaches = new LruCache<>(MEMORY_CACHE_SIZE);
+
+        private String buildKey(long sessionUserId, int conversationType, long targetUserId, long localId) {
+            return sessionUserId + "_" + conversationType + "_" + targetUserId + "_" + localId;
+        }
+
+        private String buildKeyWithRemoteMessageId(long sessionUserId, int conversationType, long targetUserId, long remoteMessageId) {
+            return sessionUserId + "_" + conversationType + "_" + targetUserId + "_remoteMessageId_" + remoteMessageId;
+        }
+
+        private void addFullCache(long sessionUserId, int conversationType, long targetUserId, @NonNull Message message) {
+            if (message.localId.isUnset()) {
+                IMLog.e("localId is unset %s", message);
+                return;
+            }
+            {
+                final String key = buildKey(sessionUserId, conversationType, targetUserId, message.localId.get());
+                mFullCaches.put(key, message);
+            }
+            {
+                if (!message.remoteMessageId.isUnset()) {
+                    // 同时缓存 by remoteMessageId
+                    final String key = buildKeyWithRemoteMessageId(sessionUserId, conversationType, targetUserId, message.remoteMessageId.get());
+                    mFullCaches.put(key, message);
+                }
+            }
+        }
+
+        private void removeFullCache(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
+            final String key = buildKey(sessionUserId, conversationType, targetUserId, localMessageId);
+            final Message cache = mFullCaches.get(key);
+            if (cache != null) {
+                removeFullCacheInternal(sessionUserId, conversationType, targetUserId, cache);
+            }
+        }
+
+        private void removeFullCacheWithServerMessageId(long sessionUserId, int conversationType, long targetUserId, long serverMessageId) {
+            final String key = buildKeyWithRemoteMessageId(sessionUserId, conversationType, targetUserId, serverMessageId);
+            final Message cache = mFullCaches.get(key);
+            if (cache != null) {
+                removeFullCacheInternal(sessionUserId, conversationType, targetUserId, cache);
+            }
+        }
+
+        private void removeFullCacheInternal(long sessionUserId, int conversationType, long targetUserId, @NonNull Message message) {
+            if (message.localId.isUnset()) {
+                IMLog.e("localId is unset %s", message);
+                return;
+            }
+            {
+                final String key = buildKey(sessionUserId, conversationType, targetUserId, message.localId.get());
+                mFullCaches.remove(key);
+            }
+            {
+                if (!message.remoteMessageId.isUnset()) {
+                    // 同时删除 by remoteMessageId
+                    final String key = buildKeyWithRemoteMessageId(sessionUserId, conversationType, targetUserId, message.remoteMessageId.get());
+                    mFullCaches.remove(key);
+                }
+            }
+        }
+
+        @Nullable
+        private Message getFullCache(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
+            final String key = buildKey(sessionUserId, conversationType, targetUserId, localMessageId);
+            return mFullCaches.get(key);
+        }
+
+        @Nullable
+        private Message getFullCacheWithRemoteMessageId(long sessionUserId, int conversationType, long targetUserId, long remoteMessageId) {
+            final String key = buildKeyWithRemoteMessageId(sessionUserId, conversationType, targetUserId, remoteMessageId);
+            return mFullCaches.get(key);
+        }
+
     }
 
     private MessageDatabaseProvider() {
@@ -117,13 +201,26 @@ public class MessageDatabaseProvider {
             final long sessionUserId,
             final int conversationType,
             final long targetUserId,
-            final long localMessageId,
-            @Nullable ColumnsSelector<Message> columnsSelector) {
+            final long localMessageId) {
         IMConstants.ConversationType.check(conversationType);
 
-        if (columnsSelector == null) {
-            columnsSelector = Message.COLUMNS_SELECTOR_ALL;
+        final ColumnsSelector<Message> columnsSelector = Message.COLUMNS_SELECTOR_ALL;
+
+        final Message cache = MemoryFullCache.DEFAULT.getFullCache(sessionUserId, conversationType, targetUserId, localMessageId);
+        if (cache != null) {
+            IMLog.v("getMessage cache hint sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
+                    sessionUserId,
+                    conversationType,
+                    targetUserId,
+                    localMessageId);
+            return cache;
         }
+
+        IMLog.v("getMessage cache miss, try read from db, sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                localMessageId);
 
         Cursor cursor = null;
         try {
@@ -150,12 +247,16 @@ public class MessageDatabaseProvider {
             );
 
             if (cursor.moveToNext()) {
-                Message item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                final Message item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
 
                 IMLog.v(
-                        "found message with localMessageId:%s, sessionUserId:%s, conversationType:%s, targetUserId:%s",
-                        localMessageId, sessionUserId, conversationType, targetUserId
-                );
+                        "found message with sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
+                        sessionUserId,
+                        conversationType,
+                        targetUserId,
+                        localMessageId);
+
+                MemoryFullCache.DEFAULT.addFullCache(sessionUserId, conversationType, targetUserId, item);
                 return item;
             }
         } catch (Throwable e) {
@@ -166,24 +267,39 @@ public class MessageDatabaseProvider {
         }
 
         IMLog.v(
-                "message not found with localMessageId:%s, sessionUserId:%s, conversationType:%s, targetUserId:%s",
-                localMessageId, sessionUserId, conversationType, targetUserId
-        );
+                "message not found with sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                localMessageId);
         return null;
     }
 
     @Nullable
-    public Message getMessageByServerMessageId(
+    public Message getMessageWithRemoteMessageId(
             final long sessionUserId,
             final int conversationType,
             final long targetUserId,
-            final long serverMessageId,
-            @Nullable ColumnsSelector<Message> columnsSelector) {
+            final long remoteMessageId) {
         IMConstants.ConversationType.check(conversationType);
 
-        if (columnsSelector == null) {
-            columnsSelector = Message.COLUMNS_SELECTOR_ALL;
+        final ColumnsSelector<Message> columnsSelector = Message.COLUMNS_SELECTOR_ALL;
+
+        final Message cache = MemoryFullCache.DEFAULT.getFullCacheWithRemoteMessageId(sessionUserId, conversationType, targetUserId, remoteMessageId);
+        if (cache != null) {
+            IMLog.v("getMessageWithRemoteMessageId cache hint sessionUserId:%s, conversationType:%s, targetUserId:%s, remoteMessageId:%s",
+                    sessionUserId,
+                    conversationType,
+                    targetUserId,
+                    remoteMessageId);
+            return cache;
         }
+
+        IMLog.v("getMessageWithRemoteMessageId cache miss, try read from db, sessionUserId:%s, conversationType:%s, targetUserId:%s, remoteMessageId:%s",
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                remoteMessageId);
 
         Cursor cursor = null;
         try {
@@ -196,7 +312,7 @@ public class MessageDatabaseProvider {
             final List<String> selectionArgs = new ArrayList<>();
 
             selection.append(" " + DatabaseHelper.ColumnsMessage.C_REMOTE_MSG_ID + "=? ");
-            selectionArgs.add(String.valueOf(serverMessageId));
+            selectionArgs.add(String.valueOf(remoteMessageId));
 
             cursor = db.query(
                     tableName,
@@ -210,12 +326,16 @@ public class MessageDatabaseProvider {
             );
 
             if (cursor.moveToNext()) {
-                Message item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                final Message item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
 
                 IMLog.v(
-                        "found message with serverMessageId:%s, sessionUserId:%s, conversationType:%s, targetUserId:%s",
-                        serverMessageId, sessionUserId, conversationType, targetUserId
-                );
+                        "found message with sessionUserId:%s, conversationType:%s, targetUserId:%s, remoteMessageId:%s",
+                        sessionUserId,
+                        conversationType,
+                        targetUserId,
+                        remoteMessageId);
+
+                MemoryFullCache.DEFAULT.addFullCache(sessionUserId, conversationType, targetUserId, item);
                 return item;
             }
         } catch (Throwable e) {
@@ -226,9 +346,11 @@ public class MessageDatabaseProvider {
         }
 
         IMLog.v(
-                "message not found with serverMessageId:%s, sessionUserId:%s, conversationType:%s, targetUserId:%s",
-                serverMessageId, sessionUserId, conversationType, targetUserId
-        );
+                "message not found with sessionUserId:%s, conversationType:%s, targetUserId:%s, remoteMessageId:%s",
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                remoteMessageId);
         return null;
     }
 
@@ -282,6 +404,8 @@ public class MessageDatabaseProvider {
 
             // 自增主键
             message.localId.set(rowId);
+            MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, conversationType, targetUserId, rowId);
+            MessageObservable.DEFAULT.notifyMessageCreated(sessionUserId, conversationType, targetUserId, rowId);
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
@@ -344,6 +468,8 @@ public class MessageDatabaseProvider {
                         rowsAffected
                 );
             }
+            MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, conversationType, targetUserId, message.localId.get());
+            MessageObservable.DEFAULT.notifyMessageChanged(sessionUserId, conversationType, targetUserId, message.localId.get());
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);
