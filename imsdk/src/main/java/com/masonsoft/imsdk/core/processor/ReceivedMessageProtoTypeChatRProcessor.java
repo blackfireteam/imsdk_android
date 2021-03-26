@@ -2,7 +2,14 @@ package com.masonsoft.imsdk.core.processor;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.core.block.MessageBlock;
+import com.masonsoft.imsdk.core.db.DatabaseHelper;
+import com.masonsoft.imsdk.core.db.DatabaseProvider;
+import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
 import com.masonsoft.imsdk.core.db.Message;
+import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.MessageFactory;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
@@ -23,9 +30,82 @@ public class ReceivedMessageProtoTypeChatRProcessor extends ReceivedMessageProto
             @NonNull SessionProtoByteMessageWrapper target,
             @NonNull ProtoMessage.ChatR protoMessageObject) {
         final Message message = MessageFactory.create(protoMessageObject);
+        final long sessionUserId = target.getSessionUserId();
+        final long fromUserId = message.fromUserId.get();
+        final long toUserId = message.toUserId.get();
+        if (fromUserId != sessionUserId && toUserId != sessionUserId) {
+            IMLog.e("unexpected. sessionUserId:%s invalid fromUserId and toUserId %s", sessionUserId, message);
+            return false;
+        }
 
-        // TODO 撤回的消息类型需要交给消息发送队列处理
-        return false;
+        final boolean received = fromUserId != sessionUserId;
+        final long targetUserId = received ? fromUserId : toUserId;
+        final int conversationType = IMConstants.ConversationType.C2C;
+
+        message.applyLogicField(sessionUserId, conversationType, targetUserId);
+
+        final int messageType = message.messageType.get();
+        if (messageType == IMConstants.MessageType.REVOKE_MESSAGE) {
+            // 撤回了一条消息，如果目标消息在本地，则需要将目标消息的类型修改为已撤回
+            final long targetMessageId = Long.parseLong(message.body.get().trim());
+            final Message dbMessage = MessageDatabaseProvider.getInstance().getMessageWithRemoteMessageId(
+                    sessionUserId,
+                    conversationType,
+                    targetUserId,
+                    targetMessageId);
+            if (dbMessage != null) {
+                if (dbMessage.messageType.get() != IMConstants.MessageType.REVOKED) {
+                    // 将本地目标消息修改为已撤回
+                    final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+                    synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+                        final Message messageUpdate = new Message();
+                        messageUpdate.localId.apply(dbMessage.localId);
+                        messageUpdate.messageType.set(IMConstants.MessageType.REVOKED);
+                        MessageDatabaseProvider.getInstance().updateMessage(
+                                sessionUserId,
+                                conversationType,
+                                targetUserId,
+                                messageUpdate);
+                    }
+                }
+            }
+        }
+
+        final long remoteMessageId = message.remoteMessageId.get();
+        final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+            final Message dbMessage = MessageDatabaseProvider.getInstance().getMessageWithRemoteMessageId(
+                    sessionUserId,
+                    conversationType,
+                    targetUserId,
+                    remoteMessageId);
+            if (dbMessage == null) {
+                // 如果消息在本地不存在，则入库
+
+                // 将发送状态设置为发送成功
+                message.localSendStatus.set(IMConstants.SendStatus.SUCCESS);
+                // 设置 block id
+                message.localBlockId.set(MessageBlock.generateBlockId(
+                        sessionUserId,
+                        conversationType,
+                        targetUserId,
+                        remoteMessageId
+                ));
+
+                if (MessageDatabaseProvider.getInstance().insertMessage(
+                        sessionUserId,
+                        conversationType,
+                        targetUserId,
+                        message)) {
+                    MessageBlock.expandBlockId(sessionUserId,
+                            conversationType,
+                            targetUserId,
+                            remoteMessageId);
+                }
+            }
+        }
+
+        return true;
     }
 
 }

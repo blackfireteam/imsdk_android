@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.core.db;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -70,6 +71,13 @@ public class MessageDatabaseProvider {
                     mFullCaches.put(key, message);
                 }
             }
+        }
+
+        /**
+         * 清空所有缓存内容
+         */
+        private void clear() {
+            mFullCaches.evictAll();
         }
 
         private void removeFullCache(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
@@ -474,6 +482,73 @@ public class MessageDatabaseProvider {
             MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, conversationType, targetUserId, message.localId.get());
             MessageObservable.DEFAULT.notifyMessageChanged(sessionUserId, conversationType, targetUserId, message.localId.get());
             return rowsAffected > 0;
+        } catch (Throwable e) {
+            IMLog.e(e);
+            RuntimeMode.throwIfDebug(e);
+        }
+        return false;
+    }
+
+    /**
+     * 更新 block id
+     */
+    public boolean updateBlockId(final long sessionUserId,
+                                 final int conversationType,
+                                 final long targetUserId,
+                                 final long fromBlockId,
+                                 final long toBlockId) {
+        IMConstants.ConversationType.check(conversationType);
+
+        if (fromBlockId <= 0) {
+            Throwable e = new IllegalArgumentException("invalid fromBlockId " + fromBlockId);
+            IMLog.e(e);
+            RuntimeMode.throwIfDebug(e);
+            return false;
+        }
+
+        if (toBlockId <= 0) {
+            Throwable e = new IllegalArgumentException("invalid toBlockId " + toBlockId);
+            IMLog.e(e);
+            RuntimeMode.throwIfDebug(e);
+            return false;
+        }
+
+        try {
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            final String tableName = dbHelper.createTableMessageIfNeed(conversationType, targetUserId);
+            SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
+
+            final ContentValues contentValuesUpdate = new ContentValues();
+            contentValuesUpdate.put(DatabaseHelper.ColumnsMessage.C_LOCAL_BLOCK_ID, toBlockId);
+
+            //noinspection StringBufferReplaceableByString
+            final StringBuilder where = new StringBuilder();
+            final List<String> whereArgs = new ArrayList<>();
+
+            where.append(" " + DatabaseHelper.ColumnsMessage.C_LOCAL_BLOCK_ID + "=? ");
+            whereArgs.add(String.valueOf(fromBlockId));
+
+            int rowsAffected = db.update(
+                    tableName,
+                    contentValuesUpdate,
+                    where.toString(),
+                    whereArgs.toArray(new String[]{})
+            );
+            if (rowsAffected > 0) {
+                IMLog.v(
+                        "updateMessageBlockId with sessionUserId:%s, conversationType:%s, targetUserId:%s, fromBlockId:%s, toBlockId:%s affected %s rows",
+                        sessionUserId,
+                        conversationType,
+                        targetUserId,
+                        fromBlockId,
+                        toBlockId,
+                        rowsAffected
+                );
+
+                MemoryFullCache.DEFAULT.clear();
+                MessageObservable.DEFAULT.notifyMessageBlockChanged(sessionUserId, conversationType, targetUserId, fromBlockId, toBlockId);
+                return true;
+            }
         } catch (Throwable e) {
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);

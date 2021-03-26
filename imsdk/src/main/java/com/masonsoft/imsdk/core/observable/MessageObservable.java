@@ -19,6 +19,12 @@ public class MessageObservable extends WeakObservable<MessageObservable.MessageO
                               final int conversationType,
                               final long targetUserId,
                               final long localMessageId);
+
+        void onMessageBlockChanged(final long sessionUserId,
+                                   final int conversationType,
+                                   final long targetUserId,
+                                   final long fromBlockId,
+                                   final long toBlockId);
     }
 
     public void notifyMessageChanged(final long sessionUserId,
@@ -43,6 +49,19 @@ public class MessageObservable extends WeakObservable<MessageObservable.MessageO
                 targetUserId,
                 localMessageId)
         );
+    }
+
+    public void notifyMessageBlockChanged(final long sessionUserId,
+                                          final int conversationType,
+                                          final long targetUserId,
+                                          final long fromBlockId,
+                                          final long toBlockId) {
+        forEach(messageObserver -> messageObserver.onMessageBlockChanged(
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                fromBlockId,
+                toBlockId));
     }
 
 }
