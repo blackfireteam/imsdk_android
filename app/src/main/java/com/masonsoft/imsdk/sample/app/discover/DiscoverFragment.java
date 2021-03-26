@@ -61,12 +61,12 @@ public class DiscoverFragment extends SystemInsetsFragment {
     private void startSingleChat(long targetUserId) {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.Tip.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
         if (mBinding == null) {
-            SampleLog.e(Constants.Tip.BINDING_IS_NULL);
+            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 

@@ -67,7 +67,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
     private static void download(Host host, String downloadUrl) {
         Activity innerActivity = host.getActivity();
         if (innerActivity == null) {
-            SampleLog.e(Constants.Tip.ACTIVITY_IS_NULL);
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (!(innerActivity instanceof AppCompatActivity)) {
@@ -76,7 +76,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
         }
         FragmentManager fm = ((AppCompatActivity) innerActivity).getSupportFragmentManager();
         if (fm.isStateSaved()) {
-            SampleLog.e(Constants.Tip.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
         new RxPermissions((FragmentActivity) innerActivity)
@@ -263,7 +263,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             final IMMessage imMessage = (IMMessage) ((DataObject) itemObject.itemObject).object;
             Activity innerActivity = holder.host.getActivity();
             if (innerActivity == null) {
-                SampleLog.e(Constants.Tip.ACTIVITY_IS_NULL);
+                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
                 return false;
             }
             if (innerActivity != TopActivity.getInstance().get()) {

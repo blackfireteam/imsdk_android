@@ -24,7 +24,7 @@ public class FragmentDelegateActivity extends AppCompatActivity {
         boolean needCommit = false;
 
         if (fm.isStateSaved()) {
-            SampleLog.e(Constants.Tip.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 

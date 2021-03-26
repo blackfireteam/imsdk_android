@@ -38,7 +38,7 @@ public class IMMessageTextReceivedViewHolder extends IMMessageTextViewHolder {
         ViewUtil.onClick(mBinding.avatar, v -> {
             Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
-                SampleLog.e(Constants.Tip.ACTIVITY_IS_NULL);
+                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
 
