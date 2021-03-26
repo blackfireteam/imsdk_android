@@ -100,6 +100,13 @@ public class IMMessageQueueManager {
     /**
      * 本地重发一个失败的消息
      */
+    public void enqueueResendMessage(@NonNull IMMessage imMessage) {
+        this.enqueueResendMessage(imMessage, new IMSessionMessage.EnqueueCallbackAdapter());
+    }
+
+    /**
+     * 本地重发一个失败的消息
+     */
     public void enqueueResendMessage(@NonNull IMMessage imMessage, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
         this.enqueueSendMessage(imMessage, 0, true, enqueueCallback);
     }

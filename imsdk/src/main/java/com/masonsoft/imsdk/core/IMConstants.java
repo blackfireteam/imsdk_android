@@ -15,17 +15,17 @@ public final class IMConstants {
     /**
      * 数据库中记录的逻辑 true
      */
-    public static final long TRUE = 1;
+    public static final int TRUE = 1;
     /**
      * 数据库中记录的逻辑 false
      */
-    public static final long FALSE = 0;
+    public static final int FALSE = 0;
 
     /**
      * @see #TRUE
      * @see #FALSE
      */
-    public static void checkLogicTrueOrFalse(long logicTrueOfFalse) {
+    public static void checkLogicTrueOrFalse(int logicTrueOfFalse) {
         if (logicTrueOfFalse != TRUE && logicTrueOfFalse != FALSE) {
             throw new IllegalArgumentException("invalid logicTrueOfFalse:" + logicTrueOfFalse);
         }
@@ -181,31 +181,31 @@ public final class IMConstants {
         /**
          * 文本
          */
-        public static final long TEXT = 0;
+        public static final int TEXT = 0;
         /**
          * 图片
          */
-        public static final long IMAGE = 1;
+        public static final int IMAGE = 1;
         /**
          * 音频
          */
-        public static final long AUDIO = 2;
+        public static final int AUDIO = 2;
         /**
          * 视频
          */
-        public static final long VIDEO = 3;
+        public static final int VIDEO = 3;
         /**
          * 地理位置
          */
-        public static final long LOCATION = 4;
+        public static final int LOCATION = 4;
         /**
          * 用户名片
          */
-        public static final long USER_PROFILE = 5;
+        public static final int USER_PROFILE = 5;
         /**
          * 自定义表情
          */
-        public static final long CUSTOM_EMOJI = 6;
+        public static final int CUSTOM_EMOJI = 6;
 
         ///////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////
@@ -213,11 +213,11 @@ public final class IMConstants {
         /**
          * 语音聊天结束
          */
-        public static final long VOICE_END = 16;
+        public static final int VOICE_END = 16;
         /**
          * 视频聊天结束
          */
-        public static final long VIDEO_END = 17;
+        public static final int VIDEO_END = 17;
 
         ///////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////
@@ -225,7 +225,7 @@ public final class IMConstants {
         /**
          * 位置共享
          */
-        public static final long REAL_TIME_LOCATION = 30;
+        public static final int REAL_TIME_LOCATION = 30;
 
         ///////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////
@@ -233,7 +233,7 @@ public final class IMConstants {
         /**
          * 已撤回的消息
          */
-        public static final long REVOKED = 31;
+        public static final int REVOKED = 31;
 
         ///////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////
@@ -241,39 +241,39 @@ public final class IMConstants {
         /**
          * 媚眼
          */
-        public static final long WINK = 32;
+        public static final int WINK = 32;
         /**
          * 匹配成功
          */
-        public static final long MATCH = 33;
+        public static final int MATCH = 33;
         /**
          * 请求上传相册
          */
-        public static final long REQUEST_UPLOAD_PHOTO = 34;
+        public static final int REQUEST_UPLOAD_PHOTO = 34;
         /**
          * 相册上传后回执
          */
-        public static final long REQUEST_UPLOAD_PHOTO_RESULT = 35;
+        public static final int REQUEST_UPLOAD_PHOTO_RESULT = 35;
         /**
          * 请求私有相册访问权限
          */
-        public static final long REQUEST_PRIVATE_PHOTO = 36;
+        public static final int REQUEST_PRIVATE_PHOTO = 36;
         /**
          * 允许访问私有相册的回执
          */
-        public static final long REQUEST_PRIVATE_PHOTO_RESULT = 37;
+        public static final int REQUEST_PRIVATE_PHOTO_RESULT = 37;
         /**
          * 请求用户认证资料
          */
-        public static final long REQUEST_VERIFY_PROFILE = 38;
+        public static final int REQUEST_VERIFY_PROFILE = 38;
         /**
          * 分享相册
          */
-        public static final long SHARE_PHOTO = 39;
+        public static final int SHARE_PHOTO = 39;
         /**
          * 周报
          */
-        public static final long WEEKLY = 40;
+        public static final int WEEKLY = 40;
 
         ///////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////
@@ -282,7 +282,7 @@ public final class IMConstants {
         /**
          * 消息撤回（该类型消息不可见）
          */
-        public static final long REVOKE_MESSAGE = 64;
+        public static final int REVOKE_MESSAGE = 64;
 
         ///////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////
@@ -292,7 +292,7 @@ public final class IMConstants {
         /**
          * 判断指定类型的消息是否是指令消息，指令消息 UI 不可见
          */
-        public static boolean isActionMessage(long type) {
+        public static boolean isActionMessage(int type) {
             return (type >= 64 && type <= 99) || (type >= 200 && type <= 255);
         }
     }

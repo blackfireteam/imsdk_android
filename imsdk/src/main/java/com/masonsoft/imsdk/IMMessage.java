@@ -53,7 +53,7 @@ public class IMMessage {
      * @see MessageType
      */
     @NonNull
-    public final StateProp<Long> type = new StateProp<>();
+    public final StateProp<Integer> type = new StateProp<>();
 
     /**
      * 消息内容：title

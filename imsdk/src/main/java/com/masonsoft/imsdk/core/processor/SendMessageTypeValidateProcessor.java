@@ -18,18 +18,18 @@ import com.masonsoft.imsdk.lang.StateProp;
 public abstract class SendMessageTypeValidateProcessor extends SendMessageNotNullValidateProcessor {
 
     @Nullable
-    private final long[] mTypeArray;
+    private final int[] mTypeArray;
 
     /**
      * @see MessageType
      */
-    public SendMessageTypeValidateProcessor(@Nullable long... type) {
+    public SendMessageTypeValidateProcessor(@Nullable int... type) {
         mTypeArray = type;
     }
 
     @Override
     protected boolean doNotNullProcess(@NonNull IMSessionMessage target) {
-        final StateProp<Long> type = target.getIMMessage().type;
+        final StateProp<Integer> type = target.getIMMessage().type;
         if (type.isUnset()) {
             // unexpected
             final Throwable e = new IllegalArgumentException("SendMessageTypeValidateProcessor doNotNullProcess target type is unset");
@@ -38,10 +38,10 @@ public abstract class SendMessageTypeValidateProcessor extends SendMessageNotNul
             return false;
         }
 
-        final Long typeLong = type.get();
+        final Integer typeValue = type.get();
         if (mTypeArray != null) {
-            for (long item : mTypeArray) {
-                if (item == typeLong) {
+            for (int item : mTypeArray) {
+                if (item == typeValue) {
                     return doTypeProcess(target, item);
                 }
             }
@@ -53,6 +53,6 @@ public abstract class SendMessageTypeValidateProcessor extends SendMessageNotNul
     /**
      * @see MessageType
      */
-    protected abstract boolean doTypeProcess(@NonNull IMSessionMessage target, long type);
+    protected abstract boolean doTypeProcess(@NonNull IMSessionMessage target, int type);
 
 }

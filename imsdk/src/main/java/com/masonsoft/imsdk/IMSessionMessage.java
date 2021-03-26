@@ -1,6 +1,10 @@
 package com.masonsoft.imsdk;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.idonans.core.WeakAbortSignal;
+import com.masonsoft.imsdk.core.IMLog;
 
 public class IMSessionMessage {
 
@@ -235,6 +239,46 @@ public class IMSessionMessage {
          * @param errorCode 错误码，见 {@linkplain EnqueueCallback}.ERROR_CODE_* 定义, 例如：{@linkplain EnqueueCallback#ERROR_CODE_INVALID_SESSION_USER_ID}
          */
         void onEnqueueFail(@NonNull IMSessionMessage imSessionMessage, int errorCode, String errorMessage);
+    }
+
+    public static class EnqueueCallbackAdapter implements EnqueueCallback {
+        @Override
+        public void onEnqueueSuccess(@NonNull IMSessionMessage imSessionMessage) {
+            IMLog.v("onEnqueueSuccess %s", imSessionMessage);
+        }
+
+        @Override
+        public void onEnqueueFail(@NonNull IMSessionMessage imSessionMessage, int errorCode, String errorMessage) {
+            IMLog.v("onEnqueueFail errorCode:%s, errorMessage:%s, %s", errorCode, errorMessage, imSessionMessage);
+        }
+    }
+
+    public static class WeakEnqueueCallbackAdapter extends WeakAbortSignal implements EnqueueCallback {
+
+        public WeakEnqueueCallbackAdapter(@Nullable EnqueueCallback callback) {
+            super(callback);
+        }
+
+        @Nullable
+        private EnqueueCallback getEnqueueCallback() {
+            return (EnqueueCallback) getObject();
+        }
+
+        @Override
+        public void onEnqueueSuccess(@NonNull IMSessionMessage imSessionMessage) {
+            final EnqueueCallback callback = getEnqueueCallback();
+            if (callback != null) {
+                callback.onEnqueueSuccess(imSessionMessage);
+            }
+        }
+
+        @Override
+        public void onEnqueueFail(@NonNull IMSessionMessage imSessionMessage, int errorCode, String errorMessage) {
+            final EnqueueCallback callback = getEnqueueCallback();
+            if (callback != null) {
+                callback.onEnqueueFail(imSessionMessage, errorCode, errorMessage);
+            }
+        }
     }
 
 }

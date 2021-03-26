@@ -67,7 +67,7 @@ public class Message {
      * @see ColumnsMessage#C_MSG_TYPE
      */
     @NonNull
-    public final StateProp<Long> messageType = new StateProp<>();
+    public final StateProp<Integer> messageType = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_TITLE
@@ -360,7 +360,7 @@ public class Message {
             target.remoteMessageTime.set(cursor.getLong(++index));
             target.localTimeMs.set(cursor.getLong(++index));
             target.remoteFromUserProfileLastModifyMs.set(cursor.getLong(++index));
-            target.messageType.set(cursor.getLong(++index));
+            target.messageType.set(cursor.getInt(++index));
             target.title.set(cursor.getString(++index));
             target.body.set(cursor.getString(++index));
             target.localBodyOrigin.set(cursor.getString(++index));
