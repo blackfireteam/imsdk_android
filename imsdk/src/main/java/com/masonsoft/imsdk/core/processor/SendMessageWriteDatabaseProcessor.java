@@ -14,7 +14,7 @@ import com.masonsoft.imsdk.core.IMMessageUploadManager;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.db.DatabaseHelper;
 import com.masonsoft.imsdk.core.db.DatabaseProvider;
-import com.masonsoft.imsdk.core.db.DatabaseSessionWriteQueue;
+import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
 import com.masonsoft.imsdk.core.db.IdleSendingMessage;
 import com.masonsoft.imsdk.core.db.IdleSendingMessageProvider;
 import com.masonsoft.imsdk.core.db.Message;
@@ -49,7 +49,7 @@ public class SendMessageWriteDatabaseProcessor extends SendMessageNotNullValidat
         final long localMessageId = message.id.get();
 
         final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
-        synchronized (DatabaseSessionWriteQueue.getInstance().getSessionWriteQueue(databaseHelper)) {
+        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
             final Message dbMessage = MessageDatabaseProvider.getInstance().getMessage(
                     sessionUserId,
                     conversationType,
@@ -169,7 +169,7 @@ public class SendMessageWriteDatabaseProcessor extends SendMessageNotNullValidat
         final long targetUserId = target.getToUserId();
 
         final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
-        synchronized (DatabaseSessionWriteQueue.getInstance().getSessionWriteQueue(databaseHelper)) {
+        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
             final Message dbMessageInsert = MessageFactory.create(message);
             if (dbMessageInsert.fromUserId.isUnset()
                     || dbMessageInsert.fromUserId.get() != sessionUserId
