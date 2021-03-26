@@ -1,11 +1,11 @@
 package com.masonsoft.imsdk.core.db;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.collection.LruCache;
 
 import com.idonans.core.Singleton;
 import com.idonans.core.util.IOUtil;
@@ -13,6 +13,7 @@ import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.RuntimeMode;
+import com.masonsoft.imsdk.core.observable.ConversationObservable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,90 @@ public class ConversationDatabaseProvider {
         IMProcessValidator.validateProcess();
 
         return INSTANCE.get();
+    }
+
+    private static class MemoryFullCache {
+
+        private static final MemoryFullCache DEFAULT = new MemoryFullCache();
+
+        private static final int MEMORY_CACHE_SIZE = 500;
+        @NonNull
+        private final LruCache<String, Conversation> mFullCaches = new LruCache<>(MEMORY_CACHE_SIZE);
+
+        private String buildKey(long sessionUserId, long conversationId) {
+            return sessionUserId + "_" + conversationId;
+        }
+
+        private String buildKeyWithTargetUserId(long sessionUserId, int conversationType, long targetUserId) {
+            return sessionUserId + "_" + conversationType + "_" + targetUserId;
+        }
+
+        private void addFullCache(long sessionUserId, @NonNull Conversation conversation) {
+            if (conversation.localId.isUnset()) {
+                IMLog.e("localId is unset %s", conversation);
+                return;
+            }
+            {
+                final String key = buildKey(sessionUserId, conversation.localId.get());
+                mFullCaches.put(key, conversation);
+            }
+            {
+                if (!conversation.localConversationType.isUnset()
+                        && !conversation.targetUserId.isUnset()) {
+                    // 同时缓存 by targetUserId
+                    final String key = buildKeyWithTargetUserId(sessionUserId, conversation.localConversationType.get(), conversation.targetUserId.get());
+                    mFullCaches.put(key, conversation);
+                }
+            }
+        }
+
+        private void removeFullCache(long sessionUserId, long conversationId) {
+            final String key = buildKey(sessionUserId, conversationId);
+            final Conversation cache = mFullCaches.get(key);
+            if (cache != null) {
+                removeFullCacheInternal(sessionUserId, cache);
+            }
+        }
+
+        private void removeFullCacheWithTargetUserId(long sessionUserId, int conversationType, long targetUserId) {
+            final String key = buildKeyWithTargetUserId(sessionUserId, conversationType, targetUserId);
+            final Conversation cache = mFullCaches.get(key);
+            if (cache != null) {
+                removeFullCacheInternal(sessionUserId, cache);
+            }
+        }
+
+        private void removeFullCacheInternal(long sessionUserId, @NonNull Conversation conversation) {
+            if (conversation.localId.isUnset()) {
+                IMLog.e("localId is unset %s", conversation);
+                return;
+            }
+            {
+                final String key = buildKey(sessionUserId, conversation.localId.get());
+                mFullCaches.remove(key);
+            }
+            {
+                if (!conversation.localConversationType.isUnset()
+                        && !conversation.targetUserId.isUnset()) {
+                    // 同时删除 by targetUserId
+                    final String key = buildKeyWithTargetUserId(sessionUserId, conversation.localConversationType.get(), conversation.targetUserId.get());
+                    mFullCaches.remove(key);
+                }
+            }
+        }
+
+        @Nullable
+        private Conversation getFullCache(long sessionUserId, long conversationId) {
+            final String key = buildKey(sessionUserId, conversationId);
+            return mFullCaches.get(key);
+        }
+
+        @Nullable
+        private Conversation getFullCacheWithTargetUserId(long sessionUserId, int conversationType, long targetUserId) {
+            final String key = buildKeyWithTargetUserId(sessionUserId, conversationType, targetUserId);
+            return mFullCaches.get(key);
+        }
+
     }
 
     private ConversationDatabaseProvider() {
@@ -121,11 +206,21 @@ public class ConversationDatabaseProvider {
     @Nullable
     public Conversation getConversation(
             final long sessionUserId,
-            final long conversationId,
-            @Nullable ColumnsSelector<Conversation> columnsSelector) {
-        if (columnsSelector == null) {
-            columnsSelector = Conversation.COLUMNS_SELECTOR_ALL;
+            final long conversationId) {
+
+        final ColumnsSelector<Conversation> columnsSelector = Conversation.COLUMNS_SELECTOR_ALL;
+
+        final Conversation cache = MemoryFullCache.DEFAULT.getFullCache(sessionUserId, conversationId);
+        if (cache != null) {
+            IMLog.v("getConversation cache hint sessionUserId:%s, conversationId:%s",
+                    sessionUserId,
+                    conversationId);
+            return cache;
         }
+
+        IMLog.v("getConversation cache miss, try read from db, sessionUserId:%s, conversationId:%s",
+                sessionUserId,
+                conversationId);
 
         Cursor cursor = null;
         try {
@@ -153,6 +248,8 @@ public class ConversationDatabaseProvider {
             if (cursor.moveToNext()) {
                 final Conversation result = columnsSelector.cursorToObjectWithQueryColumns(cursor);
                 IMLog.v("conversation found with sessionUserId:%s, conversationId:%s", sessionUserId, conversationId);
+
+                MemoryFullCache.DEFAULT.addFullCache(sessionUserId, result);
                 return result;
             }
         } catch (Throwable e) {
@@ -174,14 +271,25 @@ public class ConversationDatabaseProvider {
     @Nullable
     public Conversation getConversationByTargetUserId(
             final long sessionUserId,
-            final long targetUserId,
             final int conversationType,
-            @Nullable ColumnsSelector<Conversation> columnsSelector) {
+            final long targetUserId) {
         IMConstants.ConversationType.check(conversationType);
 
-        if (columnsSelector == null) {
-            columnsSelector = Conversation.COLUMNS_SELECTOR_ALL;
+        final ColumnsSelector<Conversation> columnsSelector = Conversation.COLUMNS_SELECTOR_ALL;
+
+        final Conversation cache = MemoryFullCache.DEFAULT.getFullCacheWithTargetUserId(sessionUserId, conversationType, targetUserId);
+        if (cache != null) {
+            IMLog.v("getConversationByTargetUserId cache hint sessionUserId:%s, conversationType:%s, targetUserId:%s",
+                    sessionUserId,
+                    conversationType,
+                    targetUserId);
+            return cache;
         }
+
+        IMLog.v("getConversationByTargetUserId cache miss, try read from db, sessionUserId:%s, conversationType:%s, targetUserId:%s",
+                sessionUserId,
+                conversationType,
+                targetUserId);
 
         Cursor cursor = null;
         try {
@@ -212,6 +320,8 @@ public class ConversationDatabaseProvider {
                 Conversation result = columnsSelector.cursorToObjectWithQueryColumns(cursor);
                 IMLog.v("conversation found with sessionUserId:%s, targetUserId:%s, conversationType:%s",
                         sessionUserId, targetUserId, conversationType);
+
+                MemoryFullCache.DEFAULT.addFullCache(sessionUserId, result);
                 return result;
             }
         } catch (Throwable e) {
@@ -284,6 +394,8 @@ public class ConversationDatabaseProvider {
 
             // 自增主键
             conversation.localId.set(rowId);
+            MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, rowId);
+            ConversationObservable.DEFAULT.notifyConversationCreated(sessionUserId, rowId);
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
@@ -340,36 +452,9 @@ public class ConversationDatabaseProvider {
                         conversation.localId.get(),
                         rowsAffected);
             }
+            MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, conversation.localId.get());
+            ConversationObservable.DEFAULT.notifyConversationChanged(sessionUserId, conversation.localId.get());
             return rowsAffected > 0;
-        } catch (Throwable e) {
-            IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
-        }
-        return false;
-    }
-
-    /**
-     * 软删除所有会话
-     *
-     * @see #updateConversation(long, Conversation)
-     */
-    public boolean deleteAllConversation(final long sessionUserId) {
-        try {
-            final ContentValues updateContentValues = new ContentValues();
-            updateContentValues.put(DatabaseHelper.ColumnsConversation.C_LOCAL_DELETE, IMConstants.TRUE);
-
-            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
-            SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
-            int rowsAffected = db.update(
-                    DatabaseHelper.TABLE_NAME_CONVERSATION,
-                    updateContentValues,
-                    null,
-                    null
-            );
-            IMLog.v("delete all conversation with sessionUserId:%s affected %s rows",
-                    sessionUserId,
-                    rowsAffected);
-            return true;
         } catch (Throwable e) {
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
