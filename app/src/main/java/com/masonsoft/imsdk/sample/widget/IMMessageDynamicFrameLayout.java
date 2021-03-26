@@ -7,14 +7,13 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.lang.DisposableHolder;
+import com.masonsoft.imsdk.core.db.Message;
 
 public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
 
     protected final boolean DEBUG = false;
 
-    private final DisposableHolder mRequestHolder = new DisposableHolder();
-    private long mTargetLocalMessageId;
+    private MessageChangedViewHelper mMessageChangedViewHelper;
 
     public IMMessageDynamicFrameLayout(Context context) {
         this(context, null);
@@ -35,37 +34,34 @@ public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
     }
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        IMLocalEventMessageChanged.EVENT_PRO.addEventProListener(mIMLocalEventMessageChangedUiEventProListener);
+        mMessageChangedViewHelper = new MessageChangedViewHelper() {
+            @Override
+            protected void onMessageChanged(@Nullable Message message) {
+                IMMessageDynamicFrameLayout.this.onMessageUpdate(message);
+            }
+        };
     }
 
-    public void setTargetLocalMessageId(long targetLocalMessageId) {
-        if (mTargetLocalMessageId != targetLocalMessageId) {
-            mTargetLocalMessageId = targetLocalMessageId;
-            requestLoadDynamic(true);
-        }
+    public void setMessage(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
+        mMessageChangedViewHelper.setMessage(sessionUserId, conversationType, targetUserId, localMessageId);
     }
 
-    public long getTargetLocalMessageId() {
-        return mTargetLocalMessageId;
+    public long getSessionUserId() {
+        return mMessageChangedViewHelper.getSessionUserId();
     }
 
-    private void requestLoadDynamic(boolean reset) {
-        if (reset) {
-            onDynamicUpdate(null);
-        }
-        mRequestHolder.set(Single.fromCallable(() -> ImManager.getInstance().getMessage(mTargetLocalMessageId))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onDynamicUpdate, Timber::e));
+    public int getConversationType() {
+        return mMessageChangedViewHelper.getConversationType();
     }
 
-    protected abstract void onDynamicUpdate(@Nullable ImMessage object);
+    public long getTargetUserId() {
+        return mMessageChangedViewHelper.getTargetUserId();
+    }
 
-    private final EventPro.UiEventProListener<IMLocalEventMessageChanged> mIMLocalEventMessageChangedUiEventProListener = event -> {
-        if (mTargetLocalMessageId != event.localMessageId) {
-            return;
-        }
-        requestLoadDynamic(false);
-    };
+    public long getLocalMessageId() {
+        return mMessageChangedViewHelper.getLocalMessageId();
+    }
+
+    protected abstract void onMessageUpdate(@Nullable Message message);
 
 }

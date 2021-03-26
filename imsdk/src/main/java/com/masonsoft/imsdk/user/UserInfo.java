@@ -46,13 +46,6 @@ public class UserInfo {
     public final StateProp<Integer> verified = new StateProp<>();
 
     @NonNull
-    public static UserInfo valueOf(long userId) {
-        final UserInfo target = new UserInfo();
-        target.uid.set(userId);
-        return target;
-    }
-
-    @NonNull
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
         builder.append("UserInfo");
