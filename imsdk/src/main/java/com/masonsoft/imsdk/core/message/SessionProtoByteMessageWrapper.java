@@ -2,6 +2,8 @@ package com.masonsoft.imsdk.core.message;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.util.Objects;
+
 public class SessionProtoByteMessageWrapper {
 
     private final long mSessionUserId;
@@ -23,7 +25,7 @@ public class SessionProtoByteMessageWrapper {
     }
 
     public String toShortString() {
-        return String.format("SessionProtoByteMessageWrapper[sessionUserId:%s, messageWrapper:%s]", mSessionUserId, mProtoByteMessageWrapper.toShortString());
+        return String.format(Objects.defaultObjectTag(this) + "[sessionUserId:%s, messageWrapper:%s]", mSessionUserId, mProtoByteMessageWrapper.toShortString());
     }
 
     @Override
