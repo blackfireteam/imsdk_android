@@ -18,6 +18,12 @@ public class SendMessageRecoveryProcessor extends SendMessageNotNullValidateProc
 
     @Override
     protected boolean doNotNullProcess(@NonNull IMSessionMessage target) {
+        target.getIMMessage().applyLogicField(
+                target.getSessionUserId(),
+                target.getConversationType(),
+                target.getToUserId()
+        );
+
         if (validateSendUser(target)) {
             return true;
         }

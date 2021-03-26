@@ -4,12 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.idonans.core.WeakAbortSignal;
+import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 
 public class IMSessionMessage {
 
     private final long mSessionUserId;
     private long mToUserId;
+    private int mConversationType = IMConstants.ConversationType.C2C;
 
     // 是否是重发消息，重发消息时不会重新生成消息 id, seq 与 timeMs
     private final boolean mResend;
@@ -42,6 +44,14 @@ public class IMSessionMessage {
 
     public void setToUserId(long toUserId) {
         mToUserId = toUserId;
+    }
+
+    public int getConversationType() {
+        return mConversationType;
+    }
+
+    public void setConversationType(int conversationType) {
+        mConversationType = conversationType;
     }
 
     public boolean isResend() {
