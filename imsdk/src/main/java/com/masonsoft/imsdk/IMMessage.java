@@ -123,6 +123,8 @@ public class IMMessage {
 
     /**
      * 消息的发送状态
+     *
+     * @see com.masonsoft.imsdk.core.IMConstants.SendStatus
      */
     @NonNull
     public final StateProp<Integer> sendState = new StateProp<>();

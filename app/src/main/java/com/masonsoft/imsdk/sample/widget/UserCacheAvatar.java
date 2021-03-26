@@ -56,11 +56,11 @@ public class UserCacheAvatar extends ImageLayout {
             protected void onUserCacheChanged(@Nullable UserInfo userInfo) {
                 mCacheUserInfo = userInfo;
                 if (mCacheUserInfo == null) {
-                    loadAvatar(null);
+                    UserCacheAvatar.this.loadAvatar(null);
                 } else {
-                    loadAvatar(mCacheUserInfo.avatar.getOrDefault(null));
+                    UserCacheAvatar.this.loadAvatar(mCacheUserInfo.avatar.getOrDefault(null));
                 }
-                invalidate();
+                UserCacheAvatar.this.invalidate();
             }
         };
     }

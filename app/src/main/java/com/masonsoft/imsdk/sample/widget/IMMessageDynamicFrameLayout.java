@@ -7,13 +7,13 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.db.Message;
+import com.masonsoft.imsdk.IMMessage;
 
 public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
 
     protected final boolean DEBUG = false;
 
-    private MessageChangedViewHelper mMessageChangedViewHelper;
+    private IMMessageChangedViewHelper mIMMessageChangedViewHelper;
 
     public IMMessageDynamicFrameLayout(Context context) {
         this(context, null);
@@ -34,34 +34,34 @@ public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
     }
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        mMessageChangedViewHelper = new MessageChangedViewHelper() {
+        mIMMessageChangedViewHelper = new IMMessageChangedViewHelper() {
             @Override
-            protected void onMessageChanged(@Nullable Message message) {
-                IMMessageDynamicFrameLayout.this.onMessageUpdate(message);
+            protected void onMessageChanged(@Nullable IMMessage imMessage) {
+                IMMessageDynamicFrameLayout.this.onMessageUpdate(imMessage);
             }
         };
     }
 
     public void setMessage(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-        mMessageChangedViewHelper.setMessage(sessionUserId, conversationType, targetUserId, localMessageId);
+        mIMMessageChangedViewHelper.setMessage(sessionUserId, conversationType, targetUserId, localMessageId);
     }
 
     public long getSessionUserId() {
-        return mMessageChangedViewHelper.getSessionUserId();
+        return mIMMessageChangedViewHelper.getSessionUserId();
     }
 
     public int getConversationType() {
-        return mMessageChangedViewHelper.getConversationType();
+        return mIMMessageChangedViewHelper.getConversationType();
     }
 
     public long getTargetUserId() {
-        return mMessageChangedViewHelper.getTargetUserId();
+        return mIMMessageChangedViewHelper.getTargetUserId();
     }
 
     public long getLocalMessageId() {
-        return mMessageChangedViewHelper.getLocalMessageId();
+        return mIMMessageChangedViewHelper.getLocalMessageId();
     }
 
-    protected abstract void onMessageUpdate(@Nullable Message message);
+    protected abstract void onMessageUpdate(@Nullable IMMessage imMessage);
 
 }

@@ -3,6 +3,7 @@ package com.masonsoft.imsdk;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.db.Message;
 
 public class IMMessageFactory {
 
@@ -100,6 +101,30 @@ public class IMMessageFactory {
     public static IMMessage copy(@NonNull IMMessage input) {
         final IMMessage target = new IMMessage();
         target.apply(input);
+        return target;
+    }
+
+    @NonNull
+    public static IMMessage create(@NonNull Message input) {
+        final IMMessage target = new IMMessage();
+        target.id.apply(input.localId);
+        target.seq.apply(input.localSeq);
+        target.fromUserId.apply(input.fromUserId);
+        target.toUserId.apply(input.toUserId);
+        target.timeMs.apply(input.localTimeMs);
+        target.type.apply(input.messageType);
+        target.title.apply(input.title);
+        target.body.apply(input.body);
+        target.thumb.apply(input.thumb);
+        target.width.apply(input.width);
+        target.height.apply(input.height);
+        target.duration.apply(input.duration);
+        target.lat.apply(input.lat);
+        target.lng.apply(input.lng);
+        target.zoom.apply(input.zoom);
+        target.errorCode.apply(input.errorCode);
+        target.errorMessage.apply(input.errorMessage);
+        target.sendState.apply(input.localSendStatus);
         return target;
     }
 

@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 
 import com.idonans.core.thread.Threads;
 import com.idonans.lang.DisposableHolder;
+import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.observable.MessageObservable;
@@ -14,7 +16,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public abstract class MessageChangedViewHelper {
+public abstract class IMMessageChangedViewHelper {
 
     private final DisposableHolder mRequestHolder = new DisposableHolder();
 
@@ -23,7 +25,7 @@ public abstract class MessageChangedViewHelper {
     private long mTargetUserId = Long.MIN_VALUE / 2;
     private long mLocalMessageId = Long.MIN_VALUE / 2;
 
-    public MessageChangedViewHelper() {
+    public IMMessageChangedViewHelper() {
         MessageObservable.DEFAULT.registerObserver(mMessageObserver);
     }
 
@@ -71,14 +73,18 @@ public abstract class MessageChangedViewHelper {
                             mTargetUserId,
                             mLocalMessageId
                     );
-                    return new ObjectWrapper(message);
+                    IMMessage imMessage = null;
+                    if (message != null) {
+                        imMessage = IMMessageFactory.create(message);
+                    }
+                    return new ObjectWrapper(imMessage);
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(objectWrapper -> onMessageChanged((Message) objectWrapper.getObject()), SampleLog::e));
+                .subscribe(objectWrapper -> onMessageChanged((IMMessage) objectWrapper.getObject()), SampleLog::e));
     }
 
-    protected abstract void onMessageChanged(@Nullable Message message);
+    protected abstract void onMessageChanged(@Nullable IMMessage imMessage);
 
     @SuppressWarnings("FieldCanBeLocal")
     private final MessageObservable.MessageObserver mMessageObserver = new MessageObservable.MessageObserver() {
