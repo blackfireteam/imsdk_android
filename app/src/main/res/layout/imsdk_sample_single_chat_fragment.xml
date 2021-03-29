@@ -208,8 +208,8 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.xmqvip.xiaomaiquan.module.im.single.widget.CustomKeyboard
-            android:id="@+id/custom_soft_keyboard"
+        <com.masonsoft.imsdk.sample.widget.CustomKeyboard
+            android:id="@+id/custom_keyboard"
             android:layout_width="match_parent"
             android:layout_height="277dp"
             android:clickable="true"

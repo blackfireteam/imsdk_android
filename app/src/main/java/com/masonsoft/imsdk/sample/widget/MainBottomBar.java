@@ -47,7 +47,10 @@ public class MainBottomBar extends FrameLayout {
             int defStyleAttr,
             int defStyleRes) {
 
-        mBinding = ImsdkSampleWidgetMainBottomBarBinding.inflate(LayoutInflater.from(context), this, true);
+        mBinding = ImsdkSampleWidgetMainBottomBarBinding.inflate(
+                LayoutInflater.from(context),
+                this,
+                true);
         syncCurrentItem();
 
         ViewUtil.onClick(mBinding.tabDiscoverText, v -> {
