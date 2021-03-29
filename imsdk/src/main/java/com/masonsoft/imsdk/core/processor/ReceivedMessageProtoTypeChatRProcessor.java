@@ -3,6 +3,7 @@ package com.masonsoft.imsdk.core.processor;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.block.MessageBlock;
 import com.masonsoft.imsdk.core.db.DatabaseHelper;
@@ -101,6 +102,14 @@ public class ReceivedMessageProtoTypeChatRProcessor extends ReceivedMessageProto
                             conversationType,
                             targetUserId,
                             remoteMessageId);
+
+                    // 更新对应会话的最后一条关联消息
+                    IMConversationManager.getInstance().updateConversationLastMessage(
+                            sessionUserId,
+                            conversationType,
+                            targetUserId,
+                            message.localId.get()
+                    );
                 }
             }
         }

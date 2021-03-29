@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.block.MessageBlock;
 import com.masonsoft.imsdk.core.db.DatabaseHelper;
@@ -163,6 +164,18 @@ public class ReceivedMessageProtoTypeChatRBatchProcessor extends ReceivedMessage
                 MessageBlock.expandBlockId(sessionUserId, conversationType, targetUserId, minMessage.remoteMessageId.get());
 
                 database.setTransactionSuccessful();
+
+                try {
+                    // 更新对应会话的最后一条关联消息
+                    IMConversationManager.getInstance().updateConversationLastMessage(
+                            sessionUserId,
+                            conversationType,
+                            targetUserId,
+                            maxMessage.localId.get()
+                    );
+                } catch (Throwable e) {
+                    IMLog.e(e);
+                }
             } finally {
                 database.endTransaction();
             }
