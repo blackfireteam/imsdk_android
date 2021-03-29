@@ -1,11 +1,16 @@
 package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.idonans.core.Singleton;
+import com.masonsoft.imsdk.IMConversation;
+import com.masonsoft.imsdk.IMConversationFactory;
+import com.masonsoft.imsdk.core.db.Conversation;
+import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
 
 /**
- * 处理会话相关内容。包括查询会话列表，监听会话更新等。
+ * 处理会话相关内容
  *
  * @since 1.0
  */
@@ -14,7 +19,6 @@ public class IMConversationManager {
     private static final Singleton<IMConversationManager> INSTANCE = new Singleton<IMConversationManager>() {
         @Override
         protected IMConversationManager create() {
-            //noinspection InstantiationOfUtilityClass
             return new IMConversationManager();
         }
     };
@@ -27,6 +31,34 @@ public class IMConversationManager {
     }
 
     private IMConversationManager() {
+    }
+
+    @Nullable
+    public IMConversation getConversation(
+            final long sessionUserId,
+            final long conversationId) {
+        final Conversation conversation = ConversationDatabaseProvider.getInstance()
+                .getConversation(sessionUserId, conversationId);
+        if (conversation != null) {
+            return IMConversationFactory.create(conversation);
+        }
+        return null;
+    }
+
+    @Nullable
+    public IMConversation getConversationByTargetUserId(
+            final long sessionUserId,
+            final int conversationType,
+            final long targetUserId) {
+        final Conversation conversation = ConversationDatabaseProvider.getInstance()
+                .getConversationByTargetUserId(
+                        sessionUserId,
+                        conversationType,
+                        targetUserId);
+        if (conversation != null) {
+            return IMConversationFactory.create(conversation);
+        }
+        return null;
     }
 
 }
