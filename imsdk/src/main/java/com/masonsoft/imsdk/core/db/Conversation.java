@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.db.DatabaseHelper.ColumnsConversation;
 import com.masonsoft.imsdk.lang.StateProp;
+import com.masonsoft.imsdk.util.CursorUtil;
 
 /**
  * 会话
@@ -281,27 +282,27 @@ public class Conversation {
         public Conversation cursorToObjectWithQueryColumns(@NonNull Cursor cursor) {
             final Conversation target = new Conversation();
             int index = -1;
-            target.localId.set(cursor.getLong(++index));
-            target.localSeq.set(cursor.getLong(++index));
-            target.localConversationType.set(cursor.getInt(++index));
-            target.targetUserId.set(cursor.getLong(++index));
-            target.remoteMessageStart.set(cursor.getLong(++index));
-            target.remoteMessageEnd.set(cursor.getLong(++index));
-            target.remoteMessageLastRead.set(cursor.getLong(++index));
-            target.remoteShowMessageId.set(cursor.getLong(++index));
-            target.localShowMessageId.set(cursor.getLong(++index));
-            target.remoteUnread.set(cursor.getLong(++index));
-            target.localUnreadCount.set(cursor.getLong(++index));
-            target.localTimeMs.set(cursor.getLong(++index));
-            target.localDelete.set(cursor.getInt(++index));
-            target.matched.set(cursor.getInt(++index));
-            target.newMessage.set(cursor.getInt(++index));
-            target.myMove.set(cursor.getInt(++index));
-            target.iceBreak.set(cursor.getInt(++index));
-            target.tipFree.set(cursor.getInt(++index));
-            target.topAlbum.set(cursor.getInt(++index));
-            target.iBlockU.set(cursor.getInt(++index));
-            target.connected.set(cursor.getInt(++index));
+            target.localId.set(CursorUtil.getLong(cursor, ++index));
+            target.localSeq.set(CursorUtil.getLong(cursor, ++index));
+            target.localConversationType.set(CursorUtil.getInt(cursor, ++index));
+            target.targetUserId.set(CursorUtil.getLong(cursor, ++index));
+            target.remoteMessageStart.set(CursorUtil.getLong(cursor, ++index));
+            target.remoteMessageEnd.set(CursorUtil.getLong(cursor, ++index));
+            target.remoteMessageLastRead.set(CursorUtil.getLong(cursor, ++index));
+            target.remoteShowMessageId.set(CursorUtil.getLong(cursor, ++index));
+            target.localShowMessageId.set(CursorUtil.getLong(cursor, ++index));
+            target.remoteUnread.set(CursorUtil.getLong(cursor, ++index));
+            target.localUnreadCount.set(CursorUtil.getLong(cursor, ++index));
+            target.localTimeMs.set(CursorUtil.getLong(cursor, ++index));
+            target.localDelete.set(CursorUtil.getInt(cursor, ++index));
+            target.matched.set(CursorUtil.getInt(cursor, ++index));
+            target.newMessage.set(CursorUtil.getInt(cursor, ++index));
+            target.myMove.set(CursorUtil.getInt(cursor, ++index));
+            target.iceBreak.set(CursorUtil.getInt(cursor, ++index));
+            target.tipFree.set(CursorUtil.getInt(cursor, ++index));
+            target.topAlbum.set(CursorUtil.getInt(cursor, ++index));
+            target.iBlockU.set(CursorUtil.getInt(cursor, ++index));
+            target.connected.set(CursorUtil.getInt(cursor, ++index));
             return target;
         }
     };

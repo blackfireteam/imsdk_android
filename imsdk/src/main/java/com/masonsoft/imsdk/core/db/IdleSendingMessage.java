@@ -6,6 +6,7 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.lang.StateProp;
+import com.masonsoft.imsdk.util.CursorUtil;
 
 /**
  * 将所有消息表(按照会话分表)中待发送与发送中的消息记录一个统一的副本。相当于一个持久化的发送队列。
@@ -110,10 +111,10 @@ public class IdleSendingMessage {
         public IdleSendingMessage cursorToObjectWithQueryColumns(@NonNull Cursor cursor) {
             final IdleSendingMessage target = new IdleSendingMessage();
             int index = -1;
-            target.localId.set(cursor.getLong(++index));
-            target.conversationType.set(cursor.getInt(++index));
-            target.targetUserId.set(cursor.getLong(++index));
-            target.messageLocalId.set(cursor.getLong(++index));
+            target.localId.set(CursorUtil.getLong(cursor, ++index));
+            target.conversationType.set(CursorUtil.getInt(cursor, ++index));
+            target.targetUserId.set(CursorUtil.getLong(cursor, ++index));
+            target.messageLocalId.set(CursorUtil.getLong(cursor, ++index));
             return target;
         }
     };

@@ -656,7 +656,7 @@ public final class DatabaseHelper {
                 ColumnsMessage.C_LOCAL_SEQ + " integer not null," +
                 ColumnsMessage.C_FROM_USER_ID + " integer not null," +
                 ColumnsMessage.C_TO_USER_ID + " integer not null," +
-                ColumnsMessage.C_REMOTE_MSG_ID + " integer not null default 0," +
+                ColumnsMessage.C_REMOTE_MSG_ID + " integer," +
                 ColumnsMessage.C_REMOTE_MSG_TIME + " integer not null default 0," +
                 ColumnsMessage.C_LOCAL_TIME_MS + " integer not null," +
                 ColumnsMessage.C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY_MS + " integer not null default 0," +
@@ -689,7 +689,7 @@ public final class DatabaseHelper {
                 "create index if not exists " + tableNameMessage + "_index_local_seq on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_SEQ + ")",
                 "create index if not exists " + tableNameMessage + "_index_from_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_FROM_USER_ID + ")",
                 "create index if not exists " + tableNameMessage + "_index_to_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_TO_USER_ID + ")",
-                "create index if not exists " + tableNameMessage + "_index_remote_msg_id on " + tableNameMessage + "(" + ColumnsMessage.C_REMOTE_MSG_ID + ")",
+                "create unique index if not exists " + tableNameMessage + "_index_remote_msg_id on " + tableNameMessage + "(" + ColumnsMessage.C_REMOTE_MSG_ID + ")",
                 "create index if not exists " + tableNameMessage + "_index_msg_type on " + tableNameMessage + "(" + ColumnsMessage.C_MSG_TYPE + ")",
                 "create index if not exists " + tableNameMessage + "_index_local_send_status on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_SEND_STATUS + ")",
                 "create index if not exists " + tableNameMessage + "_index_local_action_msg on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_ACTION_MSG + ")",

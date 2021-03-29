@@ -10,6 +10,7 @@ import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.db.ColumnsSelector;
 import com.masonsoft.imsdk.lang.StateProp;
+import com.masonsoft.imsdk.util.CursorUtil;
 
 import org.json.JSONObject;
 
@@ -127,8 +128,8 @@ public class UserInfo {
         public UserInfo cursorToObjectWithQueryColumns(@NonNull Cursor cursor) {
             final UserInfo target = new UserInfo();
             int index = -1;
-            target.uid.set(cursor.getLong(++index));
-            final String userJson = cursor.getString(++index);
+            target.uid.set(CursorUtil.getLong(cursor, ++index));
+            final String userJson = CursorUtil.getString(cursor, ++index);
             if (!TextUtils.isEmpty(userJson)) {
                 try {
                     final JSONObject jsonObject = new JSONObject(userJson);

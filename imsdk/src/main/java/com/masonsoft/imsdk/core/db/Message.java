@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.annotation.LogicField;
 import com.masonsoft.imsdk.core.db.DatabaseHelper.ColumnsMessage;
 import com.masonsoft.imsdk.lang.StateProp;
+import com.masonsoft.imsdk.util.CursorUtil;
 
 /**
  * 消息
@@ -398,31 +399,31 @@ public class Message {
         public Message cursorToObjectWithQueryColumns(@NonNull Cursor cursor) {
             final Message target = new Message();
             int index = -1;
-            target.localId.set(cursor.getLong(++index));
-            target.localSeq.set(cursor.getLong(++index));
-            target.fromUserId.set(cursor.getLong(++index));
-            target.toUserId.set(cursor.getLong(++index));
-            target.remoteMessageId.set(cursor.getLong(++index));
-            target.remoteMessageTime.set(cursor.getLong(++index));
-            target.localTimeMs.set(cursor.getLong(++index));
-            target.remoteFromUserProfileLastModifyMs.set(cursor.getLong(++index));
-            target.messageType.set(cursor.getInt(++index));
-            target.title.set(cursor.getString(++index));
-            target.body.set(cursor.getString(++index));
-            target.localBodyOrigin.set(cursor.getString(++index));
-            target.thumb.set(cursor.getString(++index));
-            target.localThumbOrigin.set(cursor.getString(++index));
-            target.width.set(cursor.getLong(++index));
-            target.height.set(cursor.getLong(++index));
-            target.duration.set(cursor.getLong(++index));
-            target.lat.set(cursor.getDouble(++index));
-            target.lng.set(cursor.getDouble(++index));
-            target.zoom.set(cursor.getLong(++index));
-            target.errorCode.set(cursor.getLong(++index));
-            target.errorMessage.set(cursor.getString(++index));
-            target.localSendStatus.set(cursor.getInt(++index));
-            target.localActionMessage.set(cursor.getInt(++index));
-            target.localBlockId.set(cursor.getLong(++index));
+            target.localId.set(CursorUtil.getLong(cursor, ++index));
+            target.localSeq.set(CursorUtil.getLong(cursor, ++index));
+            target.fromUserId.set(CursorUtil.getLong(cursor, ++index));
+            target.toUserId.set(CursorUtil.getLong(cursor, ++index));
+            target.remoteMessageId.set(CursorUtil.getLong(cursor, ++index));
+            target.remoteMessageTime.set(CursorUtil.getLong(cursor, ++index));
+            target.localTimeMs.set(CursorUtil.getLong(cursor, ++index));
+            target.remoteFromUserProfileLastModifyMs.set(CursorUtil.getLong(cursor, ++index));
+            target.messageType.set(CursorUtil.getInt(cursor, ++index));
+            target.title.set(CursorUtil.getString(cursor, ++index));
+            target.body.set(CursorUtil.getString(cursor, ++index));
+            target.localBodyOrigin.set(CursorUtil.getString(cursor, ++index));
+            target.thumb.set(CursorUtil.getString(cursor, ++index));
+            target.localThumbOrigin.set(CursorUtil.getString(cursor, ++index));
+            target.width.set(CursorUtil.getLong(cursor, ++index));
+            target.height.set(CursorUtil.getLong(cursor, ++index));
+            target.duration.set(CursorUtil.getLong(cursor, ++index));
+            target.lat.set(CursorUtil.getDouble(cursor, ++index));
+            target.lng.set(CursorUtil.getDouble(cursor, ++index));
+            target.zoom.set(CursorUtil.getLong(cursor, ++index));
+            target.errorCode.set(CursorUtil.getLong(cursor, ++index));
+            target.errorMessage.set(CursorUtil.getString(cursor, ++index));
+            target.localSendStatus.set(CursorUtil.getInt(cursor, ++index));
+            target.localActionMessage.set(CursorUtil.getInt(cursor, ++index));
+            target.localBlockId.set(CursorUtil.getLong(cursor, ++index));
             return target;
         }
     };
