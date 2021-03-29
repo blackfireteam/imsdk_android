@@ -226,7 +226,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
         IMMessageQueueManager.getInstance().enqueueSendMessage(
                 imMessage,
                 mTargetUserId,
-                new IMSessionMessage.WeakEnqueueCallbackAdapter(mEnqueueCallback)
+                new IMSessionMessage.WeakEnqueueCallbackAdapter(mEnqueueCallback, true)
         );
     }
 

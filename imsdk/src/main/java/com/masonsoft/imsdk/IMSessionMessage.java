@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.idonans.core.WeakAbortSignal;
+import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 
@@ -265,8 +266,11 @@ public class IMSessionMessage {
 
     public static class WeakEnqueueCallbackAdapter extends WeakAbortSignal implements EnqueueCallback {
 
-        public WeakEnqueueCallbackAdapter(@Nullable EnqueueCallback callback) {
+        private final boolean mRunOnUiThread;
+
+        public WeakEnqueueCallbackAdapter(@Nullable EnqueueCallback callback, boolean runOnUiThread) {
             super(callback);
+            mRunOnUiThread = runOnUiThread;
         }
 
         @Nullable
@@ -276,17 +280,31 @@ public class IMSessionMessage {
 
         @Override
         public void onEnqueueSuccess(@NonNull IMSessionMessage imSessionMessage) {
-            final EnqueueCallback callback = getEnqueueCallback();
-            if (callback != null) {
-                callback.onEnqueueSuccess(imSessionMessage);
+            final Runnable runnable = () -> {
+                final EnqueueCallback callback = getEnqueueCallback();
+                if (callback != null) {
+                    callback.onEnqueueSuccess(imSessionMessage);
+                }
+            };
+            if (mRunOnUiThread) {
+                Threads.postUi(runnable);
+            } else {
+                runnable.run();
             }
         }
 
         @Override
         public void onEnqueueFail(@NonNull IMSessionMessage imSessionMessage, int errorCode, String errorMessage) {
-            final EnqueueCallback callback = getEnqueueCallback();
-            if (callback != null) {
-                callback.onEnqueueFail(imSessionMessage, errorCode, errorMessage);
+            final Runnable runnable = () -> {
+                final EnqueueCallback callback = getEnqueueCallback();
+                if (callback != null) {
+                    callback.onEnqueueFail(imSessionMessage, errorCode, errorMessage);
+                }
+            };
+            if (mRunOnUiThread) {
+                Threads.postUi(runnable);
+            } else {
+                runnable.run();
             }
         }
     }
