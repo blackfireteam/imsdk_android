@@ -108,10 +108,10 @@ public class SoftKeyboardHelper implements SoftKeyboardListenerLayout.OnSoftKeyb
     /**
      * 系统键盘或者是用户自定义键盘显示了。
      *
-     * @param customKeyboard     true 用户自定义键盘显示了
+     * @param customSoftKeyboard     true 用户自定义键盘显示了
      * @param systemSoftKeyboard true 系统软键盘显示了
      */
-    protected void onSoftKeyboardLayoutShown(boolean customKeyboard, boolean systemSoftKeyboard) {
+    protected void onSoftKeyboardLayoutShown(boolean customSoftKeyboard, boolean systemSoftKeyboard) {
     }
 
     /**

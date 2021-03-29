@@ -208,7 +208,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.masonsoft.imsdk.sample.widget.CustomKeyboard
+        <com.masonsoft.imsdk.sample.widget.CustomSoftKeyboard
             android:id="@+id/custom_keyboard"
             android:layout_width="match_parent"
             android:layout_height="277dp"

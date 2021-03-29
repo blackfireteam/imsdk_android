@@ -8,31 +8,31 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomKeyboardBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardBinding;
 
-public class CustomKeyboard extends FrameLayout {
+public class CustomSoftKeyboard extends FrameLayout {
 
-    public CustomKeyboard(@NonNull Context context) {
+    public CustomSoftKeyboard(@NonNull Context context) {
         super(context);
         initFromAttributes(context, null, 0, 0);
     }
 
-    public CustomKeyboard(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public CustomSoftKeyboard(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initFromAttributes(context, attrs, 0, 0);
     }
 
-    public CustomKeyboard(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public CustomSoftKeyboard(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initFromAttributes(context, attrs, defStyleAttr, 0);
     }
 
-    public CustomKeyboard(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public CustomSoftKeyboard(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private ImsdkSampleWidgetCustomKeyboardBinding mBinding;
+    private ImsdkSampleWidgetCustomSoftKeyboardBinding mBinding;
 
     private void initFromAttributes(
             Context context,
@@ -40,7 +40,7 @@ public class CustomKeyboard extends FrameLayout {
             int defStyleAttr,
             int defStyleRes) {
 
-        mBinding = ImsdkSampleWidgetCustomKeyboardBinding.inflate(
+        mBinding = ImsdkSampleWidgetCustomSoftKeyboardBinding.inflate(
                 LayoutInflater.from(context),
                 this,
                 true);
