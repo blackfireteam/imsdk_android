@@ -5,9 +5,7 @@ import androidx.annotation.Nullable;
 import com.idonans.core.thread.Threads;
 import com.idonans.lang.DisposableHolder;
 import com.masonsoft.imsdk.IMMessage;
-import com.masonsoft.imsdk.IMMessageFactory;
-import com.masonsoft.imsdk.core.db.Message;
-import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
+import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.observable.MessageObservable;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.ObjectWrapper;
@@ -67,16 +65,12 @@ public abstract class IMMessageChangedViewHelper {
         }
         mRequestHolder.set(Single.fromCallable(
                 () -> {
-                    final Message message = MessageDatabaseProvider.getInstance().getMessage(
+                    final IMMessage imMessage = IMMessageManager.getInstance().getMessage(
                             mSessionUserId,
                             mConversationType,
                             mTargetUserId,
                             mLocalMessageId
                     );
-                    IMMessage imMessage = null;
-                    if (message != null) {
-                        imMessage = IMMessageFactory.create(message);
-                    }
                     return new ObjectWrapper(imMessage);
                 })
                 .subscribeOn(Schedulers.io())
@@ -96,6 +90,11 @@ public abstract class IMMessageChangedViewHelper {
         @Override
         public void onMessageCreated(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
             onMessageChangedInternal(sessionUserId, conversationType, targetUserId, localMessageId);
+        }
+
+        @Override
+        public void onMessageBlockChanged(long sessionUserId, int conversationType, long targetUserId, long fromBlockId, long toBlockId) {
+            // ignore
         }
 
         private void onMessageChangedInternal(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
