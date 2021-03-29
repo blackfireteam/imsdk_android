@@ -142,6 +142,39 @@ public class Conversation {
     public final StateProp<Integer> connected = new StateProp<>();
 
     @NonNull
+    public String toShortString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Conversation");
+        if (this.localId.isUnset()) {
+            builder.append(" localId:unset");
+        } else {
+            builder.append(" localId:").append(this.localId.get());
+        }
+        if (this.localSeq.isUnset()) {
+            builder.append(" localSeq:unset");
+        } else {
+            builder.append(" localSeq:").append(this.localSeq.get());
+        }
+        if (this.localConversationType.isUnset()) {
+            builder.append(" localConversationType:unset");
+        } else {
+            builder.append(" localConversationType:").append(this.localConversationType.get());
+        }
+        if (this.targetUserId.isUnset()) {
+            builder.append(" targetUserId:unset");
+        } else {
+            builder.append(" targetUserId:").append(this.targetUserId.get());
+        }
+        return builder.toString();
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return this.toShortString();
+    }
+
+    @NonNull
     public ContentValues toContentValues() {
         final ContentValues target = new ContentValues();
         if (!this.localId.isUnset()) {
