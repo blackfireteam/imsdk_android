@@ -395,7 +395,11 @@ public class ConversationDatabaseProvider {
             // 自增主键
             conversation.localId.set(rowId);
             MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, rowId);
-            ConversationObservable.DEFAULT.notifyConversationCreated(sessionUserId, rowId);
+            ConversationObservable.DEFAULT.notifyConversationCreated(
+                    sessionUserId,
+                    rowId,
+                    conversation.localConversationType.get(),
+                    conversation.targetUserId.get());
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
@@ -453,7 +457,11 @@ public class ConversationDatabaseProvider {
                         rowsAffected);
             }
             MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, conversation.localId.get());
-            ConversationObservable.DEFAULT.notifyConversationChanged(sessionUserId, conversation.localId.get());
+            ConversationObservable.DEFAULT.notifyConversationChanged(
+                    sessionUserId,
+                    conversation.localId.get(),
+                    conversation.localConversationType.get(),
+                    conversation.targetUserId.get());
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);

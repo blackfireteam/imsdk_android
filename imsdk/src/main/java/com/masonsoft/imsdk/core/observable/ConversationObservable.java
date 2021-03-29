@@ -11,25 +11,37 @@ public class ConversationObservable extends WeakObservable<ConversationObservabl
 
     public interface ConversationObserver {
         void onConversationChanged(final long sessionUserId,
-                                   final long conversationId);
+                                   final long conversationId,
+                                   final int conversationType,
+                                   final long targetUserId);
 
         void onConversationCreated(final long sessionUserId,
-                                   final long conversationId);
+                                   final long conversationId,
+                                   final int conversationType,
+                                   final long targetUserId);
     }
 
     public void notifyConversationChanged(final long sessionUserId,
-                                          final long conversationId) {
+                                          final long conversationId,
+                                          final int conversationType,
+                                          final long targetUserId) {
         forEach(conversationObserver -> conversationObserver.onConversationChanged(
                 sessionUserId,
-                conversationId)
+                conversationId,
+                conversationType,
+                targetUserId)
         );
     }
 
     public void notifyConversationCreated(final long sessionUserId,
-                                          final long conversationId) {
+                                          final long conversationId,
+                                          final int conversationType,
+                                          final long targetUserId) {
         forEach(conversationObserver -> conversationObserver.onConversationCreated(
                 sessionUserId,
-                conversationId)
+                conversationId,
+                conversationType,
+                targetUserId)
         );
     }
 
