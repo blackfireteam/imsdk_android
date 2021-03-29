@@ -9,6 +9,8 @@ import com.masonsoft.imsdk.IMConversationFactory;
 import com.masonsoft.imsdk.core.db.Conversation;
 import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
 import com.masonsoft.imsdk.core.db.ConversationFactory;
+import com.masonsoft.imsdk.core.db.Message;
+import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 
 /**
  * 处理会话相关内容
@@ -111,6 +113,55 @@ public class IMConversationManager {
             RuntimeMode.throwIfDebug(e);
             // fallback
             return IMConversationFactory.create(insertConversation);
+        }
+    }
+
+    public void updateConversationLastMessage(final long sessionUserId,
+                                              final int conversationType,
+                                              final long targetUserId,
+                                              final long localMessageId) {
+        final IMConversation imConversation = getOrCreateConversationByTargetUserId(
+                sessionUserId, conversationType, targetUserId);
+        if (imConversation.id.isUnset()) {
+            final Throwable e = new IllegalAccessError("unexpected. conversation's id is unset");
+            IMLog.e(e);
+            RuntimeMode.throwIfDebug(e);
+            return;
+        }
+        if (imConversation.id.get() <= 0) {
+            final Throwable e = new IllegalAccessError("unexpected. conversation's id is invalid " + imConversation.id.get());
+            IMLog.e(e);
+            RuntimeMode.throwIfDebug(e);
+            return;
+        }
+
+        // 判断是否需要将 conversation 的 showMessageId 更改为 localMessageId
+        Message oldShowMessage = null;
+        Message newShowMessage = null;
+
+        if (!imConversation.showMessageId.isUnset()) {
+            oldShowMessage = MessageDatabaseProvider.getInstance().getMessage(
+                    sessionUserId, conversationType, targetUserId, imConversation.showMessageId.get());
+        }
+        newShowMessage = MessageDatabaseProvider.getInstance().getMessage(
+                sessionUserId, conversationType, targetUserId, localMessageId);
+
+        if (newShowMessage != null) {
+            boolean useNewShowMessageId = true;
+            if (oldShowMessage != null) {
+                // showMessageId 对应的 seq 不小于 localMessageId 的 seq
+                if (oldShowMessage.localSeq.get() >= newShowMessage.localSeq.get()) {
+                    useNewShowMessageId = false;
+                }
+            }
+            if (useNewShowMessageId) {
+                // 更新 conversation 的 showMessageId 为 localMessageId
+                final Conversation conversationUpdate = new Conversation();
+                conversationUpdate.localId.set(imConversation.id.get());
+                conversationUpdate.localShowMessageId.set(localMessageId);
+                conversationUpdate.localTimeMs.set(newShowMessage.localTimeMs.get());
+                ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate);
+            }
         }
     }
 
