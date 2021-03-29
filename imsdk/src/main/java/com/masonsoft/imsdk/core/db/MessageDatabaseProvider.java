@@ -131,10 +131,97 @@ public class MessageDatabaseProvider {
     private MessageDatabaseProvider() {
     }
 
+
     /**
-     * 查询结果按照 seq 从大到小排列
+     * 获取与 seq 关联最紧密的 block id 值
      *
-     * @param seq 不包括这一条, 初始传 0
+     * @param sessionUserId
+     * @param conversationType
+     * @param targetUserId
+     * @param seq
+     * @param queryHistory
+     * @return
+     * @see #getMessage(long, int, long, long)
+     * @see #pageQueryMessage(long, long, int, int, long, boolean, ColumnsSelector)
+     */
+    public long getBlockIdWithSeq(
+            final long sessionUserId,
+            final int conversationType,
+            final long targetUserId,
+            final long seq,
+            final boolean queryHistory) {
+        IMConstants.ConversationType.check(conversationType);
+
+        final ColumnsSelector<Message> columnsSelector = Message.COLUMNS_SELECTOR_ALL;
+        Cursor cursor = null;
+        try {
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            final String tableName = dbHelper.createTableMessageIfNeed(conversationType, targetUserId);
+            SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
+
+            final StringBuilder selection = new StringBuilder();
+            final List<String> selectionArgs = new ArrayList<>();
+
+            if (queryHistory) {
+                selection.append(" " + DatabaseHelper.ColumnsMessage.C_LOCAL_SEQ + "<=? ");
+            } else {
+                selection.append(" " + DatabaseHelper.ColumnsMessage.C_LOCAL_SEQ + ">=? ");
+            }
+            selectionArgs.add(String.valueOf(seq));
+
+            // 查询有效的 block id
+            selection.append(" and " + DatabaseHelper.ColumnsMessage.C_LOCAL_BLOCK_ID + ">0 ");
+
+            cursor = db.query(
+                    tableName,
+                    columnsSelector.queryColumns(),
+                    selection.toString(),
+                    selectionArgs.toArray(new String[]{}),
+                    null,
+                    null,
+                    DatabaseHelper.ColumnsMessage.C_LOCAL_SEQ + (queryHistory ? " desc" : " asc"),
+                    "0,1"
+            );
+
+            if (cursor.moveToNext()) {
+                final Message item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                item.applyLogicField(sessionUserId, conversationType, targetUserId);
+
+                IMLog.v(
+                        "found blockId:%s with sessionUserId:%s, conversationType:%s, targetUserId:%s, seq:%s, queryHistory:%s",
+                        item.localBlockId.get(),
+                        sessionUserId,
+                        conversationType,
+                        targetUserId,
+                        seq,
+                        queryHistory);
+
+                return item.localBlockId.get();
+            }
+        } catch (Throwable e) {
+            IMLog.e(e);
+            RuntimeMode.throwIfDebug(e);
+        } finally {
+            IOUtil.closeQuietly(cursor);
+        }
+
+        IMLog.v(
+                "blockId not found with sessionUserId:%s, conversationType:%s, targetUserId:%s, seq:%s, queryHistory:%s",
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                seq,
+                queryHistory);
+        return 0L;
+    }
+
+    /**
+     * 查询结果按照 seq 排列
+     *
+     * @param seq          不包括这一条, 初始传 0
+     * @param queryHistory 是否是查询历史记录。当查询历史记录（true）时，查询结果总是比 seq 小的(查询结果按照 seq
+     *                     从大到小排列)，否则表示查询比 seq 更新的消息，查询结果总是比 seq 大的(查询结果总是按照
+     *                     seq 从小到大排列).
      */
     @NonNull
     public TinyPage<Message> pageQueryMessage(
@@ -143,6 +230,7 @@ public class MessageDatabaseProvider {
             final int limit,
             final int conversationType,
             final long targetUserId,
+            final boolean queryHistory,
             @Nullable ColumnsSelector<Message> columnsSelector) {
         IMConstants.ConversationType.check(conversationType);
 
@@ -163,7 +251,11 @@ public class MessageDatabaseProvider {
             selection.append(" " + DatabaseHelper.ColumnsMessage.C_LOCAL_ID + ">0 ");
 
             if (seq > 0) {
-                selection.append(" and " + DatabaseHelper.ColumnsConversation.C_LOCAL_SEQ + "<? ");
+                if (queryHistory) {
+                    selection.append(" and " + DatabaseHelper.ColumnsConversation.C_LOCAL_SEQ + "<? ");
+                } else {
+                    selection.append(" and " + DatabaseHelper.ColumnsConversation.C_LOCAL_SEQ + ">? ");
+                }
                 selectionArgs.add(String.valueOf(seq));
             }
 
@@ -174,7 +266,7 @@ public class MessageDatabaseProvider {
                     selectionArgs.toArray(new String[]{}),
                     null,
                     null,
-                    DatabaseHelper.ColumnsMessage.C_LOCAL_SEQ + " desc",
+                    DatabaseHelper.ColumnsMessage.C_LOCAL_SEQ + (queryHistory ? " desc" : " asc"),
                     String.valueOf(limit + 1) // 此处多查询一条用来计算 hasMore
             );
 

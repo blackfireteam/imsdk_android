@@ -152,12 +152,6 @@ public class SingleChatFragment extends SystemInsetsFragment {
             return mTargetUserId;
         }
 
-        public void showDraftText(String draft) {
-            if (mItemKeyEditText != null) {
-                mItemKeyEditText.setText(draft);
-            }
-        }
-
         @Override
         public void onInitDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
             super.onInitDataLoad(items);
