@@ -30,6 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
+                android:contentDescription="@string/imsdk_sample_empty_text_hint"
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"
                 android:scaleType="centerInside"
@@ -57,6 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
+                android:contentDescription="@string/imsdk_sample_empty_text_hint"
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"
                 android:scaleType="centerInside"
@@ -205,5 +207,13 @@
                 app:layout_constraintStart_toEndOf="@id/keyboard_more" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.xmqvip.xiaomaiquan.module.im.single.widget.CustomKeyboard
+            android:id="@+id/custom_soft_keyboard"
+            android:layout_width="match_parent"
+            android:layout_height="277dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone" />
     </com.idonans.systeminsets.SystemInsetsLinearLayout>
 </com.masonsoft.imsdk.sample.widget.systeminsets.SoftKeyboardListenerLayout>
