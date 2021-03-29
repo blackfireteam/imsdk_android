@@ -19,11 +19,13 @@ import com.idonans.uniontype.UnionTypeAdapter;
 import com.idonans.uniontype.UnionTypeItemObject;
 import com.masonsoft.imsdk.core.IMConstants.ConversationType;
 import com.masonsoft.imsdk.sample.Constants;
+import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManagerHost;
 import com.masonsoft.imsdk.sample.common.microlifecycle.VisibleRecyclerViewMicroLifecycleComponentManager;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSingleChatFragmentBinding;
+import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.util.BackStackUtil;
 
 import java.util.Collection;
@@ -49,7 +51,8 @@ public class SingleChatFragment extends SystemInsetsFragment {
     @Nullable
     private SoftKeyboardHelper mSoftKeyboardHelper;
 
-    private ImSingleFragmentPresenter mPresenter;
+    private UnionTypeAdapter mDataAdapter;
+    private SingleChatFragmentPresenter mPresenter;
     private ViewImpl mViewImpl;
     private MicroLifecycleComponentManager mMicroLifecycleComponentManager;
 
@@ -83,14 +86,96 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         UnionTypeAdapter adapter = new UnionTypeAdapterImpl();
         adapter.setHost(Host.Factory.create(this, recyclerView, adapter));
-        adapter.setUnionTypeMapper(new UnionTypeAppImplMapper());
+        adapter.setUnionTypeMapper(new UnionTypeMapperImpl());
         mDataAdapter = adapter;
         mViewImpl = new ViewImpl(adapter);
         clearPresenter();
+        mPresenter = new SingleChatFragmentPresenter(mViewImpl);
+        mViewImpl.setPresenter(mPresenter);
+        recyclerView.setAdapter(adapter);
 
         mBinding.keyboardEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3000)});
+        mSoftKeyboardHelper = new SoftKeyboardHelper(
+                mBinding.softKeyboardListenerLayout,
+                mBinding.keyboardEditText,
+                mBinding.customSoftKeyboard) {
+            @Override
+            protected boolean isTouchOutside(float rawX, float rawY) {
+                final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+                if (binding == null) {
+                    SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                    return false;
+                }
+
+                int[] outLocation = new int[2];
+                binding.keyboardTopLine.getLocationInWindow(outLocation);
+                boolean isTouchOutside = rawY <= outLocation[1];
+
+                SampleLog.v("isTouchOutside touch raw:[%s,%s], keyboard top line location:[%s,%s], isTouchOutside:%s",
+                        rawX, rawY, outLocation[0], outLocation[1], isTouchOutside);
+
+                return isTouchOutside;
+            }
+
+            @Override
+            protected void onSoftKeyboardLayoutShown(boolean customSoftKeyboard, boolean systemSoftKeyboard) {
+                final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+                if (binding == null) {
+                    return;
+                }
+
+                binding.recyclerView.postOnAnimation(() -> {
+                    int count = mDataAdapter.getItemCount();
+                    if (count > 0) {
+                        binding.recyclerView.smoothScrollToPosition(count - 1);
+                    }
+                });
+
+                /*
+                TODO
+                if (customSoftKeyboard) {
+                    if (mCustomSoftKeyboard.isAudioShown()) {
+                        mItemKeyEmotion.setSelected(false);
+                        mItemKeyVoice.setSelected(true);
+                    } else if (mCustomSoftKeyboard.isPagerShown()) {
+                        mItemKeyEmotion.setSelected(true);
+                        mItemKeyVoice.setSelected(false);
+                    } else {
+                        mItemKeyEmotion.setSelected(false);
+                        mItemKeyVoice.setSelected(false);
+                    }
+                } else {
+                    mItemKeyEmotion.setSelected(false);
+                    mItemKeyVoice.setSelected(false);
+                }
+
+                mItemKeyGift.setSelected(customGiftInputBoard);
+
+                if (!customKeyboard && customGiftInputBoard) {
+                    // 手动清除文本输入框的焦点，以免该输入框上的系统弹层(如：复制菜单)显示到了礼物面板之上
+                    mItemKeyEditText.clearFocus();
+                }
+                */
+            }
+
+            @Override
+            protected void onAllSoftKeyboardLayoutHidden() {
+                /*
+                TODO
+                mItemKeyEmotion.setSelected(false);
+                mItemKeyVoice.setSelected(false);
+                mItemKeyGift.setSelected(false);*/
+            }
+        };
 
         return mBinding.getRoot();
+    }
+
+    private void clearPresenter() {
+        if (mPresenter != null) {
+            mPresenter.setAbort();
+            mPresenter = null;
+        }
     }
 
     @Override
@@ -113,41 +198,6 @@ public class SingleChatFragment extends SystemInsetsFragment {
             setAlwaysHideNoMoreData(true);
         }
 
-        public void hideAllSoftKeyboard() {
-            if (mSoftKeyboardHelper != null) {
-                mSoftKeyboardHelper.requestHideAllSoftKeyboard();
-            }
-        }
-
-        public void showCustomGiftInputBoard() {
-            if (mSoftKeyboardHelper != null) {
-                mSoftKeyboardHelper.requestShowCustomGiftInputBoard();
-            }
-        }
-
-        private SimpleLoadingDialog mLoadingDialog;
-
-        public void showLoading(String text) {
-            Activity innerActivity = getActivity();
-            if (innerActivity == null) {
-                Timber.e(Constants.Tip.ACTIVITY_NULL);
-                return;
-            }
-            if (mLoadingDialog == null) {
-                mLoadingDialog = new SimpleLoadingDialog(innerActivity, text);
-                mLoadingDialog.show();
-            } else {
-                mLoadingDialog.setText(text);
-            }
-        }
-
-        public void hideLoading() {
-            if (mLoadingDialog != null) {
-                mLoadingDialog.hide();
-                mLoadingDialog = null;
-            }
-        }
-
         public long getTargetUserId() {
             return mTargetUserId;
         }
@@ -155,12 +205,19 @@ public class SingleChatFragment extends SystemInsetsFragment {
         @Override
         public void onInitDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
             super.onInitDataLoad(items);
-            if (mRecyclerView != null && !items.isEmpty()) {
-                mRecyclerView.postOnAnimation(() -> {
-                    if (mRecyclerView != null && mDataAdapter != null) {
+
+            final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+            if (binding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            if (!items.isEmpty()) {
+                binding.recyclerView.postOnAnimation(() -> {
+                    if (mDataAdapter != null) {
                         int count = mDataAdapter.getItemCount();
                         if (count > 0) {
-                            mRecyclerView.scrollToPosition(count - 1);
+                            binding.recyclerView.scrollToPosition(count - 1);
                         }
                     }
                 });
@@ -170,22 +227,33 @@ public class SingleChatFragment extends SystemInsetsFragment {
         @Override
         public void onNextPageDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
             super.onNextPageDataLoad(items);
-            if (mRecyclerView != null && !items.isEmpty()) {
-                mRecyclerView.postOnAnimation(() -> {
-                    if (mRecyclerView != null && mDataAdapter != null) {
+
+            final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+            if (binding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            if (!items.isEmpty()) {
+                binding.recyclerView.postOnAnimation(() -> {
+                    if (mDataAdapter != null) {
                         int count = mDataAdapter.getItemCount();
                         if (count > 0) {
                             boolean autoScroll = false;
-                            int lastPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                            //noinspection ConstantConditions
+                            int lastPosition = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findLastVisibleItemPosition();
                             if (lastPosition >= count - 1 - items.size()) {
                                 // 当前滚动到最后
                                 autoScroll = true;
                             }
                             if (autoScroll) {
-                                mRecyclerView.smoothScrollToPosition(count - 1);
+                                binding.recyclerView.smoothScrollToPosition(count - 1);
                             } else {
                                 // 显示向下的箭头
+                                // TODO
+                                /*
                                 showNewMessagesTipView();
+                                */
                             }
                         }
                     }
@@ -193,8 +261,9 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
         }
 
+        // TODO
         public Activity getActivity() {
-            return ImSingleFragment.this.getActivity();
+            return SingleChatFragment.this.getActivity();
         }
     }
 

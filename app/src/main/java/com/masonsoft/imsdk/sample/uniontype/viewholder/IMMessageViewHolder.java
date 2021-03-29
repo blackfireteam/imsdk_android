@@ -26,7 +26,7 @@ import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.TopActivity;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
-import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapper;
+import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.util.FileDownloadHelper;
 import com.masonsoft.imsdk.sample.util.FormatUtil;
 import com.masonsoft.imsdk.sample.util.TipUtil;
@@ -199,10 +199,10 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             if (msgType == IMConstants.MessageType.TEXT) {
                 return received
                         ? UnionTypeItemObject.valueOf(
-                        UnionTypeMapper.UNION_TYPE_IM_MESSAGE_TEXT_RECEIVED,
+                        UnionTypeMapperImpl.UNION_TYPE_IM_MESSAGE_TEXT_RECEIVED,
                         dataObject)
                         : UnionTypeItemObject.valueOf(
-                        UnionTypeMapper.UNION_TYPE_IM_MESSAGE_TEXT_SEND,
+                        UnionTypeMapperImpl.UNION_TYPE_IM_MESSAGE_TEXT_SEND,
                         dataObject);
             }
 
