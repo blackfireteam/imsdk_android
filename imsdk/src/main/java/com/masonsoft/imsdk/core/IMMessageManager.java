@@ -10,6 +10,7 @@ import com.masonsoft.imsdk.core.db.ColumnsSelector;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.TinyPage;
+import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +105,7 @@ public class IMMessageManager {
             result.hasMore = false;
         }
 
-        IMLog.v("pageQueryMessage result:%s, targetBlockId:%s with sessionUserId:%s, seq:%s, limit:%s, conversationType:%s, targetUserId:%s, queryHistory:%s",
+        IMLog.v(Objects.defaultObjectTag(this) + " pageQueryMessage result:%s, targetBlockId:%s with sessionUserId:%s, seq:%s, limit:%s, conversationType:%s, targetUserId:%s, queryHistory:%s",
                 result, targetBlockId, sessionUserId, seq, limit, conversationType, targetUserId, queryHistory);
         return result;
     }

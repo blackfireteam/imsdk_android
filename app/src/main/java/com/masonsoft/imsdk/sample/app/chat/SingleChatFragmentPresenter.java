@@ -21,6 +21,7 @@ import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageViewHolder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Single;
@@ -111,6 +112,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                     if (imMessages == null) {
                         imMessages = new ArrayList<>();
                     }
+                    Collections.reverse(imMessages);
                     List<UnionTypeItemObject> target = new ArrayList<>();
                     for (IMMessage imMessage : imMessages) {
                         UnionTypeItemObject item = createDefault(imMessage);
@@ -181,6 +183,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                     if (imMessages == null) {
                         imMessages = new ArrayList<>();
                     }
+                    Collections.reverse(imMessages);
                     List<UnionTypeItemObject> target = new ArrayList<>();
                     for (IMMessage imMessage : imMessages) {
                         UnionTypeItemObject item = createDefault(imMessage);

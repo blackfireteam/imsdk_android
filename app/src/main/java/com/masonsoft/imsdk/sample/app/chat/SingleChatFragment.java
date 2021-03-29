@@ -204,6 +204,8 @@ public class SingleChatFragment extends SystemInsetsFragment {
                         }});
         ViewUtil.onClick(mBinding.keyboardSubmit, v -> submitTextMessage());
 
+        mPresenter.requestInit();
+
         return mBinding.getRoot();
     }
 
