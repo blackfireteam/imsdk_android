@@ -9,6 +9,7 @@ import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMMessageUploadManager;
 import com.masonsoft.imsdk.core.SignGenerator;
@@ -236,6 +237,14 @@ public class SendMessageWriteDatabaseProcessor extends SendMessageNotNullValidat
 
                         // 通知上传任务队列检查新内容
                         IMMessageUploadManager.getInstance().notifySyncIdleSendingMessage();
+
+                        // 更新对应会话的最后一条关联消息
+                        IMConversationManager.getInstance().updateConversationLastMessage(
+                                sessionUserId,
+                                conversationType,
+                                targetUserId,
+                                dbMessageInsert.localId.get()
+                        );
 
                         // 返回 true, 终止后续 processor
                         return true;
