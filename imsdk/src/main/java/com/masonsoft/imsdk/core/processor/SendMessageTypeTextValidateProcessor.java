@@ -22,7 +22,7 @@ public class SendMessageTypeTextValidateProcessor extends SendMessageTypeValidat
     }
 
     @Override
-    protected boolean doTypeProcess(@NonNull IMSessionMessage target, long type) {
+    protected boolean doTypeProcess(@NonNull IMSessionMessage target, int type) {
         final StateProp<String> body = target.getIMMessage().body;
         if (body.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(

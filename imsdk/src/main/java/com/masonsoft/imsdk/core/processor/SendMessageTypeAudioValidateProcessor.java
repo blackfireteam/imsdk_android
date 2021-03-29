@@ -26,7 +26,7 @@ public class SendMessageTypeAudioValidateProcessor extends SendMessageTypeValida
     }
 
     @Override
-    protected boolean doTypeProcess(@NonNull IMSessionMessage target, long type) {
+    protected boolean doTypeProcess(@NonNull IMSessionMessage target, int type) {
         if (validateAudio(target)) {
             return true;
         }
