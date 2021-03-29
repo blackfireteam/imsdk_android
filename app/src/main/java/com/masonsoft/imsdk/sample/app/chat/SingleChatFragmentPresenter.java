@@ -14,6 +14,12 @@ import com.idonans.lang.DisposableHolder;
 import com.idonans.lang.thread.Threads;
 import com.idonans.lang.util.ViewUtil;
 import com.idonans.uniontype.UnionTypeItemObject;
+import com.masonsoft.imsdk.IMConversation;
+import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMConversationManager;
+import com.masonsoft.imsdk.core.IMSessionManager;
+import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.util.Objects;
 import com.xmqvip.xiaomaiquan.common.Constants;
 import com.xmqvip.xiaomaiquan.common.SafetyRunnable;
 import com.xmqvip.xiaomaiquan.common.api.CommonHttpApi;
@@ -59,10 +65,11 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     private static final boolean DEBUG = false;
 
-    private SessionManager.Session mSession;
+    private final long mSessionUserId;
+    private final int mConversationType = IMConstants.ConversationType.C2C;
     private final long mTargetUserId;
     @Nullable
-    private ImConversation mTargetConversation;
+    private IMConversation mTargetConversation;
     private final int mPageSize = 20;
     private long mFirstMessageId = -1;
     private long mLastMessageId = -1;
@@ -73,12 +80,18 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     @UiThread
     public SingleChatFragmentPresenter(@NonNull SingleChatFragment.ViewImpl view) {
         super(view, true, true);
-        mSession = SessionManager.getInstance().getSession();
+        mSessionUserId = IMSessionManager.getInstance().getSessionUserId();
         mTargetUserId = view.getTargetUserId();
-        mTargetConversation = ImManager.getInstance().getChatConversationByTargetUserId(mTargetUserId, true);
+        mTargetConversation = IMConversationManager.getInstance().getConversationByTargetUserId(
+                mSessionUserId,
+                mConversationType,
+                mTargetUserId);
         if (DEBUG) {
-            Timber.v(":mSession:%s, mTargetUserId:%s, mTargetConversation:%s",
-                    mSession, mTargetUserId, mTargetConversation);
+            SampleLog.v(Objects.defaultObjectTag(this) + " mSessionUserId:%s, mConversationType:%s, mTargetUserId:%s, mTargetConversation:%s",
+                    mSessionUserId,
+                    mConversationType,
+                    mTargetUserId,
+                    mTargetConversation);
         }
         if (mTargetConversation == null) {
             Throwable e = new IllegalArgumentException("mTargetConversation is null with mTargetUserId " + mTargetUserId);

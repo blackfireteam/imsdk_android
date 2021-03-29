@@ -585,6 +585,7 @@ public final class DatabaseHelper {
                 "create index " + TABLE_NAME_CONVERSATION + "_index_local_seq on " + TABLE_NAME_CONVERSATION + "(" + ColumnsConversation.C_LOCAL_SEQ + ")",
                 "create index " + TABLE_NAME_CONVERSATION + "_index_local_conversation_type on " + TABLE_NAME_CONVERSATION + "(" + ColumnsConversation.C_LOCAL_CONVERSATION_TYPE + ")",
                 "create index " + TABLE_NAME_CONVERSATION + "_index_target_user_id on " + TABLE_NAME_CONVERSATION + "(" + ColumnsConversation.C_TARGET_USER_ID + ")",
+                "create unique index " + TABLE_NAME_CONVERSATION + "_unique_index_local_conversation_type_target_user_id on " + TABLE_NAME_CONVERSATION + "(" + ColumnsConversation.C_LOCAL_CONVERSATION_TYPE + "," + ColumnsConversation.C_TARGET_USER_ID + ")",
         };
     }
 
