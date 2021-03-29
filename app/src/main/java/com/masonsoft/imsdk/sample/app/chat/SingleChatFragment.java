@@ -2,22 +2,30 @@ package com.masonsoft.imsdk.sample.app.chat;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.idonans.core.AbortSignal;
+import com.idonans.core.FormValidator;
 import com.idonans.dynamic.page.UnionTypeStatusPageView;
 import com.idonans.lang.util.ViewUtil;
 import com.idonans.uniontype.Host;
 import com.idonans.uniontype.UnionTypeAdapter;
 import com.idonans.uniontype.UnionTypeItemObject;
+import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.IMMessageFactory;
+import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.core.IMConstants.ConversationType;
+import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
@@ -27,6 +35,7 @@ import com.masonsoft.imsdk.sample.common.microlifecycle.VisibleRecyclerViewMicro
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSingleChatFragmentBinding;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.util.BackStackUtil;
+import com.masonsoft.imsdk.sample.util.TipUtil;
 
 import java.util.Collection;
 
@@ -50,6 +59,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
     private ImsdkSampleSingleChatFragmentBinding mBinding;
     @Nullable
     private SoftKeyboardHelper mSoftKeyboardHelper;
+    private LocalEnqueueCallback mEnqueueCallback;
 
     private UnionTypeAdapter mDataAdapter;
     private SingleChatFragmentPresenter mPresenter;
@@ -168,7 +178,56 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
         };
 
+        final EditText keyboardEditText = mBinding.keyboardEditText;
+        final View keyboardSubmit = mBinding.keyboardSubmit;
+        FormValidator.bind(
+                new FormValidator.InputView[]{
+                        new FormValidator.InputViewFactory.TextViewInputView(keyboardEditText) {
+                            @Override
+                            public boolean isContentEnable() {
+                                final Editable editable = keyboardEditText.getText();
+                                if (editable == null) {
+                                    SampleLog.e(Constants.ErrorLog.EDITABLE_IS_NULL);
+                                    return false;
+                                }
+                                final String content = editable.toString();
+                                return content.trim().length() > 0;
+                            }
+                        }
+                },
+                new FormValidator.SubmitView[]{
+                        new FormValidator.SubmitViewFactory.SimpleSubmitView(keyboardSubmit) {
+                            @Override
+                            public void setSubmitEnable(boolean enable) {
+                                ViewUtil.setVisibilityIfChanged(keyboardSubmit, enable ? View.VISIBLE : View.GONE);
+                            }
+                        }});
+        ViewUtil.onClick(mBinding.keyboardSubmit, v -> submitTextMessage());
+
         return mBinding.getRoot();
+    }
+
+    private void submitTextMessage() {
+        final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+        if (binding == null) {
+            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        final Editable editable = binding.keyboardEditText.getText();
+        if (editable == null) {
+            SampleLog.e(Constants.ErrorLog.EDITABLE_IS_NULL);
+            return;
+        }
+
+        final String text = editable.toString().trim();
+        final IMMessage imMessage = IMMessageFactory.createTextMessage(text);
+        mEnqueueCallback = new LocalEnqueueCallback();
+        IMMessageQueueManager.getInstance().enqueueSendMessage(
+                imMessage,
+                mTargetUserId,
+                new IMSessionMessage.WeakEnqueueCallbackAdapter(mEnqueueCallback)
+        );
     }
 
     private void clearPresenter() {
@@ -264,6 +323,45 @@ public class SingleChatFragment extends SystemInsetsFragment {
         // TODO
         public Activity getActivity() {
             return SingleChatFragment.this.getActivity();
+        }
+    }
+
+    private class LocalEnqueueCallback implements IMSessionMessage.EnqueueCallback, AbortSignal {
+
+        @Override
+        public void onEnqueueSuccess(@NonNull IMSessionMessage imSessionMessage) {
+            if (isAbort()) {
+                return;
+            }
+            final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+            if (binding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            SampleLog.v("onEnqueueSuccess %s", imSessionMessage);
+            // 消息发送成功之后，清空输入框
+            binding.keyboardEditText.setText(null);
+        }
+
+        @Override
+        public void onEnqueueFail(@NonNull IMSessionMessage imSessionMessage, int errorCode, String errorMessage) {
+            if (isAbort()) {
+                return;
+            }
+            final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+            if (binding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            SampleLog.v("onEnqueueFail %s, errorCode:%s, errorMessage:%s", imSessionMessage, errorCode, errorMessage);
+            TipUtil.show(errorMessage);
+        }
+
+        @Override
+        public boolean isAbort() {
+            return mEnqueueCallback != this;
         }
     }
 

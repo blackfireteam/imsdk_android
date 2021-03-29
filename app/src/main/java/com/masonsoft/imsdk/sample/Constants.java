@@ -13,6 +13,7 @@ public class Constants {
         String BINDING_IS_NULL = "binding is null";
         String ACTIVITY_IS_NULL = "activity is null";
         String FRAGMENT_IS_NULL = "fragment is null";
+        String EDITABLE_IS_NULL = "editable is null";
     }
 
 }
