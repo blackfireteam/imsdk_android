@@ -25,6 +25,8 @@ public class MessageObservable extends WeakObservable<MessageObservable.MessageO
                                    final long targetUserId,
                                    final long fromBlockId,
                                    final long toBlockId);
+
+        void onMultiMessageChanged(final long sessionUserId);
     }
 
     public void notifyMessageChanged(final long sessionUserId,
@@ -62,6 +64,10 @@ public class MessageObservable extends WeakObservable<MessageObservable.MessageO
                 targetUserId,
                 fromBlockId,
                 toBlockId));
+    }
+
+    public void notifyMultiMessageChanged(final long sessionUserId) {
+        forEach(messageObserver -> messageObserver.onMultiMessageChanged(sessionUserId));
     }
 
 }

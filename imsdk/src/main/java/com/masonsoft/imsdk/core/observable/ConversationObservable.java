@@ -19,6 +19,8 @@ public class ConversationObservable extends WeakObservable<ConversationObservabl
                                    final long conversationId,
                                    final int conversationType,
                                    final long targetUserId);
+
+        void onMultiConversationChanged(final long sessionUserId);
     }
 
     public void notifyConversationChanged(final long sessionUserId,
@@ -43,6 +45,10 @@ public class ConversationObservable extends WeakObservable<ConversationObservabl
                 conversationType,
                 targetUserId)
         );
+    }
+
+    public void notifyMultiConversationChanged(final long sessionUserId) {
+        forEach(conversationObserver -> conversationObserver.onMultiConversationChanged(sessionUserId));
     }
 
 }
