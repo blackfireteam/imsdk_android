@@ -110,7 +110,7 @@ public class SendMessageWriteDatabaseProcessor extends SendMessageNotNullValidat
                     target.getEnqueueCallback().onEnqueueSuccess(target);
 
                     // 通知上传任务队列检查新内容
-                    IMMessageUploadManager.getInstance().notifySyncLocalSendingMessage();
+                    IMMessageUploadManager.getInstance().notifySyncLocalSendingMessage(sessionUserId);
 
                     // 返回 true, 终止后续 processor
                     return true;
@@ -138,7 +138,7 @@ public class SendMessageWriteDatabaseProcessor extends SendMessageNotNullValidat
                     target.getEnqueueCallback().onEnqueueSuccess(target);
 
                     // 通知上传任务队列检查新内容
-                    IMMessageUploadManager.getInstance().notifySyncLocalSendingMessage();
+                    IMMessageUploadManager.getInstance().notifySyncLocalSendingMessage(sessionUserId);
 
                     // 返回 true, 终止后续 processor
                     return true;
@@ -230,7 +230,7 @@ public class SendMessageWriteDatabaseProcessor extends SendMessageNotNullValidat
                         target.getEnqueueCallback().onEnqueueSuccess(target);
 
                         // 通知上传任务队列检查新内容
-                        IMMessageUploadManager.getInstance().notifySyncLocalSendingMessage();
+                        IMMessageUploadManager.getInstance().notifySyncLocalSendingMessage(sessionUserId);
 
                         // 更新对应会话的最后一条关联消息
                         IMConversationManager.getInstance().updateConversationLastMessage(

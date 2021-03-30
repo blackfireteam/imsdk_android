@@ -1,6 +1,6 @@
-package com.masonsoft.imsdk.sample.common;
+package com.masonsoft.imsdk.lang;
 
-import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.core.IMLog;
 
 public class SafetyRunnable implements Runnable {
 
@@ -15,7 +15,7 @@ public class SafetyRunnable implements Runnable {
         try {
             onSafetyRun();
         } catch (Throwable e) {
-            SampleLog.e(e);
+            IMLog.e(e);
         }
     }
 

@@ -12,8 +12,8 @@ import com.idonans.core.thread.TaskQueue;
 import com.idonans.core.thread.Threads;
 import com.idonans.core.util.FileUtil;
 import com.idonans.core.util.IOUtil;
+import com.masonsoft.imsdk.lang.SafetyRunnable;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.common.SafetyRunnable;
 
 import java.io.File;
 import java.io.FileInputStream;

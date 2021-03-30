@@ -130,19 +130,13 @@ public class LocalSendingMessageProvider {
     }
 
     /**
-     * 查询结果按照 localSendingMessageLocalId 从小到大排列
-     *
-     * @param localSendingMessageLocalId 不包括这一条，初始传 0
+     * 查询一定数量的待发送的消息
      */
     @NonNull
-    public TinyPage<LocalSendingMessage> pageQueryLocalSendingMessage(
+    public List<LocalSendingMessage> getIdleMessageList(
             final long sessionUserId,
-            final long localSendingMessageLocalId,
-            final int limit,
-            @Nullable ColumnsSelector<LocalSendingMessage> columnsSelector) {
-        if (columnsSelector == null) {
-            columnsSelector = LocalSendingMessage.COLUMNS_SELECTOR_ALL;
-        }
+            final int limit) {
+        final ColumnsSelector<LocalSendingMessage> columnsSelector = LocalSendingMessage.COLUMNS_SELECTOR_ALL;
 
         final List<LocalSendingMessage> items = new ArrayList<>();
         Cursor cursor = null;
@@ -153,10 +147,11 @@ public class LocalSendingMessageProvider {
             final StringBuilder selection = new StringBuilder();
             final List<String> selectionArgs = new ArrayList<>();
 
-            if (localSendingMessageLocalId > 0) {
-                selection.append(" " + DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_ID + ">? ");
-                selectionArgs.add(String.valueOf(localSendingMessageLocalId));
-            }
+            selection.append(" " + DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_SEND_STATUS + "=? ");
+            selectionArgs.add(String.valueOf(IMConstants.SendStatus.IDLE));
+
+            selection.append(" and " + DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_ABORT_ID + "=? ");
+            selectionArgs.add(String.valueOf(IMConstants.AbortId.RESET));
 
             cursor = db.query(
                     DatabaseHelper.TABLE_NAME_LOCAL_SENDING_MESSAGE,
@@ -165,8 +160,8 @@ public class LocalSendingMessageProvider {
                     selectionArgs.toArray(new String[]{}),
                     null,
                     null,
-                    DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_ID + " asc",
-                    String.valueOf(limit + 1) // 此处多查询一条用来计算 hasMore
+                    DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_LAST_MODIFY_MS + " asc",
+                    String.valueOf(limit)
             );
 
             while (cursor.moveToNext()) {
@@ -180,17 +175,9 @@ public class LocalSendingMessageProvider {
             IOUtil.closeQuietly(cursor);
         }
 
-        final TinyPage<LocalSendingMessage> result = new TinyPage<>();
-        result.hasMore = items.size() > limit;
-        if (result.hasMore) {
-            result.items = new ArrayList<>(items.subList(0, limit));
-        } else {
-            result.items = items;
-        }
-
-        IMLog.v("found %s localSendingMessage[hasMore:%s] with sessionUserId:%s, localSendingMessageLocalId:%s, limit:%s",
-                result.items.size(), result.hasMore, sessionUserId, localSendingMessageLocalId, limit);
-        return result;
+        IMLog.v("getIdleMessageList found %s localSendingMessage with sessionUserId:%s, limit:%s",
+                items.size(), sessionUserId, limit);
+        return items;
     }
 
     /**

@@ -744,6 +744,7 @@ public final class DatabaseHelper {
     @NonNull
     private String[] getSQLIndexTableLocalSendingMessage() {
         return new String[]{
+                "create index " + TABLE_NAME_LOCAL_SENDING_MESSAGE + "_index_local_last_modify on " + TABLE_NAME_LOCAL_SENDING_MESSAGE + "(" + ColumnsLocalSendingMessage.C_LOCAL_LAST_MODIFY_MS + ")",
                 "create index " + TABLE_NAME_LOCAL_SENDING_MESSAGE + "_index_conversation_type on " + TABLE_NAME_LOCAL_SENDING_MESSAGE + "(" + ColumnsLocalSendingMessage.C_CONVERSATION_TYPE + ")",
                 "create index " + TABLE_NAME_LOCAL_SENDING_MESSAGE + "_index_target_user_id on " + TABLE_NAME_LOCAL_SENDING_MESSAGE + "(" + ColumnsLocalSendingMessage.C_TARGET_USER_ID + ")",
                 "create index " + TABLE_NAME_LOCAL_SENDING_MESSAGE + "_index_message_local_id on " + TABLE_NAME_LOCAL_SENDING_MESSAGE + "(" + ColumnsLocalSendingMessage.C_MESSAGE_LOCAL_ID + ")",
