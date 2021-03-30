@@ -234,6 +234,11 @@ public class IMSessionManager {
             return !isAbort() && sessionTcpClient != null && sessionTcpClient.isOnline();
         }
 
+        @Nullable
+        public SessionTcpClient getSessionTcpClient() {
+            return mSessionTcpClient;
+        }
+
         @Override
         public boolean isAbort() {
             return super.isAbort() || IMSessionManager.this.mSessionTcpClientProxy != this;
