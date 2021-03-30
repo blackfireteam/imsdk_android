@@ -123,8 +123,6 @@ public class ReceivedMessageProtoTypeChatRBatchProcessor extends ReceivedMessage
             try {
                 for (Message message : messageList) {
                     final long remoteMessageId = message.remoteMessageId.get();
-                    // 将发送状态设置为发送成功
-                    message.localSendStatus.set(IMConstants.SendStatus.SUCCESS);
                     // 设置 block id
                     message.localBlockId.set(blockId);
 
@@ -147,8 +145,6 @@ public class ReceivedMessageProtoTypeChatRBatchProcessor extends ReceivedMessage
                         // 消息已经存在，更新必要字段
                         final Message updateMessage = new Message();
                         updateMessage.applyLogicField(sessionUserId, conversationType, targetUserId);
-                        // 更新发送状态为发送成功
-                        updateMessage.localSendStatus.set(IMConstants.SendStatus.SUCCESS);
                         // 更新 block id
                         updateMessage.localBlockId.set(blockId);
                         updateMessage.localId.set(dbMessage.localId.get());

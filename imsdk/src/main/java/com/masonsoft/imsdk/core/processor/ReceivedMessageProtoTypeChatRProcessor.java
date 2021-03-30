@@ -81,10 +81,8 @@ public class ReceivedMessageProtoTypeChatRProcessor extends ReceivedMessageProto
                     targetUserId,
                     remoteMessageId);
             if (dbMessage == null) {
-                // 如果消息在本地不存在，则入库
+                // 消息在本地不存在，入库
 
-                // 将发送状态设置为发送成功
-                message.localSendStatus.set(IMConstants.SendStatus.SUCCESS);
                 // 设置 block id
                 message.localBlockId.set(MessageBlock.generateBlockId(
                         sessionUserId,
