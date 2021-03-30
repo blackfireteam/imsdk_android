@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.collection.LruCache;
 
 import com.idonans.core.Singleton;
 import com.idonans.core.util.IOUtil;
@@ -34,6 +35,86 @@ public class LocalSendingMessageProvider {
         IMProcessValidator.validateProcess();
 
         return INSTANCE.get();
+    }
+
+    private static class MemoryFullCache {
+
+        private static final MemoryFullCache DEFAULT = new MemoryFullCache();
+
+        private static final int MEMORY_CACHE_SIZE = 300;
+        @NonNull
+        private final LruCache<String, LocalSendingMessage> mFullCaches = new LruCache<>(MEMORY_CACHE_SIZE);
+
+        private String buildKey(long sessionUserId, long localSendingMessageLocalId) {
+            return sessionUserId + "_" + localSendingMessageLocalId;
+        }
+
+        private String buildKeyWithTargetMessage(long sessionUserId, int conversationType, long targetUserId, long messageLocalId) {
+            return sessionUserId + "_" + conversationType + "_" + targetUserId + "_" + messageLocalId;
+        }
+
+        private void addFullCache(long sessionUserId, @NonNull LocalSendingMessage localSendingMessage) {
+            try {
+                {
+                    final String key = buildKey(sessionUserId, localSendingMessage.localId.get());
+                    mFullCaches.put(key, localSendingMessage);
+                }
+                {
+                    // 同时缓存 by targetMessage
+                    final String key = buildKeyWithTargetMessage(
+                            sessionUserId,
+                            localSendingMessage.conversationType.get(),
+                            localSendingMessage.targetUserId.get(),
+                            localSendingMessage.messageLocalId.get());
+                    mFullCaches.put(key, localSendingMessage);
+                }
+            } catch (Throwable e) {
+                IMLog.e(e);
+                RuntimeMode.throwIfDebug(e);
+            }
+        }
+
+        private void removeFullCache(long sessionUserId, long localSendingMessageLocalId) {
+            final String key = buildKey(sessionUserId, localSendingMessageLocalId);
+            final LocalSendingMessage cache = mFullCaches.get(key);
+            if (cache != null) {
+                removeFullCacheInternal(sessionUserId, cache);
+            }
+        }
+
+        private void removeFullCacheInternal(long sessionUserId, @NonNull LocalSendingMessage localSendingMessage) {
+            try {
+                {
+                    final String key = buildKey(sessionUserId, localSendingMessage.localId.get());
+                    mFullCaches.remove(key);
+                }
+                {
+                    // 同时删除 by targetMessage
+                    final String key = buildKeyWithTargetMessage(
+                            sessionUserId,
+                            localSendingMessage.conversationType.get(),
+                            localSendingMessage.targetUserId.get(),
+                            localSendingMessage.messageLocalId.get());
+                    mFullCaches.remove(key);
+                }
+            } catch (Throwable e) {
+                IMLog.e(e);
+                RuntimeMode.throwIfDebug(e);
+            }
+        }
+
+        @Nullable
+        private LocalSendingMessage getFullCache(long sessionUserId, long localSendingMessageLocalId) {
+            final String key = buildKey(sessionUserId, localSendingMessageLocalId);
+            return mFullCaches.get(key);
+        }
+
+        @Nullable
+        private LocalSendingMessage getFullCacheWithTargetMessage(long sessionUserId, int conversationType, long targetUserId, long messageLocalId) {
+            final String key = buildKeyWithTargetMessage(sessionUserId, conversationType, targetUserId, messageLocalId);
+            return mFullCaches.get(key);
+        }
+
     }
 
     private LocalSendingMessageProvider() {
@@ -109,11 +190,20 @@ public class LocalSendingMessageProvider {
     @Nullable
     public LocalSendingMessage getLocalSendingMessage(
             final long sessionUserId,
-            final long localSendingMessageLocalId,
-            @Nullable ColumnsSelector<LocalSendingMessage> columnsSelector) {
-        if (columnsSelector == null) {
-            columnsSelector = LocalSendingMessage.COLUMNS_SELECTOR_ALL;
+            final long localSendingMessageLocalId) {
+        final ColumnsSelector<LocalSendingMessage> columnsSelector = LocalSendingMessage.COLUMNS_SELECTOR_ALL;
+
+        final LocalSendingMessage cache = MemoryFullCache.DEFAULT.getFullCache(sessionUserId, localSendingMessageLocalId);
+        if (cache != null) {
+            IMLog.v("getLocalSendingMessage cache hint sessionUserId:%s, localSendingMessageLocalId:%s",
+                    sessionUserId,
+                    localSendingMessageLocalId);
+            return cache;
         }
+
+        IMLog.v("getLocalSendingMessage cache miss, try read from db, sessionUserId:%s, localSendingMessageLocalId:%s",
+                sessionUserId,
+                localSendingMessageLocalId);
 
         Cursor cursor = null;
         try {
@@ -142,6 +232,8 @@ public class LocalSendingMessageProvider {
                 final LocalSendingMessage result = columnsSelector.cursorToObjectWithQueryColumns(cursor);
                 IMLog.v("localSendingMessage found with sessionUserId:%s, localSendingMessageLocalId:%s",
                         sessionUserId, localSendingMessageLocalId);
+
+                MemoryFullCache.DEFAULT.addFullCache(sessionUserId, result);
                 return result;
             }
         } catch (Throwable e) {
@@ -165,13 +257,27 @@ public class LocalSendingMessageProvider {
             final long sessionUserId,
             final int conversationType,
             final long targetUserId,
-            final long messageLocalId,
-            @Nullable ColumnsSelector<LocalSendingMessage> columnsSelector) {
+            final long messageLocalId) {
         IMConstants.ConversationType.check(conversationType);
 
-        if (columnsSelector == null) {
-            columnsSelector = LocalSendingMessage.COLUMNS_SELECTOR_ALL;
+        final ColumnsSelector<LocalSendingMessage> columnsSelector = LocalSendingMessage.COLUMNS_SELECTOR_ALL;
+
+        final LocalSendingMessage cache = MemoryFullCache.DEFAULT.getFullCacheWithTargetMessage(
+                sessionUserId, conversationType, targetUserId, messageLocalId);
+        if (cache != null) {
+            IMLog.v("getLocalSendingMessageByTargetMessage cache hint sessionUserId:%s, conversationType:%s, targetUserId:%s, messageLocalId:%s",
+                    sessionUserId,
+                    conversationType,
+                    targetUserId,
+                    messageLocalId);
+            return cache;
         }
+
+        IMLog.v("getLocalSendingMessageByTargetMessage cache miss, try read from db, sessionUserId:%s, conversationType:%s, targetUserId:%s, messageLocalId:%s",
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                messageLocalId);
 
         Cursor cursor = null;
         try {
@@ -208,6 +314,8 @@ public class LocalSendingMessageProvider {
                         conversationType,
                         targetUserId,
                         messageLocalId);
+
+                MemoryFullCache.DEFAULT.addFullCache(sessionUserId, result);
                 return result;
             }
         } catch (Throwable e) {
@@ -349,6 +457,8 @@ public class LocalSendingMessageProvider {
                         rowsAffected
                 );
             }
+
+            MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, localSendingMessage.localId.get());
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);
@@ -396,6 +506,8 @@ public class LocalSendingMessageProvider {
                         localId,
                         rowsAffected);
             }
+
+            MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, localId);
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);

@@ -55,21 +55,19 @@ public class ConversationDatabaseProvider {
         }
 
         private void addFullCache(long sessionUserId, @NonNull Conversation conversation) {
-            if (conversation.localId.isUnset()) {
-                IMLog.e("localId is unset %s", conversation);
-                return;
-            }
-            {
-                final String key = buildKey(sessionUserId, conversation.localId.get());
-                mFullCaches.put(key, conversation);
-            }
-            {
-                if (!conversation.localConversationType.isUnset()
-                        && !conversation.targetUserId.isUnset()) {
+            try {
+                {
+                    final String key = buildKey(sessionUserId, conversation.localId.get());
+                    mFullCaches.put(key, conversation);
+                }
+                {
                     // 同时缓存 by targetUserId
                     final String key = buildKeyWithTargetUserId(sessionUserId, conversation.localConversationType.get(), conversation.targetUserId.get());
                     mFullCaches.put(key, conversation);
                 }
+            } catch (Throwable e) {
+                IMLog.e(e);
+                RuntimeMode.throwIfDebug(e);
             }
         }
 
@@ -81,30 +79,20 @@ public class ConversationDatabaseProvider {
             }
         }
 
-        private void removeFullCacheWithTargetUserId(long sessionUserId, int conversationType, long targetUserId) {
-            final String key = buildKeyWithTargetUserId(sessionUserId, conversationType, targetUserId);
-            final Conversation cache = mFullCaches.get(key);
-            if (cache != null) {
-                removeFullCacheInternal(sessionUserId, cache);
-            }
-        }
-
         private void removeFullCacheInternal(long sessionUserId, @NonNull Conversation conversation) {
-            if (conversation.localId.isUnset()) {
-                IMLog.e("localId is unset %s", conversation);
-                return;
-            }
-            {
-                final String key = buildKey(sessionUserId, conversation.localId.get());
-                mFullCaches.remove(key);
-            }
-            {
-                if (!conversation.localConversationType.isUnset()
-                        && !conversation.targetUserId.isUnset()) {
+            try {
+                {
+                    final String key = buildKey(sessionUserId, conversation.localId.get());
+                    mFullCaches.remove(key);
+                }
+                {
                     // 同时删除 by targetUserId
                     final String key = buildKeyWithTargetUserId(sessionUserId, conversation.localConversationType.get(), conversation.targetUserId.get());
                     mFullCaches.remove(key);
                 }
+            } catch (Throwable e) {
+                IMLog.e(e);
+                RuntimeMode.throwIfDebug(e);
             }
         }
 
@@ -394,7 +382,6 @@ public class ConversationDatabaseProvider {
 
             // 自增主键
             conversation.localId.set(rowId);
-            MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, rowId);
             ConversationObservable.DEFAULT.notifyConversationCreated(
                     sessionUserId,
                     rowId,

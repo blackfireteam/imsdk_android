@@ -56,20 +56,19 @@ public class MessageDatabaseProvider {
         }
 
         private void addFullCache(long sessionUserId, int conversationType, long targetUserId, @NonNull Message message) {
-            if (message.localId.isUnset()) {
-                IMLog.e("localId is unset %s", message);
-                return;
-            }
-            {
-                final String key = buildKey(sessionUserId, conversationType, targetUserId, message.localId.get());
-                mFullCaches.put(key, message);
-            }
-            {
-                if (!message.remoteMessageId.isUnset()) {
+            try {
+                {
+                    final String key = buildKey(sessionUserId, conversationType, targetUserId, message.localId.get());
+                    mFullCaches.put(key, message);
+                }
+                {
                     // 同时缓存 by remoteMessageId
                     final String key = buildKeyWithRemoteMessageId(sessionUserId, conversationType, targetUserId, message.remoteMessageId.get());
                     mFullCaches.put(key, message);
                 }
+            } catch (Throwable e) {
+                IMLog.e(e);
+                RuntimeMode.throwIfDebug(e);
             }
         }
 
@@ -88,29 +87,20 @@ public class MessageDatabaseProvider {
             }
         }
 
-        private void removeFullCacheWithServerMessageId(long sessionUserId, int conversationType, long targetUserId, long serverMessageId) {
-            final String key = buildKeyWithRemoteMessageId(sessionUserId, conversationType, targetUserId, serverMessageId);
-            final Message cache = mFullCaches.get(key);
-            if (cache != null) {
-                removeFullCacheInternal(sessionUserId, conversationType, targetUserId, cache);
-            }
-        }
-
         private void removeFullCacheInternal(long sessionUserId, int conversationType, long targetUserId, @NonNull Message message) {
-            if (message.localId.isUnset()) {
-                IMLog.e("localId is unset %s", message);
-                return;
-            }
-            {
-                final String key = buildKey(sessionUserId, conversationType, targetUserId, message.localId.get());
-                mFullCaches.remove(key);
-            }
-            {
-                if (!message.remoteMessageId.isUnset()) {
+            try {
+                {
+                    final String key = buildKey(sessionUserId, conversationType, targetUserId, message.localId.get());
+                    mFullCaches.remove(key);
+                }
+                {
                     // 同时删除 by remoteMessageId
                     final String key = buildKeyWithRemoteMessageId(sessionUserId, conversationType, targetUserId, message.remoteMessageId.get());
                     mFullCaches.remove(key);
                 }
+            } catch (Throwable e) {
+                IMLog.e(e);
+                RuntimeMode.throwIfDebug(e);
             }
         }
 
@@ -507,7 +497,6 @@ public class MessageDatabaseProvider {
 
             // 自增主键
             message.localId.set(rowId);
-            MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, conversationType, targetUserId, rowId);
             MessageObservable.DEFAULT.notifyMessageCreated(sessionUserId, conversationType, targetUserId, rowId);
             return true;
         } catch (Throwable e) {

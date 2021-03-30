@@ -31,16 +31,6 @@ public final class IMConstants {
         }
     }
 
-    /**
-     * 特殊的 id 标识
-     */
-    public static class SpecialId {
-        /**
-         * 指向未知的多个 id
-         */
-        public static final long UNKNOWN_MULTI = Long.MIN_VALUE / 2;
-    }
-
     public static class AbortId {
         /**
          * 重置
