@@ -10,6 +10,7 @@ import com.masonsoft.imsdk.core.db.LocalSendingMessageProvider;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
+import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
 import com.masonsoft.imsdk.util.Objects;
@@ -160,8 +161,25 @@ public class IMMessageUploadManager {
 
         @Nullable
         private MessagePacket buildMessagePacket() {
-            // TODO 将消息预处理之后构建为 proto buf
-            return null;
+            final Message message = this.mMessage;
+            if (message == null) {
+                return null;
+            }
+
+            // 将消息预处理之后构建为 proto buf
+            final int messageType = message.messageType.get();
+            if (messageType == IMConstants.MessageType.TEXT) {
+                final ProtoMessage.ChatS chatS = ProtoMessage.ChatS.newBuilder()
+                        .setBody(message.body.get())
+                        .build();
+                final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(chatS);
+                // TODO protoByteMessage -> MessagePacket ?
+                return null;
+            } else {
+                final Throwable e = new IllegalAccessError("unknown message type:" + messageType + " " + message);
+                IMLog.e(e);
+                return null;
+            }
         }
 
         private boolean isFastMessage() {
