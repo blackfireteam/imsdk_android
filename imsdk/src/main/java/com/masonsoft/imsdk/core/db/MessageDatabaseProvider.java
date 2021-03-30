@@ -477,6 +477,9 @@ public class MessageDatabaseProvider {
             return false;
         }
 
+        // 设置 last modify
+        message.localLastModifyMs.set(System.currentTimeMillis());
+
         try {
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             final String tableName = dbHelper.createTableMessageIfNeed(conversationType, targetUserId);
@@ -530,6 +533,9 @@ public class MessageDatabaseProvider {
             );
             return false;
         }
+
+        // 设置 last modify
+        message.localLastModifyMs.set(System.currentTimeMillis());
 
         try {
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
@@ -601,6 +607,8 @@ public class MessageDatabaseProvider {
 
             final ContentValues contentValuesUpdate = new ContentValues();
             contentValuesUpdate.put(DatabaseHelper.ColumnsMessage.C_LOCAL_BLOCK_ID, toBlockId);
+            // 设置 last modify
+            contentValuesUpdate.put(DatabaseHelper.ColumnsMessage.C_LOCAL_LAST_MODIFY_MS, System.currentTimeMillis());
 
             //noinspection StringBufferReplaceableByString
             final StringBuilder where = new StringBuilder();

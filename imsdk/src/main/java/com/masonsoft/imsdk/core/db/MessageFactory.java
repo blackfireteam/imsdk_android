@@ -56,6 +56,7 @@ public class MessageFactory {
         target._conversationType.apply(input._conversationType);
         target._targetUserId.apply(input._targetUserId);
         target.localId.apply(input.id);
+        target.localLastModifyMs.apply(input.lastModifyMs);
         target.localSeq.apply(input.seq);
         target.fromUserId.apply(input.fromUserId);
         target.toUserId.apply(input.toUserId);

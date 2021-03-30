@@ -19,6 +19,11 @@ public class IMConversation {
     public final StateProp<Long> id = new StateProp<>();
 
     /**
+     * 本地记录的 lastModify, 毫秒
+     */
+    public final StateProp<Long> lastModifyMs = new StateProp<>();
+
+    /**
      * 排序字段, 用于分页读取会话.
      */
     @NonNull
@@ -116,6 +121,7 @@ public class IMConversation {
      */
     public void apply(@NonNull IMConversation input) {
         this.id.apply(input.id);
+        this.lastModifyMs.apply(input.lastModifyMs);
         this.seq.apply(input.seq);
         this.type.apply(input.type);
         this.targetUserId.apply(input.targetUserId);
@@ -141,6 +147,11 @@ public class IMConversation {
             builder.append(" id:unset");
         } else {
             builder.append(" id:").append(this.id.get());
+        }
+        if (this.lastModifyMs.isUnset()) {
+            builder.append(" lastModifyMs:unset");
+        } else {
+            builder.append(" lastModifyMs:").append(this.lastModifyMs.get());
         }
         if (this.type.isUnset()) {
             builder.append(" type:unset");

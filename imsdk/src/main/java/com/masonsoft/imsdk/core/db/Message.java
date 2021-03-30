@@ -46,6 +46,11 @@ public class Message {
     public final StateProp<Long> localId = new StateProp<>();
 
     /**
+     * 本地记录的 lastModify, 毫秒
+     */
+    public final StateProp<Long> localLastModifyMs = new StateProp<>();
+
+    /**
      * @see ColumnsMessage#C_LOCAL_SEQ
      */
     @NonNull
@@ -207,6 +212,11 @@ public class Message {
         } else {
             builder.append(" localId:").append(this.localId.get());
         }
+        if (this.localLastModifyMs.isUnset()) {
+            builder.append(" localLastModifyMs:unset");
+        } else {
+            builder.append(" localLastModifyMs:").append(this.localLastModifyMs.get());
+        }
         if (this.fromUserId.isUnset()) {
             builder.append(" fromUserId:unset");
         } else {
@@ -245,6 +255,7 @@ public class Message {
         this._conversationType.apply(input._conversationType);
         this._targetUserId.apply(input._targetUserId);
         this.localId.apply(input.localId);
+        this.localLastModifyMs.apply(input.localLastModifyMs);
         this.localSeq.apply(input.localSeq);
         this.fromUserId.apply(input.fromUserId);
         this.toUserId.apply(input.toUserId);
@@ -275,6 +286,9 @@ public class Message {
         final ContentValues target = new ContentValues();
         if (!this.localId.isUnset()) {
             target.put(ColumnsMessage.C_LOCAL_ID, this.localId.get());
+        }
+        if (!this.localLastModifyMs.isUnset()) {
+            target.put(ColumnsMessage.C_LOCAL_LAST_MODIFY_MS, this.localLastModifyMs.get());
         }
         if (!this.localSeq.isUnset()) {
             target.put(ColumnsMessage.C_LOCAL_SEQ, this.localSeq.get());
@@ -358,6 +372,7 @@ public class Message {
         public String[] queryColumns() {
             return new String[]{
                     ColumnsMessage.C_LOCAL_ID,
+                    ColumnsMessage.C_LOCAL_LAST_MODIFY_MS,
                     ColumnsMessage.C_LOCAL_SEQ,
                     ColumnsMessage.C_FROM_USER_ID,
                     ColumnsMessage.C_TO_USER_ID,
@@ -390,6 +405,7 @@ public class Message {
             final Message target = new Message();
             int index = -1;
             target.localId.set(CursorUtil.getLong(cursor, ++index));
+            target.localLastModifyMs.set(CursorUtil.getLong(cursor, ++index));
             target.localSeq.set(CursorUtil.getLong(cursor, ++index));
             target.fromUserId.set(CursorUtil.getLong(cursor, ++index));
             target.toUserId.set(CursorUtil.getLong(cursor, ++index));
