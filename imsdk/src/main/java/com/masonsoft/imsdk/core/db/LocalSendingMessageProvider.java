@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.core.db;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -13,6 +14,7 @@ import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.RuntimeMode;
+import com.masonsoft.imsdk.core.observable.MessageObservable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +74,13 @@ public class LocalSendingMessageProvider {
                 IMLog.e(e);
                 RuntimeMode.throwIfDebug(e);
             }
+        }
+
+        /**
+         * 清空所有缓存内容
+         */
+        private void clear() {
+            mFullCaches.evictAll();
         }
 
         private void removeFullCache(long sessionUserId, long localSendingMessageLocalId) {
@@ -407,6 +416,88 @@ public class LocalSendingMessageProvider {
             // 自增主键
             localSendingMessage.localId.set(rowId);
             return true;
+        } catch (Throwable e) {
+            IMLog.e(e);
+            RuntimeMode.throwIfDebug(e);
+        }
+        return false;
+    }
+
+    /**
+     * 删除所有发送状态为成功的消息
+     */
+    public boolean removeAllSuccessMessage(final long sessionUserId) {
+        try {
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
+
+            //noinspection StringBufferReplaceableByString
+            final StringBuilder where = new StringBuilder();
+            final List<String> whereArgs = new ArrayList<>();
+
+            where.append(" " + DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_SEND_STATUS + "=? ");
+            whereArgs.add(String.valueOf(IMConstants.SendStatus.SUCCESS));
+
+            int rowsAffected = db.delete(
+                    DatabaseHelper.TABLE_NAME_LOCAL_SENDING_MESSAGE,
+                    where.toString(),
+                    whereArgs.toArray(new String[]{})
+            );
+            if (rowsAffected > 0) {
+                IMLog.v(
+                        "removeAllSuccessMessage with sessionUserId:%s affected %s rows",
+                        sessionUserId,
+                        rowsAffected
+                );
+
+                MemoryFullCache.DEFAULT.clear();
+                MessageObservable.DEFAULT.notifyMultiMessageChanged(sessionUserId);
+                return true;
+            }
+        } catch (Throwable e) {
+            IMLog.e(e);
+            RuntimeMode.throwIfDebug(e);
+        }
+        return false;
+    }
+
+    /**
+     * 将所有未发送成功消息都设置为发送失败
+     */
+    public boolean updateMessageToFailIfNotSuccess(final long sessionUserId) {
+        try {
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
+
+            final ContentValues contentValuesUpdate = new ContentValues();
+            contentValuesUpdate.put(DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_SEND_STATUS, IMConstants.SendStatus.IDLE);
+            contentValuesUpdate.put(DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_ABORT_ID, IMConstants.AbortId.RESET);
+            contentValuesUpdate.put(DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_LAST_MODIFY_MS, System.currentTimeMillis());
+
+            //noinspection StringBufferReplaceableByString
+            final StringBuilder where = new StringBuilder();
+            final List<String> whereArgs = new ArrayList<>();
+
+            where.append(" " + DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_SEND_STATUS + "!=? ");
+            whereArgs.add(String.valueOf(IMConstants.SendStatus.SUCCESS));
+
+            int rowsAffected = db.update(
+                    DatabaseHelper.TABLE_NAME_LOCAL_SENDING_MESSAGE,
+                    contentValuesUpdate,
+                    where.toString(),
+                    whereArgs.toArray(new String[]{})
+            );
+            if (rowsAffected > 0) {
+                IMLog.v(
+                        "updateMessageToFailIfNotSuccess with sessionUserId:%s affected %s rows",
+                        sessionUserId,
+                        rowsAffected
+                );
+
+                MemoryFullCache.DEFAULT.clear();
+                MessageObservable.DEFAULT.notifyMultiMessageChanged(sessionUserId);
+                return true;
+            }
         } catch (Throwable e) {
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
