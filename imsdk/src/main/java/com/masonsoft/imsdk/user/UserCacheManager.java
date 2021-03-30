@@ -209,6 +209,9 @@ public class UserCacheManager {
                 return false;
             }
 
+            // 设置 lastModify
+            user.localLastModifyMs.set(System.currentTimeMillis());
+
             try {
                 IMLog.v("insertUser %s", user);
                 SQLiteDatabase db = mDBHelper.getDBHelper().getWritableDatabase();
@@ -258,6 +261,9 @@ public class UserCacheManager {
                 return false;
             }
 
+            // 设置 lastModify
+            user.localLastModifyMs.set(System.currentTimeMillis());
+
             try {
                 IMLog.v("updateUser %s", user);
                 SQLiteDatabase db = mDBHelper.getDBHelper().getWritableDatabase();
@@ -303,6 +309,11 @@ public class UserCacheManager {
                  * @since db version 1
                  */
                 String C_USER_ID = "c_user_id";
+
+                /**
+                 * 本地最后修改时间, 毫秒
+                 */
+                String C_LOCAL_LAST_MODIFY_MS = "c_local_last_modify_ms";
 
                 /**
                  * 用户数据的 json 序列化
@@ -351,6 +362,7 @@ public class UserCacheManager {
             private String getSQLCreateTableUser() {
                 return "create table " + TABLE_NAME_USER + " (" +
                         ColumnsUser.C_USER_ID + " integer primary key," +
+                        ColumnsUser.C_LOCAL_LAST_MODIFY_MS + " integer not null," +
                         ColumnsUser.C_USER_JSON + " text" +
                         ")";
             }

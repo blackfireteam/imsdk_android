@@ -23,6 +23,11 @@ public class UserInfo {
     public final StateProp<Long> uid = new StateProp<>();
 
     /**
+     * 本地记录的 lastModify, 毫秒
+     */
+    public final StateProp<Long> localLastModifyMs = new StateProp<>();
+
+    /**
      * 用户信息的最后更新时间, 毫秒。
      */
     @NonNull
@@ -55,6 +60,11 @@ public class UserInfo {
         } else {
             builder.append(" uid:").append(this.uid.get());
         }
+        if (this.localLastModifyMs.isUnset()) {
+            builder.append(" localLastModifyMs:unset");
+        } else {
+            builder.append(" localLastModifyMs:").append(this.localLastModifyMs.get());
+        }
         if (this.updateTimeMs.isUnset()) {
             builder.append(" updateTimeMs:unset");
         } else {
@@ -71,6 +81,7 @@ public class UserInfo {
 
     public void apply(@NonNull UserInfo input) {
         this.uid.apply(input.uid);
+        this.localLastModifyMs.apply(input.localLastModifyMs);
         this.updateTimeMs.apply(input.updateTimeMs);
         this.nickname.apply(input.nickname);
         this.avatar.apply(input.avatar);
@@ -83,6 +94,9 @@ public class UserInfo {
         final ContentValues target = new ContentValues();
         if (!this.uid.isUnset()) {
             target.put(UserCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_USER_ID, this.uid.get());
+        }
+        if (!this.localLastModifyMs.isUnset()) {
+            target.put(UserCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_LOCAL_LAST_MODIFY_MS, this.localLastModifyMs.get());
         }
         final JSONObject jsonObject = new JSONObject();
         try {
@@ -119,6 +133,7 @@ public class UserInfo {
         public String[] queryColumns() {
             return new String[]{
                     UserCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_USER_ID,
+                    UserCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_LOCAL_LAST_MODIFY_MS,
                     UserCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_USER_JSON,
             };
         }
@@ -129,6 +144,7 @@ public class UserInfo {
             final UserInfo target = new UserInfo();
             int index = -1;
             target.uid.set(CursorUtil.getLong(cursor, ++index));
+            target.localLastModifyMs.set(CursorUtil.getLong(cursor, ++index));
             final String userJson = CursorUtil.getString(cursor, ++index);
             if (!TextUtils.isEmpty(userJson)) {
                 try {
