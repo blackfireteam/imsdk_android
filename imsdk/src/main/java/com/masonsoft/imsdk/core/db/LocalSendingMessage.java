@@ -24,6 +24,11 @@ public class LocalSendingMessage {
     public final StateProp<Long> localId = new StateProp<>();
 
     /**
+     * 本地记录的 lastModify, 毫秒
+     */
+    public final StateProp<Long> localLastModifyMs = new StateProp<>();
+
+    /**
      * @see DatabaseHelper.ColumnsLocalSendingMessage#C_CONVERSATION_TYPE
      */
     @NonNull
@@ -60,6 +65,11 @@ public class LocalSendingMessage {
             builder.append(" localId:unset");
         } else {
             builder.append(" localId:").append(this.localId.get());
+        }
+        if (this.localLastModifyMs.isUnset()) {
+            builder.append(" localLastModifyMs:unset");
+        } else {
+            builder.append(" localLastModifyMs:").append(this.localLastModifyMs.get());
         }
         if (this.conversationType.isUnset()) {
             builder.append(" conversationType:unset");
@@ -101,6 +111,9 @@ public class LocalSendingMessage {
         if (!this.localId.isUnset()) {
             target.put(DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_ID, this.localId.get());
         }
+        if (!this.localLastModifyMs.isUnset()) {
+            target.put(DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_LAST_MODIFY_MS, this.localLastModifyMs.get());
+        }
         if (!this.conversationType.isUnset()) {
             target.put(DatabaseHelper.ColumnsLocalSendingMessage.C_CONVERSATION_TYPE, this.conversationType.get());
         }
@@ -129,6 +142,7 @@ public class LocalSendingMessage {
         public String[] queryColumns() {
             return new String[]{
                     DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_ID,
+                    DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_LAST_MODIFY_MS,
                     DatabaseHelper.ColumnsLocalSendingMessage.C_CONVERSATION_TYPE,
                     DatabaseHelper.ColumnsLocalSendingMessage.C_TARGET_USER_ID,
                     DatabaseHelper.ColumnsLocalSendingMessage.C_MESSAGE_LOCAL_ID,
@@ -143,6 +157,7 @@ public class LocalSendingMessage {
             final LocalSendingMessage target = new LocalSendingMessage();
             int index = -1;
             target.localId.set(CursorUtil.getLong(cursor, ++index));
+            target.localLastModifyMs.set(CursorUtil.getLong(cursor, ++index));
             target.conversationType.set(CursorUtil.getInt(cursor, ++index));
             target.targetUserId.set(CursorUtil.getLong(cursor, ++index));
             target.messageLocalId.set(CursorUtil.getLong(cursor, ++index));

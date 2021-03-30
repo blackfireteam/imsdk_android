@@ -381,6 +381,9 @@ public class LocalSendingMessageProvider {
             return false;
         }
 
+        // 设置 last modify
+        localSendingMessage.localLastModifyMs.set(System.currentTimeMillis());
+
         try {
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
@@ -431,6 +434,9 @@ public class LocalSendingMessageProvider {
             );
             return false;
         }
+
+        // 设置 last modify
+        localSendingMessage.localLastModifyMs.set(System.currentTimeMillis());
 
         try {
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
