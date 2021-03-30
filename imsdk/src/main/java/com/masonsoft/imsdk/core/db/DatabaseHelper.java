@@ -51,6 +51,11 @@ public final class DatabaseHelper {
         String C_LOCAL_ID = "c_local_id";
 
         /**
+         * 本地最后修改时间, 毫秒
+         */
+        String C_LOCAL_LAST_MODIFY_MS = "c_local_last_modify_ms";
+
+        /**
          * 会话的排序字段(根据逻辑可能会产生重复，但是概率极小).
          * 此字段有索引但是不唯一(当产生相同值时可能会影响会话的分页读取准确性，数据库内容不会丢失)
          *
@@ -239,6 +244,11 @@ public final class DatabaseHelper {
          */
         @Local
         String C_LOCAL_ID = "c_local_id";
+
+        /**
+         * 本地最后修改时间, 毫秒
+         */
+        String C_LOCAL_LAST_MODIFY_MS = "c_local_last_modify_ms";
 
         /**
          * 消息的排序字段.此字段有索引但是不唯一。(根据逻辑可能会产生重复，但是概率极小).
@@ -457,6 +467,11 @@ public final class DatabaseHelper {
         String C_LOCAL_ID = "c_local_id";
 
         /**
+         * 本地最后修改时间, 毫秒
+         */
+        String C_LOCAL_LAST_MODIFY_MS = "c_local_last_modify_ms";
+
+        /**
          * 消息所属会话的类型。<br>
          * C_CONVERSATION_TYPE, C_TARGET_USER_ID, C_MESSAGE_LOCAL_ID 三者唯一确定了一条消息记录
          *
@@ -562,6 +577,7 @@ public final class DatabaseHelper {
     private String getSQLCreateTableConversation() {
         return "create table " + TABLE_NAME_CONVERSATION + " (" +
                 ColumnsConversation.C_LOCAL_ID + " integer primary key autoincrement not null," +
+                ColumnsConversation.C_LOCAL_LAST_MODIFY_MS + " integer not null," +
                 ColumnsConversation.C_LOCAL_SEQ + " integer not null," +
                 ColumnsConversation.C_LOCAL_CONVERSATION_TYPE + " integer not null," +
                 ColumnsConversation.C_TARGET_USER_ID + " integer not null," +
@@ -663,6 +679,7 @@ public final class DatabaseHelper {
     private String getSQLCreateTableMessage(String tableNameMessage) {
         return "create table if not exists " + tableNameMessage + " (" +
                 ColumnsMessage.C_LOCAL_ID + " integer primary key autoincrement not null," +
+                ColumnsMessage.C_LOCAL_LAST_MODIFY_MS + " integer not null," +
                 ColumnsMessage.C_LOCAL_SEQ + " integer not null," +
                 ColumnsMessage.C_FROM_USER_ID + " integer not null," +
                 ColumnsMessage.C_TO_USER_ID + " integer not null," +
@@ -712,6 +729,7 @@ public final class DatabaseHelper {
     private String getSQLCreateTableLocalSendingMessage() {
         return "create table " + TABLE_NAME_LOCAL_SENDING_MESSAGE + " (" +
                 ColumnsLocalSendingMessage.C_LOCAL_ID + " integer primary key autoincrement not null," +
+                ColumnsLocalSendingMessage.C_LOCAL_LAST_MODIFY_MS + " integer not null," +
                 ColumnsLocalSendingMessage.C_CONVERSATION_TYPE + " integer not null," +
                 ColumnsLocalSendingMessage.C_TARGET_USER_ID + " integer not null," +
                 ColumnsLocalSendingMessage.C_MESSAGE_LOCAL_ID + " integer not null," +
