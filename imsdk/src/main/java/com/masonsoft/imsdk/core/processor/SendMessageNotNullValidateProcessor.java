@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.lang.Processor;
+import com.masonsoft.imsdk.util.Objects;
 
 /**
  * @since 1.0
@@ -16,7 +17,7 @@ public abstract class SendMessageNotNullValidateProcessor implements Processor<I
     public final boolean doProcess(@Nullable IMSessionMessage target) {
         if (target == null) {
             // unexpected
-            final Throwable e = new NullPointerException("SendMessageNotNullValidateProcessor doProcess target is null");
+            final Throwable e = new NullPointerException("unexpected " + Objects.defaultObjectTag(this) + " doProcess target is null");
             IMLog.e(e);
             return false;
         }
