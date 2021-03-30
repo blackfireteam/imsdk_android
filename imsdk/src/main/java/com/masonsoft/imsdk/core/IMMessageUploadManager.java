@@ -2,12 +2,14 @@ package com.masonsoft.imsdk.core;
 
 import com.idonans.core.Singleton;
 import com.idonans.core.thread.TaskQueue;
+import com.masonsoft.imsdk.core.db.LocalSendingMessage;
+import com.masonsoft.imsdk.core.db.LocalSendingMessageProvider;
 
 /**
- * 消息上传队列. 从 IdleSendingMessage 表中读取需要发送的内容依次处理, 并处理对应的消息响应。
+ * 消息上传队列. 从 LocalSendingMessage 表中读取需要发送的内容依次处理, 并处理对应的消息响应。
  *
- * @see com.masonsoft.imsdk.core.db.IdleSendingMessage
- * @see com.masonsoft.imsdk.core.db.IdleSendingMessageProvider
+ * @see LocalSendingMessage
+ * @see LocalSendingMessageProvider
  * @since 1.0
  */
 public class IMMessageUploadManager {
@@ -31,9 +33,9 @@ public class IMMessageUploadManager {
     }
 
     /**
-     * 通知同步 IdleSendingMessage 表内容，可能添加了新的消息上传发送任务。
+     * 通知同步 LocalSendingMessage 表内容，可能添加了新的消息上传发送任务。
      */
-    public void notifySyncIdleSendingMessage() {
+    public void notifySyncLocalSendingMessage() {
         // TODO
     }
 

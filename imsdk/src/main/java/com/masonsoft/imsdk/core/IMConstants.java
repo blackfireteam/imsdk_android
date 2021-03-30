@@ -32,6 +32,23 @@ public final class IMConstants {
     }
 
     /**
+     * 特殊的 id 标识
+     */
+    public static class SpecialId {
+        /**
+         * 指向未知的多个 id
+         */
+        public static final long UNKNOWN_MULTI = Long.MIN_VALUE / 2;
+    }
+
+    public static class AbortId {
+        /**
+         * 重置
+         */
+        public static final long RESET = 0;
+    }
+
+    /**
      * 发送消息的配置选项
      */
     public static class SendMessageOption {

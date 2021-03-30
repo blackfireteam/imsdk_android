@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.core.db.DatabaseHelper.ColumnsConversation;
 import com.masonsoft.imsdk.lang.StateProp;
 import com.masonsoft.imsdk.util.CursorUtil;
+import com.masonsoft.imsdk.util.Objects;
 
 /**
  * 会话
@@ -145,7 +146,7 @@ public class Conversation {
     @NonNull
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("Conversation");
+        builder.append(Objects.defaultObjectTag(this));
         if (this.localId.isUnset()) {
             builder.append(" localId:unset");
         } else {

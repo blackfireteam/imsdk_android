@@ -181,12 +181,11 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
 
     @NonNull
     public String toShortString() {
-        return String.format(
-                "%s{sign:%s,state:%s}",
-                Objects.defaultObjectTag(this),
-                mSign,
-                stateToString(mState)
-        );
+        final StringBuilder builder = new StringBuilder();
+        builder.append(Objects.defaultObjectTag(this));
+        builder.append(" sign:").append(this.mSign);
+        builder.append(" state:").append(this.mState);
+        return builder.toString();
     }
 
     @Override

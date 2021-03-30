@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.annotation.LogicField;
 import com.masonsoft.imsdk.core.IMConstants.MessageType;
 import com.masonsoft.imsdk.lang.StateProp;
+import com.masonsoft.imsdk.util.Objects;
 
 /**
  * 会话中的一条消息
@@ -194,7 +195,7 @@ public class IMMessage {
     @NonNull
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("IMMessage");
+        builder.append(Objects.defaultObjectTag(this));
         if (this._sessionUserId.isUnset()) {
             builder.append(" _sessionUserId:unset");
         } else {

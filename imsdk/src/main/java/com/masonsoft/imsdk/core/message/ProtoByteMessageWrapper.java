@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.ProtoByteMessage;
+import com.masonsoft.imsdk.util.Objects;
 
 /**
  * @since 1.0
@@ -31,15 +32,13 @@ public class ProtoByteMessageWrapper {
         return mProtoMessageObject;
     }
 
-    private String getProtoMessageObjectShortString() {
-        if (mProtoMessageObject != null) {
-            return mProtoMessageObject.getClass().getName();
-        }
-        return "null";
-    }
-
+    @NonNull
     public String toShortString() {
-        return String.format("ProtoByteMessageWrapper[origin:%s, proto message object:%s]", mOrigin, getProtoMessageObjectShortString());
+        final StringBuilder builder = new StringBuilder();
+        builder.append(Objects.defaultObjectTag(this));
+        builder.append(" origin:").append(this.mOrigin);
+        builder.append(" ").append(Objects.defaultObjectTag(this.mProtoMessageObject));
+        return builder.toString();
     }
 
     @Override

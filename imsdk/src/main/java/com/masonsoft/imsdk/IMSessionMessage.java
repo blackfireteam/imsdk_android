@@ -7,6 +7,7 @@ import com.idonans.core.WeakAbortSignal;
 import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.util.Objects;
 
 public class IMSessionMessage {
 
@@ -71,9 +72,12 @@ public class IMSessionMessage {
 
     @NonNull
     public String toShortString() {
-        return "IMSessionMessage sessionUserId:" + this.mSessionUserId
-                + ", toUserId:" + mToUserId
-                + ", " + this.mIMMessage.toShortString();
+        final StringBuilder builder = new StringBuilder();
+        builder.append(Objects.defaultObjectTag(this));
+        builder.append(" sessionUserId:").append(this.mSessionUserId);
+        builder.append(" toUserId:").append(this.mToUserId);
+        builder.append(" ").append(this.mIMMessage.toShortString());
+        return builder.toString();
     }
 
     @Override

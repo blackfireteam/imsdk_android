@@ -9,6 +9,7 @@ import com.masonsoft.imsdk.annotation.LogicField;
 import com.masonsoft.imsdk.core.db.DatabaseHelper.ColumnsMessage;
 import com.masonsoft.imsdk.lang.StateProp;
 import com.masonsoft.imsdk.util.CursorUtil;
+import com.masonsoft.imsdk.util.Objects;
 
 /**
  * 消息
@@ -171,12 +172,6 @@ public class Message {
     public final StateProp<String> errorMessage = new StateProp<>();
 
     /**
-     * @see ColumnsMessage#C_LOCAL_SEND_STATUS
-     */
-    @NonNull
-    public final StateProp<Integer> localSendStatus = new StateProp<>();
-
-    /**
      * @see ColumnsMessage#C_LOCAL_ACTION_MSG
      */
     @NonNull
@@ -191,7 +186,7 @@ public class Message {
     @NonNull
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("Message");
+        builder.append(Objects.defaultObjectTag(this));
         if (this._sessionUserId.isUnset()) {
             builder.append(" _sessionUserId:unset");
         } else {
@@ -271,7 +266,6 @@ public class Message {
         this.zoom.apply(input.zoom);
         this.errorCode.apply(input.errorCode);
         this.errorMessage.apply(input.errorMessage);
-        this.localSendStatus.apply(input.localSendStatus);
         this.localActionMessage.apply(input.localActionMessage);
         this.localBlockId.apply(input.localBlockId);
     }
@@ -345,9 +339,6 @@ public class Message {
         if (!this.errorMessage.isUnset()) {
             target.put(ColumnsMessage.C_ERROR_MESSAGE, this.errorMessage.get());
         }
-        if (!this.localSendStatus.isUnset()) {
-            target.put(ColumnsMessage.C_LOCAL_SEND_STATUS, this.localSendStatus.get());
-        }
         if (!this.localActionMessage.isUnset()) {
             target.put(ColumnsMessage.C_LOCAL_ACTION_MSG, this.localActionMessage.get());
         }
@@ -388,7 +379,6 @@ public class Message {
                     ColumnsMessage.C_ZOOM,
                     ColumnsMessage.C_ERROR_CODE,
                     ColumnsMessage.C_ERROR_MESSAGE,
-                    ColumnsMessage.C_LOCAL_SEND_STATUS,
                     ColumnsMessage.C_LOCAL_ACTION_MSG,
                     ColumnsMessage.C_LOCAL_BLOCK_ID,
             };
@@ -421,7 +411,6 @@ public class Message {
             target.zoom.set(CursorUtil.getLong(cursor, ++index));
             target.errorCode.set(CursorUtil.getLong(cursor, ++index));
             target.errorMessage.set(CursorUtil.getString(cursor, ++index));
-            target.localSendStatus.set(CursorUtil.getInt(cursor, ++index));
             target.localActionMessage.set(CursorUtil.getInt(cursor, ++index));
             target.localBlockId.set(CursorUtil.getLong(cursor, ++index));
             return target;

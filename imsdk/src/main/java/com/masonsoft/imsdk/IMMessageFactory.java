@@ -127,7 +127,6 @@ public class IMMessageFactory {
         target.zoom.apply(input.zoom);
         target.errorCode.apply(input.errorCode);
         target.errorMessage.apply(input.errorMessage);
-        target.sendState.apply(input.localSendStatus);
         return target;
     }
 

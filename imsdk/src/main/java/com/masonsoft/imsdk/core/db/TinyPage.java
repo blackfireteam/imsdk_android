@@ -2,6 +2,8 @@ package com.masonsoft.imsdk.core.db;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.util.Objects;
+
 import java.util.List;
 
 /**
@@ -15,7 +17,7 @@ public class TinyPage<T> {
     @NonNull
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("TinyPage");
+        builder.append(Objects.defaultObjectTag(this));
         if (items == null) {
             builder.append(" items:null");
         } else {

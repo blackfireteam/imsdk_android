@@ -24,8 +24,13 @@ public class SessionProtoByteMessageWrapper {
         return mProtoByteMessageWrapper;
     }
 
+    @NonNull
     public String toShortString() {
-        return String.format(Objects.defaultObjectTag(this) + "[sessionUserId:%s, messageWrapper:%s]", mSessionUserId, mProtoByteMessageWrapper.toShortString());
+        final StringBuilder builder = new StringBuilder();
+        builder.append(Objects.defaultObjectTag(this));
+        builder.append(" sessionUserId:").append(this.mSessionUserId);
+        builder.append(" ").append(mProtoByteMessageWrapper.toShortString());
+        return builder.toString();
     }
 
     @Override

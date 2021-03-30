@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
+import com.masonsoft.imsdk.util.Objects;
 
 /**
  * 传输于长连接上的原始消息
@@ -44,7 +45,11 @@ public class ProtoByteMessage {
 
     @NonNull
     public String toShortString() {
-        return String.format("ProtoByteMessage[type:%s, data length:%s]", mType, mData.length);
+        final StringBuilder builder = new StringBuilder();
+        builder.append(Objects.defaultObjectTag(this));
+        builder.append(" type:").append(this.mType);
+        builder.append(" data length:").append(mData.length);
+        return builder.toString();
     }
 
     @Override

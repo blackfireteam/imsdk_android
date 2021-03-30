@@ -3,6 +3,7 @@ package com.masonsoft.imsdk;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.lang.StateProp;
+import com.masonsoft.imsdk.util.Objects;
 
 /**
  * 一个会话
@@ -135,7 +136,7 @@ public class IMConversation {
     @NonNull
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("IMConversation");
+        builder.append(Objects.defaultObjectTag(this));
         if (this.id.isUnset()) {
             builder.append(" id:unset");
         } else {

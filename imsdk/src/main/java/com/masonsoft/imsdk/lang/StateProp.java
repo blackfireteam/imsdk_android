@@ -2,6 +2,8 @@ package com.masonsoft.imsdk.lang;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.util.Objects;
+
 /**
  * 带状态的对象属性定义。指定判断属性是否已经设置值。
  *
@@ -66,10 +68,14 @@ public class StateProp<T> {
 
     @NonNull
     public String toShortString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(Objects.defaultObjectTag(this));
         if (mProp == UNSET) {
-            return "StateProp:unset";
+            builder.append(" unset");
+        } else {
+            builder.append(" ").append(this.mProp);
         }
-        return "StateProp:" + mProp;
+        return builder.toString();
     }
 
     @Override
