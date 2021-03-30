@@ -363,6 +363,9 @@ public class ConversationDatabaseProvider {
             return false;
         }
 
+        // 设置 last modify
+        conversation.localLastModifyMs.set(System.currentTimeMillis());
+
         try {
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
@@ -411,6 +414,9 @@ public class ConversationDatabaseProvider {
             IMLog.e(new IllegalArgumentException("conversation localId is unset"));
             return false;
         }
+
+        // 设置 last modify
+        conversation.localLastModifyMs.set(System.currentTimeMillis());
 
         try {
             DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
