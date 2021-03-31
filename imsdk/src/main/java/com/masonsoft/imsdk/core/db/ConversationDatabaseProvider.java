@@ -450,11 +450,18 @@ public class ConversationDatabaseProvider {
                         rowsAffected);
             }
             MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, conversation.localId.get());
-            ConversationObservable.DEFAULT.notifyConversationChanged(
-                    sessionUserId,
-                    conversation.localId.get(),
-                    conversation.localConversationType.get(),
-                    conversation.targetUserId.get());
+
+            final Conversation readConversation = getConversation(sessionUserId, conversation.localId.get());
+            if (readConversation != null) {
+                ConversationObservable.DEFAULT.notifyConversationChanged(
+                        sessionUserId,
+                        readConversation.localId.get(),
+                        readConversation.localConversationType.get(),
+                        readConversation.targetUserId.get());
+            } else {
+                final Throwable e = new IllegalAccessError("conversation not found with sessionUserId:" + sessionUserId + ", conversation localId:" + conversation.localId.get());
+                IMLog.e(e);
+            }
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);
