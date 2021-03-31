@@ -737,7 +737,22 @@ public class IMMessageUploadManager {
                     sessionTcpClient.sendMessagePacketQuietly(messagePacket);
                     if (messagePacket.getState() != MessagePacket.STATE_WAIT_RESULT) {
                         mMessageUploadObjectWrapper.setError(MessageUploadObjectWrapper.ERROR_CODE_MESSAGE_PACKET_SEND_FAIL, null);
+                        return;
                     }
+
+                    // wait message packet result
+                    while (messagePacket.getState() == MessagePacket.STATE_WAIT_RESULT) {
+                        IMLog.v(Objects.defaultObjectTag(this) + " wait message packet result %s", messagePacket);
+                        //noinspection SynchronizationOnLocalVariableOrMethodParameter
+                        synchronized (messagePacket) {
+                            try {
+                                messagePacket.wait(2000L);
+                            } catch (InterruptedException e) {
+                                IMLog.v("messagePacket wait interrupted %s", messagePacket);
+                            }
+                        }
+                    }
+                    IMLog.v(Objects.defaultObjectTag(this) + " body run end. %s", messagePacket);
                 } catch (Throwable e) {
                     IMLog.e(e);
                     mMessageUploadObjectWrapper.setError(MessageUploadObjectWrapper.ERROR_CODE_UNKNOWN, null);
