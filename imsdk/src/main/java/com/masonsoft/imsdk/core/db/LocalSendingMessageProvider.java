@@ -457,16 +457,18 @@ public class LocalSendingMessageProvider {
             SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
 
             final ContentValues contentValuesUpdate = new ContentValues();
-            contentValuesUpdate.put(DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_SEND_STATUS, IMConstants.SendStatus.IDLE);
+            contentValuesUpdate.put(DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_SEND_STATUS, IMConstants.SendStatus.FAIL);
             contentValuesUpdate.put(DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_ABORT_ID, IMConstants.AbortId.RESET);
             contentValuesUpdate.put(DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_LAST_MODIFY_MS, System.currentTimeMillis());
 
-            //noinspection StringBufferReplaceableByString
             final StringBuilder where = new StringBuilder();
             final List<String> whereArgs = new ArrayList<>();
 
             where.append(" " + DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_SEND_STATUS + "!=? ");
             whereArgs.add(String.valueOf(IMConstants.SendStatus.SUCCESS));
+
+            where.append(" and " + DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_SEND_STATUS + "!=? ");
+            whereArgs.add(String.valueOf(IMConstants.SendStatus.FAIL));
 
             int rowsAffected = db.update(
                     DatabaseHelper.TABLE_NAME_LOCAL_SENDING_MESSAGE,
