@@ -286,10 +286,10 @@ public class LocalSendingMessageProvider {
             selection.append(" " + DatabaseHelper.ColumnsLocalSendingMessage.C_CONVERSATION_TYPE + "=? ");
             selectionArgs.add(String.valueOf(conversationType));
 
-            selection.append(" " + DatabaseHelper.ColumnsLocalSendingMessage.C_TARGET_USER_ID + "=? ");
+            selection.append(" and " + DatabaseHelper.ColumnsLocalSendingMessage.C_TARGET_USER_ID + "=? ");
             selectionArgs.add(String.valueOf(targetUserId));
 
-            selection.append(" " + DatabaseHelper.ColumnsLocalSendingMessage.C_MESSAGE_LOCAL_ID + "=? ");
+            selection.append(" and " + DatabaseHelper.ColumnsLocalSendingMessage.C_MESSAGE_LOCAL_ID + "=? ");
             selectionArgs.add(String.valueOf(messageLocalId));
 
             cursor = db.query(
