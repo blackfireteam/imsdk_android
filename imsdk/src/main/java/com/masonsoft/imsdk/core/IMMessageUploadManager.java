@@ -159,9 +159,12 @@ public class IMMessageUploadManager {
                         IMLog.e(e);
                         return;
                     }
+
+                    boolean notify = false;
                     final ChatSMessagePacket chatSMessagePacket = (ChatSMessagePacket) packet;
                     if (newState == MessagePacket.STATE_FAIL) {
                         // 消息发送失败
+                        notify = true;
                         IMLog.v("onStateChanged STATE_FAIL chatSMessagePacket errorCode:%s, errorMessage:%s, timeout:%s",
                                 chatSMessagePacket.getErrorCode(), chatSMessagePacket.getErrorMessage(), chatSMessagePacket.isTimeoutTriggered());
                         if (chatSMessagePacket.getErrorCode() != 0) {
@@ -172,9 +175,18 @@ public class IMMessageUploadManager {
                         moveSendStatus(IMConstants.SendStatus.FAIL);
                     } else if (newState == MessagePacket.STATE_SUCCESS) {
                         // 消息发送成功
+                        notify = true;
                         // 设置发送进度为 100%
                         setSendProgress(1f);
                         moveSendStatus(IMConstants.SendStatus.SUCCESS);
+                    }
+
+                    if (notify) {
+                        // @see MessageUploadObjectWrapperTask#run -> "// wait message packet result"
+                        //noinspection SynchronizationOnLocalVariableOrMethodParameter
+                        synchronized (chatSMessagePacket) {
+                            chatSMessagePacket.notify();
+                        }
                     }
                 }
             };
