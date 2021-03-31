@@ -683,7 +683,7 @@ public final class DatabaseHelper {
                 ColumnsMessage.C_LOCAL_SEQ + " integer not null," +
                 ColumnsMessage.C_FROM_USER_ID + " integer not null," +
                 ColumnsMessage.C_TO_USER_ID + " integer not null," +
-                ColumnsMessage.C_REMOTE_MSG_ID + " integer," +
+                ColumnsMessage.C_REMOTE_MSG_ID + " integer not null default 0," +
                 ColumnsMessage.C_REMOTE_MSG_TIME + " integer not null default 0," +
                 ColumnsMessage.C_LOCAL_TIME_MS + " integer not null," +
                 ColumnsMessage.C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY_MS + " integer not null default 0," +
