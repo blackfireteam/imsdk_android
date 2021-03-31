@@ -419,24 +419,6 @@ public final class DatabaseHelper {
         String C_ZOOM = "c_zoom";
 
         /**
-         * 错误码
-         *
-         * @since db version 1
-         */
-        @Remote("code")
-        @Local
-        String C_ERROR_CODE = "c_error_code";
-
-        /**
-         * 错误描述
-         *
-         * @since db version 1
-         */
-        @Remote("msg")
-        @Local
-        String C_ERROR_MESSAGE = "c_error_message";
-
-        /**
          * 该消息是否是一条指令消息。指令消息不会显示在屏幕上。（如撤回消息是一条指令消息）
          *
          * @since db version 1
@@ -506,6 +488,24 @@ public final class DatabaseHelper {
          */
         @Local
         String C_LOCAL_SEND_STATUS = "c_local_send_status";
+
+        /**
+         * 错误码
+         *
+         * @since db version 1
+         */
+        @Remote("code")
+        @Local
+        String C_ERROR_CODE = "c_error_code";
+
+        /**
+         * 错误描述
+         *
+         * @since db version 1
+         */
+        @Remote("msg")
+        @Local
+        String C_ERROR_MESSAGE = "c_error_message";
 
         /**
          * 消息的操作终止标识
@@ -699,8 +699,6 @@ public final class DatabaseHelper {
                 ColumnsMessage.C_LAT + " double not null default 0," +
                 ColumnsMessage.C_LNG + " double not null default 0," +
                 ColumnsMessage.C_ZOOM + " integer not null default 0," +
-                ColumnsMessage.C_ERROR_CODE + " integer not null default 0," +
-                ColumnsMessage.C_ERROR_MESSAGE + " text," +
                 ColumnsMessage.C_LOCAL_ACTION_MSG + " integer not null default 0," +
                 ColumnsMessage.C_LOCAL_BLOCK_ID + " integer not null default 0" +
                 ")";
@@ -734,6 +732,8 @@ public final class DatabaseHelper {
                 ColumnsLocalSendingMessage.C_TARGET_USER_ID + " integer not null," +
                 ColumnsLocalSendingMessage.C_MESSAGE_LOCAL_ID + " integer not null," +
                 ColumnsLocalSendingMessage.C_LOCAL_SEND_STATUS + " integer not null," +
+                ColumnsLocalSendingMessage.C_ERROR_CODE + " integer not null default 0," +
+                ColumnsLocalSendingMessage.C_ERROR_MESSAGE + " text," +
                 ColumnsLocalSendingMessage.C_LOCAL_ABORT_ID + " integer not null" +
                 ")";
     }

@@ -53,6 +53,18 @@ public class LocalSendingMessage {
     public final StateProp<Integer> localSendStatus = new StateProp<>();
 
     /**
+     * @see DatabaseHelper.ColumnsLocalSendingMessage#C_ERROR_CODE
+     */
+    @NonNull
+    public final StateProp<Long> errorCode = new StateProp<>();
+
+    /**
+     * @see DatabaseHelper.ColumnsLocalSendingMessage#C_ERROR_MESSAGE
+     */
+    @NonNull
+    public final StateProp<String> errorMessage = new StateProp<>();
+
+    /**
      * @see DatabaseHelper.ColumnsLocalSendingMessage#C_LOCAL_ABORT_ID
      */
     public final StateProp<Long> localAbortId = new StateProp<>();
@@ -126,6 +138,12 @@ public class LocalSendingMessage {
         if (!this.localSendStatus.isUnset()) {
             target.put(DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_SEND_STATUS, this.localSendStatus.get());
         }
+        if (!this.errorCode.isUnset()) {
+            target.put(DatabaseHelper.ColumnsLocalSendingMessage.C_ERROR_CODE, this.errorCode.get());
+        }
+        if (!this.errorMessage.isUnset()) {
+            target.put(DatabaseHelper.ColumnsLocalSendingMessage.C_ERROR_MESSAGE, this.errorMessage.get());
+        }
         if (!this.localAbortId.isUnset()) {
             target.put(DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_ABORT_ID, this.localAbortId.get());
         }
@@ -147,6 +165,8 @@ public class LocalSendingMessage {
                     DatabaseHelper.ColumnsLocalSendingMessage.C_TARGET_USER_ID,
                     DatabaseHelper.ColumnsLocalSendingMessage.C_MESSAGE_LOCAL_ID,
                     DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_SEND_STATUS,
+                    DatabaseHelper.ColumnsLocalSendingMessage.C_ERROR_CODE,
+                    DatabaseHelper.ColumnsLocalSendingMessage.C_ERROR_MESSAGE,
                     DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_ABORT_ID,
             };
         }
@@ -162,6 +182,8 @@ public class LocalSendingMessage {
             target.targetUserId.set(CursorUtil.getLong(cursor, ++index));
             target.messageLocalId.set(CursorUtil.getLong(cursor, ++index));
             target.localSendStatus.set(CursorUtil.getInt(cursor, ++index));
+            target.errorCode.set(CursorUtil.getLong(cursor, ++index));
+            target.errorMessage.set(CursorUtil.getString(cursor, ++index));
             target.localAbortId.set(CursorUtil.getLong(cursor, ++index));
             return target;
         }

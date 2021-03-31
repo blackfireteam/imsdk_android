@@ -103,6 +103,10 @@ public class SendMessageWriteDatabaseProcessor extends SendMessageNotNullValidat
                 localSendingMessageUpdate.localAbortId.set(IMConstants.AbortId.RESET);
                 // 设置发送状态为 IDLE
                 localSendingMessageUpdate.localSendStatus.set(IMConstants.SendStatus.IDLE);
+                // 重置 errorCode 与 errorMessage
+                localSendingMessageUpdate.errorCode.set(0L);
+                localSendingMessageUpdate.errorMessage.set(null);
+
                 if (LocalSendingMessageProvider.getInstance().updateLocalSendingMessage(sessionUserId, localSendingMessageUpdate)) {
                     IMLog.v("success updateLocalSendingMessage: %s", localSendingMessageUpdate);
 
@@ -193,9 +197,6 @@ public class SendMessageWriteDatabaseProcessor extends SendMessageNotNullValidat
             dbMessageInsert.localSeq.set(Sequence.create(SignGenerator.next()));
             // 设置新消息的显示时间为当前时间
             dbMessageInsert.localTimeMs.set(System.currentTimeMillis());
-            // 重置 errorCode 与 errorMessage
-            dbMessageInsert.errorCode.clear();
-            dbMessageInsert.errorMessage.clear();
             // 清空 block id
             dbMessageInsert.localBlockId.clear();
 

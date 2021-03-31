@@ -71,8 +71,6 @@ public class MessageFactory {
         target.lat.apply(input.lat);
         target.lng.apply(input.lng);
         target.zoom.apply(input.zoom);
-        target.errorCode.apply(input.errorCode);
-        target.errorMessage.apply(input.errorMessage);
 
         if (!input.type.isUnset() && input.type.get() != null) {
             // 当设置了有效的 type 值

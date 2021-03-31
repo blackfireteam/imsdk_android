@@ -1,9 +1,14 @@
 package com.masonsoft.imsdk;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.core.db.LocalSendingMessage;
 import com.masonsoft.imsdk.core.db.Message;
+
+import java.util.Objects;
 
 public class IMMessageFactory {
 
@@ -126,9 +131,60 @@ public class IMMessageFactory {
         target.lat.apply(input.lat);
         target.lng.apply(input.lng);
         target.zoom.apply(input.zoom);
-        target.errorCode.apply(input.errorCode);
-        target.errorMessage.apply(input.errorMessage);
         return target;
+    }
+
+    @NonNull
+    public static IMMessage merge(@NonNull IMMessage input, @Nullable LocalSendingMessage sendingMessage) {
+        final IMMessage target = copy(input);
+        if (sendingMessage == null) {
+            return target;
+        }
+
+        if (!Objects.equals(target._conversationType.get(), sendingMessage.conversationType.get())) {
+            final Throwable e = new IllegalArgumentException("unexpected merge fail, conversationType not match " + target + " <-> " + sendingMessage);
+            IMLog.e(e);
+            return target;
+        }
+
+        if (!Objects.equals(target._targetUserId.get(), sendingMessage.targetUserId.get())) {
+            final Throwable e = new IllegalArgumentException("unexpected merge fail, targetUserId not match " + target + " <-> " + sendingMessage);
+            IMLog.e(e);
+            return target;
+        }
+
+        if (!Objects.equals(target.id.get(), sendingMessage.messageLocalId.get())) {
+            final Throwable e = new IllegalArgumentException("unexpected merge fail, messageLocalId not match " + target + " <-> " + sendingMessage);
+            IMLog.e(e);
+            return target;
+        }
+
+        if (!input.lastModifyMs.isUnset()
+                && !sendingMessage.localLastModifyMs.isUnset()) {
+            final long lastModifyMs1 = input.lastModifyMs.get();
+            final long lastModifyMs2 = sendingMessage.localLastModifyMs.get();
+            if (lastModifyMs1 < lastModifyMs2) {
+                input.lastModifyMs.set(lastModifyMs2);
+            }
+        }
+
+        if (sendingMessage.localSendStatus.isUnset()) {
+            final Throwable e = new IllegalArgumentException("unexpected. sendingMessage.localSendStatus.isUnset()");
+            IMLog.e(e);
+        }
+        if (sendingMessage.errorCode.isUnset()) {
+            final Throwable e = new IllegalArgumentException("unexpected. sendingMessage.errorCode.isUnset()");
+            IMLog.e(e);
+        }
+        if (sendingMessage.errorMessage.isUnset()) {
+            final Throwable e = new IllegalArgumentException("unexpected. sendingMessage.errorMessage.isUnset()");
+            IMLog.e(e);
+        }
+
+        input.sendState.apply(sendingMessage.localSendStatus);
+        input.errorCode.apply(sendingMessage.errorCode);
+        input.errorMessage.apply(sendingMessage.errorMessage);
+        return input;
     }
 
 }
