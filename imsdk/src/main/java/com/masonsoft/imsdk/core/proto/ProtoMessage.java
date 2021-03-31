@@ -3197,6 +3197,11 @@ public final class ProtoMessage {
      * <code>optional int64 msg_id = 2;</code>
      */
     long getMsgId();
+
+    /**
+     * <code>optional int64 msg_time = 3;</code>
+     */
+    long getMsgTime();
   }
   /**
    * <pre>
@@ -3282,6 +3287,29 @@ public final class ProtoMessage {
       msgId_ = 0L;
     }
 
+    public static final int MSG_TIME_FIELD_NUMBER = 3;
+    private long msgTime_;
+    /**
+     * <code>optional int64 msg_time = 3;</code>
+     */
+    public long getMsgTime() {
+      return msgTime_;
+    }
+    /**
+     * <code>optional int64 msg_time = 3;</code>
+     */
+    private void setMsgTime(long value) {
+
+      msgTime_ = value;
+    }
+    /**
+     * <code>optional int64 msg_time = 3;</code>
+     */
+    private void clearMsgTime() {
+
+      msgTime_ = 0L;
+    }
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
       if (sign_ != 0L) {
@@ -3289,6 +3317,9 @@ public final class ProtoMessage {
       }
       if (msgId_ != 0L) {
         output.writeInt64(2, msgId_);
+      }
+      if (msgTime_ != 0L) {
+        output.writeInt64(3, msgTime_);
       }
     }
 
@@ -3304,6 +3335,10 @@ public final class ProtoMessage {
       if (msgId_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(2, msgId_);
+      }
+      if (msgTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(3, msgTime_);
       }
       memoizedSerializedSize = size;
       return size;
@@ -3465,6 +3500,29 @@ public final class ProtoMessage {
         return this;
       }
 
+      /**
+       * <code>optional int64 msg_time = 3;</code>
+       */
+      public long getMsgTime() {
+        return instance.getMsgTime();
+      }
+      /**
+       * <code>optional int64 msg_time = 3;</code>
+       */
+      public Builder setMsgTime(long value) {
+        copyOnWrite();
+        instance.setMsgTime(value);
+        return this;
+      }
+      /**
+       * <code>optional int64 msg_time = 3;</code>
+       */
+      public Builder clearMsgTime() {
+        copyOnWrite();
+        instance.clearMsgTime();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:ChatSR)
     }
     protected final Object dynamicMethod(
@@ -3490,6 +3548,8 @@ public final class ProtoMessage {
                   other.sign_ != 0L, other.sign_);
           msgId_ = visitor.visitLong(msgId_ != 0L, msgId_,
                   other.msgId_ != 0L, other.msgId_);
+          msgTime_ = visitor.visitLong(msgTime_ != 0L, msgTime_,
+                  other.msgTime_ != 0L, other.msgTime_);
           if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
                   .INSTANCE) {
           }
@@ -3522,6 +3582,11 @@ public final class ProtoMessage {
                 case 16: {
 
                   msgId_ = input.readInt64();
+                  break;
+                }
+                case 24: {
+
+                  msgTime_ = input.readInt64();
                   break;
                 }
               }
@@ -6775,7 +6840,7 @@ public final class ProtoMessage {
 
     /**
      * <pre>
-     * 谁发的消息
+     *会话列表的对方id
      * </pre>
      *
      * <code>optional int64 to_uid = 2;</code>
@@ -6844,7 +6909,7 @@ public final class ProtoMessage {
     private long toUid_;
     /**
      * <pre>
-     * 谁发的消息
+     *会话列表的对方id
      * </pre>
      *
      * <code>optional int64 to_uid = 2;</code>
@@ -6854,7 +6919,7 @@ public final class ProtoMessage {
     }
     /**
      * <pre>
-     * 谁发的消息
+     *会话列表的对方id
      * </pre>
      *
      * <code>optional int64 to_uid = 2;</code>
@@ -6865,7 +6930,7 @@ public final class ProtoMessage {
     }
     /**
      * <pre>
-     * 谁发的消息
+     *会话列表的对方id
      * </pre>
      *
      * <code>optional int64 to_uid = 2;</code>
@@ -7067,7 +7132,7 @@ public final class ProtoMessage {
 
       /**
        * <pre>
-       * 谁发的消息
+       *会话列表的对方id
        * </pre>
        *
        * <code>optional int64 to_uid = 2;</code>
@@ -7077,7 +7142,7 @@ public final class ProtoMessage {
       }
       /**
        * <pre>
-       * 谁发的消息
+       *会话列表的对方id
        * </pre>
        *
        * <code>optional int64 to_uid = 2;</code>
@@ -7089,7 +7154,7 @@ public final class ProtoMessage {
       }
       /**
        * <pre>
-       * 谁发的消息
+       *会话列表的对方id
        * </pre>
        *
        * <code>optional int64 to_uid = 2;</code>

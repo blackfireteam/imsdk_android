@@ -5,11 +5,14 @@ import androidx.annotation.Nullable;
 
 import com.idonans.core.Singleton;
 import com.idonans.core.thread.TaskQueue;
+import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.core.db.LocalSendingMessage;
 import com.masonsoft.imsdk.core.db.LocalSendingMessageProvider;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
+import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
+import com.masonsoft.imsdk.core.message.packet.TimeoutMessagePacket;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 消息上传队列. 从 LocalSendingMessage 表中读取需要发送的内容依次处理, 并处理对应的消息响应。
@@ -126,6 +130,10 @@ public class IMMessageUploadManager {
         @Nullable
         private Message mMessage;
 
+        private AtomicBoolean mBuildChatSMessagePacket = new AtomicBoolean(false);
+        @Nullable
+        private ChatSMessagePacket mChatSMessagePacket;
+
         /**
          * abort id 与数据库中对应记录不相等.
          */
@@ -161,6 +169,10 @@ public class IMMessageUploadManager {
 
         @Nullable
         private MessagePacket buildMessagePacket() {
+            if (!mBuildChatSMessagePacket.weakCompareAndSet(false, true)) {
+                throw new IllegalAccessError("buildMessagePacket only support called once");
+            }
+
             final Message message = this.mMessage;
             if (message == null) {
                 return null;
@@ -170,16 +182,103 @@ public class IMMessageUploadManager {
             final int messageType = message.messageType.get();
             if (messageType == IMConstants.MessageType.TEXT) {
                 final ProtoMessage.ChatS chatS = ProtoMessage.ChatS.newBuilder()
+                        .setSign(mSign)
+                        .setType(messageType)
+                        .setToUid(message.toUserId.get())
                         .setBody(message.body.get())
                         .build();
                 final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(chatS);
-                // TODO protoByteMessage -> MessagePacket ?
-                return null;
+                final ChatSMessagePacket chatSMessagePacket = new ChatSMessagePacket(protoByteMessage, mSign);
+                mChatSMessagePacket = chatSMessagePacket;
+                return chatSMessagePacket;
             } else {
                 final Throwable e = new IllegalAccessError("unknown message type:" + messageType + " " + message);
                 IMLog.e(e);
                 return null;
             }
+        }
+
+        private class ChatSMessagePacket extends TimeoutMessagePacket {
+
+            public ChatSMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
+                super(protoByteMessage, sign);
+            }
+
+            @Override
+            public boolean doProcess(@Nullable ProtoByteMessageWrapper target) {
+                // check thread state
+                Threads.mustNotUi();
+
+                if (target != null && target.getProtoMessageObject() instanceof ProtoMessage.Result) {
+                    // 接收 Result 消息
+                    final ProtoMessage.Result result = (ProtoMessage.Result) target.getProtoMessageObject();
+                    if (result.getSign() == getSign()) {
+                        // 校验 sign 是否相等
+
+                        synchronized (getStateLock()) {
+                            final int state = getState();
+                            if (state != STATE_WAIT_RESULT) {
+                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                        + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                                return false;
+                            }
+
+                            if (result.getCode() != 0) {
+                                setErrorCode(result.getCode());
+                                setErrorMessage(result.getMsg());
+                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this) +
+                                        " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
+                                moveToState(STATE_FAIL);
+                            } else {
+                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this) +
+                                        " unexpected. accept with same sign:%s and invalid Result code:%s", getSign(), result.getCode());
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }
+                } else if (target != null && target.getProtoMessageObject() instanceof ProtoMessage.ChatSR) {
+                    // 接收 ChatSR 消息
+                    final ProtoMessage.ChatSR chatSR = (ProtoMessage.ChatSR) target.getProtoMessageObject();
+                    if (chatSR.getSign() == getSign()) {
+                        // 校验 sign 是否相等
+
+                        synchronized (getStateLock()) {
+                            final int state = getState();
+                            if (state != STATE_WAIT_RESULT) {
+                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                        + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                                return false;
+                            }
+
+                            final long msgId = chatSR.getMsgId();
+                            if (msgId <= 0) {
+                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                        + " unexpected. accept with same sign:%s and invalid msgId:%s", getSign(), msgId);
+                                return false;
+                            }
+                            // TODO
+                            if (result.getCode() != 0) {
+                                setErrorCode(result.getCode());
+                                setErrorMessage(result.getMsg());
+                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this) +
+                                        " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
+                                moveToState(STATE_FAIL);
+                            } else {
+                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this) +
+                                        " unexpected. accept with same sign:%s and invalid Result code:%s", getSign(), result.getCode());
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
         }
 
         private boolean isFastMessage() {

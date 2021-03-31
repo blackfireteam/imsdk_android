@@ -1,7 +1,7 @@
 syntax = "proto3";
 option java_package = "com.masonsoft.imsdk.core.proto";
 
-// 最近修改时间-2021-03-24 11:11:02
+// 最近修改时间-2021-03-26 12:34:02
 
 //0
 message Ping
@@ -49,6 +49,7 @@ message ChatSR
 {
   int64 sign = 1;//信息标示，原路返回
   int64 msg_id = 2;//消息id
+  int64 msg_time = 3;
 }
 //6
 message ChatR
@@ -91,7 +92,7 @@ message GetHistory
 message Revoke
 {
   int64 sign = 1; //客户端自定义标识，服务器会原样返回
-  int64 to_uid = 2;// 谁发的消息
+  int64 to_uid = 2;//会话列表的对方id
   int64 msg_id = 3;// 撤回的消息id
 }
 //10
