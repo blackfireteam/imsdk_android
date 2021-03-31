@@ -78,6 +78,10 @@ public class IMMessageUploadManager {
         return getSessionUploader(sessionUserId).dispatchTcpResponse(sign, wrapper);
     }
 
+    public void touch(final long sessionUserId) {
+        getSessionUploader(sessionUserId);
+    }
+
     public float getUploadProgress(final long sessionUserId, final long localSendingMessageLocalId) {
         return getSessionUploader(sessionUserId).getUploadProgress(localSendingMessageLocalId);
     }

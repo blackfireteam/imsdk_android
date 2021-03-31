@@ -32,6 +32,10 @@ public class SendMessageWriteDatabaseProcessor extends SendMessageNotNullValidat
 
     @Override
     protected boolean doNotNullProcess(@NonNull IMSessionMessage target) {
+        final long sessionUserId = target.getSessionUserId();
+        // 初始化发送队列
+        IMMessageUploadManager.getInstance().touch(sessionUserId);
+
         if (target.isResend()) {
             return resendMessage(target);
         } else {
