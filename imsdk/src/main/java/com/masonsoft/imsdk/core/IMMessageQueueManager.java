@@ -12,6 +12,7 @@ import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.processor.InternalReceivedMessageProtoTypeProcessor;
 import com.masonsoft.imsdk.core.processor.InternalSendMessageTypeValidateProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedMessageSessionValidateProcessor;
+import com.masonsoft.imsdk.core.processor.ReceivedMessageUploadResponseProcessor;
 import com.masonsoft.imsdk.core.processor.SendMessageRecoveryProcessor;
 import com.masonsoft.imsdk.core.processor.SendMessageWriteDatabaseProcessor;
 import com.masonsoft.imsdk.lang.MultiProcessor;
@@ -53,6 +54,7 @@ public class IMMessageQueueManager {
     private IMMessageQueueManager() {
         mReceivedMessageProcessor.addFirstProcessor(new ReceivedMessageSessionValidateProcessor());
         mReceivedMessageProcessor.addLastProcessor(new InternalReceivedMessageProtoTypeProcessor());
+        mReceivedMessageProcessor.addLastProcessor(new ReceivedMessageUploadResponseProcessor());
 
         mSendMessageProcessor.addFirstProcessor(new SendMessageRecoveryProcessor());
         mSendMessageProcessor.addLastProcessor(new InternalSendMessageTypeValidateProcessor());

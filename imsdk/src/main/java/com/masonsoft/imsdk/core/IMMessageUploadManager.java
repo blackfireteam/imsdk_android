@@ -73,6 +73,10 @@ public class IMMessageUploadManager {
         getSessionUploader(sessionUserId).dispatchCheckIdleMessage();
     }
 
+    public boolean dispatchTcpResponse(final long sessionUserId, @NonNull final Object protoMessageObject) {
+        getSessionUploader(sessionUserId).dispatchTcpResponse(protoMessageObject);
+    }
+
     private static class MessageUploadObjectWrapper {
         //////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////
@@ -508,6 +512,10 @@ public class IMMessageUploadManager {
                 }
             }
             return null;
+        }
+
+        private boolean dispatchTcpResponse(@NonNull Object protoMessageObject) {
+
         }
 
         private void dispatchCheckIdleMessage() {
