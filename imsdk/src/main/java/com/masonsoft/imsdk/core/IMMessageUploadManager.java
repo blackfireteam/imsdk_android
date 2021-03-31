@@ -73,8 +73,8 @@ public class IMMessageUploadManager {
         getSessionUploader(sessionUserId).dispatchCheckIdleMessage();
     }
 
-    public boolean dispatchTcpResponse(final long sessionUserId, @NonNull final Object protoMessageObject) {
-        getSessionUploader(sessionUserId).dispatchTcpResponse(protoMessageObject);
+    public boolean dispatchTcpResponse(final long sessionUserId, final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
+        return getSessionUploader(sessionUserId).dispatchTcpResponse(sign, wrapper);
     }
 
     private static class MessageUploadObjectWrapper {
@@ -228,6 +228,21 @@ public class IMMessageUploadManager {
             }
         }
 
+        private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
+            final ChatSMessagePacket chatSMessagePacket = mChatSMessagePacket;
+            if (chatSMessagePacket == null) {
+                final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected mChatSMessagePacket is null");
+                IMLog.e(e);
+                return false;
+            }
+            if (mSign != sign) {
+                final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected sign not match mSign:" + mSign + ", sign:" + sign);
+                IMLog.e(e);
+                return false;
+            }
+            return chatSMessagePacket.doProcess(wrapper);
+        }
+
         private class ChatSMessagePacket extends TimeoutMessagePacket {
 
             public ChatSMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
@@ -238,10 +253,17 @@ public class IMMessageUploadManager {
             public boolean doProcess(@Nullable ProtoByteMessageWrapper target) {
                 // check thread state
                 Threads.mustNotUi();
+                if (target == null) {
+                    return false;
+                }
+                final Object protoMessageObject = target.getProtoMessageObject();
+                if (protoMessageObject == null) {
+                    return false;
+                }
 
-                if (target != null && target.getProtoMessageObject() instanceof ProtoMessage.Result) {
+                if (protoMessageObject instanceof ProtoMessage.Result) {
                     // 接收 Result 消息
-                    final ProtoMessage.Result result = (ProtoMessage.Result) target.getProtoMessageObject();
+                    final ProtoMessage.Result result = (ProtoMessage.Result) protoMessageObject;
                     if (result.getSign() == getSign()) {
                         // 校验 sign 是否相等
 
@@ -268,9 +290,9 @@ public class IMMessageUploadManager {
 
                         return true;
                     }
-                } else if (target != null && target.getProtoMessageObject() instanceof ProtoMessage.ChatSR) {
+                } else if (protoMessageObject instanceof ProtoMessage.ChatSR) {
                     // 接收 ChatSR 消息
-                    final ProtoMessage.ChatSR chatSR = (ProtoMessage.ChatSR) target.getProtoMessageObject();
+                    final ProtoMessage.ChatSR chatSR = (ProtoMessage.ChatSR) protoMessageObject;
                     if (chatSR.getSign() == getSign()) {
                         // 校验 sign 是否相等
 
@@ -492,6 +514,16 @@ public class IMMessageUploadManager {
         }
 
         @Nullable
+        private MessageUploadObjectWrapperTask getTask(final long sign) {
+            for (MessageUploadObjectWrapperTask task : mAllRunningTasks) {
+                if (task.mMessageUploadObjectWrapper.mSign == sign) {
+                    return task;
+                }
+            }
+            return null;
+        }
+
+        @Nullable
         private MessageUploadObjectWrapperTask getTask(@NonNull LocalSendingMessage localSendingMessage) {
             final long localId = localSendingMessage.localId.get();
             for (MessageUploadObjectWrapperTask task : mAllRunningTasks) {
@@ -514,8 +546,17 @@ public class IMMessageUploadManager {
             return null;
         }
 
-        private boolean dispatchTcpResponse(@NonNull Object protoMessageObject) {
-
+        private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
+            synchronized (mAllRunningTasks) {
+                final MessageUploadObjectWrapperTask task = getTask(sign);
+                if (task == null) {
+                    return false;
+                }
+                if (task.mMessageUploadObjectWrapper.dispatchTcpResponse(sign, wrapper)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void dispatchCheckIdleMessage() {
