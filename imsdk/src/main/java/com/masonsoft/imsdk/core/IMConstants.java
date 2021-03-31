@@ -22,6 +22,11 @@ public final class IMConstants {
     public static final int FALSE = 0;
 
     /**
+     * 指代任意 id
+     */
+    public static final int ID_ANY = -1;
+
+    /**
      * @see #TRUE
      * @see #FALSE
      */

@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.idonans.core.thread.Threads;
 import com.idonans.lang.DisposableHolder;
 import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.observable.MessageObservable;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -82,14 +83,30 @@ public abstract class IMMessageChangedViewHelper {
 
     @SuppressWarnings("FieldCanBeLocal")
     private final MessageObservable.MessageObserver mMessageObserver = new MessageObservable.MessageObserver() {
+
+        private boolean notMatch(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
+            return (sessionUserId != IMConstants.ID_ANY && mSessionUserId != sessionUserId)
+                    || (conversationType != IMConstants.ID_ANY && mConversationType != conversationType)
+                    || (targetUserId != IMConstants.ID_ANY && mTargetUserId != targetUserId)
+                    || (localMessageId != IMConstants.ID_ANY && mLocalMessageId != localMessageId);
+        }
+
         @Override
         public void onMessageChanged(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-            onMessageChangedInternal(sessionUserId, conversationType, targetUserId, localMessageId);
+            if (notMatch(sessionUserId, conversationType, targetUserId, localMessageId)) {
+                return;
+            }
+
+            Threads.postUi(() -> onMessageChangedInternal(sessionUserId, conversationType, targetUserId, localMessageId));
         }
 
         @Override
         public void onMessageCreated(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-            onMessageChangedInternal(sessionUserId, conversationType, targetUserId, localMessageId);
+            if (notMatch(sessionUserId, conversationType, targetUserId, localMessageId)) {
+                return;
+            }
+
+            Threads.postUi(() -> onMessageChangedInternal(sessionUserId, conversationType, targetUserId, localMessageId));
         }
 
         @Override
@@ -97,15 +114,21 @@ public abstract class IMMessageChangedViewHelper {
             // ignore
         }
 
-        private void onMessageChangedInternal(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-            if (mSessionUserId == sessionUserId
-                    && mConversationType == conversationType
-                    && mTargetUserId == targetUserId
-                    && mLocalMessageId == localMessageId) {
-                Threads.postUi(() -> {
-                    requestLoadData(false);
-                });
+        @Override
+        public void onMultiMessageChanged(long sessionUserId) {
+            if (notMatch(sessionUserId, IMConstants.ID_ANY, IMConstants.ID_ANY, IMConstants.ID_ANY)) {
+                return;
             }
+
+            Threads.postUi(() -> onMessageChangedInternal(sessionUserId, IMConstants.ID_ANY, IMConstants.ID_ANY, IMConstants.ID_ANY));
+        }
+
+        private void onMessageChangedInternal(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
+            if (notMatch(sessionUserId, conversationType, targetUserId, localMessageId)) {
+                return;
+            }
+
+            requestLoadData(false);
         }
     };
 

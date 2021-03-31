@@ -55,18 +55,42 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     @SuppressWarnings("FieldCanBeLocal")
     private final ConversationObservable.ConversationObserver mConversationObserver = new ConversationObservable.ConversationObserver() {
+
+        private boolean notMatch(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+            return (sessionUserId != IMConstants.ID_ANY && mSessionUserId != sessionUserId)
+                    || (conversationType != IMConstants.ID_ANY && mConversationType != conversationType)
+                    || (targetUserId != IMConstants.ID_ANY && mTargetUserId != targetUserId);
+        }
+
         @Override
         public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+            if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
+                return;
+            }
+
             Threads.postUi(() -> onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId));
         }
 
         @Override
         public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+            if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
+                return;
+            }
+
             Threads.postUi(() -> onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId));
         }
 
+        @Override
+        public void onMultiConversationChanged(long sessionUserId) {
+            if (notMatch(sessionUserId, IMConstants.ID_ANY, IMConstants.ID_ANY, IMConstants.ID_ANY)) {
+                return;
+            }
+
+            Threads.postUi(() -> onConversationChangedInternal(sessionUserId, IMConstants.ID_ANY, IMConstants.ID_ANY, IMConstants.ID_ANY));
+        }
+
         private void onConversationChangedInternal(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            if (mSessionUserId != sessionUserId || mConversationType != conversationType || mTargetUserId != targetUserId) {
+            if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
                 return;
             }
 
