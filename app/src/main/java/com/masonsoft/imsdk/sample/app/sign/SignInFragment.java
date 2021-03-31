@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.SimpleAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +24,11 @@ import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class SignInFragment extends SystemInsetsFragment {
 
     public static SignInFragment newInstance() {
@@ -30,6 +36,32 @@ public class SignInFragment extends SystemInsetsFragment {
         SignInFragment fragment = new SignInFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private static final String[] TEST_TOKEN_ARRAY = new String[]{
+            "mz4ERZKaqS+Exjie4R5BsQ==",
+            "jCTYRM47p2PrZljH2tT4rw==",
+            "89g3Is+0vDBz7grDz95N4A==",
+            "knZxEr48p+kb70wIHxin9A==",
+            "lxmxSxIG9jIJWyruS08tsg==",
+            "jVUJjCbO+FyIYjv1PxWhmg==",
+            "M5nMDVU9Qe76BJQcTMP8lA==",
+            "d1rpzZ7RnvGyToVDws6cTQ==",
+            "fc2d4I046hsRSF9WpQ9NnA==",
+            "oL/jnE5vydk4a2ixCjHrTg==",
+            "CxY7P2HxAwxQc6Hue1Z3mg==",
+            "wlQeVQUdXZV0GZmzAzbi6g==",
+            "oywBohgtkR3zy4DxxH3LbA==",
+            "KMpJ5ze/J8hhrGqqGYrY6Q==",
+    };
+    private static final List<Map<String, Object>> TEST_TOKEN_MAP_LIST = new ArrayList<>();
+
+    static {
+        for (String token : TEST_TOKEN_ARRAY) {
+            final Map<String, Object> map = new HashMap<>();
+            map.put("token", token);
+            TEST_TOKEN_MAP_LIST.add(map);
+        }
     }
 
     @Nullable
@@ -55,6 +87,13 @@ public class SignInFragment extends SystemInsetsFragment {
             }
             return false;
         });
+        mBinding.tokenSpinner.setAdapter(new SimpleAdapter(
+                mBinding.tokenSpinner.getContext(),
+                TEST_TOKEN_MAP_LIST,
+                android.R.layout.simple_list_item_1,
+                new String[]{"token" },
+                new int[]{android.R.id.text1}
+        ));
         ViewUtil.onClick(mBinding.submit, v -> onSubmit());
 
         return mBinding.getRoot();
@@ -79,17 +118,24 @@ public class SignInFragment extends SystemInsetsFragment {
             ToastUtil.show(getString(R.string.imsdk_sample_input_error_empty_phone));
             return;
         }
+        final boolean internetSwitch = mBinding.internetSwitch.isChecked();
+        final String token = (String) ((Map<?, ?>) mBinding.tokenSpinner.getSelectedItem()).get("token");
 
-        SampleLog.v("submit with phone:%s", phone);
+        SampleLog.v(
+                "submit with phone:%s, internetSwitch:%s, token:%s",
+                phone,
+                internetSwitch,
+                token);
 
         //////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////
         // TODO 临时使用固定的测试信息登录
-        final String debugToken = "rg3Pdti9iIWYc6NGL9VO+g==";
+        //noinspection UnnecessaryLocalVariable
+        final String debugToken = token;
         final String debugAesKey = null;
-        final String debugHost = "im.ekfree.com";
+        final String debugHost = internetSwitch ? "im.ekfree.com" : "192.168.50.254";
         final int debugPort = 18888;
         final Session session = new Session(
                 debugToken,
