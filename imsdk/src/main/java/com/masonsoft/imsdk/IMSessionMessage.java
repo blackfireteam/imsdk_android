@@ -125,6 +125,11 @@ public class IMSessionMessage {
          */
         int ERROR_CODE_INVALID_MESSAGE_TIME = 6;
 
+        /**
+         * 非法的消息发送状态
+         */
+        int ERROR_CODE_INVALID_MESSAGE_SEND_STATUS = 7;
+
         //////////////////////////////////////////
         //////////////////////////////////////////
         /**
