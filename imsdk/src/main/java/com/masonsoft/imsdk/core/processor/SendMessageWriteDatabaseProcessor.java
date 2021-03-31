@@ -87,6 +87,16 @@ public class SendMessageWriteDatabaseProcessor extends SendMessageNotNullValidat
                 );
                 return true;
             }
+            if (dbMessage.remoteMessageId.isUnset()
+                    || dbMessage.remoteMessageId.get() > 0) {
+                // 有服务器消息 id, 说明消息已经发送成功
+                target.getEnqueueCallback().onEnqueueFail(
+                        target,
+                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SEND_STATUS,
+                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_send_status)
+                );
+                return true;
+            }
 
             final LocalSendingMessage localSendingMessage = LocalSendingMessageProvider.getInstance().getLocalSendingMessageByTargetMessage(
                     sessionUserId,

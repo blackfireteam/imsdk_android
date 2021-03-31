@@ -92,37 +92,37 @@ public class IMMessageUploadManager {
          */
         private static final int ERROR_CODE_BIND_ABORT_ID_FAIL = FIRST_LOCAL_ERROR_CODE + 2;
         /**
-         * 错误的 send status 状态
-         */
-        private static final int ERROR_CODE_UNEXPECTED_SEND_STATUS = FIRST_LOCAL_ERROR_CODE + 3;
-        /**
          * 更新 sendStatus 失败
          */
-        private static final int ERROR_CODE_UPDATE_SEND_STATUS_FAIL = FIRST_LOCAL_ERROR_CODE + 4;
+        private static final int ERROR_CODE_UPDATE_SEND_STATUS_FAIL = FIRST_LOCAL_ERROR_CODE + 3;
         /**
          * 构建 protoByteMessage 失败
          */
-        private static final int ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL = FIRST_LOCAL_ERROR_CODE + 5;
+        private static final int ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL = FIRST_LOCAL_ERROR_CODE + 4;
         /**
          * sessionTcpClientProxy 为 null
          */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL = FIRST_LOCAL_ERROR_CODE + 6;
+        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL = FIRST_LOCAL_ERROR_CODE + 5;
         /**
          * sessionTcpClientProxy session 无效
          */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID = FIRST_LOCAL_ERROR_CODE + 7;
+        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID = FIRST_LOCAL_ERROR_CODE + 6;
         /**
          * sessionTcpClientProxy 链接错误
          */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR = FIRST_LOCAL_ERROR_CODE + 9;
+        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR = FIRST_LOCAL_ERROR_CODE + 7;
         /**
          * sessionTcpClientProxy 未知错误
          */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN = FIRST_LOCAL_ERROR_CODE + 10;
+        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN = FIRST_LOCAL_ERROR_CODE + 8;
         /**
          * messagePacket 发送失败
          */
-        private static final int ERROR_CODE_MESSAGE_PACKET_SEND_FAIL = FIRST_LOCAL_ERROR_CODE + 11;
+        private static final int ERROR_CODE_MESSAGE_PACKET_SEND_FAIL = FIRST_LOCAL_ERROR_CODE + 9;
+        /**
+         * messagePacket 发送超时
+         */
+        private static final int ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT = FIRST_LOCAL_ERROR_CODE + 10;
 
         //////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////
@@ -153,6 +153,11 @@ public class IMMessageUploadManager {
                     // 消息发送失败
                     IMLog.v("onStateChanged STATE_FAIL chatSMessagePacket errorCode:%s, errorMessage:%s, timeout:%s",
                             chatSMessagePacket.getErrorCode(), chatSMessagePacket.getErrorMessage(), chatSMessagePacket.isTimeoutTriggered());
+                    if (chatSMessagePacket.getErrorCode() != 0) {
+                        setError(chatSMessagePacket.getErrorCode(), chatSMessagePacket.getErrorMessage());
+                    } else if (chatSMessagePacket.isTimeoutTriggered()) {
+                        setError(ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT, null);
+                    }
                     moveSendStatus(IMConstants.SendStatus.FAIL);
                 } else if (newState == MessagePacket.STATE_SUCCESS) {
                     // 消息发送成功
@@ -173,7 +178,7 @@ public class IMMessageUploadManager {
          */
         public float mSendProgress = 0f;
 
-        public int mErrorCode;
+        public long mErrorCode;
         public String mErrorMessage;
 
         //////////////////////////////////////////////////////////////////////
@@ -187,11 +192,11 @@ public class IMMessageUploadManager {
             this.mLocalSendingMessage = localSendingMessage;
         }
 
-        private boolean canContinue() {
-            return this.mErrorCode == 0 && !this.mAbortIdNotMatch;
+        private boolean hasErrorOrAbort() {
+            return this.mErrorCode != 0 || this.mAbortIdNotMatch;
         }
 
-        private void setError(int errorCode, String errorMessage) {
+        private void setError(long errorCode, String errorMessage) {
             this.mErrorCode = errorCode;
             this.mErrorMessage = errorMessage;
         }
@@ -466,6 +471,9 @@ public class IMMessageUploadManager {
                 final LocalSendingMessage localSendingMessageUpdate = new LocalSendingMessage();
                 localSendingMessageUpdate.localId.set(this.mLocalSendingMessage.localId.get());
                 localSendingMessageUpdate.localSendStatus.set(sendStatus);
+                // 保存错误信息
+                localSendingMessageUpdate.errorCode.set(mErrorCode);
+                localSendingMessageUpdate.errorMessage.set(mErrorMessage);
                 if (LocalSendingMessageProvider.getInstance().updateLocalSendingMessage(this.mSessionUserId, localSendingMessageUpdate)) {
                     localSendingMessage = LocalSendingMessageProvider.getInstance().getLocalSendingMessage(
                             this.mSessionUserId,
@@ -649,12 +657,12 @@ public class IMMessageUploadManager {
             @Override
             public void run() {
                 try {
-                    if (!mMessageUploadObjectWrapper.canContinue()) {
+                    if (mMessageUploadObjectWrapper.hasErrorOrAbort()) {
                         return;
                     }
 
                     mMessageUploadObjectWrapper.moveSendStatus(IMConstants.SendStatus.SENDING);
-                    if (!mMessageUploadObjectWrapper.canContinue()) {
+                    if (mMessageUploadObjectWrapper.hasErrorOrAbort()) {
                         return;
                     }
 
@@ -693,7 +701,7 @@ public class IMMessageUploadManager {
                         return;
                     }
 
-                    if (!mMessageUploadObjectWrapper.canContinue()) {
+                    if (mMessageUploadObjectWrapper.hasErrorOrAbort()) {
                         return;
                     }
 
