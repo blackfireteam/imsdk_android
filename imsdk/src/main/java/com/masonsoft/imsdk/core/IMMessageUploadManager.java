@@ -2,6 +2,7 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.collection.LruCache;
 
 import com.idonans.core.Singleton;
 import com.idonans.core.thread.TaskQueue;
@@ -77,424 +78,433 @@ public class IMMessageUploadManager {
         return getSessionUploader(sessionUserId).dispatchTcpResponse(sign, wrapper);
     }
 
-    private static class MessageUploadObjectWrapper {
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
-        private static final int FIRST_LOCAL_ERROR_CODE = Integer.MIN_VALUE / 2;
-        /**
-         * 未知错误
-         */
-        private static final int ERROR_CODE_UNKNOWN = FIRST_LOCAL_ERROR_CODE;
-        private static final int ERROR_CODE_TARGET_NOT_FOUND = FIRST_LOCAL_ERROR_CODE + 1;
-        /**
-         * 绑定 abort id 失败
-         */
-        private static final int ERROR_CODE_BIND_ABORT_ID_FAIL = FIRST_LOCAL_ERROR_CODE + 2;
-        /**
-         * 更新 sendStatus 失败
-         */
-        private static final int ERROR_CODE_UPDATE_SEND_STATUS_FAIL = FIRST_LOCAL_ERROR_CODE + 3;
-        /**
-         * 构建 protoByteMessage 失败
-         */
-        private static final int ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL = FIRST_LOCAL_ERROR_CODE + 4;
-        /**
-         * sessionTcpClientProxy 为 null
-         */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL = FIRST_LOCAL_ERROR_CODE + 5;
-        /**
-         * sessionTcpClientProxy session 无效
-         */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID = FIRST_LOCAL_ERROR_CODE + 6;
-        /**
-         * sessionTcpClientProxy 链接错误
-         */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR = FIRST_LOCAL_ERROR_CODE + 7;
-        /**
-         * sessionTcpClientProxy 未知错误
-         */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN = FIRST_LOCAL_ERROR_CODE + 8;
-        /**
-         * messagePacket 发送失败
-         */
-        private static final int ERROR_CODE_MESSAGE_PACKET_SEND_FAIL = FIRST_LOCAL_ERROR_CODE + 9;
-        /**
-         * messagePacket 发送超时
-         */
-        private static final int ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT = FIRST_LOCAL_ERROR_CODE + 10;
-
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
-        private final long mSessionUserId;
-        private final long mSign;
-        private final long mAbortId;
-        @NonNull
-        private LocalSendingMessage mLocalSendingMessage;
-        @Nullable
-        private Message mMessage;
-
-        private final AtomicBoolean mBuildChatSMessagePacket = new AtomicBoolean(false);
-        @Nullable
-        private ChatSMessagePacket mChatSMessagePacket;
-        @NonNull
-        private final MessagePacketStateObservable.MessagePacketStateObserver mChatSMessagePacketStateObserver = new MessagePacketStateObservable.MessagePacketStateObserver() {
-            @Override
-            public void onStateChanged(MessagePacket packet, int oldState, int newState) {
-                if (packet != mChatSMessagePacket) {
-                    final Throwable e = new IllegalAccessError("invalid packet:" + Objects.defaultObjectTag(packet)
-                            + ", mChatSMessagePacket:" + Objects.defaultObjectTag(mChatSMessagePacket));
-                    IMLog.e(e);
-                    return;
-                }
-                final ChatSMessagePacket chatSMessagePacket = (ChatSMessagePacket) packet;
-                if (newState == MessagePacket.STATE_FAIL) {
-                    // 消息发送失败
-                    IMLog.v("onStateChanged STATE_FAIL chatSMessagePacket errorCode:%s, errorMessage:%s, timeout:%s",
-                            chatSMessagePacket.getErrorCode(), chatSMessagePacket.getErrorMessage(), chatSMessagePacket.isTimeoutTriggered());
-                    if (chatSMessagePacket.getErrorCode() != 0) {
-                        setError(chatSMessagePacket.getErrorCode(), chatSMessagePacket.getErrorMessage());
-                    } else if (chatSMessagePacket.isTimeoutTriggered()) {
-                        setError(ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT, null);
-                    }
-                    moveSendStatus(IMConstants.SendStatus.FAIL);
-                } else if (newState == MessagePacket.STATE_SUCCESS) {
-                    // 消息发送成功
-                    // 设置发送进度为 100%
-                    mSendProgress = 1f;
-                    moveSendStatus(IMConstants.SendStatus.SUCCESS);
-                }
-            }
-        };
-
-        /**
-         * abort id 与数据库中对应记录不相等.
-         */
-        private boolean mAbortIdNotMatch;
-
-        /**
-         * 消息的发送进度
-         */
-        public float mSendProgress = 0f;
-
-        public long mErrorCode;
-        public String mErrorMessage;
-
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
-
-        public MessageUploadObjectWrapper(long sessionUserId, long sign, long abortId, @NonNull LocalSendingMessage localSendingMessage) {
-            this.mSessionUserId = sessionUserId;
-            this.mSign = sign;
-            this.mAbortId = abortId;
-            this.mLocalSendingMessage = localSendingMessage;
-        }
-
-        private boolean hasErrorOrAbort() {
-            return this.mErrorCode != 0 || this.mAbortIdNotMatch;
-        }
-
-        private void setError(long errorCode, String errorMessage) {
-            this.mErrorCode = errorCode;
-            this.mErrorMessage = errorMessage;
-        }
-
-        @Nullable
-        private MessagePacket buildMessagePacket() {
-            if (!mBuildChatSMessagePacket.weakCompareAndSet(false, true)) {
-                throw new IllegalAccessError("buildMessagePacket only support called once");
-            }
-
-            final Message message = this.mMessage;
-            if (message == null) {
-                return null;
-            }
-
-            // 将消息预处理之后构建为 proto buf
-            final int messageType = message.messageType.get();
-            if (messageType == IMConstants.MessageType.TEXT) {
-                final ProtoMessage.ChatS chatS = ProtoMessage.ChatS.newBuilder()
-                        .setSign(mSign)
-                        .setType(messageType)
-                        .setToUid(message.toUserId.get())
-                        .setBody(message.body.get())
-                        .build();
-                final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(chatS);
-                final ChatSMessagePacket chatSMessagePacket = new ChatSMessagePacket(protoByteMessage, mSign);
-                mChatSMessagePacket = chatSMessagePacket;
-                mChatSMessagePacket.getMessagePacketStateObservable().registerObserver(mChatSMessagePacketStateObserver);
-                return chatSMessagePacket;
-            } else {
-                final Throwable e = new IllegalAccessError("unknown message type:" + messageType + " " + message);
-                IMLog.e(e);
-                return null;
-            }
-        }
-
-        private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
-            final ChatSMessagePacket chatSMessagePacket = mChatSMessagePacket;
-            if (chatSMessagePacket == null) {
-                final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected mChatSMessagePacket is null");
-                IMLog.e(e);
-                return false;
-            }
-            if (mSign != sign) {
-                final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected sign not match mSign:" + mSign + ", sign:" + sign);
-                IMLog.e(e);
-                return false;
-            }
-            return chatSMessagePacket.doProcess(wrapper);
-        }
-
-        private class ChatSMessagePacket extends TimeoutMessagePacket {
-
-            public ChatSMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
-                super(protoByteMessage, sign);
-            }
-
-            @Override
-            public boolean doProcess(@Nullable ProtoByteMessageWrapper target) {
-                // check thread state
-                Threads.mustNotUi();
-                if (target == null) {
-                    return false;
-                }
-                final Object protoMessageObject = target.getProtoMessageObject();
-                if (protoMessageObject == null) {
-                    return false;
-                }
-
-                if (protoMessageObject instanceof ProtoMessage.Result) {
-                    // 接收 Result 消息
-                    final ProtoMessage.Result result = (ProtoMessage.Result) protoMessageObject;
-                    if (result.getSign() == getSign()) {
-                        // 校验 sign 是否相等
-
-                        synchronized (getStateLock()) {
-                            final int state = getState();
-                            if (state != STATE_WAIT_RESULT) {
-                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
-                                        + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
-                                return false;
-                            }
-
-                            if (result.getCode() != 0) {
-                                setErrorCode(result.getCode());
-                                setErrorMessage(result.getMsg());
-                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this) +
-                                        " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
-                                moveToState(STATE_FAIL);
-                            } else {
-                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this) +
-                                        " unexpected. accept with same sign:%s and invalid Result code:%s", getSign(), result.getCode());
-                                return false;
-                            }
-                        }
-
-                        return true;
-                    }
-                } else if (protoMessageObject instanceof ProtoMessage.ChatSR) {
-                    // 接收 ChatSR 消息
-                    final ProtoMessage.ChatSR chatSR = (ProtoMessage.ChatSR) protoMessageObject;
-                    if (chatSR.getSign() == getSign()) {
-                        // 校验 sign 是否相等
-
-                        synchronized (getStateLock()) {
-                            final int state = getState();
-                            if (state != STATE_WAIT_RESULT) {
-                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
-                                        + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
-                                return false;
-                            }
-
-                            final long msgId = chatSR.getMsgId();
-                            if (msgId <= 0) {
-                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
-                                        + " unexpected. invalid msgId:%s, sign:%s", msgId, getSign());
-                                moveToState(STATE_FAIL);
-                                return true;
-                            }
-                            // 微秒
-                            final long msgTime = chatSR.getMsgTime();
-                            if (msgTime <= 0) {
-                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
-                                        + " unexpected. invalid msgTime:%s, sign:%s", msgTime, getSign());
-                                moveToState(STATE_FAIL);
-                                return true;
-                            }
-
-                            final Message message = mMessage;
-                            if (message == null) {
-                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
-                                        + " unexpected. message is null, sign:%s", msgTime, getSign());
-                                moveToState(STATE_FAIL);
-                                return true;
-                            }
-
-                            final Message messageUpdate = new Message();
-                            messageUpdate.localId.set(message.localId.get());
-                            messageUpdate.remoteMessageId.set(msgId);
-                            messageUpdate.remoteMessageTime.set(msgTime);
-                            if (!MessageDatabaseProvider.getInstance().updateMessage(
-                                    mSessionUserId,
-                                    mLocalSendingMessage.conversationType.get(),
-                                    mLocalSendingMessage.targetUserId.get(),
-                                    messageUpdate)) {
-                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
-                                        + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", getSign(), messageUpdate);
-                                moveToState(STATE_FAIL);
-                                return true;
-                            }
-
-                            final Message readMessage = MessageDatabaseProvider.getInstance().getMessage(
-                                    mSessionUserId,
-                                    mLocalSendingMessage.conversationType.get(),
-                                    mLocalSendingMessage.targetUserId.get(),
-                                    message.localId.get()
-                            );
-                            if (readMessage == null) {
-                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
-                                                + " unexpected. getMessage return null, sign:%s, sessionUserId:%s, conversationType:%s, targetUserId:%s, localId:%s",
-                                        getSign(),
-                                        mSessionUserId,
-                                        mLocalSendingMessage.conversationType.get(),
-                                        mLocalSendingMessage.targetUserId.get(),
-                                        message.localId.get());
-                                moveToState(STATE_FAIL);
-                                return true;
-                            }
-
-                            mMessage = readMessage;
-                            moveToState(STATE_SUCCESS);
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-        }
-
-        private boolean isFastMessage() {
-            final Message message = mMessage;
-            if (message == null) {
-                return false;
-            }
-            if (message.messageType.isUnset()) {
-                return false;
-            }
-            final int messageType = message.messageType.get();
-            if (messageType == IMConstants.MessageType.TEXT) {
-                return true;
-            }
-            return false;
-        }
-
-        /**
-         * 上传任务执行结束。如果任务执行成功，则从上传表中的删除。否则设置为上传失败。
-         */
-        private void onTaskEnd() {
-            final LocalSendingMessage localSendingMessage = mLocalSendingMessage;
-            if (localSendingMessage.localSendStatus.get() != IMConstants.SendStatus.SUCCESS) {
-                moveSendStatus(IMConstants.SendStatus.FAIL);
-            } else {
-                LocalSendingMessageProvider.getInstance().removeLocalSendingMessage(
-                        mSessionUserId,
-                        localSendingMessage.localId.get());
-            }
-        }
-
-        /**
-         * 绑定消息上传任务的 abort id
-         */
-        private void bindAbortId() {
-            try {
-                final LocalSendingMessage localSendingMessageUpdate = new LocalSendingMessage();
-                localSendingMessageUpdate.localId.set(this.mLocalSendingMessage.localId.get());
-                localSendingMessageUpdate.localAbortId.set(this.mAbortId);
-
-                if (LocalSendingMessageProvider.getInstance().updateLocalSendingMessage(
-                        this.mSessionUserId,
-                        localSendingMessageUpdate)) {
-                    final LocalSendingMessage localSendingMessage = LocalSendingMessageProvider.getInstance().getLocalSendingMessage(
-                            this.mSessionUserId,
-                            this.mLocalSendingMessage.localId.get()
-                    );
-                    if (localSendingMessage != null) {
-                        this.mLocalSendingMessage = localSendingMessage;
-                    } else {
-                        setError(ERROR_CODE_TARGET_NOT_FOUND, null);
-                    }
-                } else {
-                    setError(ERROR_CODE_BIND_ABORT_ID_FAIL, null);
-                }
-            } catch (Throwable e) {
-                IMLog.e(e);
-                setError(ERROR_CODE_UNKNOWN, null);
-            }
-        }
-
-        @Nullable
-        private LocalSendingMessage validateAbortIdMatch() {
-            if (this.mAbortIdNotMatch) {
-                return null;
-            }
-            LocalSendingMessage localSendingMessage = LocalSendingMessageProvider.getInstance().getLocalSendingMessage(
-                    this.mSessionUserId,
-                    this.mLocalSendingMessage.localId.get()
-            );
-            if (localSendingMessage == null) {
-                setError(ERROR_CODE_TARGET_NOT_FOUND, null);
-                this.mAbortIdNotMatch = true;
-                return null;
-            }
-            this.mLocalSendingMessage = localSendingMessage;
-
-            if (localSendingMessage.localAbortId.get() != mAbortId) {
-                IMLog.e("abort id changed. %s : %s", localSendingMessage.localAbortId.get(), mAbortId);
-                this.mAbortIdNotMatch = true;
-                return localSendingMessage;
-            }
-            this.mAbortIdNotMatch = false;
-            return localSendingMessage;
-        }
-
-        private void moveSendStatus(int sendStatus) {
-            try {
-                LocalSendingMessage localSendingMessage = validateAbortIdMatch();
-                if (this.mAbortIdNotMatch) {
-                    return;
-                }
-
-                final LocalSendingMessage localSendingMessageUpdate = new LocalSendingMessage();
-                localSendingMessageUpdate.localId.set(this.mLocalSendingMessage.localId.get());
-                localSendingMessageUpdate.localSendStatus.set(sendStatus);
-                // 保存错误信息
-                localSendingMessageUpdate.errorCode.set(mErrorCode);
-                localSendingMessageUpdate.errorMessage.set(mErrorMessage);
-                if (LocalSendingMessageProvider.getInstance().updateLocalSendingMessage(this.mSessionUserId, localSendingMessageUpdate)) {
-                    localSendingMessage = LocalSendingMessageProvider.getInstance().getLocalSendingMessage(
-                            this.mSessionUserId,
-                            this.mLocalSendingMessage.localId.get()
-                    );
-                    if (localSendingMessage != null) {
-                        this.mLocalSendingMessage = localSendingMessage;
-                    } else {
-                        setError(ERROR_CODE_TARGET_NOT_FOUND, null);
-                    }
-                } else {
-                    setError(ERROR_CODE_UPDATE_SEND_STATUS_FAIL, null);
-                }
-            } catch (Throwable e) {
-                IMLog.e(e);
-                setError(ERROR_CODE_UNKNOWN, null);
-            }
-        }
+    public float getUploadProgress(final long sessionUserId, final long localSendingMessageLocalId) {
+        return getSessionUploader(sessionUserId).getUploadProgress(localSendingMessageLocalId);
     }
 
     private class SessionUploader {
+
+        private class MessageUploadObjectWrapper {
+            //////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////
+            private static final int FIRST_LOCAL_ERROR_CODE = Integer.MIN_VALUE / 2;
+            /**
+             * 未知错误
+             */
+            private static final int ERROR_CODE_UNKNOWN = FIRST_LOCAL_ERROR_CODE;
+            private static final int ERROR_CODE_TARGET_NOT_FOUND = FIRST_LOCAL_ERROR_CODE + 1;
+            /**
+             * 绑定 abort id 失败
+             */
+            private static final int ERROR_CODE_BIND_ABORT_ID_FAIL = FIRST_LOCAL_ERROR_CODE + 2;
+            /**
+             * 更新 sendStatus 失败
+             */
+            private static final int ERROR_CODE_UPDATE_SEND_STATUS_FAIL = FIRST_LOCAL_ERROR_CODE + 3;
+            /**
+             * 构建 protoByteMessage 失败
+             */
+            private static final int ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL = FIRST_LOCAL_ERROR_CODE + 4;
+            /**
+             * sessionTcpClientProxy 为 null
+             */
+            private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL = FIRST_LOCAL_ERROR_CODE + 5;
+            /**
+             * sessionTcpClientProxy session 无效
+             */
+            private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID = FIRST_LOCAL_ERROR_CODE + 6;
+            /**
+             * sessionTcpClientProxy 链接错误
+             */
+            private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR = FIRST_LOCAL_ERROR_CODE + 7;
+            /**
+             * sessionTcpClientProxy 未知错误
+             */
+            private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN = FIRST_LOCAL_ERROR_CODE + 8;
+            /**
+             * messagePacket 发送失败
+             */
+            private static final int ERROR_CODE_MESSAGE_PACKET_SEND_FAIL = FIRST_LOCAL_ERROR_CODE + 9;
+            /**
+             * messagePacket 发送超时
+             */
+            private static final int ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT = FIRST_LOCAL_ERROR_CODE + 10;
+
+            //////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////
+            private final long mSessionUserId;
+            private final long mSign;
+            private final long mAbortId;
+            @NonNull
+            private LocalSendingMessage mLocalSendingMessage;
+            @Nullable
+            private Message mMessage;
+
+            private final AtomicBoolean mBuildChatSMessagePacket = new AtomicBoolean(false);
+            @Nullable
+            private ChatSMessagePacket mChatSMessagePacket;
+            @NonNull
+            private final MessagePacketStateObservable.MessagePacketStateObserver mChatSMessagePacketStateObserver = new MessagePacketStateObservable.MessagePacketStateObserver() {
+                @Override
+                public void onStateChanged(MessagePacket packet, int oldState, int newState) {
+                    if (packet != mChatSMessagePacket) {
+                        final Throwable e = new IllegalAccessError("invalid packet:" + Objects.defaultObjectTag(packet)
+                                + ", mChatSMessagePacket:" + Objects.defaultObjectTag(mChatSMessagePacket));
+                        IMLog.e(e);
+                        return;
+                    }
+                    final ChatSMessagePacket chatSMessagePacket = (ChatSMessagePacket) packet;
+                    if (newState == MessagePacket.STATE_FAIL) {
+                        // 消息发送失败
+                        IMLog.v("onStateChanged STATE_FAIL chatSMessagePacket errorCode:%s, errorMessage:%s, timeout:%s",
+                                chatSMessagePacket.getErrorCode(), chatSMessagePacket.getErrorMessage(), chatSMessagePacket.isTimeoutTriggered());
+                        if (chatSMessagePacket.getErrorCode() != 0) {
+                            setError(chatSMessagePacket.getErrorCode(), chatSMessagePacket.getErrorMessage());
+                        } else if (chatSMessagePacket.isTimeoutTriggered()) {
+                            setError(ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT, null);
+                        }
+                        moveSendStatus(IMConstants.SendStatus.FAIL);
+                    } else if (newState == MessagePacket.STATE_SUCCESS) {
+                        // 消息发送成功
+                        // 设置发送进度为 100%
+                        setSendProgress(1f);
+                        moveSendStatus(IMConstants.SendStatus.SUCCESS);
+                    }
+                }
+            };
+
+            /**
+             * abort id 与数据库中对应记录不相等.
+             */
+            private boolean mAbortIdNotMatch;
+
+            /**
+             * 消息的发送进度
+             */
+            public float mSendProgress;
+
+            public long mErrorCode;
+            public String mErrorMessage;
+
+            //////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////
+
+            public MessageUploadObjectWrapper(long sessionUserId, long sign, long abortId, @NonNull LocalSendingMessage localSendingMessage) {
+                this.mSessionUserId = sessionUserId;
+                this.mSign = sign;
+                this.mAbortId = abortId;
+                this.mLocalSendingMessage = localSendingMessage;
+            }
+
+            private void setSendProgress(float sendProgress) {
+                mSendProgress = sendProgress;
+                mUnsafeProgress.put(mLocalSendingMessage.localId.get(), sendProgress);
+            }
+
+            private boolean hasErrorOrAbort() {
+                return this.mErrorCode != 0 || this.mAbortIdNotMatch;
+            }
+
+            private void setError(long errorCode, String errorMessage) {
+                this.mErrorCode = errorCode;
+                this.mErrorMessage = errorMessage;
+            }
+
+            @Nullable
+            private MessagePacket buildMessagePacket() {
+                if (!mBuildChatSMessagePacket.weakCompareAndSet(false, true)) {
+                    throw new IllegalAccessError("buildMessagePacket only support called once");
+                }
+
+                final Message message = this.mMessage;
+                if (message == null) {
+                    return null;
+                }
+
+                // 将消息预处理之后构建为 proto buf
+                final int messageType = message.messageType.get();
+                if (messageType == IMConstants.MessageType.TEXT) {
+                    final ProtoMessage.ChatS chatS = ProtoMessage.ChatS.newBuilder()
+                            .setSign(mSign)
+                            .setType(messageType)
+                            .setToUid(message.toUserId.get())
+                            .setBody(message.body.get())
+                            .build();
+                    final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(chatS);
+                    final ChatSMessagePacket chatSMessagePacket = new ChatSMessagePacket(protoByteMessage, mSign);
+                    mChatSMessagePacket = chatSMessagePacket;
+                    mChatSMessagePacket.getMessagePacketStateObservable().registerObserver(mChatSMessagePacketStateObserver);
+                    return chatSMessagePacket;
+                } else {
+                    final Throwable e = new IllegalAccessError("unknown message type:" + messageType + " " + message);
+                    IMLog.e(e);
+                    return null;
+                }
+            }
+
+            private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
+                final ChatSMessagePacket chatSMessagePacket = mChatSMessagePacket;
+                if (chatSMessagePacket == null) {
+                    final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected mChatSMessagePacket is null");
+                    IMLog.e(e);
+                    return false;
+                }
+                if (mSign != sign) {
+                    final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected sign not match mSign:" + mSign + ", sign:" + sign);
+                    IMLog.e(e);
+                    return false;
+                }
+                return chatSMessagePacket.doProcess(wrapper);
+            }
+
+            private class ChatSMessagePacket extends TimeoutMessagePacket {
+
+                public ChatSMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
+                    super(protoByteMessage, sign);
+                }
+
+                @Override
+                public boolean doProcess(@Nullable ProtoByteMessageWrapper target) {
+                    // check thread state
+                    Threads.mustNotUi();
+                    if (target == null) {
+                        return false;
+                    }
+                    final Object protoMessageObject = target.getProtoMessageObject();
+                    if (protoMessageObject == null) {
+                        return false;
+                    }
+
+                    if (protoMessageObject instanceof ProtoMessage.Result) {
+                        // 接收 Result 消息
+                        final ProtoMessage.Result result = (ProtoMessage.Result) protoMessageObject;
+                        if (result.getSign() == getSign()) {
+                            // 校验 sign 是否相等
+
+                            synchronized (getStateLock()) {
+                                final int state = getState();
+                                if (state != STATE_WAIT_RESULT) {
+                                    IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                            + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                                    return false;
+                                }
+
+                                if (result.getCode() != 0) {
+                                    setErrorCode(result.getCode());
+                                    setErrorMessage(result.getMsg());
+                                    IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this) +
+                                            " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
+                                    moveToState(STATE_FAIL);
+                                } else {
+                                    IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this) +
+                                            " unexpected. accept with same sign:%s and invalid Result code:%s", getSign(), result.getCode());
+                                    return false;
+                                }
+                            }
+
+                            return true;
+                        }
+                    } else if (protoMessageObject instanceof ProtoMessage.ChatSR) {
+                        // 接收 ChatSR 消息
+                        final ProtoMessage.ChatSR chatSR = (ProtoMessage.ChatSR) protoMessageObject;
+                        if (chatSR.getSign() == getSign()) {
+                            // 校验 sign 是否相等
+
+                            synchronized (getStateLock()) {
+                                final int state = getState();
+                                if (state != STATE_WAIT_RESULT) {
+                                    IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                            + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                                    return false;
+                                }
+
+                                final long msgId = chatSR.getMsgId();
+                                if (msgId <= 0) {
+                                    IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                            + " unexpected. invalid msgId:%s, sign:%s", msgId, getSign());
+                                    moveToState(STATE_FAIL);
+                                    return true;
+                                }
+                                // 微秒
+                                final long msgTime = chatSR.getMsgTime();
+                                if (msgTime <= 0) {
+                                    IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                            + " unexpected. invalid msgTime:%s, sign:%s", msgTime, getSign());
+                                    moveToState(STATE_FAIL);
+                                    return true;
+                                }
+
+                                final Message message = mMessage;
+                                if (message == null) {
+                                    IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                            + " unexpected. message is null, sign:%s", msgTime, getSign());
+                                    moveToState(STATE_FAIL);
+                                    return true;
+                                }
+
+                                final Message messageUpdate = new Message();
+                                messageUpdate.localId.set(message.localId.get());
+                                messageUpdate.remoteMessageId.set(msgId);
+                                messageUpdate.remoteMessageTime.set(msgTime);
+                                if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                        mSessionUserId,
+                                        mLocalSendingMessage.conversationType.get(),
+                                        mLocalSendingMessage.targetUserId.get(),
+                                        messageUpdate)) {
+                                    IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                            + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", getSign(), messageUpdate);
+                                    moveToState(STATE_FAIL);
+                                    return true;
+                                }
+
+                                final Message readMessage = MessageDatabaseProvider.getInstance().getMessage(
+                                        mSessionUserId,
+                                        mLocalSendingMessage.conversationType.get(),
+                                        mLocalSendingMessage.targetUserId.get(),
+                                        message.localId.get()
+                                );
+                                if (readMessage == null) {
+                                    IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                                    + " unexpected. getMessage return null, sign:%s, sessionUserId:%s, conversationType:%s, targetUserId:%s, localId:%s",
+                                            getSign(),
+                                            mSessionUserId,
+                                            mLocalSendingMessage.conversationType.get(),
+                                            mLocalSendingMessage.targetUserId.get(),
+                                            message.localId.get());
+                                    moveToState(STATE_FAIL);
+                                    return true;
+                                }
+
+                                mMessage = readMessage;
+                                moveToState(STATE_SUCCESS);
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+            }
+
+            private boolean isFastMessage() {
+                final Message message = mMessage;
+                if (message == null) {
+                    return false;
+                }
+                if (message.messageType.isUnset()) {
+                    return false;
+                }
+                final int messageType = message.messageType.get();
+                if (messageType == IMConstants.MessageType.TEXT) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * 上传任务执行结束。如果任务执行成功，则从上传表中的删除。否则设置为上传失败。
+             */
+            private void onTaskEnd() {
+                final LocalSendingMessage localSendingMessage = mLocalSendingMessage;
+                if (localSendingMessage.localSendStatus.get() != IMConstants.SendStatus.SUCCESS) {
+                    moveSendStatus(IMConstants.SendStatus.FAIL);
+                } else {
+                    LocalSendingMessageProvider.getInstance().removeLocalSendingMessage(
+                            mSessionUserId,
+                            localSendingMessage.localId.get());
+                }
+            }
+
+            /**
+             * 绑定消息上传任务的 abort id
+             */
+            private void bindAbortId() {
+                try {
+                    final LocalSendingMessage localSendingMessageUpdate = new LocalSendingMessage();
+                    localSendingMessageUpdate.localId.set(this.mLocalSendingMessage.localId.get());
+                    localSendingMessageUpdate.localAbortId.set(this.mAbortId);
+
+                    if (LocalSendingMessageProvider.getInstance().updateLocalSendingMessage(
+                            this.mSessionUserId,
+                            localSendingMessageUpdate)) {
+                        final LocalSendingMessage localSendingMessage = LocalSendingMessageProvider.getInstance().getLocalSendingMessage(
+                                this.mSessionUserId,
+                                this.mLocalSendingMessage.localId.get()
+                        );
+                        if (localSendingMessage != null) {
+                            this.mLocalSendingMessage = localSendingMessage;
+                        } else {
+                            setError(ERROR_CODE_TARGET_NOT_FOUND, null);
+                        }
+                    } else {
+                        setError(ERROR_CODE_BIND_ABORT_ID_FAIL, null);
+                    }
+                } catch (Throwable e) {
+                    IMLog.e(e);
+                    setError(ERROR_CODE_UNKNOWN, null);
+                }
+            }
+
+            @Nullable
+            private LocalSendingMessage validateAbortIdMatch() {
+                if (this.mAbortIdNotMatch) {
+                    return null;
+                }
+                LocalSendingMessage localSendingMessage = LocalSendingMessageProvider.getInstance().getLocalSendingMessage(
+                        this.mSessionUserId,
+                        this.mLocalSendingMessage.localId.get()
+                );
+                if (localSendingMessage == null) {
+                    setError(ERROR_CODE_TARGET_NOT_FOUND, null);
+                    this.mAbortIdNotMatch = true;
+                    return null;
+                }
+                this.mLocalSendingMessage = localSendingMessage;
+
+                if (localSendingMessage.localAbortId.get() != mAbortId) {
+                    IMLog.e("abort id changed. %s : %s", localSendingMessage.localAbortId.get(), mAbortId);
+                    this.mAbortIdNotMatch = true;
+                    return localSendingMessage;
+                }
+                this.mAbortIdNotMatch = false;
+                return localSendingMessage;
+            }
+
+            private void moveSendStatus(int sendStatus) {
+                try {
+                    LocalSendingMessage localSendingMessage = validateAbortIdMatch();
+                    if (this.mAbortIdNotMatch) {
+                        return;
+                    }
+
+                    final LocalSendingMessage localSendingMessageUpdate = new LocalSendingMessage();
+                    localSendingMessageUpdate.localId.set(this.mLocalSendingMessage.localId.get());
+                    localSendingMessageUpdate.localSendStatus.set(sendStatus);
+                    // 保存错误信息
+                    localSendingMessageUpdate.errorCode.set(mErrorCode);
+                    localSendingMessageUpdate.errorMessage.set(mErrorMessage);
+                    if (LocalSendingMessageProvider.getInstance().updateLocalSendingMessage(this.mSessionUserId, localSendingMessageUpdate)) {
+                        localSendingMessage = LocalSendingMessageProvider.getInstance().getLocalSendingMessage(
+                                this.mSessionUserId,
+                                this.mLocalSendingMessage.localId.get()
+                        );
+                        if (localSendingMessage != null) {
+                            this.mLocalSendingMessage = localSendingMessage;
+                        } else {
+                            setError(ERROR_CODE_TARGET_NOT_FOUND, null);
+                        }
+                    } else {
+                        setError(ERROR_CODE_UPDATE_SEND_STATUS_FAIL, null);
+                    }
+                } catch (Throwable e) {
+                    IMLog.e(e);
+                    setError(ERROR_CODE_UNKNOWN, null);
+                }
+            }
+        }
 
         private final long mSessionUserId;
 
@@ -515,10 +525,23 @@ public class IMMessageUploadManager {
         // 不需要预处理的任务队列。通常可以直接通过 tcp proto buf 发送消息
         private final TaskQueue mShortTimeTaskQueue = new TaskQueue(1);
 
+        // 记录消息的发送进度
+        private final LruCache<Long, Float> mUnsafeProgress = new LruCache<>(MAX_RUNNING_SIZE * 10);
+
         private SessionUploader(long sessionUserId) {
             mSessionUserId = sessionUserId;
             LocalSendingMessageProvider.getInstance().updateMessageToFailIfNotSuccess(mSessionUserId);
             LocalSendingMessageProvider.getInstance().removeAllSuccessMessage(mSessionUserId);
+        }
+
+        private float getUploadProgress(final long localSendingMessageLocalId) {
+            // 注意查询性能
+            final Float progress = mUnsafeProgress.get(localSendingMessageLocalId);
+            if (progress != null) {
+                return progress;
+            }
+            // 默认 0%
+            return 0f;
         }
 
         @Nullable

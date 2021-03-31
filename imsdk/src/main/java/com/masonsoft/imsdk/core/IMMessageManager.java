@@ -7,6 +7,8 @@ import com.idonans.core.Singleton;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.core.db.ColumnsSelector;
+import com.masonsoft.imsdk.core.db.LocalSendingMessage;
+import com.masonsoft.imsdk.core.db.LocalSendingMessageProvider;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.TinyPage;
@@ -40,6 +42,36 @@ public class IMMessageManager {
     private IMMessageManager() {
     }
 
+    @NonNull
+    private IMMessage buildInternal(@NonNull final Message message) {
+        IMMessage target = IMMessageFactory.create(message);
+
+        if (message.remoteMessageId.get() <= 0) {
+            // 消息可能是没有发送成功的
+            final long sessionUserId = message._sessionUserId.get();
+            if (sessionUserId == message.fromUserId.get()) {
+                // 发送的消息，查询发送状态与发送进度
+                final LocalSendingMessage localSendingMessage = LocalSendingMessageProvider.getInstance().getLocalSendingMessageByTargetMessage(
+                        sessionUserId,
+                        message._conversationType.get(),
+                        message._targetUserId.get(),
+                        message.localId.get()
+                );
+                if (localSendingMessage == null) {
+                    final Throwable e = new IllegalAccessError("localSendingMessage not found: " + message);
+                    IMLog.e(e);
+                } else {
+                    final long localSendingMessageLocalId = localSendingMessage.localId.get();
+                    final float progress = IMMessageUploadManager.getInstance().getUploadProgress(sessionUserId, localSendingMessageLocalId);
+                    target = IMMessageFactory.merge(target, localSendingMessage);
+                    target.sendProgress.set(progress);
+                }
+            }
+        }
+
+        return target;
+    }
+
     @Nullable
     public IMMessage getMessage(
             final long sessionUserId,
@@ -51,11 +83,8 @@ public class IMMessageManager {
                 conversationType,
                 targetUserId,
                 localMessageId);
-
-        // TODO 如果是发送中的消息，查询发送进度？
-
         if (message != null) {
-            return IMMessageFactory.create(message);
+            return buildInternal(message);
         }
         return null;
     }
@@ -80,18 +109,18 @@ public class IMMessageManager {
         final List<IMMessage> filterItems = new ArrayList<>();
         for (Message item : page.items) {
             if (item.localBlockId.get() == 0L) {
-                filterItems.add(IMMessageFactory.create(item));
+                filterItems.add(buildInternal(item));
                 continue;
             }
 
             if (targetBlockId <= 0) {
                 targetBlockId = item.localBlockId.get();
-                filterItems.add(IMMessageFactory.create(item));
+                filterItems.add(buildInternal(item));
                 continue;
             }
 
             if (targetBlockId == item.localBlockId.get()) {
-                filterItems.add(IMMessageFactory.create(item));
+                filterItems.add(buildInternal(item));
                 continue;
             }
 
