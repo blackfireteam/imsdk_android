@@ -11,7 +11,7 @@ import com.masonsoft.imsdk.user.UserInfo;
 
 public abstract class UserCacheDynamicFrameLayout extends FrameLayout {
 
-    protected final boolean DEBUG = false;
+    protected final boolean DEBUG = ture;
 
     private UserCacheChangedViewHelper mUserCacheChangedViewHelper;
 

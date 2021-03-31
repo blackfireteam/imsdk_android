@@ -12,6 +12,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.backends.okhttp3.OkHttpNetworkFetcher;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.idonans.core.manager.ProcessManager;
+import com.idonans.dynamic.DynamicLog;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.sample.common.TopActivity;
 import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
@@ -23,7 +24,9 @@ public class SampleApplication extends Application {
         super.onCreate();
 
         IMLog.setLogLevel(Log.VERBOSE);
+
         SampleLog.setLogLevel(Log.VERBOSE);
+        DynamicLog.setLogLevel(Log.VERBOSE);
 
         EmojiCompat.init(new BundledEmojiCompatConfig(this));
 

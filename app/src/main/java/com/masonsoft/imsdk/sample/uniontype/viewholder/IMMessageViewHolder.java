@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
 
-    protected static final boolean DEBUG = false;
+    protected static final boolean DEBUG = true;
 
     private static final FileDownloadHelper FILE_DOWNLOAD_HELPER = new FileDownloadHelper();
 

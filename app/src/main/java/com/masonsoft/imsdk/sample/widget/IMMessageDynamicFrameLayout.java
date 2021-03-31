@@ -12,7 +12,7 @@ import com.masonsoft.imsdk.sample.SampleLog;
 
 public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
 
-    protected final boolean DEBUG = false;
+    protected final boolean DEBUG = true;
 
     private IMMessageChangedViewHelper mIMMessageChangedViewHelper;
 

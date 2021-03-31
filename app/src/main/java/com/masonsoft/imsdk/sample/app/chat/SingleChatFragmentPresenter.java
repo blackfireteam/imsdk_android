@@ -29,7 +29,7 @@ import io.reactivex.rxjava3.core.SingleSource;
 
 public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObject, UnionTypeStatusPageView> {
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private final long mSessionUserId;
     private final int mConversationType = IMConstants.ConversationType.C2C;

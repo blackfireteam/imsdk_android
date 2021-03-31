@@ -12,7 +12,7 @@ import java.util.Locale;
 
 public class FormatUtil {
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     /**
      * 格式化时间展示样式.

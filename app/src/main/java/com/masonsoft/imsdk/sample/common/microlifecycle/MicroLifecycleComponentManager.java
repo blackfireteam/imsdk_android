@@ -20,7 +20,7 @@ import java.util.WeakHashMap;
 @UiThread
 public abstract class MicroLifecycleComponentManager implements Closeable, LifecycleEventObserver {
 
-    protected static final boolean DEBUG = false;
+    protected static final boolean DEBUG = true;
     private static final Object EMPTY_OBJECT = new Object();
     @NonNull
     protected final Lifecycle mLifecycle;

@@ -10,7 +10,7 @@ import com.masonsoft.imsdk.user.UserInfo;
 
 public abstract class UserCacheDynamicTextView extends AppCompatTextView {
 
-    protected final boolean DEBUG = false;
+    protected final boolean DEBUG = true;
     private UserCacheChangedViewHelper mUserCacheChangedViewHelper;
 
     public UserCacheDynamicTextView(Context context) {

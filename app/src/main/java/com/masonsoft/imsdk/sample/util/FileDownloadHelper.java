@@ -32,7 +32,7 @@ import okhttp3.ResponseBody;
 @ThreadSafe
 public class FileDownloadHelper {
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     public interface OnFileDownloadListener {
         void onDownloadSuccess(String id, String localFilePath, String serverUrl);
