@@ -13,6 +13,7 @@ import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.TimeoutMessagePacket;
+import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
@@ -130,9 +131,33 @@ public class IMMessageUploadManager {
         @Nullable
         private Message mMessage;
 
-        private AtomicBoolean mBuildChatSMessagePacket = new AtomicBoolean(false);
+        private final AtomicBoolean mBuildChatSMessagePacket = new AtomicBoolean(false);
         @Nullable
         private ChatSMessagePacket mChatSMessagePacket;
+        @NonNull
+        private final MessagePacketStateObservable.MessagePacketStateObserver mChatSMessagePacketStateObserver = new MessagePacketStateObservable.MessagePacketStateObserver() {
+            @Override
+            public void onStateChanged(MessagePacket packet, int oldState, int newState) {
+                if (packet != mChatSMessagePacket) {
+                    final Throwable e = new IllegalAccessError("invalid packet:" + Objects.defaultObjectTag(packet)
+                            + ", mChatSMessagePacket:" + Objects.defaultObjectTag(mChatSMessagePacket));
+                    IMLog.e(e);
+                    return;
+                }
+                final ChatSMessagePacket chatSMessagePacket = (ChatSMessagePacket) packet;
+                if (newState == MessagePacket.STATE_FAIL) {
+                    // 消息发送失败
+                    IMLog.v("onStateChanged STATE_FAIL chatSMessagePacket errorCode:%s, errorMessage:%s, timeout:%s",
+                            chatSMessagePacket.getErrorCode(), chatSMessagePacket.getErrorMessage(), chatSMessagePacket.isTimeoutTriggered());
+                    moveSendStatus(IMConstants.SendStatus.FAIL);
+                } else if (newState == MessagePacket.STATE_SUCCESS) {
+                    // 消息发送成功
+                    // 设置发送进度为 100%
+                    mSendProgress = 1f;
+                    moveSendStatus(IMConstants.SendStatus.SUCCESS);
+                }
+            }
+        };
 
         /**
          * abort id 与数据库中对应记录不相等.
@@ -190,6 +215,7 @@ public class IMMessageUploadManager {
                 final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(chatS);
                 final ChatSMessagePacket chatSMessagePacket = new ChatSMessagePacket(protoByteMessage, mSign);
                 mChatSMessagePacket = chatSMessagePacket;
+                mChatSMessagePacket.getMessagePacketStateObservable().registerObserver(mChatSMessagePacketStateObserver);
                 return chatSMessagePacket;
             } else {
                 final Throwable e = new IllegalAccessError("unknown message type:" + messageType + " " + message);
@@ -255,30 +281,69 @@ public class IMMessageUploadManager {
                             final long msgId = chatSR.getMsgId();
                             if (msgId <= 0) {
                                 IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
-                                        + " unexpected. accept with same sign:%s and invalid msgId:%s", getSign(), msgId);
-                                return false;
-                            }
-                            // TODO
-                            if (result.getCode() != 0) {
-                                setErrorCode(result.getCode());
-                                setErrorMessage(result.getMsg());
-                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this) +
-                                        " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
+                                        + " unexpected. invalid msgId:%s, sign:%s", msgId, getSign());
                                 moveToState(STATE_FAIL);
-                            } else {
-                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this) +
-                                        " unexpected. accept with same sign:%s and invalid Result code:%s", getSign(), result.getCode());
-                                return false;
+                                return true;
                             }
-                        }
+                            // 微秒
+                            final long msgTime = chatSR.getMsgTime();
+                            if (msgTime <= 0) {
+                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                        + " unexpected. invalid msgTime:%s, sign:%s", msgTime, getSign());
+                                moveToState(STATE_FAIL);
+                                return true;
+                            }
 
-                        return true;
+                            final Message message = mMessage;
+                            if (message == null) {
+                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                        + " unexpected. message is null, sign:%s", msgTime, getSign());
+                                moveToState(STATE_FAIL);
+                                return true;
+                            }
+
+                            final Message messageUpdate = new Message();
+                            messageUpdate.localId.set(message.localId.get());
+                            messageUpdate.remoteMessageId.set(msgId);
+                            messageUpdate.remoteMessageTime.set(msgTime);
+                            if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                    mSessionUserId,
+                                    mLocalSendingMessage.conversationType.get(),
+                                    mLocalSendingMessage.targetUserId.get(),
+                                    messageUpdate)) {
+                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                        + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", getSign(), messageUpdate);
+                                moveToState(STATE_FAIL);
+                                return true;
+                            }
+
+                            final Message readMessage = MessageDatabaseProvider.getInstance().getMessage(
+                                    mSessionUserId,
+                                    mLocalSendingMessage.conversationType.get(),
+                                    mLocalSendingMessage.targetUserId.get(),
+                                    message.localId.get()
+                            );
+                            if (readMessage == null) {
+                                IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                                + " unexpected. getMessage return null, sign:%s, sessionUserId:%s, conversationType:%s, targetUserId:%s, localId:%s",
+                                        getSign(),
+                                        mSessionUserId,
+                                        mLocalSendingMessage.conversationType.get(),
+                                        mLocalSendingMessage.targetUserId.get(),
+                                        message.localId.get());
+                                moveToState(STATE_FAIL);
+                                return true;
+                            }
+
+                            mMessage = readMessage;
+                            moveToState(STATE_SUCCESS);
+                            return true;
+                        }
                     }
                 }
 
                 return false;
             }
-
         }
 
         private boolean isFastMessage() {

@@ -32,6 +32,11 @@ public abstract class TimeoutMessagePacket extends MessagePacket {
      */
     private long mTimeoutMs = DEFAULT_MESSAGE_TIMEOUT_MS;
 
+    /**
+     * 是否已经触发过 Timeout
+     */
+    private boolean mTimeoutTriggered;
+
     public TimeoutMessagePacket(ProtoByteMessage protoByteMessage) {
         super(protoByteMessage);
     }
@@ -50,6 +55,10 @@ public abstract class TimeoutMessagePacket extends MessagePacket {
 
     public long getTimeoutMs() {
         return mTimeoutMs;
+    }
+
+    public boolean isTimeoutTriggered() {
+        return mTimeoutTriggered;
     }
 
     // timeout 计时器监听
@@ -98,6 +107,7 @@ public abstract class TimeoutMessagePacket extends MessagePacket {
                 if (diff > mTimeoutMs) {
                     // 已经超时，设置状态为发送失败
                     IMLog.e("TimeoutMessagePacket[" + getSign() + "] timeout");
+                    mTimeoutTriggered = true;
                     moveToState(STATE_FAIL);
 
                     // 移除 timeout 计时器监听
