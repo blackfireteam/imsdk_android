@@ -175,6 +175,9 @@ public class SendMessageWriteDatabaseProcessor extends SendMessageNotNullValidat
             dbMessageInsert.localSeq.set(Sequence.create(SignGenerator.next()));
             // 设置新消息的显示时间为当前时间
             dbMessageInsert.localTimeMs.set(System.currentTimeMillis());
+            // 清空 remote 相关内容
+            dbMessageInsert.remoteMessageId.clear();
+            dbMessageInsert.remoteMessageTime.clear();
             // 清空 block id
             dbMessageInsert.localBlockId.clear();
 
