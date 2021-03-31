@@ -257,7 +257,9 @@ public class IMMessageUploadManager {
                     IMLog.e(e);
                     return false;
                 }
-                return chatSMessagePacket.doProcess(wrapper);
+                final boolean result = chatSMessagePacket.doProcess(wrapper);
+                IMLog.v(Objects.defaultObjectTag(this) + " dispatchTcpResponse chatSMessagePacket.doProcess result:%s", result);
+                return result;
             }
 
             private class ChatSMessagePacket extends TimeoutMessagePacket {
