@@ -16,6 +16,7 @@ import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.MessageFactory;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
+import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,6 +117,8 @@ public class ReceivedMessageProtoTypeChatRBatchProcessor extends ReceivedMessage
                 targetUserId,
                 maxMessage.remoteMessageId.get()
         );
+        Preconditions.checkArgument(blockId > 0);
+
         final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
         synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
             final SQLiteDatabase database = databaseHelper.getDBHelper().getWritableDatabase();
@@ -165,6 +168,7 @@ public class ReceivedMessageProtoTypeChatRBatchProcessor extends ReceivedMessage
                             // 校验是否需要更新 block id
                             final long dbMessageBlockId = dbMessage.localBlockId.get();
                             final long newMessageBlockId = message.localBlockId.get();
+                            Preconditions.checkArgument(newMessageBlockId > 0);
                             if (dbMessageBlockId != newMessageBlockId) {
                                 requireUpdate = true;
                                 messageUpdate.localBlockId.set(newMessageBlockId);

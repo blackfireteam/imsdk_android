@@ -14,6 +14,7 @@ import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.MessageFactory;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
+import com.masonsoft.imsdk.util.Preconditions;
 
 /**
  * 收到一条新的聊天消息
@@ -84,12 +85,14 @@ public class ReceivedMessageProtoTypeChatRProcessor extends ReceivedMessageProto
                 // 消息在本地不存在，入库
 
                 // 设置 block id
-                message.localBlockId.set(MessageBlock.generateBlockId(
+                final long generateBlockId = MessageBlock.generateBlockId(
                         sessionUserId,
                         conversationType,
                         targetUserId,
                         remoteMessageId
-                ));
+                );
+                Preconditions.checkArgument(generateBlockId > 0);
+                message.localBlockId.set(generateBlockId);
 
                 if (MessageDatabaseProvider.getInstance().insertMessage(
                         sessionUserId,
@@ -139,16 +142,34 @@ public class ReceivedMessageProtoTypeChatRProcessor extends ReceivedMessageProto
                         targetUserId,
                         remoteMessageId
                 );
+                Preconditions.checkArgument(generateBlockId > 0);
+
                 if (dbMessage.localBlockId.get() != generateBlockId) {
                     // 更新 block id
-                    if (!MessageDatabaseProvider.getInstance().updateBlockId(
-                            sessionUserId,
-                            conversationType,
-                            targetUserId,
-                            dbMessage.localBlockId.get(),
-                            generateBlockId)) {
-                        final Throwable e = new IllegalAccessError("unexpected updateBlockId return false");
-                        IMLog.e(e);
+                    if (dbMessage.localBlockId.get() <= 0) {
+                        // 更新一条
+                        final Message messageUpdate = new Message();
+                        messageUpdate.localId.set(dbMessage.localId.get());
+                        messageUpdate.localBlockId.set(generateBlockId);
+                        if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                sessionUserId,
+                                conversationType,
+                                targetUserId,
+                                messageUpdate)) {
+                            final Throwable e = new IllegalAccessError("unexpected updateMessage return false " + messageUpdate);
+                            IMLog.e(e);
+                        }
+                    } else {
+                        // 更新多条
+                        if (!MessageDatabaseProvider.getInstance().updateBlockId(
+                                sessionUserId,
+                                conversationType,
+                                targetUserId,
+                                dbMessage.localBlockId.get(),
+                                generateBlockId)) {
+                            final Throwable e = new IllegalAccessError("unexpected updateBlockId return false");
+                            IMLog.e(e);
+                        }
                     }
                 }
             }
