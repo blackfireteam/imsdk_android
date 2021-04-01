@@ -99,6 +99,9 @@ public class IMMessageUploadManager {
              * 未知错误
              */
             private static final int ERROR_CODE_UNKNOWN = FIRST_LOCAL_ERROR_CODE;
+            /**
+             * 期望的目标对象没有找到
+             */
             private static final int ERROR_CODE_TARGET_NOT_FOUND = FIRST_LOCAL_ERROR_CODE + 1;
             /**
              * 绑定 abort id 失败
@@ -136,6 +139,24 @@ public class IMMessageUploadManager {
              * messagePacket 发送超时
              */
             private static final int ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT = FIRST_LOCAL_ERROR_CODE + 10;
+
+            private final Map<Integer, String> DEFAULT_ERROR_MESSAGE_MAP = new HashMap<>();
+
+            {
+                DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_UNKNOWN, "ERROR_CODE_UNKNOWN");
+                DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_TARGET_NOT_FOUND, "ERROR_CODE_TARGET_NOT_FOUND");
+                DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_BIND_ABORT_ID_FAIL, "ERROR_CODE_BIND_ABORT_ID_FAIL");
+                DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_UPDATE_SEND_STATUS_FAIL, "ERROR_CODE_UPDATE_SEND_STATUS_FAIL");
+                DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL, "ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL");
+                DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL");
+                DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID");
+                DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR");
+                DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN");
+                DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_FAIL, "ERROR_CODE_MESSAGE_PACKET_SEND_FAIL");
+                DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT, "ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT");
+
+                Preconditions.checkArgument(DEFAULT_ERROR_MESSAGE_MAP.size() == ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT - FIRST_LOCAL_ERROR_CODE + 1);
+            }
 
             //////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////
@@ -227,6 +248,9 @@ public class IMMessageUploadManager {
             }
 
             private void setError(long errorCode, String errorMessage) {
+                if (errorMessage == null) {
+                    errorMessage = DEFAULT_ERROR_MESSAGE_MAP.get((int) errorCode);
+                }
                 this.mErrorCode = errorCode;
                 this.mErrorMessage = errorMessage;
             }
