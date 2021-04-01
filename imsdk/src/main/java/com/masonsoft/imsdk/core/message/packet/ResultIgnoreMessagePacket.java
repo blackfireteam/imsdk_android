@@ -3,7 +3,6 @@ package com.masonsoft.imsdk.core.message.packet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
@@ -15,8 +14,13 @@ import com.masonsoft.imsdk.core.proto.ProtoMessage;
  */
 public class ResultIgnoreMessagePacket extends MessagePacket {
 
+    /**
+     * 忽略 Result 信息的 sign
+     */
+    public static final long SIGN_IGNORE = Long.MIN_VALUE / 10;
+
     public ResultIgnoreMessagePacket(@NonNull ProtoByteMessage protoByteMessage) {
-        super(protoByteMessage, IMConstants.RESULT_SIGN_IGNORE);
+        super(protoByteMessage, SIGN_IGNORE);
     }
 
     @Override
@@ -27,7 +31,7 @@ public class ResultIgnoreMessagePacket extends MessagePacket {
 
         final Object protoMessageObject = target.getProtoMessageObject();
         if (protoMessageObject instanceof ProtoMessage.Result) {
-            return ((ProtoMessage.Result) protoMessageObject).getSign() == IMConstants.RESULT_SIGN_IGNORE;
+            return ((ProtoMessage.Result) protoMessageObject).getSign() == SIGN_IGNORE;
         }
 
         return false;

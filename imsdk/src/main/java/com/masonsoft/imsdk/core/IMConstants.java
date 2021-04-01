@@ -27,11 +27,6 @@ public final class IMConstants {
     public static final int ID_ANY = -1;
 
     /**
-     * 忽略 Result 信息的 sign
-     */
-    public static final long RESULT_SIGN_IGNORE = Long.MIN_VALUE / 10;
-
-    /**
      * @see #TRUE
      * @see #FALSE
      */

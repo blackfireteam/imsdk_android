@@ -54,9 +54,9 @@ public class IMMessageQueueManager {
 
     private IMMessageQueueManager() {
         mReceivedMessageProcessor.addFirstProcessor(new ReceivedMessageSessionValidateProcessor());
+        mReceivedMessageProcessor.addLastProcessor(new ReceivedMessageResultIgnoreProcessor());
         mReceivedMessageProcessor.addLastProcessor(new InternalReceivedMessageProtoTypeProcessor());
         mReceivedMessageProcessor.addLastProcessor(new ReceivedMessageUploadResponseProcessor());
-        mReceivedMessageProcessor.addLastProcessor(new ReceivedMessageResultIgnoreProcessor());
 
         mSendMessageProcessor.addFirstProcessor(new SendMessageRecoveryProcessor());
         mSendMessageProcessor.addLastProcessor(new InternalSendMessageTypeValidateProcessor());

@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.user;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -124,6 +125,20 @@ public class UserInfoCacheManager {
         UserInfoObservable.DEFAULT.notifyUserInfoChanged(userId);
     }
 
+    public boolean touch(final long userId) {
+        if (userId <= 0) {
+            IMLog.e("touch ignore. invalid user id %s", userId);
+            return false;
+        }
+
+        if (DatabaseProvider.getInstance().touch(userId)) {
+            MemoryFullCache.DEFAULT.removeFullCache(userId);
+            UserInfoObservable.DEFAULT.notifyUserInfoChanged(userId);
+            return true;
+        }
+        return false;
+    }
+
     public boolean exists(long userId) {
         return getByUserId(userId) != null;
     }
@@ -239,6 +254,59 @@ public class UserInfoCacheManager {
         }
 
         /**
+         * 如果记录存在，更新 localLastModifyMs, 否则插入一条新纪录。操作成功返回 true, 否则返回 false.
+         *
+         * @param userId
+         * @return
+         */
+        public boolean touch(final long userId) {
+            if (userId <= 0) {
+                final Throwable e = new IllegalArgumentException("invalid user id " + userId);
+                IMLog.e(e);
+                RuntimeMode.throwIfDebug(e);
+                return false;
+            }
+
+            try {
+                IMLog.v("touch userId:%s", userId);
+                SQLiteDatabase db = mDBHelper.getDBHelper().getWritableDatabase();
+
+                final ContentValues contentValuesUpdate = new ContentValues();
+                contentValuesUpdate.put(DatabaseHelper.ColumnsUser.C_USER_ID, userId);
+                contentValuesUpdate.put(DatabaseHelper.ColumnsUser.C_LOCAL_LAST_MODIFY_MS, System.currentTimeMillis());
+
+                long rowId = db.insertWithOnConflict(
+                        DatabaseHelper.TABLE_NAME_USER,
+                        null,
+                        contentValuesUpdate,
+                        SQLiteDatabase.CONFLICT_IGNORE
+                );
+                if (rowId == -1) {
+                    long rowsAffected = db.update(
+                            DatabaseHelper.TABLE_NAME_USER,
+                            contentValuesUpdate,
+                            DatabaseHelper.ColumnsUser.C_USER_ID + "=?",
+                            new String[]{String.valueOf(userId)}
+                    );
+                    if (rowsAffected != 1) {
+                        Throwable e = new IllegalAccessException("touch user for target user id:" + userId + " rowsAffected " + rowsAffected);
+                        IMLog.e(e);
+                        RuntimeMode.throwIfDebug(e);
+                        return false;
+                    }
+                    IMLog.v("touch user for target user id:%s rowsAffected:%s", userId, rowsAffected);
+                } else {
+                    IMLog.v("touch user for target user id:%s rowId:%s", userId, rowId);
+                }
+                return true;
+            } catch (Throwable e) {
+                IMLog.e(e);
+                RuntimeMode.throwIfDebug(e);
+            }
+            return false;
+        }
+
+        /**
          * 更新成功返回 true, 否则返回 false.
          */
         public boolean updateUser(final UserInfo user) {
@@ -280,9 +348,10 @@ public class UserInfoCacheManager {
                     Throwable e = new IllegalAccessException("update user for target user id:" + user.uid.get() + " rowsAffected " + rowsAffected);
                     IMLog.e(e);
                     RuntimeMode.throwIfDebug(e);
-                } else {
-                    IMLog.v("update user for target user id:%s rowsAffected:%s", user.uid.get(), rowsAffected);
+                    return false;
                 }
+
+                IMLog.v("update user for target user id:%s rowsAffected:%s", user.uid.get(), rowsAffected);
                 return true;
             } catch (Throwable e) {
                 IMLog.e(e);

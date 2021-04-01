@@ -5,7 +5,10 @@ import com.idonans.core.thread.TaskQueue;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.IMSessionManager;
+import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
+import com.masonsoft.imsdk.core.message.packet.ResultIgnoreMessagePacket;
+import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
 
@@ -62,11 +65,19 @@ public class UserInfoCacheSyncManager {
 
         @Override
         public void run() {
+            if (mUserId <= 0) {
+                IMLog.e("unexpected. invalid user id: %s", mUserId);
+                return;
+            }
+
+
             boolean requireSync = mImportant;
             if (!requireSync) {
                 final UserInfo userInfo = UserInfoCacheManager.getInstance().getByUserId(mUserId);
                 if (userInfo == null) {
                     requireSync = true;
+                    // 插入一条新纪录
+                    UserInfoCacheManager.getInstance().touch(mUserId);
                 } else {
                     mUserUpdateTimeMs = userInfo.updateTimeMs.get();
                     final long localLastModifyMs = userInfo.localLastModifyMs.get();
@@ -93,9 +104,19 @@ public class UserInfoCacheSyncManager {
                 return;
             }
 
-            final MessagePacket
-            sessionTcpClient.sendMessagePacketQuietly();
-            // TODO
+            final MessagePacket messagePacket = new ResultIgnoreMessagePacket(
+                    ProtoByteMessage.Type.encode(ProtoMessage.GetProfile.newBuilder()
+                            .setSign(ResultIgnoreMessagePacket.SIGN_IGNORE)
+                            .setUid(mUserId)
+                            .setUpdateTime(mUserUpdateTimeMs / 1000) // 秒
+                            .build())
+            );
+            sessionTcpClient.sendMessagePacketQuietly(messagePacket);
+            if (messagePacket.getState() == MessagePacket.STATE_WAIT_RESULT) {
+                // unsafe
+                // 更新 localLastModifyMs
+                UserInfoCacheManager.getInstance().touch(mUserId);
+            }
         }
     }
 
