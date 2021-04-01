@@ -10,6 +10,7 @@ import com.idonans.core.manager.ProcessManager;
 import com.idonans.core.util.ContextUtil;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.core.IMProcessValidator;
 
 /**
  * @since 1.0
@@ -24,6 +25,8 @@ public class UserInfoDatabaseHelper {
     };
 
     public static UserInfoDatabaseHelper getInstance() {
+        IMProcessValidator.validateProcess();
+
         return INSTANCE.get();
     }
 

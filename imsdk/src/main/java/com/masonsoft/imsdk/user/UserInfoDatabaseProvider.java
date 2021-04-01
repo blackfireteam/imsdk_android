@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.idonans.core.Singleton;
 import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.db.ColumnsSelector;
 
@@ -26,6 +27,8 @@ public class UserInfoDatabaseProvider {
     };
 
     public static UserInfoDatabaseProvider getInstance() {
+        IMProcessValidator.validateProcess();
+
         return INSTANCE.get();
     }
 

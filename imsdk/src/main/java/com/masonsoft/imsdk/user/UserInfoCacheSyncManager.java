@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 用户缓存信息的同步管理
+ * 用户信息的同步管理
  *
  * @since 1.0
  */
