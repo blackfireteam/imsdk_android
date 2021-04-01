@@ -1,6 +1,6 @@
 package com.masonsoft.imsdk.core.message.packet;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.core.IMLog;
@@ -15,7 +15,7 @@ import com.masonsoft.imsdk.util.Objects;
  *
  * @since 1.0
  */
-public class SignInMessagePacket extends TimeoutMessagePacket {
+public class SignInMessagePacket extends NotNullTimeoutMessagePacket {
 
     /**
      * 登录信息中对应的用户 id.(服务器返回的)
@@ -31,16 +31,21 @@ public class SignInMessagePacket extends TimeoutMessagePacket {
     }
 
     @Override
-    public boolean doProcess(@Nullable ProtoByteMessageWrapper target) {
+    protected boolean doNotNullProcess(@NonNull ProtoByteMessageWrapper target) {
         // check thread state
         Threads.mustNotUi();
 
-        if (target != null && target.getProtoMessageObject() instanceof ProtoMessage.Result) {
-            // 接收 Result 消息
-            final ProtoMessage.Result result = (ProtoMessage.Result) target.getProtoMessageObject();
-            if (result.getSign() == getSign()) {
-                // 校验 sign 是否相等
+        final Object protoMessageObject = target.getProtoMessageObject();
+        if (protoMessageObject == null) {
+            return false;
+        }
 
+        // 接收 Result 消息
+        if (protoMessageObject instanceof ProtoMessage.Result) {
+            final ProtoMessage.Result result = (ProtoMessage.Result) protoMessageObject;
+
+            // 校验 sign 是否相等
+            if (result.getSign() == getSign()) {
                 synchronized (getStateLock()) {
                     final int state = getState();
                     if (state != STATE_WAIT_RESULT) {

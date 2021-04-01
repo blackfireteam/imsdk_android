@@ -7,8 +7,8 @@ import com.idonans.lang.DisposableHolder;
 import com.masonsoft.imsdk.core.observable.UserInfoObservable;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.ObjectWrapper;
-import com.masonsoft.imsdk.user.UserCacheManager;
 import com.masonsoft.imsdk.user.UserInfo;
+import com.masonsoft.imsdk.user.UserInfoCacheManager;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -44,7 +44,7 @@ public abstract class UserCacheChangedViewHelper {
         }
         mRequestHolder.set(Single.fromCallable(
                 () -> {
-                    final UserInfo userInfo = UserCacheManager.getInstance().getByUserId(mTargetUserId);
+                    final UserInfo userInfo = UserInfoCacheManager.getInstance().getByUserId(mTargetUserId);
                     return new ObjectWrapper(userInfo);
                 })
                 .subscribeOn(Schedulers.io())

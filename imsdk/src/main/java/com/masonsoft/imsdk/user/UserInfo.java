@@ -14,6 +14,11 @@ import com.masonsoft.imsdk.util.CursorUtil;
 
 import org.json.JSONObject;
 
+/**
+ * 用户信息
+ *
+ * @since 1.0
+ */
 public class UserInfo {
 
     /**
@@ -93,10 +98,10 @@ public class UserInfo {
     public ContentValues toContentValues() {
         final ContentValues target = new ContentValues();
         if (!this.uid.isUnset()) {
-            target.put(UserCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_USER_ID, this.uid.get());
+            target.put(UserInfoCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_USER_ID, this.uid.get());
         }
         if (!this.localLastModifyMs.isUnset()) {
-            target.put(UserCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_LOCAL_LAST_MODIFY_MS, this.localLastModifyMs.get());
+            target.put(UserInfoCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_LOCAL_LAST_MODIFY_MS, this.localLastModifyMs.get());
         }
         final JSONObject jsonObject = new JSONObject();
         try {
@@ -119,7 +124,7 @@ public class UserInfo {
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
         }
-        target.put(UserCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_USER_JSON, jsonObject.toString());
+        target.put(UserInfoCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_USER_JSON, jsonObject.toString());
         return target;
     }
 
@@ -132,9 +137,9 @@ public class UserInfo {
         @Override
         public String[] queryColumns() {
             return new String[]{
-                    UserCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_USER_ID,
-                    UserCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_LOCAL_LAST_MODIFY_MS,
-                    UserCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_USER_JSON,
+                    UserInfoCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_USER_ID,
+                    UserInfoCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_LOCAL_LAST_MODIFY_MS,
+                    UserInfoCacheManager.DatabaseProvider.DatabaseHelper.ColumnsUser.C_USER_JSON,
             };
         }
 

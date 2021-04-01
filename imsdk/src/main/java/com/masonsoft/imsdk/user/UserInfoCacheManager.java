@@ -21,17 +21,19 @@ import com.masonsoft.imsdk.core.observable.UserInfoObservable;
 
 /**
  * 用户信息缓存管理。会缓存一部分用户信息到内存中。
+ *
+ * @since 1.0
  */
-public class UserCacheManager {
+public class UserInfoCacheManager {
 
-    private static final Singleton<UserCacheManager> INSTANCE = new Singleton<UserCacheManager>() {
+    private static final Singleton<UserInfoCacheManager> INSTANCE = new Singleton<UserInfoCacheManager>() {
         @Override
-        protected UserCacheManager create() {
-            return new UserCacheManager();
+        protected UserInfoCacheManager create() {
+            return new UserInfoCacheManager();
         }
     };
 
-    public static UserCacheManager getInstance() {
+    public static UserInfoCacheManager getInstance() {
         IMProcessValidator.validateProcess();
 
         return INSTANCE.get();
@@ -63,7 +65,7 @@ public class UserCacheManager {
         }
     }
 
-    private UserCacheManager() {
+    private UserInfoCacheManager() {
     }
 
     @Nullable

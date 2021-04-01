@@ -14,7 +14,7 @@ import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
-import com.masonsoft.imsdk.core.message.packet.TimeoutMessagePacket;
+import com.masonsoft.imsdk.core.message.packet.NotNullTimeoutMessagePacket;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
@@ -304,19 +304,17 @@ public class IMMessageUploadManager {
                 return result;
             }
 
-            private class ChatSMessagePacket extends TimeoutMessagePacket {
+            private class ChatSMessagePacket extends NotNullTimeoutMessagePacket {
 
                 public ChatSMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
                     super(protoByteMessage, sign);
                 }
 
                 @Override
-                public boolean doProcess(@Nullable ProtoByteMessageWrapper target) {
+                protected boolean doNotNullProcess(@NonNull ProtoByteMessageWrapper target) {
                     // check thread state
                     Threads.mustNotUi();
-                    if (target == null) {
-                        return false;
-                    }
+
                     final Object protoMessageObject = target.getProtoMessageObject();
                     if (protoMessageObject == null) {
                         return false;
