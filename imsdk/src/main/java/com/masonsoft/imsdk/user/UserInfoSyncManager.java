@@ -160,7 +160,15 @@ public class UserInfoSyncManager {
     }
 
     public void enqueueSyncUserInfo(final long userId, boolean important) {
-        mSyncQueue.enqueue(new SafetyRunnable(new UserInfoSyncTask(userId, important)));
+        enqueueSyncUserInfo(userId, 0L, important);
+    }
+
+    public void enqueueSyncUserInfo(final long userId, long serverUpdateTimeMs) {
+        enqueueSyncUserInfo(userId, serverUpdateTimeMs, false);
+    }
+
+    public void enqueueSyncUserInfo(final long userId, long serverUpdateTimeMs, boolean important) {
+        mSyncQueue.enqueue(new SafetyRunnable(new UserInfoSyncTask(userId, serverUpdateTimeMs, important)));
     }
 
     private static class UserInfoSyncTask implements Runnable {
@@ -173,10 +181,12 @@ public class UserInfoSyncManager {
         private final boolean mForce;
 
         private final long mUserId;
+        private final long mServerUpdateTimeMs;
         private long mUserUpdateTimeMs;
 
-        private UserInfoSyncTask(long userId, boolean force) {
+        private UserInfoSyncTask(long userId, long serverUpdateTimeMs, boolean force) {
             mUserId = userId;
+            mServerUpdateTimeMs = serverUpdateTimeMs;
             mForce = force;
         }
 
@@ -195,7 +205,9 @@ public class UserInfoSyncManager {
                     UserInfoSyncManager.getInstance().touchUserInfoSync(mUserId);
                 } else {
                     final long localLastSyncTimeMs = userInfoSync.localLastSyncTimeMs.get();
-                    requireSync = (System.currentTimeMillis() - localLastSyncTimeMs) >= MAX_INTERVAL_MS;
+                    if ((System.currentTimeMillis() - localLastSyncTimeMs) >= MAX_INTERVAL_MS) {
+                        requireSync = true;
+                    }
                 }
 
                 final UserInfo userInfo = UserInfoManager.getInstance().getByUserId(mUserId);
@@ -204,6 +216,9 @@ public class UserInfoSyncManager {
                     UserInfoManager.getInstance().touchUserInfo(mUserId);
                 } else {
                     mUserUpdateTimeMs = userInfo.updateTimeMs.get();
+                    if (mServerUpdateTimeMs > 0 && mServerUpdateTimeMs > mUserUpdateTimeMs) {
+                        requireSync = true;
+                    }
                 }
             }
 
