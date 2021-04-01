@@ -12,6 +12,7 @@ import com.idonans.lang.DisposableHolder;
 import com.idonans.uniontype.UnionTypeItemObject;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.observable.ConversationObservable;
@@ -155,6 +156,10 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     @Override
     protected void onInitRequestResult(@NonNull PageView<UnionTypeItemObject> view, @NonNull Collection<UnionTypeItemObject> items) {
+        IMLog.v("onInitRequestResult");
+        if (DEBUG) {
+            IMLog.v("onInitRequestResult items size:%s", items.size());
+        }
         /*
         // TODO
         if (mTargetConversation != null) {
@@ -226,6 +231,11 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     @Override
     protected void onPrePageRequestResult(@NonNull PageView<UnionTypeItemObject> view, @NonNull Collection<UnionTypeItemObject> items) {
+        IMLog.v("onPrePageRequestResult");
+        if (DEBUG) {
+            IMLog.v("onPrePageRequestResult items size:%s", items.size());
+        }
+
         // 记录上一页，下一页参数
         if (!items.isEmpty()) {
             mFirstMessageSeq = ((IMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(0)).itemObject).object).seq.get();
@@ -282,6 +292,11 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     @Override
     protected void onNextPageRequestResult(@NonNull PageView<UnionTypeItemObject> view, @NonNull Collection<UnionTypeItemObject> items) {
+        IMLog.v("onNextPageRequestResult");
+        if (DEBUG) {
+            IMLog.v("onNextPageRequestResult items size:%s", items.size());
+        }
+
         // 记录上一页，下一页参数
         if (!items.isEmpty()) {
             mLastMessageSeq = ((IMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).seq.get();
