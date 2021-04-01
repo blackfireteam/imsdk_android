@@ -14,6 +14,7 @@ import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.MessageFactory;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
+import com.masonsoft.imsdk.user.UserInfoSyncManager;
 import com.masonsoft.imsdk.util.Preconditions;
 
 /**
@@ -38,6 +39,12 @@ public class ReceivedMessageProtoTypeChatRProcessor extends ReceivedMessageProto
         if (fromUserId != sessionUserId && toUserId != sessionUserId) {
             IMLog.e("unexpected. sessionUserId:%s invalid fromUserId and toUserId %s", sessionUserId, message);
             return false;
+        }
+
+        {
+            // 同步 from user id 的用户信息
+            final long fromUserIdLastModifyMs = message.remoteFromUserProfileLastModifyMs.getOrDefault(0L);
+            UserInfoSyncManager.getInstance().enqueueSyncUserInfo(fromUserId, fromUserIdLastModifyMs);
         }
 
         final boolean received = fromUserId != sessionUserId;
