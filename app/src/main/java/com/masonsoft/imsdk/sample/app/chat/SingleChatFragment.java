@@ -36,6 +36,7 @@ import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSingleChatFragmentBindi
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.util.BackStackUtil;
 import com.masonsoft.imsdk.sample.util.TipUtil;
+import com.masonsoft.imsdk.util.Objects;
 
 import java.util.Collection;
 
@@ -264,7 +265,14 @@ public class SingleChatFragment extends SystemInsetsFragment {
         }
 
         @Override
+        public void onInitDataEmpty() {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onInitDataEmpty");
+            super.onInitDataEmpty();
+        }
+
+        @Override
         public void onInitDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onInitDataLoad items size:" + items.size());
             super.onInitDataLoad(items);
 
             final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
@@ -286,7 +294,14 @@ public class SingleChatFragment extends SystemInsetsFragment {
         }
 
         @Override
+        public void onPrePageDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onPrePageDataLoad items size:" + items.size());
+            super.onPrePageDataLoad(items);
+        }
+
+        @Override
         public void onNextPageDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onNextPageDataLoad items size:" + items.size());
             super.onNextPageDataLoad(items);
 
             final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
