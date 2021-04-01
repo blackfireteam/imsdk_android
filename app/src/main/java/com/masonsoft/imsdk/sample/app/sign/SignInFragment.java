@@ -53,13 +53,39 @@ public class SignInFragment extends SystemInsetsFragment {
             "wlQeVQUdXZV0GZmzAzbi6g==",
             "oywBohgtkR3zy4DxxH3LbA==",
             "KMpJ5ze/J8hhrGqqGYrY6Q==",
+            "O7T63s8SwMY15f8RWAEuDQ==",
+            "VBXDOtpNJj8qp9n31RBdTg==",
+            "xJcfcPTLTYFCsabUVsDvLA==",
+            "rg3Pdti9iIWYc6NGL9VO+g==",
+            "rdb3ga+2v7fhKhztucl35A==",
+            "JmokHbYSC5b4VhyayugQ6g==",
+            "5qht/6ypb3K6xufiyxuIyQ==",
+            "kdkwm3bSpeBPjrBfDP0E0g==",
+            "T3AmDPOTp7smtGUElDRw/A==",
+            "xE07ucLL8oqSjyJp/GCihw==",
+            "9iKKSMm03UCXuzK5s1QlDw==",
+            "qZIEE8URcxOrvx9TVvfb4Q==",
+            "t/Ko8M0d5TVQwepmxJ9WlA==",
+            "AhybVVgbCrzFqvJFcQX1rQ==",
+            "agVLNAtKJr6Mbp3WkAxKCA==",
+            "DDn2LtKrC2jKRgZP6UAjXg==",
+            "QiV7xXHsLoSv4XRf+kUdhg==",
+            "HMJqyPTi17ZH5zJ5eKBPwA==",
+            "VBvAHrJxQIO49qFQg9CmbQ==",
+            "9aITYzqDL+da+hp2cY8ekA==",
+            "XKULrMkiqHUgPSx3B6mrTQ==",
+            "AK7yTvHuta4JhbCyAsjKsA==",
+            "p+u1Y/Jlh3krLrIQX9b4Hg==",
+            "p5t9wEXTfrOhNvpa6AK5IA==",
     };
     private static final List<Map<String, Object>> TEST_TOKEN_MAP_LIST = new ArrayList<>();
 
     static {
+        int index = 0;
         for (String token : TEST_TOKEN_ARRAY) {
             final Map<String, Object> map = new HashMap<>();
             map.put("token", token);
+            map.put("id", ++index);
             TEST_TOKEN_MAP_LIST.add(map);
         }
     }
@@ -90,9 +116,9 @@ public class SignInFragment extends SystemInsetsFragment {
         mBinding.tokenSpinner.setAdapter(new SimpleAdapter(
                 mBinding.tokenSpinner.getContext(),
                 TEST_TOKEN_MAP_LIST,
-                android.R.layout.simple_list_item_1,
-                new String[]{"token" },
-                new int[]{android.R.id.text1}
+                android.R.layout.simple_list_item_2,
+                new String[]{"token", "id",},
+                new int[]{android.R.id.text1, android.R.id.text2,}
         ));
         ViewUtil.onClick(mBinding.submit, v -> onSubmit());
 
