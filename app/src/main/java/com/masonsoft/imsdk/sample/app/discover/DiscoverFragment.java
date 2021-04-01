@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.sample.app.discover;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.idonans.lang.util.ViewUtil;
 import com.idonans.systeminsets.SystemInsetsLayout;
@@ -44,18 +46,23 @@ public class DiscoverFragment extends SystemInsetsFragment {
                 SampleLog.v("DiscoverFragment topSystemInsets onSystemInsets left:%s, top:%s, right:%s, bottom:%s", left, top, right, bottom);
             }
         });
-
-        ViewUtil.onClick(mBinding.user100, v -> {
-            startSingleChat(100L);
-        });
-        ViewUtil.onClick(mBinding.user101, v -> {
-            startSingleChat(101L);
-        });
-        ViewUtil.onClick(mBinding.user102, v -> {
-            startSingleChat(102L);
-        });
+        testInflateTargetUsers(mBinding.scrollContent);
 
         return mBinding.getRoot();
+    }
+
+    private void testInflateTargetUsers(ViewGroup parent) {
+        for (int i = 1; i < 101; i++) {
+            testInflateTargetUsers(parent, i);
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void testInflateTargetUsers(ViewGroup parent, long userId) {
+        final AppCompatButton button = new AppCompatButton(parent.getContext());
+        button.setText("user:" + userId);
+        parent.addView(button);
+        ViewUtil.onClick(button, v -> startSingleChat(userId));
     }
 
     private void startSingleChat(long targetUserId) {
