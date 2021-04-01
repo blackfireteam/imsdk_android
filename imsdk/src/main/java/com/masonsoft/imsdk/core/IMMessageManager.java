@@ -12,6 +12,7 @@ import com.masonsoft.imsdk.core.db.LocalSendingMessageProvider;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.TinyPage;
+import com.masonsoft.imsdk.user.UserInfoSyncManager;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
@@ -27,7 +28,6 @@ public class IMMessageManager {
     private static final Singleton<IMMessageManager> INSTANCE = new Singleton<IMMessageManager>() {
         @Override
         protected IMMessageManager create() {
-            //noinspection InstantiationOfUtilityClass
             return new IMMessageManager();
         }
     };
@@ -97,6 +97,12 @@ public class IMMessageManager {
                                                 final long targetUserId,
                                                 final boolean queryHistory,
                                                 @Nullable ColumnsSelector<Message> columnsSelector) {
+        if (seq == 0) {
+            // 读取第一页消息时，尝试同步用户信息
+            UserInfoSyncManager.getInstance().enqueueSyncUserInfo(sessionUserId);
+            UserInfoSyncManager.getInstance().enqueueSyncUserInfo(targetUserId);
+        }
+
         long targetBlockId = 0;
         if (seq > 0) {
             targetBlockId = MessageDatabaseProvider.getInstance().getBlockIdWithSeq(

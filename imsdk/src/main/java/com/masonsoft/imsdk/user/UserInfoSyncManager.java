@@ -177,6 +177,10 @@ public class UserInfoSyncManager {
          * 超过此时间间隔时总是请求更新
          */
         private final long MAX_INTERVAL_MS = TimeUnit.DAYS.toMillis(1);
+        /**
+         * 当本地完全没有目标用户的信息时(一次都没有同步成功过), 发起重复请求的最少间隔时间
+         */
+        private final long REQUIRE_AT_LEAST_ONE_USER_INFO_MIN_INTERVAL_MS = TimeUnit.MINUTES.toMillis(2);
 
         private final boolean mForce;
 
@@ -199,12 +203,14 @@ public class UserInfoSyncManager {
 
             boolean requireSync = mForce;
             if (!requireSync) {
+                long localLastSyncTimeMs = 0L;
+
                 final UserInfoSync userInfoSync = UserInfoSyncManager.getInstance().getUserInfoSyncByUserId(mUserId);
                 if (userInfoSync == null) {
                     requireSync = true;
                     UserInfoSyncManager.getInstance().touchUserInfoSync(mUserId);
                 } else {
-                    final long localLastSyncTimeMs = userInfoSync.localLastSyncTimeMs.get();
+                    localLastSyncTimeMs = userInfoSync.localLastSyncTimeMs.get();
                     if ((System.currentTimeMillis() - localLastSyncTimeMs) >= MAX_INTERVAL_MS) {
                         requireSync = true;
                     }
@@ -218,6 +224,19 @@ public class UserInfoSyncManager {
                     mUserUpdateTimeMs = userInfo.updateTimeMs.get();
                     if (mServerUpdateTimeMs > 0 && mServerUpdateTimeMs > mUserUpdateTimeMs) {
                         requireSync = true;
+                    }
+                }
+
+                if (!requireSync) {
+                    if (mUserUpdateTimeMs == 0L) {
+                        // 本地还没有至少一次完整的用户信息
+                        if (System.currentTimeMillis() - localLastSyncTimeMs >= REQUIRE_AT_LEAST_ONE_USER_INFO_MIN_INTERVAL_MS) {
+                            final UserInfoSync userInfoSyncUpdate = new UserInfoSync();
+                            userInfoSyncUpdate.uid.set(mUserId);
+                            userInfoSyncUpdate.localLastSyncTimeMs.set(System.currentTimeMillis());
+                            UserInfoSyncManager.getInstance().insertOrUpdateUserInfoSync(userInfoSyncUpdate);
+                            requireSync = true;
+                        }
                     }
                 }
             }
@@ -253,6 +272,7 @@ public class UserInfoSyncManager {
                 final Throwable e = new IllegalArgumentException("GetProfile message packet state error " + messagePacket);
                 IMLog.e(e);
             } else {
+                IMLog.v("send sync user info for user id:%s", mUserId);
                 final UserInfoSync userInfoSyncUpdate = new UserInfoSync();
                 userInfoSyncUpdate.uid.set(mUserId);
                 userInfoSyncUpdate.localLastSyncTimeMs.set(System.currentTimeMillis());
@@ -329,7 +349,10 @@ public class UserInfoSyncManager {
                 IMLog.e(e);
             } else {
                 final long syncTimeMs = System.currentTimeMillis();
+                final int size = mUserIdList.length;
+                int index = 0;
                 for (long userId : mUserIdList) {
+                    IMLog.v("multi [%s/%s] send sync user info for user id:%s", ++index, size, userId);
                     final UserInfoSync userInfoSyncUpdate = new UserInfoSync();
                     userInfoSyncUpdate.uid.set(userId);
                     userInfoSyncUpdate.localLastSyncTimeMs.set(syncTimeMs);
