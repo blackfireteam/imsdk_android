@@ -7,6 +7,7 @@ import androidx.collection.LruCache;
 import com.idonans.core.Singleton;
 import com.idonans.core.thread.TaskQueue;
 import com.idonans.core.thread.Threads;
+import com.masonsoft.imsdk.core.block.MessageBlock;
 import com.masonsoft.imsdk.core.db.LocalSendingMessage;
 import com.masonsoft.imsdk.core.db.LocalSendingMessageProvider;
 import com.masonsoft.imsdk.core.db.Message;
@@ -19,6 +20,7 @@ import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
 import com.masonsoft.imsdk.util.Objects;
+import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -367,6 +369,16 @@ public class IMMessageUploadManager {
                                 messageUpdate.localId.set(message.localId.get());
                                 messageUpdate.remoteMessageId.set(msgId);
                                 messageUpdate.remoteMessageTime.set(msgTime);
+                                // 设置 block id
+                                final long blockId = MessageBlock.generateBlockId(
+                                        mSessionUserId,
+                                        mLocalSendingMessage.conversationType.get(),
+                                        mLocalSendingMessage.targetUserId.get(),
+                                        msgId
+                                );
+                                Preconditions.checkArgument(blockId > 0);
+                                messageUpdate.localBlockId.set(blockId);
+
                                 if (!MessageDatabaseProvider.getInstance().updateMessage(
                                         mSessionUserId,
                                         mLocalSendingMessage.conversationType.get(),
