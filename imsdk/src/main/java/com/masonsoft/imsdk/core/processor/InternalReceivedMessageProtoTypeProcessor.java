@@ -12,6 +12,7 @@ import com.masonsoft.imsdk.lang.MultiProcessor;
 public class InternalReceivedMessageProtoTypeProcessor extends MultiProcessor<SessionProtoByteMessageWrapper> {
 
     public InternalReceivedMessageProtoTypeProcessor() {
+        addLastProcessor(new ReceivedMessageProtoTypeProfileProcessor());
         addLastProcessor(new ReceivedMessageProtoTypeChatRProcessor());
         addLastProcessor(new ReceivedMessageProtoTypeChatRBatchProcessor());
     }
