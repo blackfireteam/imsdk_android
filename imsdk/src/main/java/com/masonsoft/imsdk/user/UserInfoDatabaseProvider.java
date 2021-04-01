@@ -17,6 +17,9 @@ import com.masonsoft.imsdk.core.db.ColumnsSelector;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @since 1.0
+ */
 public class UserInfoDatabaseProvider {
 
     public static final Singleton<UserInfoDatabaseProvider> INSTANCE = new Singleton<UserInfoDatabaseProvider>() {
