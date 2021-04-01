@@ -1,12 +1,12 @@
 package com.masonsoft.imsdk.core.observable;
 
-import com.masonsoft.imsdk.user.UserInfoCacheManager;
+import com.masonsoft.imsdk.user.UserInfoManager;
 import com.masonsoft.imsdk.util.WeakObservable;
 
 /**
  * 用户信息的变更
  *
- * @see UserInfoCacheManager
+ * @see UserInfoManager
  * @since 1.0
  */
 public class UserInfoObservable extends WeakObservable<UserInfoObservable.UserInfoObserver> {

@@ -1,43 +1,32 @@
 package com.masonsoft.imsdk.user;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 
 import com.idonans.core.Singleton;
-import com.idonans.core.manager.ProcessManager;
-import com.idonans.core.util.ContextUtil;
-import com.idonans.core.util.IOUtil;
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
-import com.masonsoft.imsdk.core.RuntimeMode;
-import com.masonsoft.imsdk.core.db.ColumnsSelector;
 import com.masonsoft.imsdk.core.observable.UserInfoObservable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 用户信息缓存管理。会缓存一部分用户信息到内存中。
+ * 用户信息管理。会缓存一部分用户信息到内存中。
  *
  * @since 1.0
  */
-public class UserInfoCacheManager {
+public class UserInfoManager {
 
-    private static final Singleton<UserInfoCacheManager> INSTANCE = new Singleton<UserInfoCacheManager>() {
+    private static final Singleton<UserInfoManager> INSTANCE = new Singleton<UserInfoManager>() {
         @Override
-        protected UserInfoCacheManager create() {
-            return new UserInfoCacheManager();
+        protected UserInfoManager create() {
+            return new UserInfoManager();
         }
     };
 
-    public static UserInfoCacheManager getInstance() {
+    public static UserInfoManager getInstance() {
         IMProcessValidator.validateProcess();
 
         return INSTANCE.get();
@@ -69,7 +58,7 @@ public class UserInfoCacheManager {
         }
     }
 
-    private UserInfoCacheManager() {
+    private UserInfoManager() {
     }
 
     @Nullable
@@ -81,7 +70,7 @@ public class UserInfoCacheManager {
         }
 
         IMLog.v("getByUserId cache miss, try read from db, userId:%s", userId);
-        final UserInfo user = DatabaseProvider.getInstance().getTargetUser(userId);
+        final UserInfo user = UserInfoDatabaseProvider.getInstance().getTargetUser(userId);
         if (user != null) {
             MemoryFullCache.DEFAULT.addFullCache(user);
         }
@@ -101,7 +90,7 @@ public class UserInfoCacheManager {
             return new ArrayList<>();
         }
 
-        return DatabaseProvider.getInstance().getByUserIdList(userIdList);
+        return UserInfoDatabaseProvider.getInstance().getByUserIdList(userIdList);
     }
 
     /**
@@ -131,9 +120,9 @@ public class UserInfoCacheManager {
 
         try {
             if (cacheUserInfo != null) {
-                DatabaseProvider.getInstance().updateUser(userInfo);
+                UserInfoDatabaseProvider.getInstance().updateUser(userInfo);
             } else {
-                DatabaseProvider.getInstance().insertUser(userInfo);
+                UserInfoDatabaseProvider.getInstance().insertUser(userInfo);
             }
         } catch (Throwable e) {
             // ignore
@@ -159,7 +148,7 @@ public class UserInfoCacheManager {
             // 命中缓存，说明记录已经存在
             return false;
         }
-        if (DatabaseProvider.getInstance().touch(userId)) {
+        if (UserInfoDatabaseProvider.getInstance().touch(userId)) {
             MemoryFullCache.DEFAULT.removeFullCache(userId);
             UserInfoObservable.DEFAULT.notifyUserInfoChanged(userId);
             return true;
@@ -170,6 +159,5 @@ public class UserInfoCacheManager {
     public boolean exists(long userId) {
         return getByUserId(userId) != null;
     }
-
 
 }

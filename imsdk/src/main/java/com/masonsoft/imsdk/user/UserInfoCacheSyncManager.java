@@ -80,11 +80,11 @@ public class UserInfoCacheSyncManager {
 
             boolean requireSync = mImportant;
             if (!requireSync) {
-                final UserInfo userInfo = UserInfoCacheManager.getInstance().getByUserId(mUserId);
+                final UserInfo userInfo = UserInfoManager.getInstance().getByUserId(mUserId);
                 if (userInfo == null) {
                     requireSync = true;
                     // 插入一条新纪录
-                    UserInfoCacheManager.getInstance().touch(mUserId);
+                    UserInfoManager.getInstance().touch(mUserId);
                 } else {
                     mUserUpdateTimeMs = userInfo.updateTimeMs.get();
                     final long localLastModifyMs = userInfo.localLastModifyMs.get();
@@ -149,7 +149,7 @@ public class UserInfoCacheSyncManager {
             }
 
             final Map<Long, Long> updateTimeMsMap = new HashMap<>();
-            final List<UserInfo> userInfoList = UserInfoCacheManager.getInstance().getByUserIdList(mUserIdList);
+            final List<UserInfo> userInfoList = UserInfoManager.getInstance().getByUserIdList(mUserIdList);
             for (UserInfo userInfo : userInfoList) {
                 updateTimeMsMap.put(userInfo.uid.get(), userInfo.updateTimeMs.get());
             }
