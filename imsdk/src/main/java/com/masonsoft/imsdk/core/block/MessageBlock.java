@@ -38,7 +38,7 @@ public class MessageBlock {
     }
 
     /**
-     * 将目标 Message 的 block id 尽可能向历史消息的方法扩展
+     * 将目标 Message 的 block id 尽可能向历史消息的方向扩展
      *
      * @param sessionUserId
      * @param conversationType

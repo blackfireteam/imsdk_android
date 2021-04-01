@@ -142,16 +142,41 @@ public class ReceivedMessageProtoTypeChatRBatchProcessor extends ReceivedMessage
                             IMLog.e(e);
                         }
                     } else {
-                        // 消息已经存在，更新必要字段
-                        final Message updateMessage = new Message();
-                        updateMessage.applyLogicField(sessionUserId, conversationType, targetUserId);
-                        // 更新 block id
-                        updateMessage.localBlockId.set(blockId);
-                        updateMessage.localId.set(dbMessage.localId.get());
-                        if (!MessageDatabaseProvider.getInstance().updateMessage(
-                                sessionUserId, conversationType, targetUserId, updateMessage)) {
-                            final Throwable e = new IllegalAccessError("unexpected updateMessage return false " + updateMessage);
-                            IMLog.e(e);
+                        // 消息已经存在
+                        // 回写 localId
+                        message.localId.set(dbMessage.localId.get());
+
+                        // 更新必要字段
+                        boolean requireUpdate = false;
+                        final Message messageUpdate = new Message();
+                        messageUpdate.applyLogicField(sessionUserId, conversationType, targetUserId);
+                        messageUpdate.localId.set(dbMessage.localId.get());
+
+                        {
+                            // 校验是否需要更新 message type
+                            final int dbMessageType = dbMessage.messageType.get();
+                            final int newMessageType = message.messageType.get();
+                            if (dbMessageType != newMessageType) {
+                                requireUpdate = true;
+                                messageUpdate.messageType.set(newMessageType);
+                            }
+                        }
+                        {
+                            // 校验是否需要更新 block id
+                            final long dbMessageBlockId = dbMessage.localBlockId.get();
+                            final long newMessageBlockId = message.localBlockId.get();
+                            if (dbMessageBlockId != newMessageBlockId) {
+                                requireUpdate = true;
+                                messageUpdate.localBlockId.set(newMessageBlockId);
+                            }
+                        }
+
+                        if (requireUpdate) {
+                            if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                    sessionUserId, conversationType, targetUserId, messageUpdate)) {
+                                final Throwable e = new IllegalAccessError("unexpected updateMessage return false " + messageUpdate);
+                                IMLog.e(e);
+                            }
                         }
                     }
                 }

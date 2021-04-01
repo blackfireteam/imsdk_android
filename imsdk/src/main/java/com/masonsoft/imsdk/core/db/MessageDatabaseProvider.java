@@ -623,17 +623,18 @@ public class MessageDatabaseProvider {
                     where.toString(),
                     whereArgs.toArray(new String[]{})
             );
-            if (rowsAffected > 0) {
-                IMLog.v(
-                        "updateMessageBlockId with sessionUserId:%s, conversationType:%s, targetUserId:%s, fromBlockId:%s, toBlockId:%s affected %s rows",
-                        sessionUserId,
-                        conversationType,
-                        targetUserId,
-                        fromBlockId,
-                        toBlockId,
-                        rowsAffected
-                );
 
+            IMLog.v(
+                    "updateMessageBlockId with sessionUserId:%s, conversationType:%s, targetUserId:%s, fromBlockId:%s, toBlockId:%s affected %s rows",
+                    sessionUserId,
+                    conversationType,
+                    targetUserId,
+                    fromBlockId,
+                    toBlockId,
+                    rowsAffected
+            );
+
+            if (rowsAffected > 0) {
                 MemoryFullCache.DEFAULT.clear();
                 MessageObservable.DEFAULT.notifyMessageBlockChanged(sessionUserId, conversationType, targetUserId, fromBlockId, toBlockId);
                 return true;
