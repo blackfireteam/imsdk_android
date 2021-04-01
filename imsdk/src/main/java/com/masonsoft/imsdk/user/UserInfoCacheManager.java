@@ -172,7 +172,7 @@ public class UserInfoCacheManager {
     }
 
     public static final class DatabaseProvider {
-        private static Singleton<DatabaseProvider> sInstance = new Singleton<DatabaseProvider>() {
+        private static final Singleton<DatabaseProvider> INSTANCE = new Singleton<DatabaseProvider>() {
             @Override
             protected DatabaseProvider create() {
                 return new DatabaseProvider();
@@ -180,13 +180,13 @@ public class UserInfoCacheManager {
         };
 
         private static DatabaseProvider getInstance() {
-            return sInstance.get();
+            return INSTANCE.get();
         }
 
-        private DatabaseHelper mDBHelper;
+        private final DatabaseHelper mDBHelper;
 
         private DatabaseProvider() {
-            mDBHelper = new DatabaseHelper();
+            mDBHelper = DatabaseHelper.DEFAULT;
         }
 
         @NonNull
@@ -415,94 +415,6 @@ public class UserInfoCacheManager {
             return false;
         }
 
-        public static final class DatabaseHelper {
-
-            // 当前数据库最新版本号
-            private static final int DB_VERSION = 1;
-            // 用户表
-            public static final String TABLE_NAME_USER = "t_user_cache";
-
-            private final SQLiteOpenHelper mDBHelper;
-
-            /**
-             * 用户表
-             */
-            public interface ColumnsUser {
-
-                /**
-                 * 用户 id, 全局唯一
-                 *
-                 * @since db version 1
-                 */
-                String C_USER_ID = "c_user_id";
-
-                /**
-                 * 本地最后修改时间, 毫秒
-                 */
-                String C_LOCAL_LAST_MODIFY_MS = "c_local_last_modify_ms";
-
-                /**
-                 * 用户数据的 json 序列化
-                 *
-                 * @since db version 1
-                 */
-                String C_USER_JSON = "c_user_json";
-            }
-
-            private DatabaseHelper() {
-                final String dbName = IMConstants.GLOBAL_NAMESPACE + "_user_cache_manager_20210325_" + ProcessManager.getInstance().getProcessTag();
-                mDBHelper = new SQLiteOpenHelper(ContextUtil.getContext(), dbName, null, DB_VERSION) {
-                    @Override
-                    public void onCreate(SQLiteDatabase db) {
-                        try {
-                            db.beginTransaction();
-
-                            db.execSQL(getSQLCreateTableUser());
-                            for (String sqlIndex : getSQLIndexTableUser()) {
-                                db.execSQL(sqlIndex);
-                            }
-
-                            db.setTransactionSuccessful();
-                        } catch (Throwable e) {
-                            IMLog.e(e);
-                        } finally {
-                            db.endTransaction();
-                        }
-                    }
-
-                    @Override
-                    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-                        throw new IllegalAccessError("need config database upgrade from " + oldVersion + " to " + newVersion);
-                    }
-                };
-            }
-
-            public SQLiteOpenHelper getDBHelper() {
-                return mDBHelper;
-            }
-
-            /**
-             * 用户表创建语句(数据库最新版本)
-             */
-            @NonNull
-            private String getSQLCreateTableUser() {
-                return "create table " + TABLE_NAME_USER + " (" +
-                        ColumnsUser.C_USER_ID + " integer primary key," +
-                        ColumnsUser.C_LOCAL_LAST_MODIFY_MS + " integer not null," +
-                        ColumnsUser.C_USER_JSON + " text" +
-                        ")";
-            }
-
-            /**
-             * 用户表创建索引语句(数据库最新版本)
-             */
-            @NonNull
-            private String[] getSQLIndexTableUser() {
-                return new String[]{
-                };
-            }
-
-        }
 
     }
 
