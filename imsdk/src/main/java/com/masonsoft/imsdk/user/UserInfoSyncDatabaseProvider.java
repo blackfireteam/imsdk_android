@@ -192,7 +192,7 @@ public class UserInfoSyncDatabaseProvider {
             long rowsAffected = db.update(
                     UserInfoDatabaseHelper.TABLE_NAME_USER_INFO_SYNC,
                     userInfoSync.toContentValues(),
-                    UserInfoDatabaseHelper.ColumnsUserInfo.C_USER_ID + "=?",
+                    UserInfoDatabaseHelper.ColumnsUserInfoSync.C_USER_ID + "=?",
                     new String[]{String.valueOf(userInfoSync.uid.get())}
             );
 
