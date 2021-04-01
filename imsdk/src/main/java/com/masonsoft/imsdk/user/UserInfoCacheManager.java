@@ -143,12 +143,22 @@ public class UserInfoCacheManager {
         UserInfoObservable.DEFAULT.notifyUserInfoChanged(userId);
     }
 
+    /**
+     * 如果记录存在，则忽略。否则插入一条新纪录。如果成功插入一条新记录返回 true, 否则返回 false.
+     *
+     * @param userId
+     * @return
+     */
     public boolean touch(final long userId) {
         if (userId <= 0) {
             IMLog.e("touch ignore. invalid user id %s", userId);
             return false;
         }
 
+        if (MemoryFullCache.DEFAULT.getFullCache(userId) != null) {
+            // 命中缓存，说明记录已经存在
+            return false;
+        }
         if (DatabaseProvider.getInstance().touch(userId)) {
             MemoryFullCache.DEFAULT.removeFullCache(userId);
             UserInfoObservable.DEFAULT.notifyUserInfoChanged(userId);
@@ -315,7 +325,7 @@ public class UserInfoCacheManager {
         }
 
         /**
-         * 如果记录存在，更新 localLastModifyMs, 否则插入一条新纪录。操作成功返回 true, 否则返回 false.
+         * 如果记录存在，则忽略。否则插入一条新纪录。如果成功插入一条新记录返回 true, 否则返回 false.
          *
          * @param userId
          * @return
@@ -332,34 +342,18 @@ public class UserInfoCacheManager {
                 IMLog.v("touch userId:%s", userId);
                 SQLiteDatabase db = mDBHelper.getDBHelper().getWritableDatabase();
 
-                final ContentValues contentValuesUpdate = new ContentValues();
-                contentValuesUpdate.put(DatabaseHelper.ColumnsUser.C_USER_ID, userId);
-                contentValuesUpdate.put(DatabaseHelper.ColumnsUser.C_LOCAL_LAST_MODIFY_MS, System.currentTimeMillis());
+                final ContentValues contentValuesInsert = new ContentValues();
+                contentValuesInsert.put(DatabaseHelper.ColumnsUser.C_USER_ID, userId);
+                contentValuesInsert.put(DatabaseHelper.ColumnsUser.C_LOCAL_LAST_MODIFY_MS, System.currentTimeMillis());
 
                 long rowId = db.insertWithOnConflict(
                         DatabaseHelper.TABLE_NAME_USER,
                         null,
-                        contentValuesUpdate,
+                        contentValuesInsert,
                         SQLiteDatabase.CONFLICT_IGNORE
                 );
-                if (rowId == -1) {
-                    long rowsAffected = db.update(
-                            DatabaseHelper.TABLE_NAME_USER,
-                            contentValuesUpdate,
-                            DatabaseHelper.ColumnsUser.C_USER_ID + "=?",
-                            new String[]{String.valueOf(userId)}
-                    );
-                    if (rowsAffected != 1) {
-                        Throwable e = new IllegalAccessException("touch user for target user id:" + userId + " rowsAffected " + rowsAffected);
-                        IMLog.e(e);
-                        RuntimeMode.throwIfDebug(e);
-                        return false;
-                    }
-                    IMLog.v("touch user for target user id:%s rowsAffected:%s", userId, rowsAffected);
-                } else {
-                    IMLog.v("touch user for target user id:%s rowId:%s", userId, rowId);
-                }
-                return true;
+                IMLog.v("touch user for target user id:%s rowId:%s", userId, rowId);
+                return rowId > 0;
             } catch (Throwable e) {
                 IMLog.e(e);
                 RuntimeMode.throwIfDebug(e);

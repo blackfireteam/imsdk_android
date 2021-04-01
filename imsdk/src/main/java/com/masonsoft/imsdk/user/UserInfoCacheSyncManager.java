@@ -119,11 +119,7 @@ public class UserInfoCacheSyncManager {
                             .build())
             );
             sessionTcpClient.sendMessagePacketQuietly(messagePacket);
-            if (messagePacket.getState() == MessagePacket.STATE_WAIT_RESULT) {
-                // unsafe
-                // 更新 localLastModifyMs
-                UserInfoCacheManager.getInstance().touch(mUserId);
-            } else {
+            if (messagePacket.getState() != MessagePacket.STATE_WAIT_RESULT) {
                 final Throwable e = new IllegalArgumentException("GetProfile message packet state error " + messagePacket);
                 IMLog.e(e);
             }
