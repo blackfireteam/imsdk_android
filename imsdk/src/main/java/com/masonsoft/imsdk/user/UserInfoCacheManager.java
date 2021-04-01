@@ -20,6 +20,9 @@ import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.db.ColumnsSelector;
 import com.masonsoft.imsdk.core.observable.UserInfoObservable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 用户信息缓存管理。会缓存一部分用户信息到内存中。
  *
@@ -78,12 +81,27 @@ public class UserInfoCacheManager {
         }
 
         IMLog.v("getByUserId cache miss, try read from db, userId:%s", userId);
-        final UserInfo user = DatabaseProvider.getInstance().getTargetUser(userId, null);
+        final UserInfo user = DatabaseProvider.getInstance().getTargetUser(userId);
         if (user != null) {
             MemoryFullCache.DEFAULT.addFullCache(user);
         }
 
         return user;
+    }
+
+    /**
+     * 注意：此方法不会走缓存。
+     */
+    @NonNull
+    public List<UserInfo> getByUserIdList(final long[] userIdList) {
+        if (userIdList == null) {
+            return new ArrayList<>();
+        }
+        if (userIdList.length <= 0) {
+            return new ArrayList<>();
+        }
+
+        return DatabaseProvider.getInstance().getByUserIdList(userIdList);
     }
 
     /**
@@ -161,15 +179,58 @@ public class UserInfoCacheManager {
             mDBHelper = new DatabaseHelper();
         }
 
+        @NonNull
+        public List<UserInfo> getByUserIdList(final long[] userIdList) {
+            final ColumnsSelector<UserInfo> columnsSelector = UserInfo.COLUMNS_SELECTOR_ALL;
+            final List<UserInfo> result = new ArrayList<>();
+
+            final StringBuilder inBuilder = new StringBuilder();
+            inBuilder.append("(");
+            boolean first = true;
+            for (long userId : userIdList) {
+                if (!first) {
+                    inBuilder.append(",");
+                }
+                first = false;
+                inBuilder.append(userId);
+            }
+            inBuilder.append(")");
+
+            Cursor cursor = null;
+            try {
+                SQLiteDatabase db = mDBHelper.getDBHelper().getWritableDatabase();
+                cursor = db.query(
+                        DatabaseHelper.TABLE_NAME_USER,
+                        columnsSelector.queryColumns(),
+                        DatabaseHelper.ColumnsUser.C_USER_ID + " in " + inBuilder,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+
+                if (cursor.moveToNext()) {
+                    UserInfo item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                    IMLog.v("found user with user id:%s", item.uid);
+                    result.add(item);
+                }
+            } catch (Throwable e) {
+                IMLog.e(e);
+                RuntimeMode.throwIfDebug(e);
+            } finally {
+                IOUtil.closeQuietly(cursor);
+            }
+            return result;
+        }
+
         /**
          * @param targetUserId
          * @return 没有找到返回 null
          */
         @Nullable
-        public UserInfo getTargetUser(final long targetUserId, @Nullable ColumnsSelector<UserInfo> columnsSelector) {
-            if (columnsSelector == null) {
-                columnsSelector = UserInfo.COLUMNS_SELECTOR_ALL;
-            }
+        public UserInfo getTargetUser(final long targetUserId) {
+            final ColumnsSelector<UserInfo> columnsSelector = UserInfo.COLUMNS_SELECTOR_ALL;
+
             Cursor cursor = null;
             try {
                 SQLiteDatabase db = mDBHelper.getDBHelper().getWritableDatabase();
