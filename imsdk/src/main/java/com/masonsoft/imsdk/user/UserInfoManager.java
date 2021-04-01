@@ -70,7 +70,7 @@ public class UserInfoManager {
         }
 
         IMLog.v("getByUserId cache miss, try read from db, userId:%s", userId);
-        final UserInfo user = UserInfoDatabaseProvider.getInstance().getTargetUser(userId);
+        final UserInfo user = UserInfoDatabaseProvider.getInstance().getUserInfoByUserId(userId);
         if (user != null) {
             MemoryFullCache.DEFAULT.addFullCache(user);
         }
@@ -90,7 +90,7 @@ public class UserInfoManager {
             return new ArrayList<>();
         }
 
-        return UserInfoDatabaseProvider.getInstance().getByUserIdList(userIdList);
+        return UserInfoDatabaseProvider.getInstance().getUserInfoByUserIdList(userIdList);
     }
 
     /**
@@ -120,9 +120,9 @@ public class UserInfoManager {
 
         try {
             if (cacheUserInfo != null) {
-                UserInfoDatabaseProvider.getInstance().updateUser(userInfo);
+                UserInfoDatabaseProvider.getInstance().updateUserInfo(userInfo);
             } else {
-                UserInfoDatabaseProvider.getInstance().insertUser(userInfo);
+                UserInfoDatabaseProvider.getInstance().insertUserInfo(userInfo);
             }
         } catch (Throwable e) {
             // ignore
@@ -138,9 +138,9 @@ public class UserInfoManager {
      * @param userId
      * @return
      */
-    public boolean touch(final long userId) {
+    public boolean touchUserInfo(final long userId) {
         if (userId <= 0) {
-            IMLog.e("touch ignore. invalid user id %s", userId);
+            IMLog.e("touchUserInfo ignore. invalid user id %s", userId);
             return false;
         }
 
@@ -148,7 +148,7 @@ public class UserInfoManager {
             // 命中缓存，说明记录已经存在
             return false;
         }
-        if (UserInfoDatabaseProvider.getInstance().touch(userId)) {
+        if (UserInfoDatabaseProvider.getInstance().touchUserInfo(userId)) {
             MemoryFullCache.DEFAULT.removeFullCache(userId);
             UserInfoObservable.DEFAULT.notifyUserInfoChanged(userId);
             return true;

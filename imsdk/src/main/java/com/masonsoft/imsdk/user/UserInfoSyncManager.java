@@ -1,5 +1,9 @@
 package com.masonsoft.imsdk.user;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.collection.LruCache;
+
 import com.idonans.core.Singleton;
 import com.idonans.core.thread.TaskQueue;
 import com.masonsoft.imsdk.core.IMLog;
@@ -23,28 +27,132 @@ import java.util.concurrent.TimeUnit;
  *
  * @since 1.0
  */
-public class UserInfoCacheSyncManager {
+public class UserInfoSyncManager {
 
-    private static final Singleton<UserInfoCacheSyncManager> INSTANCE = new Singleton<UserInfoCacheSyncManager>() {
+    private static final Singleton<UserInfoSyncManager> INSTANCE = new Singleton<UserInfoSyncManager>() {
         @Override
-        protected UserInfoCacheSyncManager create() {
-            return new UserInfoCacheSyncManager();
+        protected UserInfoSyncManager create() {
+            return new UserInfoSyncManager();
         }
     };
 
-    public static UserInfoCacheSyncManager getInstance() {
+    public static UserInfoSyncManager getInstance() {
         IMProcessValidator.validateProcess();
 
         return INSTANCE.get();
     }
 
+    private static class MemoryFullCache {
+
+        private static final MemoryFullCache DEFAULT = new MemoryFullCache();
+
+        private static final int MEMORY_CACHE_SIZE = 100;
+        @NonNull
+        private final LruCache<Long, UserInfoSync> mFullCaches = new LruCache<>(MEMORY_CACHE_SIZE);
+
+        private void addFullCache(@NonNull UserInfoSync userInfoSync) {
+            if (userInfoSync.uid.isUnset()) {
+                IMLog.e("uid is unset %s", userInfoSync);
+                return;
+            }
+            mFullCaches.put(userInfoSync.uid.get(), userInfoSync);
+        }
+
+        private void removeFullCache(long userId) {
+            mFullCaches.remove(userId);
+        }
+
+        @Nullable
+        private UserInfoSync getFullCache(long userId) {
+            return mFullCaches.get(userId);
+        }
+    }
+
     private final TaskQueue mSyncQueue = new TaskQueue(1);
 
-    private UserInfoCacheSyncManager() {
+    private UserInfoSyncManager() {
+    }
+
+    @Nullable
+    public UserInfoSync getUserInfoSyncByUserId(long userId) {
+        final UserInfoSync cache = MemoryFullCache.DEFAULT.getFullCache(userId);
+        if (cache != null) {
+            IMLog.v("getUserInfoSyncByUserId cache hint userId:%s", userId);
+            return cache;
+        }
+
+        IMLog.v("getUserInfoSyncByUserId cache miss, try read from db, userId:%s", userId);
+        final UserInfoSync userInfoSync = UserInfoSyncDatabaseProvider.getInstance().getUserInfoSyncByUserId(userId);
+        if (userInfoSync != null) {
+            MemoryFullCache.DEFAULT.addFullCache(userInfoSync);
+        }
+
+        return userInfoSync;
+    }
+
+    /**
+     * 插入或更新
+     */
+    public void insertOrUpdateUserInfoSync(UserInfoSync userInfoSync) {
+        if (userInfoSync == null) {
+            return;
+        }
+
+        final long userId = userInfoSync.uid.getOrDefault(-1L);
+        if (userId <= 0) {
+            IMLog.e("insertOrUpdateUserInfoSync ignore. invalid user id %s.", userId);
+            return;
+        }
+
+        UserInfoSync cacheUserInfoSync = getUserInfoSyncByUserId(userId);
+        if (cacheUserInfoSync != null) {
+            if (!cacheUserInfoSync.localLastSyncTimeMs.isUnset()
+                    && !userInfoSync.localLastSyncTimeMs.isUnset()) {
+                if (cacheUserInfoSync.localLastSyncTimeMs.get() >= userInfoSync.localLastSyncTimeMs.get()) {
+                    IMLog.v("ignore insertOrUpdateUserInfoSync cacheUserInfoSync is newer");
+                    return;
+                }
+            }
+        }
+
+        try {
+            if (cacheUserInfoSync != null) {
+                UserInfoSyncDatabaseProvider.getInstance().updateUserInfoSync(userInfoSync);
+            } else {
+                UserInfoSyncDatabaseProvider.getInstance().insertUserInfoSync(userInfoSync);
+            }
+        } catch (Throwable e) {
+            // ignore
+        }
+
+        MemoryFullCache.DEFAULT.removeFullCache(userId);
+    }
+
+    /**
+     * 如果记录存在，则忽略。否则插入一条新纪录。如果成功插入一条新记录返回 true, 否则返回 false.
+     *
+     * @param userId
+     * @return
+     */
+    public boolean touchUserInfoSync(final long userId) {
+        if (userId <= 0) {
+            IMLog.e("touchUserInfoSync ignore. invalid user id %s", userId);
+            return false;
+        }
+
+        if (MemoryFullCache.DEFAULT.getFullCache(userId) != null) {
+            // 命中缓存，说明记录已经存在
+            return false;
+        }
+        if (UserInfoSyncDatabaseProvider.getInstance().touchUserInfoSync(userId)) {
+            MemoryFullCache.DEFAULT.removeFullCache(userId);
+            return true;
+        }
+        return false;
     }
 
     public void enqueueSyncUserInfoList(final long... userId) {
-        mSyncQueue.enqueue(new SafetyRunnable(new MultiUserInfoCacheSyncTask(userId)));
+        mSyncQueue.enqueue(new SafetyRunnable(new MultiUserInfoSyncTask(userId)));
     }
 
     public void enqueueSyncUserInfo(final long userId) {
@@ -52,23 +160,24 @@ public class UserInfoCacheSyncManager {
     }
 
     public void enqueueSyncUserInfo(final long userId, boolean important) {
-        mSyncQueue.enqueue(new SafetyRunnable(new UserInfoCacheSyncTask(userId, important)));
+        mSyncQueue.enqueue(new SafetyRunnable(new UserInfoSyncTask(userId, important)));
     }
 
-    private static class UserInfoCacheSyncTask implements Runnable {
+    private static class UserInfoSyncTask implements Runnable {
 
         /**
          * 超过此时间间隔时总是请求更新
          */
         private final long MAX_INTERVAL_MS = TimeUnit.DAYS.toMillis(1);
 
+        private final boolean mForce;
+
         private final long mUserId;
-        private final boolean mImportant;
         private long mUserUpdateTimeMs;
 
-        private UserInfoCacheSyncTask(long userId, boolean important) {
+        private UserInfoSyncTask(long userId, boolean force) {
             mUserId = userId;
-            mImportant = important;
+            mForce = force;
         }
 
         @Override
@@ -78,17 +187,23 @@ public class UserInfoCacheSyncManager {
                 return;
             }
 
-            boolean requireSync = mImportant;
+            boolean requireSync = mForce;
             if (!requireSync) {
+                final UserInfoSync userInfoSync = UserInfoSyncManager.getInstance().getUserInfoSyncByUserId(mUserId);
+                if (userInfoSync == null) {
+                    requireSync = true;
+                    UserInfoSyncManager.getInstance().touchUserInfoSync(mUserId);
+                } else {
+                    final long localLastSyncTimeMs = userInfoSync.localLastSyncTimeMs.get();
+                    requireSync = (System.currentTimeMillis() - localLastSyncTimeMs) >= MAX_INTERVAL_MS;
+                }
+
                 final UserInfo userInfo = UserInfoManager.getInstance().getByUserId(mUserId);
                 if (userInfo == null) {
                     requireSync = true;
-                    // 插入一条新纪录
-                    UserInfoManager.getInstance().touch(mUserId);
+                    UserInfoManager.getInstance().touchUserInfo(mUserId);
                 } else {
                     mUserUpdateTimeMs = userInfo.updateTimeMs.get();
-                    final long localLastModifyMs = userInfo.localLastModifyMs.get();
-                    requireSync = (System.currentTimeMillis() - localLastModifyMs) >= MAX_INTERVAL_MS;
                 }
             }
 
@@ -122,16 +237,21 @@ public class UserInfoCacheSyncManager {
             if (messagePacket.getState() != MessagePacket.STATE_WAIT_RESULT) {
                 final Throwable e = new IllegalArgumentException("GetProfile message packet state error " + messagePacket);
                 IMLog.e(e);
+            } else {
+                final UserInfoSync userInfoSyncUpdate = new UserInfoSync();
+                userInfoSyncUpdate.uid.set(mUserId);
+                userInfoSyncUpdate.localLastSyncTimeMs.set(System.currentTimeMillis());
+                UserInfoSyncManager.getInstance().insertOrUpdateUserInfoSync(userInfoSyncUpdate);
             }
         }
     }
 
-    private static class MultiUserInfoCacheSyncTask implements Runnable {
+    private static class MultiUserInfoSyncTask implements Runnable {
 
         private static final int MAX_LENGTH = 100;
         private final long[] mUserIdList;
 
-        private MultiUserInfoCacheSyncTask(long[] userIdList) {
+        private MultiUserInfoSyncTask(long[] userIdList) {
             mUserIdList = userIdList;
         }
 
@@ -192,9 +312,15 @@ public class UserInfoCacheSyncManager {
             if (messagePacket.getState() != MessagePacket.STATE_WAIT_RESULT) {
                 final Throwable e = new IllegalArgumentException("GetProfiles message packet state error " + messagePacket);
                 IMLog.e(e);
+            } else {
+                final long syncTimeMs = System.currentTimeMillis();
+                for (long userId : mUserIdList) {
+                    final UserInfoSync userInfoSyncUpdate = new UserInfoSync();
+                    userInfoSyncUpdate.uid.set(userId);
+                    userInfoSyncUpdate.localLastSyncTimeMs.set(syncTimeMs);
+                    UserInfoSyncManager.getInstance().insertOrUpdateUserInfoSync(userInfoSyncUpdate);
+                }
             }
         }
-
     }
-
 }

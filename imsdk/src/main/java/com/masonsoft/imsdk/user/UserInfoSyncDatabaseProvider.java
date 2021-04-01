@@ -41,7 +41,7 @@ public class UserInfoSyncDatabaseProvider {
      * @return 没有找到返回 null
      */
     @Nullable
-    public UserInfoSync getByUserId(final long userId) {
+    public UserInfoSync getUserInfoSyncByUserId(final long userId) {
         final ColumnsSelector<UserInfoSync> columnsSelector = UserInfoSync.COLUMNS_SELECTOR_ALL;
 
         Cursor cursor = null;
@@ -60,7 +60,7 @@ public class UserInfoSyncDatabaseProvider {
 
             if (cursor.moveToNext()) {
                 UserInfoSync item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
-                IMLog.v("found userInfoSync with user id:%s", item.uid);
+                IMLog.v("getUserInfoSyncByUserId found userInfoSync with user id:%s", item.uid);
                 return item;
             }
         } catch (Throwable e) {
@@ -71,7 +71,7 @@ public class UserInfoSyncDatabaseProvider {
         }
 
         // user info sync not found
-        IMLog.v("userInfoSync for user id:%s not found", userId);
+        IMLog.v("getUserInfoSyncByUserId for user id:%s not found", userId);
         return null;
     }
 
@@ -80,21 +80,21 @@ public class UserInfoSyncDatabaseProvider {
      */
     public boolean insertUserInfoSync(final UserInfoSync userInfoSync) {
         if (userInfoSync == null) {
-            Throwable e = new IllegalArgumentException("userInfoSync is null");
+            Throwable e = new IllegalArgumentException("insertUserInfoSync userInfoSync is null");
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
             return false;
         }
 
         if (userInfoSync.uid.isUnset()) {
-            final Throwable e = new IllegalArgumentException("invalid user id, unset");
+            final Throwable e = new IllegalArgumentException("insertUserInfoSync invalid user id, unset");
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
             return false;
         }
 
         if (userInfoSync.uid.get() == null || userInfoSync.uid.get() <= 0) {
-            final Throwable e = new IllegalArgumentException("invalid user userId " + userInfoSync.uid);
+            final Throwable e = new IllegalArgumentException("insertUserInfoSync invalid user userId " + userInfoSync.uid);
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
             return false;
@@ -110,11 +110,11 @@ public class UserInfoSyncDatabaseProvider {
             );
 
             if (rowId <= 0) {
-                Throwable e = new IllegalAccessException("insert userInfoSync for user id:" + userInfoSync.uid.get() + " return rowId " + rowId);
+                Throwable e = new IllegalAccessException("insertUserInfoSync for user id:" + userInfoSync.uid.get() + " return rowId " + rowId);
                 IMLog.e(e);
                 RuntimeMode.throwIfDebug(e);
             } else {
-                IMLog.v("insert userInfoSync for user id:%s return rowId:%s", userInfoSync.uid.get(), rowId);
+                IMLog.v("insertUserInfoSync for user id:%s return rowId:%s", userInfoSync.uid.get(), rowId);
             }
             return rowId > 0;
         } catch (Throwable e) {
@@ -130,7 +130,7 @@ public class UserInfoSyncDatabaseProvider {
      * @param userId
      * @return
      */
-    public boolean touch(final long userId) {
+    public boolean touchUserInfoSync(final long userId) {
         if (userId <= 0) {
             final Throwable e = new IllegalArgumentException("invalid user id " + userId);
             IMLog.e(e);
@@ -139,7 +139,7 @@ public class UserInfoSyncDatabaseProvider {
         }
 
         try {
-            IMLog.v("touch userId:%s", userId);
+            IMLog.v("touchUserInfoSync userId:%s", userId);
             SQLiteDatabase db = mDBHelper.getDBHelper().getWritableDatabase();
 
             final ContentValues contentValuesInsert = new ContentValues();
@@ -152,7 +152,7 @@ public class UserInfoSyncDatabaseProvider {
                     contentValuesInsert,
                     SQLiteDatabase.CONFLICT_IGNORE
             );
-            IMLog.v("touch userInfoSync for user id:%s rowId:%s", userId, rowId);
+            IMLog.v("touchUserInfoSync for user id:%s rowId:%s", userId, rowId);
             return rowId > 0;
         } catch (Throwable e) {
             IMLog.e(e);
@@ -166,21 +166,21 @@ public class UserInfoSyncDatabaseProvider {
      */
     public boolean updateUserInfoSync(final UserInfoSync userInfoSync) {
         if (userInfoSync == null) {
-            Throwable e = new IllegalArgumentException("userInfoSync is null");
+            Throwable e = new IllegalArgumentException("updateUserInfoSync userInfoSync is null");
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
             return false;
         }
 
         if (userInfoSync.uid.isUnset()) {
-            final Throwable e = new IllegalArgumentException("invalid user id, unset");
+            final Throwable e = new IllegalArgumentException("updateUserInfoSync invalid user id, unset");
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
             return false;
         }
 
         if (userInfoSync.uid.get() == null || userInfoSync.uid.get() <= 0) {
-            final Throwable e = new IllegalArgumentException("invalid user userId " + userInfoSync.uid);
+            final Throwable e = new IllegalArgumentException("updateUserInfoSync invalid user userId " + userInfoSync.uid);
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
             return false;
@@ -197,13 +197,13 @@ public class UserInfoSyncDatabaseProvider {
             );
 
             if (rowsAffected != 1) {
-                Throwable e = new IllegalAccessException("update userInfoSync for user id:" + userInfoSync.uid.get() + " rowsAffected " + rowsAffected);
+                Throwable e = new IllegalAccessException("updateUserInfoSync for user id:" + userInfoSync.uid.get() + " rowsAffected " + rowsAffected);
                 IMLog.e(e);
                 RuntimeMode.throwIfDebug(e);
                 return false;
             }
 
-            IMLog.v("update userInfoSync for user id:%s rowsAffected:%s", userInfoSync.uid.get(), rowsAffected);
+            IMLog.v("updateUserInfoSync for user id:%s rowsAffected:%s", userInfoSync.uid.get(), rowsAffected);
             return true;
         } catch (Throwable e) {
             IMLog.e(e);

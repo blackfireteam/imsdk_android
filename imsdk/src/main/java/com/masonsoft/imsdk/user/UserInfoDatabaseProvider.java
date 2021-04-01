@@ -42,7 +42,7 @@ public class UserInfoDatabaseProvider {
     }
 
     @NonNull
-    public List<UserInfo> getByUserIdList(final long[] userIdList) {
+    public List<UserInfo> getUserInfoByUserIdList(final long[] userIdList) {
         final ColumnsSelector<UserInfo> columnsSelector = UserInfo.COLUMNS_SELECTOR_ALL;
         final List<UserInfo> result = new ArrayList<>();
 
@@ -73,7 +73,7 @@ public class UserInfoDatabaseProvider {
 
             if (cursor.moveToNext()) {
                 UserInfo item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
-                IMLog.v("found user with user id:%s", item.uid);
+                IMLog.v("getUserInfoByUserIdList found userInfo with user id:%s", item.uid);
                 result.add(item);
             }
         } catch (Throwable e) {
@@ -86,11 +86,11 @@ public class UserInfoDatabaseProvider {
     }
 
     /**
-     * @param targetUserId
+     * @param userId
      * @return 没有找到返回 null
      */
     @Nullable
-    public UserInfo getTargetUser(final long targetUserId) {
+    public UserInfo getUserInfoByUserId(final long userId) {
         final ColumnsSelector<UserInfo> columnsSelector = UserInfo.COLUMNS_SELECTOR_ALL;
 
         Cursor cursor = null;
@@ -100,7 +100,7 @@ public class UserInfoDatabaseProvider {
                     UserInfoDatabaseHelper.TABLE_NAME_USER_INFO,
                     columnsSelector.queryColumns(),
                     UserInfoDatabaseHelper.ColumnsUserInfo.C_USER_ID + "=?",
-                    new String[]{String.valueOf(targetUserId)},
+                    new String[]{String.valueOf(userId)},
                     null,
                     null,
                     null,
@@ -109,7 +109,7 @@ public class UserInfoDatabaseProvider {
 
             if (cursor.moveToNext()) {
                 UserInfo item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
-                IMLog.v("found user with user id:%s", item.uid);
+                IMLog.v("getUserInfoByUserId found userInfo with user id:%s", item.uid);
                 return item;
             }
         } catch (Throwable e) {
@@ -120,30 +120,30 @@ public class UserInfoDatabaseProvider {
         }
 
         // user not found
-        IMLog.v("user for target user id:%s not found", targetUserId);
+        IMLog.v("getUserInfoByUserId for user id:%s not found", userId);
         return null;
     }
 
     /**
      * 成功返回 true, 否则返回 false.
      */
-    public boolean insertUser(final UserInfo user) {
+    public boolean insertUserInfo(final UserInfo user) {
         if (user == null) {
-            Throwable e = new IllegalArgumentException("user is null");
+            Throwable e = new IllegalArgumentException("insertUserInfo user is null");
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
             return false;
         }
 
         if (user.uid.isUnset()) {
-            final Throwable e = new IllegalArgumentException("invalid user id, unset");
+            final Throwable e = new IllegalArgumentException("insertUserInfo invalid user id, unset");
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
             return false;
         }
 
         if (user.uid.get() == null || user.uid.get() <= 0) {
-            final Throwable e = new IllegalArgumentException("invalid user userId " + user.uid);
+            final Throwable e = new IllegalArgumentException("insertUserInfo invalid user userId " + user.uid);
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
             return false;
@@ -153,7 +153,7 @@ public class UserInfoDatabaseProvider {
         user.localLastModifyMs.set(System.currentTimeMillis());
 
         try {
-            IMLog.v("insertUser %s", user);
+            IMLog.v("insertUserInfo %s", user);
             SQLiteDatabase db = mDBHelper.getDBHelper().getWritableDatabase();
             long rowId = db.insert(
                     UserInfoDatabaseHelper.TABLE_NAME_USER_INFO,
@@ -162,11 +162,11 @@ public class UserInfoDatabaseProvider {
             );
 
             if (rowId <= 0) {
-                Throwable e = new IllegalAccessException("insert user for target user id:" + user.uid.get() + " return rowId " + rowId);
+                Throwable e = new IllegalAccessException("insertUserInfo for user id:" + user.uid.get() + " return rowId " + rowId);
                 IMLog.e(e);
                 RuntimeMode.throwIfDebug(e);
             } else {
-                IMLog.v("insert user for target user id:%s return rowId:%s", user.uid.get(), rowId);
+                IMLog.v("insertUserInfo for user id:%s return rowId:%s", user.uid.get(), rowId);
             }
             return rowId > 0;
         } catch (Throwable e) {
@@ -182,16 +182,16 @@ public class UserInfoDatabaseProvider {
      * @param userId
      * @return
      */
-    public boolean touch(final long userId) {
+    public boolean touchUserInfo(final long userId) {
         if (userId <= 0) {
-            final Throwable e = new IllegalArgumentException("invalid user id " + userId);
+            final Throwable e = new IllegalArgumentException("touchUserInfo invalid user id " + userId);
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
             return false;
         }
 
         try {
-            IMLog.v("touch userId:%s", userId);
+            IMLog.v("touchUserInfo userId:%s", userId);
             SQLiteDatabase db = mDBHelper.getDBHelper().getWritableDatabase();
 
             final ContentValues contentValuesInsert = new ContentValues();
@@ -204,7 +204,7 @@ public class UserInfoDatabaseProvider {
                     contentValuesInsert,
                     SQLiteDatabase.CONFLICT_IGNORE
             );
-            IMLog.v("touch user for target user id:%s rowId:%s", userId, rowId);
+            IMLog.v("touchUserInfo for user id:%s rowId:%s", userId, rowId);
             return rowId > 0;
         } catch (Throwable e) {
             IMLog.e(e);
@@ -216,23 +216,23 @@ public class UserInfoDatabaseProvider {
     /**
      * 更新成功返回 true, 否则返回 false.
      */
-    public boolean updateUser(final UserInfo user) {
+    public boolean updateUserInfo(final UserInfo user) {
         if (user == null) {
-            Throwable e = new IllegalArgumentException("user is null");
+            Throwable e = new IllegalArgumentException("updateUserInfo user is null");
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
             return false;
         }
 
         if (user.uid.isUnset()) {
-            final Throwable e = new IllegalArgumentException("invalid user id, unset");
+            final Throwable e = new IllegalArgumentException("updateUserInfo invalid user id, unset");
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
             return false;
         }
 
         if (user.uid.get() == null || user.uid.get() <= 0) {
-            final Throwable e = new IllegalArgumentException("invalid user userId " + user.uid);
+            final Throwable e = new IllegalArgumentException("updateUserInfo invalid user userId " + user.uid);
             IMLog.e(e);
             RuntimeMode.throwIfDebug(e);
             return false;
@@ -242,7 +242,7 @@ public class UserInfoDatabaseProvider {
         user.localLastModifyMs.set(System.currentTimeMillis());
 
         try {
-            IMLog.v("updateUser %s", user);
+            IMLog.v("updateUserInfo %s", user);
             SQLiteDatabase db = mDBHelper.getDBHelper().getWritableDatabase();
             long rowsAffected = db.update(
                     UserInfoDatabaseHelper.TABLE_NAME_USER_INFO,
@@ -252,13 +252,13 @@ public class UserInfoDatabaseProvider {
             );
 
             if (rowsAffected != 1) {
-                Throwable e = new IllegalAccessException("update user for target user id:" + user.uid.get() + " rowsAffected " + rowsAffected);
+                Throwable e = new IllegalAccessException("updateUserInfo for user id:" + user.uid.get() + " rowsAffected " + rowsAffected);
                 IMLog.e(e);
                 RuntimeMode.throwIfDebug(e);
                 return false;
             }
 
-            IMLog.v("update user for target user id:%s rowsAffected:%s", user.uid.get(), rowsAffected);
+            IMLog.v("updateUserInfo for user id:%s rowsAffected:%s", user.uid.get(), rowsAffected);
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
