@@ -10,6 +10,7 @@ import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.lang.ImageInfo;
 import com.masonsoft.imsdk.lang.StateProp;
 import com.masonsoft.imsdk.util.BitmapUtil;
 
@@ -107,9 +108,9 @@ public class SendMessageTypeImageValidateProcessor extends SendMessageTypeValida
 
             if (requireDecodeImageSize) {
                 // 尝试从 imagePath 中解码出图片的尺寸信息
-                final int[] imageSize = BitmapUtil.decodeImageSize(imagePath);
-                if (imageSize == null) {
-                    // 解码宽高信息失败, 通常来说都是由于图片格式不支持导致(或者图片地址指向的不是一张真实的图片)
+                final ImageInfo imageInfo = BitmapUtil.decodeImageInfo(imagePath);
+                if (imageInfo == null) {
+                    // 解码图片信息失败, 通常来说都是由于图片格式不支持导致(或者图片地址指向的不是一张真实的图片)
                     target.getEnqueueCallback().onEnqueueFail(
                             target,
                             IMSessionMessage.EnqueueCallback.ERROR_CODE_IMAGE_MESSAGE_IMAGE_FORMAT_NOT_SUPPORT,
@@ -119,8 +120,8 @@ public class SendMessageTypeImageValidateProcessor extends SendMessageTypeValida
                 }
 
                 // 设置图片宽高值
-                width.set((long) imageSize[0]);
-                height.set((long) imageSize[1]);
+                width.set((long) imageInfo.getViewWidth());
+                height.set((long) imageInfo.getViewHeight());
             }
         }
 
