@@ -145,12 +145,15 @@ public class CustomSoftKeyboard extends FrameLayout {
             final String[] allEmoji = CustomKeyboardDataBuiltin.EMOJI;
             final int columns = context.getResources().getInteger(R.integer.imsdk_sample_widget_custom_soft_keyboard_emoji_columns);
             final int size = allEmoji.length;
-            final int viewPadding = DimenUtil.dp2px(15);
             final int itemViewWidth = DimenUtil.dp2px(30);
             final int itemViewHeight = DimenUtil.dp2px(30);
-            mBinding.gridLayout.setPadding(viewPadding, viewPadding, viewPadding, viewPadding);
             mBinding.gridLayout.setColumnCount(columns);
             mBinding.gridLayout.setUseDefaultMargins(true);
+            ViewUtil.onClick(mBinding.actionDelete, 100, v -> {
+                if (mOnInputListener != null) {
+                    mOnInputListener.onDeleteOne();
+                }
+            });
 
             for (String emoji : allEmoji) {
                 inflateEmojiItemView(context, itemViewWidth, itemViewHeight, emoji);
