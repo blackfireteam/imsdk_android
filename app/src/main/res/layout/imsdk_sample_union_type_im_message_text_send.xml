@@ -38,8 +38,9 @@
 
         <TextView
             android:id="@+id/message_text"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/imsdk_sample_chat_bubble_send"
             android:gravity="center_vertical"
             android:includeFontPadding="false"
@@ -51,7 +52,7 @@
             android:paddingBottom="10dp"
             android:textColor="@android:color/white"
             android:textSize="15sp"
-            tools:text="hihihihihihihihihiihihihihihihihihihi" />
+            tools:text="hihihihihihihihihiihihihihihihihihihihihihihihihihihihiihihihihihihihihihihihihihihihihihihiihihihihihihihihihihihihihihihihihihiihihihihihihihihihi" />
 
         <com.masonsoft.imsdk.sample.widget.UserCacheAvatar
             android:id="@+id/avatar"
