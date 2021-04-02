@@ -138,7 +138,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                     return;
                 }
 
-                binding.recyclerView.postOnAnimation(() -> {
+                binding.recyclerView.post(() -> {
                     int count = mDataAdapter.getItemCount();
                     if (count > 0) {
                         binding.recyclerView.smoothScrollToPosition(count - 1);
@@ -341,7 +341,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
 
             if (!items.isEmpty()) {
-                binding.recyclerView.postOnAnimation(() -> {
+                binding.recyclerView.post(() -> {
                     if (mDataAdapter != null) {
                         int count = mDataAdapter.getItemCount();
                         if (count > 0) {
@@ -370,7 +370,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
 
             if (!items.isEmpty()) {
-                binding.recyclerView.postOnAnimation(() -> {
+                binding.recyclerView.post(() -> {
                     if (mDataAdapter != null) {
                         int count = mDataAdapter.getItemCount();
                         if (count > 0) {
