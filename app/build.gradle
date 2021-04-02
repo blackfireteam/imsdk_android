@@ -75,6 +75,8 @@ dependencies {
     implementation 'androidx.emoji:emoji-bundled:1.1.0'
     implementation 'com.github.tbruyelle:rxpermissions:0.12'
 
+    implementation 'com.tencent.qcloud:cosxml:5.6.0'
+
     debugImplementation rootProject.ext.bcfg.deps.leakcanary
 
     testImplementation 'junit:junit:4.13.2'
