@@ -44,8 +44,10 @@ public class SoftKeyboardHelper implements SoftKeyboardListenerLayout.OnSoftKeyb
     }
 
     public void requestShowCustomSoftKeyboard() {
+        final boolean oldShowSoftInputOnFocus = mEditText.getShowSoftInputOnFocus();
         mEditText.setShowSoftInputOnFocus(false);
         mEditText.requestFocus();
+        mEditText.setShowSoftInputOnFocus(oldShowSoftInputOnFocus);
 
         mRequestShowCustomSoftKeyboard = true;
         // 显示自定义键盘，需要等待系统键盘消失之后再显示，以免页面跳动
@@ -59,8 +61,10 @@ public class SoftKeyboardHelper implements SoftKeyboardListenerLayout.OnSoftKeyb
     }
 
     public void requestShowSystemSoftKeyboard() {
+        final boolean oldShowSoftInputOnFocus = mEditText.getShowSoftInputOnFocus();
         mEditText.setShowSoftInputOnFocus(false);
         mEditText.requestFocus();
+        mEditText.setShowSoftInputOnFocus(oldShowSoftInputOnFocus);
 
         mRequestShowCustomSoftKeyboard = false;
         SystemUtil.showSoftKeyboard(mEditText);
