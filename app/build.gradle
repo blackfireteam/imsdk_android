@@ -77,6 +77,8 @@ dependencies {
 
     implementation 'com.tencent.qcloud:cosxml:5.6.0'
 
+    implementation "androidx.gridlayout:gridlayout:1.0.0"
+
     debugImplementation rootProject.ext.bcfg.deps.leakcanary
 
     testImplementation 'junit:junit:4.13.2'

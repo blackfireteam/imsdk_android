@@ -204,6 +204,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
                             }
                         }});
         ViewUtil.onClick(mBinding.keyboardSubmit, v -> submitTextMessage());
+        ViewUtil.onClick(mBinding.keyboardEmoji, v -> {
+            if (mSoftKeyboardHelper != null) {
+                mSoftKeyboardHelper.requestShowCustomSoftKeyboard();
+            }
+        });
 
         mPresenter.requestInit();
 
@@ -318,7 +323,6 @@ public class SingleChatFragment extends SystemInsetsFragment {
                         int count = mDataAdapter.getItemCount();
                         if (count > 0) {
                             boolean autoScroll = false;
-                            //noinspection ConstantConditions
                             int lastPosition = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findLastVisibleItemPosition();
                             if (lastPosition >= count - 1 - items.size()) {
                                 // 当前滚动到最后
@@ -329,6 +333,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                             } else {
                                 // 显示向下的箭头
                                 // TODO
+                                SampleLog.v("require showNewMessagesTipView");
                                 /*
                                 showNewMessagesTipView();
                                 */
