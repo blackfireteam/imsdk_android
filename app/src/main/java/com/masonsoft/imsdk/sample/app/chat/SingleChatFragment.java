@@ -134,6 +134,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             protected void onSoftKeyboardLayoutShown(boolean customSoftKeyboard, boolean systemSoftKeyboard) {
                 final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
                 if (binding == null) {
+                    SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
                     return;
                 }
 
@@ -144,40 +145,24 @@ public class SingleChatFragment extends SystemInsetsFragment {
                     }
                 });
 
-                /*
-                TODO
                 if (customSoftKeyboard) {
-                    if (mCustomSoftKeyboard.isAudioShown()) {
-                        mItemKeyEmotion.setSelected(false);
-                        mItemKeyVoice.setSelected(true);
-                    } else if (mCustomSoftKeyboard.isPagerShown()) {
-                        mItemKeyEmotion.setSelected(true);
-                        mItemKeyVoice.setSelected(false);
-                    } else {
-                        mItemKeyEmotion.setSelected(false);
-                        mItemKeyVoice.setSelected(false);
-                    }
+                    ViewUtil.setVisibilityIfChanged(binding.keyboardEmoji, View.GONE);
+                    ViewUtil.setVisibilityIfChanged(binding.keyboardEmojiSystemSoftKeyboard, View.VISIBLE);
                 } else {
-                    mItemKeyEmotion.setSelected(false);
-                    mItemKeyVoice.setSelected(false);
+                    ViewUtil.setVisibilityIfChanged(binding.keyboardEmoji, View.VISIBLE);
+                    ViewUtil.setVisibilityIfChanged(binding.keyboardEmojiSystemSoftKeyboard, View.GONE);
                 }
-
-                mItemKeyGift.setSelected(customGiftInputBoard);
-
-                if (!customKeyboard && customGiftInputBoard) {
-                    // 手动清除文本输入框的焦点，以免该输入框上的系统弹层(如：复制菜单)显示到了礼物面板之上
-                    mItemKeyEditText.clearFocus();
-                }
-                */
             }
 
             @Override
             protected void onAllSoftKeyboardLayoutHidden() {
-                /*
-                TODO
-                mItemKeyEmotion.setSelected(false);
-                mItemKeyVoice.setSelected(false);
-                mItemKeyGift.setSelected(false);*/
+                final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+                if (binding == null) {
+                    SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                    return;
+                }
+                ViewUtil.setVisibilityIfChanged(binding.keyboardEmoji, View.VISIBLE);
+                ViewUtil.setVisibilityIfChanged(binding.keyboardEmojiSystemSoftKeyboard, View.GONE);
             }
         };
 
@@ -273,6 +258,9 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 // TODO
             }
         });
+
+        ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmoji, View.VISIBLE);
+        ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmojiSystemSoftKeyboard, View.GONE);
 
         mPresenter.requestInit();
 
