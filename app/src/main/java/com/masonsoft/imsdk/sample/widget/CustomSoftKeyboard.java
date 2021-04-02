@@ -8,11 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.GridLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.emoji.widget.EmojiTextView;
+import androidx.gridlayout.widget.GridLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.idonans.core.util.DimenUtil;
@@ -150,6 +150,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             final int itemViewHeight = DimenUtil.dp2px(30);
             mBinding.gridLayout.setPadding(viewPadding, viewPadding, viewPadding, viewPadding);
             mBinding.gridLayout.setColumnCount(columns);
+            mBinding.gridLayout.setUseDefaultMargins(true);
 
             for (String emoji : allEmoji) {
                 inflateEmojiItemView(context, itemViewWidth, itemViewHeight, emoji);
@@ -163,7 +164,6 @@ public class CustomSoftKeyboard extends FrameLayout {
             lp.width = itemViewWidth;
             lp.height = itemViewHeight;
             lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
-            lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
             itemView.setLayoutParams(lp);
 
             itemView.setIncludeFontPadding(false);
