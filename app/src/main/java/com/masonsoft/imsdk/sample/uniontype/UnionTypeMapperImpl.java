@@ -6,8 +6,9 @@ import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageTextSendViewHold
 
 public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
 
-    public static final int UNION_TYPE_IM_MESSAGE_TEXT_RECEIVED = 1; // 聊天消息-接收的文字
-    public static final int UNION_TYPE_IM_MESSAGE_TEXT_SEND = 2; // 聊天消息-发送的文字
+    private static int sNextUnionType = 1;
+    public static final int UNION_TYPE_IM_MESSAGE_TEXT_RECEIVED = sNextUnionType++; // 聊天消息-接收的文字
+    public static final int UNION_TYPE_IM_MESSAGE_TEXT_SEND = sNextUnionType++; // 聊天消息-发送的文字
 
     public UnionTypeMapperImpl() {
         put(UNION_TYPE_IM_MESSAGE_TEXT_RECEIVED, IMMessageTextReceivedViewHolder::new);

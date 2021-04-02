@@ -243,7 +243,9 @@ public class SingleChatFragment extends SystemInsetsFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        clearPresenter();
         mBinding = null;
+        mViewImpl = null;
     }
 
     private class UnionTypeAdapterImpl extends UnionTypeAdapter implements MicroLifecycleComponentManagerHost {

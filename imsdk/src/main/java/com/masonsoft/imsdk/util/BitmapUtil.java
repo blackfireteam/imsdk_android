@@ -1,10 +1,10 @@
 package com.masonsoft.imsdk.util;
 
 import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.lang.ImageInfo;
