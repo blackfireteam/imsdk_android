@@ -35,7 +35,9 @@ import com.masonsoft.imsdk.sample.common.microlifecycle.VisibleRecyclerViewMicro
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSingleChatFragmentBinding;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.util.BackStackUtil;
+import com.masonsoft.imsdk.sample.util.EditTextUtil;
 import com.masonsoft.imsdk.sample.util.TipUtil;
+import com.masonsoft.imsdk.sample.widget.CustomSoftKeyboard;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.Collection;
@@ -207,6 +209,30 @@ public class SingleChatFragment extends SystemInsetsFragment {
         ViewUtil.onClick(mBinding.keyboardEmoji, v -> {
             if (mSoftKeyboardHelper != null) {
                 mSoftKeyboardHelper.requestShowCustomSoftKeyboard();
+            }
+        });
+        mBinding.customSoftKeyboard.setOnInputListener(new CustomSoftKeyboard.OnInputListener() {
+            @Override
+            public void onInputText(CharSequence text) {
+                if (mBinding == null) {
+                    SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                    return;
+                }
+                EditTextUtil.insertText(mBinding.keyboardEditText, text);
+            }
+
+            @Override
+            public void onDeleteOne() {
+                if (mBinding == null) {
+                    SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                    return;
+                }
+                EditTextUtil.deleteOne(mBinding.keyboardEditText);
+            }
+
+            @Override
+            public void onVoiceClick() {
+                // TODO
             }
         });
 
