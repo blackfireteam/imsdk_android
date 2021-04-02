@@ -183,6 +183,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         final EditText keyboardEditText = mBinding.keyboardEditText;
         final View keyboardSubmit = mBinding.keyboardSubmit;
+        final View keyboardMore = mBinding.keyboardMore;
         FormValidator.bind(
                 new FormValidator.InputView[]{
                         new FormValidator.InputViewFactory.TextViewInputView(keyboardEditText) {
@@ -203,13 +204,50 @@ public class SingleChatFragment extends SystemInsetsFragment {
                             @Override
                             public void setSubmitEnable(boolean enable) {
                                 ViewUtil.setVisibilityIfChanged(keyboardSubmit, enable ? View.VISIBLE : View.GONE);
+                                ViewUtil.setVisibilityIfChanged(keyboardMore, enable ? View.GONE : View.VISIBLE);
                             }
                         }});
         ViewUtil.onClick(mBinding.keyboardSubmit, v -> submitTextMessage());
         ViewUtil.onClick(mBinding.keyboardEmoji, v -> {
-            if (mSoftKeyboardHelper != null) {
-                mSoftKeyboardHelper.requestShowCustomSoftKeyboard();
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
             }
+            if (mSoftKeyboardHelper == null) {
+                SampleLog.e(Constants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                return;
+            }
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmoji, View.GONE);
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmojiKeyboard, View.VISIBLE);
+            mBinding.customSoftKeyboard.showLayerEmoji();
+            mSoftKeyboardHelper.requestShowCustomSoftKeyboard();
+        });
+        ViewUtil.onClick(mBinding.keyboardEmojiKeyboard, v -> {
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+            if (mSoftKeyboardHelper == null) {
+                SampleLog.e(Constants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                return;
+            }
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmoji, View.VISIBLE);
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmojiKeyboard, View.GONE);
+            mSoftKeyboardHelper.requestShowSystemSoftKeyboard();
+        });
+        ViewUtil.onClick(mBinding.keyboardMore, v -> {
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+            if (mSoftKeyboardHelper == null) {
+                SampleLog.e(Constants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                return;
+            }
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmoji, View.VISIBLE);
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmojiKeyboard, View.GONE);
+            mBinding.customSoftKeyboard.showLayerMore();
+            mSoftKeyboardHelper.requestShowCustomSoftKeyboard();
         });
         mBinding.customSoftKeyboard.setOnInputListener(new CustomSoftKeyboard.OnInputListener() {
             @Override

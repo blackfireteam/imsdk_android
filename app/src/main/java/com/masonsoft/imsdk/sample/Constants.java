@@ -14,6 +14,7 @@ public class Constants {
         String ACTIVITY_IS_NULL = "activity is null";
         String FRAGMENT_IS_NULL = "fragment is null";
         String EDITABLE_IS_NULL = "editable is null";
+        String SOFT_KEYBOARD_HELPER_IS_NULL = "soft keyboard helper is null";
     }
 
 }

@@ -168,8 +168,21 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/imsdk_sample_ic_input_emoji_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/keyboard_more"
+                app:layout_constraintEnd_toStartOf="@id/keyboard_emoji_system_soft_keyboard"
                 app:layout_constraintStart_toEndOf="@id/keyboard_edit_text_container" />
+
+            <ImageView
+                android:id="@+id/keyboard_emoji_system_soft_keyboard"
+                android:layout_width="48dp"
+                android:layout_height="55dp"
+                android:clickable="true"
+                android:contentDescription="@string/imsdk_sample_empty_text_hint"
+                android:focusable="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/imsdk_sample_ic_input_keyboard_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/keyboard_more"
+                app:layout_constraintStart_toEndOf="@id/keyboard_emoji" />
 
             <ImageView
                 android:id="@+id/keyboard_more"
@@ -182,7 +195,7 @@
                 android:src="@drawable/imsdk_sample_ic_input_more_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_submit"
-                app:layout_constraintStart_toEndOf="@id/keyboard_emoji" />
+                app:layout_constraintStart_toEndOf="@id/keyboard_emoji_system_soft_keyboard" />
 
             <TextView
                 android:id="@+id/keyboard_submit"
