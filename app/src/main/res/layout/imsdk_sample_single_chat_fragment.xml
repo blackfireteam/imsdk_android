@@ -225,6 +225,7 @@
             android:id="@+id/custom_soft_keyboard"
             android:layout_width="match_parent"
             android:layout_height="277dp"
+            android:background="#FFF2F4F5"
             android:clickable="true"
             android:focusable="true"
             android:visibility="gone" />

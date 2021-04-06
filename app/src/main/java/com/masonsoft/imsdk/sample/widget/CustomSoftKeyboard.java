@@ -8,9 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.Space;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.gridlayout.widget.GridLayout;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,8 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.idonans.core.util.DimenUtil;
 import com.idonans.lang.util.ViewUtil;
 import com.masonsoft.imsdk.sample.R;
+import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardBinding;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerMoreViewHolderBinding;
 
 public class CustomSoftKeyboard extends FrameLayout {
 
@@ -57,6 +62,7 @@ public class CustomSoftKeyboard extends FrameLayout {
                 true);
 
         initLayerEmoji();
+        initLayerMore();
 
         showLayerEmoji();
     }
@@ -94,6 +100,13 @@ public class CustomSoftKeyboard extends FrameLayout {
      */
     private void initLayerEmoji() {
         mBinding.layerEmojiPager.setAdapter(new LayerEmojiPagerAdapter());
+    }
+
+    /**
+     * 自定义键盘：更多
+     */
+    private void initLayerMore() {
+        mBinding.layerMorePager.setAdapter(new LayerMorePagerAdapter());
     }
 
     public interface OnInputListener {
@@ -186,5 +199,85 @@ public class CustomSoftKeyboard extends FrameLayout {
 
     }
 
+    private class LayerMorePagerAdapter extends RecyclerView.Adapter<LayerMoreViewHolder> {
+
+        @NonNull
+        @Override
+        public LayerMoreViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            final LayoutInflater inflater = LayoutInflater.from(getContext());
+            return new LayerMoreViewHolder(inflater.inflate(R.layout.imsdk_sample_widget_custom_soft_keyboard_layer_more_view_holder, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull LayerMoreViewHolder holder, int position) {
+            holder.onBind(position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return 1;
+        }
+    }
+
+    private class LayerMoreViewHolder extends RecyclerView.ViewHolder {
+
+        private final ImsdkSampleWidgetCustomSoftKeyboardLayerMoreViewHolderBinding mBinding;
+        private final int mItemViewWidth = DimenUtil.dp2px(50);
+        private final int mItemViewHeight = DimenUtil.dp2px(50);
+
+        public LayerMoreViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mBinding = ImsdkSampleWidgetCustomSoftKeyboardLayerMoreViewHolderBinding.bind(itemView);
+            mBinding.gridLayout.setColumnCount(4);
+            mBinding.gridLayout.setRowCount(2);
+        }
+
+        public void onBind(int position) {
+            final Context context = getContext();
+            mBinding.gridLayout.removeAllViews();
+
+            final int count = 4 * 2;
+            inflateMoreItemView(context);
+            for (int i = 1; i < count; i++) {
+                inflateMoreEmptyItemView(context);
+            }
+        }
+
+        private void inflateMoreItemView(Context context) {
+            final AppCompatImageView itemView = new AppCompatImageView(context);
+
+            GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+            lp.width = mItemViewWidth;
+            lp.height = mItemViewHeight;
+            lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            itemView.setLayoutParams(lp);
+
+            itemView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            itemView.setBackgroundResource(R.drawable.imsdk_sample_button_background_white);
+            itemView.setImageResource(R.drawable.imsdk_sample_ic_input_more_item_picture);
+
+            mBinding.gridLayout.addView(itemView);
+
+            ViewUtil.onClick(itemView, v -> {
+                // TODO
+                SampleLog.v("itemView picture click. require impl");
+            });
+        }
+
+        private void inflateMoreEmptyItemView(Context context) {
+            final Space itemView = new Space(context);
+
+            GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+            lp.width = mItemViewWidth;
+            lp.height = mItemViewHeight;
+            lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            itemView.setLayoutParams(lp);
+
+            mBinding.gridLayout.addView(itemView);
+        }
+
+    }
 
 }
