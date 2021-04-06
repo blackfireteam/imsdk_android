@@ -34,7 +34,7 @@ import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentM
 import com.masonsoft.imsdk.sample.common.microlifecycle.VisibleRecyclerViewMicroLifecycleComponentManager;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSingleChatFragmentBinding;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
-import com.masonsoft.imsdk.sample.util.BackStackUtil;
+import com.masonsoft.imsdk.sample.util.ActivityUtil;
 import com.masonsoft.imsdk.sample.util.EditTextUtil;
 import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.sample.widget.CustomSoftKeyboard;
@@ -84,7 +84,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = ImsdkSampleSingleChatFragmentBinding.inflate(inflater, container, false);
 
-        ViewUtil.onClick(mBinding.topBarBack, v -> BackStackUtil.requestBackPressed(SingleChatFragment.this));
+        ViewUtil.onClick(mBinding.topBarBack, v -> ActivityUtil.requestBackPressed(SingleChatFragment.this));
         mBinding.topBarTitle.setTargetUserId(mTargetUserId);
 
         final RecyclerView recyclerView = mBinding.recyclerView;
