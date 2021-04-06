@@ -39,13 +39,13 @@ public class UnionTypeImageData {
 
             for (ImageData.ImageInfo imageInfo : bucket.imageInfos) {
                 gridItems.add(UnionTypeItemObject.valueOf(
-                        UnionTypeMapperImpl.UNION_TYPE_APP_IMPL_IMAGE_PICKER_3_GRID,
+                        UnionTypeMapperImpl.UNION_TYPE_APP_IMPL_IMAGE_PICKER_GRID,
                         new DataObject<>(imageInfo)
                                 .putExtObjectObject1(this.imageData)
                                 .putExtObjectObject2(UnionTypeImageData.this)));
 
                 pagerItems.add(UnionTypeItemObject.valueOf(
-                        UnionTypeMapperImpl.UNION_TYPE_APP_IMPL_IMAGE_PICKER_3_PAGER,
+                        UnionTypeMapperImpl.UNION_TYPE_APP_IMPL_IMAGE_PICKER_PAGER,
                         new DataObject<>(imageInfo)
                                 .putExtObjectObject1(this.imageData)
                                 .putExtObjectObject2(UnionTypeImageData.this)));
@@ -54,7 +54,7 @@ public class UnionTypeImageData {
             this.unionTypeGridItemsMap.put(bucket, gridItems);
             this.unionTypePagerItemsMap.put(bucket, pagerItems);
             unionTypeBucketItems.add(UnionTypeItemObject.valueOf(
-                    UnionTypeMapperImpl.UNION_TYPE_APP_IMPL_IMAGE_PICKER_3_BUCKET,
+                    UnionTypeMapperImpl.UNION_TYPE_APP_IMPL_IMAGE_PICKER_BUCKET,
                     new DataObject<>(bucket)
                             .putExtObjectObject1(this.imageData)
                             .putExtObjectObject2(UnionTypeImageData.this)));
