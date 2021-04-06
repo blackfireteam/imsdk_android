@@ -1,5 +1,9 @@
 package com.masonsoft.imsdk.sample;
 
+import com.idonans.core.util.HumanUtil;
+
+import java.util.concurrent.TimeUnit;
+
 public class Constants {
 
     public interface ExtrasKey {
@@ -17,4 +21,30 @@ public class Constants {
         String SOFT_KEYBOARD_HELPER_IS_NULL = "soft keyboard helper is null";
     }
 
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    /**
+     * 图片选择中允许的最大图片尺寸(width*height*4)
+     */
+    public static final long SELECTOR_MAX_IMAGE_SIZE = 50 * HumanUtil.MB;
+    /**
+     * 图片选择中允许的最大图片文件大小
+     */
+    public static final long SELECTOR_MAX_IMAGE_FILE_SIZE = 5 * HumanUtil.MB;
+    /**
+     * 视频选择中允许的最大视频文件大小(file.length)
+     */
+    public static final long SELECTOR_MAX_VIDEO_SIZE = 200 * HumanUtil.MB;
+    /**
+     * 视频选择中允许的最长时长 ms (video.duration)
+     */
+    public static final long SELECTOR_MAX_VIDEO_DURATION = TimeUnit.SECONDS.toMillis(30);
+    /**
+     * 视频选择中允许的最短时长 ms (video.duration)
+     */
+    public static final long SELECTOR_MIN_VIDEO_DURATION = TimeUnit.SECONDS.toMillis(1);
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
 }
