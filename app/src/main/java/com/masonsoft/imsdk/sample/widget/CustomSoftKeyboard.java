@@ -8,12 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.Space;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.gridlayout.widget.GridLayout;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +22,7 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardBinding;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerMoreItemViewBinding;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerMoreViewHolderBinding;
 
 public class CustomSoftKeyboard extends FrameLayout {
@@ -244,22 +243,22 @@ public class CustomSoftKeyboard extends FrameLayout {
         }
 
         private void inflateMoreItemView(Context context) {
-            final AppCompatImageView itemView = new AppCompatImageView(context);
+            final ImsdkSampleWidgetCustomSoftKeyboardLayerMoreItemViewBinding binding =
+                    ImsdkSampleWidgetCustomSoftKeyboardLayerMoreItemViewBinding.inflate(
+                            LayoutInflater.from(context), mBinding.gridLayout, false);
 
             GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
             lp.width = mItemViewWidth;
             lp.height = mItemViewHeight;
             lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
             lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
-            itemView.setLayoutParams(lp);
+            binding.getRoot().setLayoutParams(lp);
 
-            itemView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            itemView.setBackgroundResource(R.drawable.imsdk_sample_button_background_white);
-            itemView.setImageResource(R.drawable.imsdk_sample_ic_input_more_item_picture);
+            binding.itemImage.setImageResource(R.drawable.imsdk_sample_ic_input_more_item_picture);
+            binding.itemName.setText(R.string.imsdk_sample_custom_soft_keyboard_item_picture);
+            mBinding.gridLayout.addView(binding.getRoot());
 
-            mBinding.gridLayout.addView(itemView);
-
-            ViewUtil.onClick(itemView, v -> {
+            ViewUtil.onClick(binding.getRoot(), v -> {
                 // TODO
                 SampleLog.v("itemView picture click. require impl");
             });
