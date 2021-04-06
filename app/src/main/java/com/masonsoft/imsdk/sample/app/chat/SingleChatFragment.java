@@ -29,6 +29,7 @@ import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManagerHost;
 import com.masonsoft.imsdk.sample.common.microlifecycle.VisibleRecyclerViewMicroLifecycleComponentManager;
@@ -41,6 +42,7 @@ import com.masonsoft.imsdk.sample.widget.CustomSoftKeyboard;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * 单聊页面
@@ -254,9 +256,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
 
             @Override
-            public void onVoiceClick() {
+            public void onImagePicked(@NonNull List<ImageData.ImageInfo> imageInfoList) {
+                SampleLog.v("onImagePicked size:%s", imageInfoList.size());
                 // TODO
             }
+
         });
 
         ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmoji, View.VISIBLE);

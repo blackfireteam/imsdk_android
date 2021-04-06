@@ -34,6 +34,8 @@ import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboar
 import com.masonsoft.imsdk.sample.util.ActivityUtil;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
+import java.util.List;
+
 public class CustomSoftKeyboard extends FrameLayout {
 
     public CustomSoftKeyboard(@NonNull Context context) {
@@ -127,7 +129,7 @@ public class CustomSoftKeyboard extends FrameLayout {
 
         void onDeleteOne();
 
-        void onVoiceClick();
+        void onImagePicked(@NonNull List<ImageData.ImageInfo> imageInfoList);
     }
 
     private OnInputListener mOnInputListener;
@@ -319,17 +321,21 @@ public class CustomSoftKeyboard extends FrameLayout {
         }
 
         final ImagePicker3Dialog imagePicker3Dialog = new ImagePicker3Dialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
-        imagePicker3Dialog.setOnImagePickListener(imageInfos -> {
-            if (imageInfos.isEmpty()) {
+        imagePicker3Dialog.setOnImagePickListener(imageInfoList -> {
+            if (imageInfoList.isEmpty()) {
                 return false;
             }
 
-            for (ImageData.ImageInfo imageInfo : imageInfos) {
+            for (ImageData.ImageInfo imageInfo : imageInfoList) {
                 if (!imageInfo.isImageMimeType()) {
                     Throwable e = new Throwable("unknown mime type:" + imageInfo.mimeType + ", path:" + imageInfo.path);
                     SampleLog.e(e);
                     return false;
                 }
+            }
+
+            if (mOnInputListener != null) {
+                mOnInputListener.onImagePicked(imageInfoList);
             }
 
             return true;
