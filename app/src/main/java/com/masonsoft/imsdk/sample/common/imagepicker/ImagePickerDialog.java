@@ -17,7 +17,6 @@ import com.idonans.backstack.ViewBackLayer;
 import com.idonans.backstack.dialog.ViewDialog;
 import com.idonans.core.thread.Threads;
 import com.idonans.core.util.DimenUtil;
-import com.idonans.core.util.FileUtil;
 import com.idonans.lang.util.ViewUtil;
 import com.idonans.uniontype.Host;
 import com.idonans.uniontype.UnionTypeAdapter;
@@ -29,10 +28,8 @@ import com.masonsoft.imsdk.sample.databinding.CommonImagePickerDialogBinding;
 import com.masonsoft.imsdk.sample.databinding.CommonImagePickerDialogBucketViewBinding;
 import com.masonsoft.imsdk.sample.databinding.CommonImagePickerDialogPagerViewBinding;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
-import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.sample.widget.GridItemDecoration;
 
-import java.io.File;
 import java.util.List;
 
 public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBackLayer.OnBackPressedListener {
@@ -201,20 +198,13 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
                     return;
                 }
                 if (mUnionTypeImageData.imageData.imageInfoListSelected.isEmpty()) {
-                    SampleLog.e("mUnionTypeImageData.imageData.imageInfosSelected.isEmpty()");
+                    SampleLog.e("mUnionTypeImageData.imageData.imageInfoListSelected.isEmpty()");
                     return;
                 }
 
                 if (mOnImagePickListener == null) {
                     SampleLog.v("ignore. mOnImagePickListener is null.");
                     return;
-                }
-                for (ImageData.ImageInfo info : mUnionTypeImageData.imageData.imageInfoListSelected) {
-                    if (!FileUtil.isFile(new File(info.path))) {
-                        // FIXME res string
-                        TipUtil.show("资源不存在，请刷新");
-                        return;
-                    }
                 }
                 if (mOnImagePickListener.onImagePick(mUnionTypeImageData.imageData.imageInfoListSelected)) {
                     ImagePickerDialog.this.hide();
