@@ -23,7 +23,7 @@
             android:background="@drawable/imsdk_sample_button_background_white"
             android:contentDescription="@string/imsdk_sample_empty_text_hint"
             android:scaleType="centerInside"
-            tools:src="@drawable/imsdk_sample_ic_input_more_item_picture" />
+            tools:src="@drawable/imsdk_sample_ic_input_more_item_image" />
 
         <TextView
             android:id="@+id/item_name"

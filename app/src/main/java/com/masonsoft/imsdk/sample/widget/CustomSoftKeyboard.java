@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.sample.widget;
 
+import android.Manifest;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -7,23 +8,31 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.Space;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.gridlayout.widget.GridLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.idonans.core.util.DimenUtil;
+import com.idonans.lang.DisposableHolder;
 import com.idonans.lang.util.ViewUtil;
+import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
+import com.masonsoft.imsdk.sample.common.imagepicker.ImagePicker3Dialog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardBinding;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerMoreItemViewBinding;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerMoreViewHolderBinding;
+import com.masonsoft.imsdk.sample.util.ActivityUtil;
+import com.tbruyelle.rxpermissions3.RxPermissions;
 
 public class CustomSoftKeyboard extends FrameLayout {
 
@@ -47,7 +56,12 @@ public class CustomSoftKeyboard extends FrameLayout {
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    private final DisposableHolder mPermissionRequest = new DisposableHolder();
     private ImsdkSampleWidgetCustomSoftKeyboardBinding mBinding;
+
+    private static final String[] IMAGE_PICKER_PERMISSION = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
     private void initFromAttributes(
             Context context,
@@ -254,13 +268,12 @@ public class CustomSoftKeyboard extends FrameLayout {
             lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
             binding.getRoot().setLayoutParams(lp);
 
-            binding.itemImage.setImageResource(R.drawable.imsdk_sample_ic_input_more_item_picture);
+            binding.itemImage.setImageResource(R.drawable.imsdk_sample_ic_input_more_item_image);
             binding.itemName.setText(R.string.imsdk_sample_custom_soft_keyboard_item_picture);
             mBinding.gridLayout.addView(binding.getRoot());
 
             ViewUtil.onClick(binding.getRoot(), v -> {
-                // TODO
-                SampleLog.v("itemView picture click. require impl");
+                requestImagePickerPermission();
             });
         }
 
@@ -277,6 +290,51 @@ public class CustomSoftKeyboard extends FrameLayout {
             mBinding.gridLayout.addView(itemView);
         }
 
+    }
+
+    private void requestImagePickerPermission() {
+        final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+
+        final RxPermissions rxPermissions = new RxPermissions(activity);
+        mPermissionRequest.set(
+                rxPermissions.request(IMAGE_PICKER_PERMISSION)
+                        .subscribe(granted -> {
+                            if (granted) {
+                                onImagePickerPermissionGranted();
+                            } else {
+                                SampleLog.e(Constants.ErrorLog.PERMISSION_REQUIRED);
+                            }
+                        }));
+    }
+
+    private void onImagePickerPermissionGranted() {
+        final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+
+        final ImagePicker3Dialog imagePicker3Dialog = new ImagePicker3Dialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
+        imagePicker3Dialog.setOnImagePickListener(imageInfos -> {
+            if (imageInfos.isEmpty()) {
+                return false;
+            }
+
+            for (ImageData.ImageInfo imageInfo : imageInfos) {
+                if (!imageInfo.isImageMimeType()) {
+                    Throwable e = new Throwable("unknown mime type:" + imageInfo.mimeType + ", path:" + imageInfo.path);
+                    SampleLog.e(e);
+                    return false;
+                }
+            }
+
+            return true;
+        });
+        imagePicker3Dialog.show();
     }
 
 }

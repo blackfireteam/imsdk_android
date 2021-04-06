@@ -20,6 +20,7 @@ public class Constants {
         String EDITABLE_IS_NULL = "editable is null";
         String SOFT_KEYBOARD_HELPER_IS_NULL = "soft keyboard helper is null";
         String ACTIVITY_IS_NOT_APP_COMPAT_ACTIVITY = "activity is not AppCompatActivity";
+        String PERMISSION_REQUIRED = "permission required";
     }
 
     ///////////////////////////////////////////////////////////////////////
