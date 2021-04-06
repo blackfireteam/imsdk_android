@@ -20,7 +20,7 @@ public class IMMessageTextReceivedViewHolder extends IMMessageTextViewHolder {
     private final ImsdkSampleUnionTypeImMessageTextReceivedBinding mBinding;
 
     public IMMessageTextReceivedViewHolder(@NonNull Host host) {
-        super(host, R.layout.imsdk_sample_union_type_im_message_text_received);
+        super(host, R.layout.imsdk_sample_union_type_impl_im_message_text_received);
         mBinding = ImsdkSampleUnionTypeImMessageTextReceivedBinding.bind(itemView);
     }
 

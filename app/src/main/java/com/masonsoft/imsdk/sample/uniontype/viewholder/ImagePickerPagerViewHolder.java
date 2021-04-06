@@ -11,12 +11,12 @@ import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
 import com.masonsoft.imsdk.sample.databinding.UnionTypeAppImplImagePicker3PagerBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 
-public class ImagePicker3PagerViewHolder extends UnionTypeViewHolder {
+public class ImagePickerPagerViewHolder extends UnionTypeViewHolder {
 
     private final UnionTypeAppImplImagePicker3PagerBinding mBinding;
 
-    public ImagePicker3PagerViewHolder(@NonNull Host host) {
-        super(host, R.layout.union_type_app_impl_image_picker_3_pager);
+    public ImagePickerPagerViewHolder(@NonNull Host host) {
+        super(host, R.layout.imsdk_sample_union_type_impl_image_picker_pager);
         mBinding = UnionTypeAppImplImagePicker3PagerBinding.bind(itemView);
     }
 
@@ -31,7 +31,7 @@ public class ImagePicker3PagerViewHolder extends UnionTypeViewHolder {
 
         mBinding.image.setOnPhotoTapListener((view, x, y) -> {
             if (itemObject.getExtHolderItemClick1() != null) {
-                itemObject.getExtHolderItemClick1().onItemClick(ImagePicker3PagerViewHolder.this);
+                itemObject.getExtHolderItemClick1().onItemClick(ImagePickerPagerViewHolder.this);
             }
         });
 

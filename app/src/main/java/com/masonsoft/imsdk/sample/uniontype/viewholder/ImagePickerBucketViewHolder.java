@@ -10,12 +10,12 @@ import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
 import com.masonsoft.imsdk.sample.databinding.UnionTypeAppImplImagePicker3BucketBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 
-public class ImagePicker3BucketViewHolder extends UnionTypeViewHolder {
+public class ImagePickerBucketViewHolder extends UnionTypeViewHolder {
 
     private final UnionTypeAppImplImagePicker3BucketBinding mBinding;
 
-    public ImagePicker3BucketViewHolder(@NonNull Host host) {
-        super(host, R.layout.union_type_app_impl_image_picker_3_bucket);
+    public ImagePickerBucketViewHolder(@NonNull Host host) {
+        super(host, R.layout.imsdk_sample_union_type_impl_image_picker_bucket);
         mBinding = UnionTypeAppImplImagePicker3BucketBinding.bind(itemView);
     }
 
@@ -40,7 +40,7 @@ public class ImagePicker3BucketViewHolder extends UnionTypeViewHolder {
         }
         ViewUtil.onClick(itemView, v -> {
             if (itemObject.getExtHolderItemClick1() != null) {
-                itemObject.getExtHolderItemClick1().onItemClick(ImagePicker3BucketViewHolder.this);
+                itemObject.getExtHolderItemClick1().onItemClick(ImagePickerBucketViewHolder.this);
             }
 
             /*

@@ -26,7 +26,7 @@ import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
-import com.masonsoft.imsdk.sample.common.imagepicker.ImagePicker3Dialog;
+import com.masonsoft.imsdk.sample.common.imagepicker.ImagePickerDialog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardBinding;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerMoreItemViewBinding;
@@ -271,7 +271,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             binding.getRoot().setLayoutParams(lp);
 
             binding.itemImage.setImageResource(R.drawable.imsdk_sample_ic_input_more_item_image);
-            binding.itemName.setText(R.string.imsdk_sample_custom_soft_keyboard_item_picture);
+            binding.itemName.setText(R.string.imsdk_sample_custom_soft_keyboard_item_image);
             mBinding.gridLayout.addView(binding.getRoot());
 
             ViewUtil.onClick(binding.getRoot(), v -> {
@@ -320,8 +320,8 @@ public class CustomSoftKeyboard extends FrameLayout {
             return;
         }
 
-        final ImagePicker3Dialog imagePicker3Dialog = new ImagePicker3Dialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
-        imagePicker3Dialog.setOnImagePickListener(imageInfoList -> {
+        final ImagePickerDialog imagePickerDialog = new ImagePickerDialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
+        imagePickerDialog.setOnImagePickListener(imageInfoList -> {
             if (imageInfoList.isEmpty()) {
                 return false;
             }
@@ -340,7 +340,7 @@ public class CustomSoftKeyboard extends FrameLayout {
 
             return true;
         });
-        imagePicker3Dialog.show();
+        imagePickerDialog.show();
     }
 
 }

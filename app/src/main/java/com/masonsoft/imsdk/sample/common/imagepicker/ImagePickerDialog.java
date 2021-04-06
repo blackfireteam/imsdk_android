@@ -22,11 +22,12 @@ import com.idonans.lang.util.ViewUtil;
 import com.idonans.uniontype.Host;
 import com.idonans.uniontype.UnionTypeAdapter;
 import com.idonans.uniontype.UnionTypeItemObject;
+import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.databinding.CommonImagePicker3DialogBinding;
-import com.masonsoft.imsdk.sample.databinding.CommonImagePicker3DialogBucketViewBinding;
-import com.masonsoft.imsdk.sample.databinding.CommonImagePicker3DialogPagerViewBinding;
+import com.masonsoft.imsdk.sample.databinding.CommonImagePickerDialogBinding;
+import com.masonsoft.imsdk.sample.databinding.CommonImagePickerDialogBucketViewBinding;
+import com.masonsoft.imsdk.sample.databinding.CommonImagePickerDialogPagerViewBinding;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.sample.widget.GridItemDecoration;
@@ -34,13 +35,13 @@ import com.masonsoft.imsdk.sample.widget.GridItemDecoration;
 import java.io.File;
 import java.util.List;
 
-public class ImagePicker3Dialog implements ImageData.ImageLoaderCallback, ViewBackLayer.OnBackPressedListener {
+public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBackLayer.OnBackPressedListener {
 
     private static final boolean DEBUG = true;
 
     private final Activity mActivity;
     private final LayoutInflater mInflater;
-    private final CommonImagePicker3DialogBinding mBinding;
+    private final CommonImagePickerDialogBinding mBinding;
     private ViewDialog mViewDialog;
     public GridView mGridView;
     private BucketView mBucketView;
@@ -50,18 +51,18 @@ public class ImagePicker3Dialog implements ImageData.ImageLoaderCallback, ViewBa
     private UnionTypeImageData mUnionTypeImageData;
     private ImageData.ImageLoader mImageLoader;
 
-    public ImagePicker3Dialog(Activity activity, ViewGroup parentView) {
+    public ImagePickerDialog(Activity activity, ViewGroup parentView) {
         mActivity = activity;
         mInflater = activity.getLayoutInflater();
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.common_image_picker_3_dialog)
+                .setContentView(R.layout.common_image_picker_dialog)
                 .defaultAnimation()
                 .setOnBackPressedListener(this)
                 .setParentView(parentView)
                 .dimBackground(true)
                 .create();
         //noinspection ConstantConditions,ConstantConditions
-        mBinding = CommonImagePicker3DialogBinding.bind(mViewDialog.getContentView());
+        mBinding = CommonImagePickerDialogBinding.bind(mViewDialog.getContentView());
 
         mGridView = new GridView(mBinding);
         mBucketView = new BucketView(mBinding);
@@ -131,11 +132,12 @@ public class ImagePicker3Dialog implements ImageData.ImageLoaderCallback, ViewBa
 
             List<UnionTypeItemObject> pagerItems = mUnionTypeImageData.unionTypePagerItemsMap.get(mUnionTypeImageData.imageData.bucketSelected);
             mPagerView.mDataAdapter.setGroupItems(0, pagerItems);
+            //noinspection ConstantConditions
             mPagerView.mRecyclerView.getLayoutManager().scrollToPosition(mUnionTypeImageData.pagerPendingIndex);
         }
         mBucketView.mDataAdapter.setGroupItems(0, mUnionTypeImageData.unionTypeBucketItems);
 
-        String bucketSelectedName = "相机胶卷";
+        String bucketSelectedName = I18nResources.getString(R.string.imsdk_sample_custom_soft_keyboard_item_image);
         if (mUnionTypeImageData.imageData.bucketSelected != null
                 && !mUnionTypeImageData.imageData.bucketSelected.allImageInfos) {
             bucketSelectedName = mUnionTypeImageData.imageData.bucketSelected.name;
@@ -152,7 +154,7 @@ public class ImagePicker3Dialog implements ImageData.ImageLoaderCallback, ViewBa
 
         private final UnionTypeAdapter mDataAdapter;
 
-        private GridView(CommonImagePicker3DialogBinding parentBinding) {
+        private GridView(CommonImagePickerDialogBinding parentBinding) {
             mGridTopBarClose = parentBinding.gridTopBarClose;
             mGridTopBarTitle = parentBinding.gridTopBarTitle;
             mRecyclerView = parentBinding.gridRecyclerView;
@@ -182,10 +184,10 @@ public class ImagePicker3Dialog implements ImageData.ImageLoaderCallback, ViewBa
             mRecyclerView.setAdapter(mDataAdapter);
 
             ViewUtil.onClick(mGridTopBarClose, v -> {
-                if (ImagePicker3Dialog.this.onBackPressed()) {
+                if (ImagePickerDialog.this.onBackPressed()) {
                     return;
                 }
-                ImagePicker3Dialog.this.hide();
+                ImagePickerDialog.this.hide();
             });
             ViewUtil.onClick(mGridTopBarTitle, v -> {
                 if (mBucketView.onBackPressed()) {
@@ -198,7 +200,7 @@ public class ImagePicker3Dialog implements ImageData.ImageLoaderCallback, ViewBa
                     SampleLog.e("mUnionTypeImageData is null");
                     return;
                 }
-                if (mUnionTypeImageData.imageData.imageInfosSelected.isEmpty()) {
+                if (mUnionTypeImageData.imageData.imageInfoListSelected.isEmpty()) {
                     SampleLog.e("mUnionTypeImageData.imageData.imageInfosSelected.isEmpty()");
                     return;
                 }
@@ -207,15 +209,15 @@ public class ImagePicker3Dialog implements ImageData.ImageLoaderCallback, ViewBa
                     SampleLog.v("ignore. mOnImagePickListener is null.");
                     return;
                 }
-                for (ImageData.ImageInfo info : mUnionTypeImageData.imageData.imageInfosSelected) {
+                for (ImageData.ImageInfo info : mUnionTypeImageData.imageData.imageInfoListSelected) {
                     if (!FileUtil.isFile(new File(info.path))) {
                         // FIXME res string
                         TipUtil.show("资源不存在，请刷新");
                         return;
                     }
                 }
-                if (mOnImagePickListener.onImagePick(mUnionTypeImageData.imageData.imageInfosSelected)) {
-                    ImagePicker3Dialog.this.hide();
+                if (mOnImagePickListener.onImagePick(mUnionTypeImageData.imageData.imageInfoListSelected)) {
+                    ImagePickerDialog.this.hide();
                 }
             });
         }
@@ -227,14 +229,14 @@ public class ImagePicker3Dialog implements ImageData.ImageLoaderCallback, ViewBa
                 SampleLog.e("mUnionTypeImageData is null");
                 count = 0;
                 enable = false;
-            } else if (mInnerImageSelector.canFinishSelect(mUnionTypeImageData.imageData.imageInfosSelected)) {
-                count = mUnionTypeImageData.imageData.imageInfosSelected.size();
+            } else if (mInnerImageSelector.canFinishSelect(mUnionTypeImageData.imageData.imageInfoListSelected)) {
+                count = mUnionTypeImageData.imageData.imageInfoListSelected.size();
                 enable = true;
             } else {
-                count = mUnionTypeImageData.imageData.imageInfosSelected.size();
+                count = mUnionTypeImageData.imageData.imageInfoListSelected.size();
                 enable = false;
             }
-            mActionSubmit.setText("上传" + "(" + count + ")");
+            mActionSubmit.setText(I18nResources.getString(R.string.imsdk_sample_custom_soft_keyboard_item_image_picker_submit_format, count));
             mActionSubmit.setEnabled(enable);
         }
     }
@@ -244,18 +246,18 @@ public class ImagePicker3Dialog implements ImageData.ImageLoaderCallback, ViewBa
         private final RecyclerView mRecyclerView;
         private final UnionTypeAdapter mDataAdapter;
 
-        private BucketView(CommonImagePicker3DialogBinding parentBinding) {
+        private BucketView(CommonImagePickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.bucketOverlayContainer;
             mBucketViewDialog = new ViewDialog.Builder(mActivity)
                     .setParentView(parentView)
-                    .setContentView(R.layout.common_image_picker_3_dialog_bucket_view)
+                    .setContentView(R.layout.common_image_picker_dialog_bucket_view)
                     .setContentViewShowAnimation(R.anim.backstack_slide_in_from_top)
                     .setContentViewHideAnimation(R.anim.backstack_slide_out_to_top)
                     .dimBackground(true)
                     .create();
             //noinspection ConstantConditions
-            final CommonImagePicker3DialogBucketViewBinding binding =
-                    CommonImagePicker3DialogBucketViewBinding.bind(mBucketViewDialog.getContentView());
+            final CommonImagePickerDialogBucketViewBinding binding =
+                    CommonImagePickerDialogBucketViewBinding.bind(mBucketViewDialog.getContentView());
             mRecyclerView = binding.recyclerView;
 
             mRecyclerView.setLayoutManager(
@@ -314,19 +316,19 @@ public class ImagePicker3Dialog implements ImageData.ImageLoaderCallback, ViewBa
     private class PagerView {
 
         private final ViewDialog mPagerViewDialog;
-        private final CommonImagePicker3DialogPagerViewBinding mBinding;
+        private final CommonImagePickerDialogPagerViewBinding mBinding;
         private final RecyclerView mRecyclerView;
 
         private UnionTypeAdapter mDataAdapter;
 
-        private PagerView(CommonImagePicker3DialogBinding parentBinding) {
+        private PagerView(CommonImagePickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.pagerOverlayContainer;
             mPagerViewDialog = new ViewDialog.Builder(mActivity)
                     .setParentView(parentView)
-                    .setContentView(R.layout.common_image_picker_3_dialog_pager_view)
+                    .setContentView(R.layout.common_image_picker_dialog_pager_view)
                     .create();
             //noinspection ConstantConditions
-            mBinding = CommonImagePicker3DialogPagerViewBinding.bind(mPagerViewDialog.getContentView());
+            mBinding = CommonImagePickerDialogPagerViewBinding.bind(mPagerViewDialog.getContentView());
             mRecyclerView = mBinding.recyclerView;
             mRecyclerView.setLayoutManager(
                     new LinearLayoutManager(mRecyclerView.getContext(), RecyclerView.HORIZONTAL, false));
@@ -375,9 +377,9 @@ public class ImagePicker3Dialog implements ImageData.ImageLoaderCallback, ViewBa
     @Override
     public void onLoadFinish(@NonNull ImageData imageData) {
         if (DEBUG) {
-            SampleLog.v("onLoadFinish buckets:%s, images:%s", imageData.allSubBuckets.size(), imageData.allImageInfosMap.size());
+            SampleLog.v("onLoadFinish buckets:%s, images:%s", imageData.allSubBuckets.size(), imageData.allImageInfoListMap.size());
         }
-        imageData.bucketSelected = imageData.allImageInfosBucket;
+        imageData.bucketSelected = imageData.allImageInfoListBucket;
         UnionTypeImageData unionTypeImageData = new UnionTypeImageData(this, imageData);
         Threads.runOnUi(() -> {
             mUnionTypeImageData = unionTypeImageData;

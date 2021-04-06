@@ -30,26 +30,26 @@ import java.util.Objects;
 public class ImageData {
 
     @NonNull
-    public final ImageBucket allImageInfosBucket;
+    public final ImageBucket allImageInfoListBucket;
 
     @NonNull
     public final List<ImageBucket> allSubBuckets;
 
     @NonNull
-    public final Map<String, ImageInfo> allImageInfosMap;
+    public final Map<String, ImageInfo> allImageInfoListMap;
 
     public ImageBucket bucketSelected;
 
     @NonNull
-    public final List<ImageInfo> imageInfosSelected = new ArrayList<>();
+    public final List<ImageInfo> imageInfoListSelected = new ArrayList<>();
 
     @NonNull
     public final ImageSelector imageSelector;
 
-    public ImageData(@NonNull ImageBucket allImageInfosBucket, @NonNull List<ImageBucket> allSubBuckets, @NonNull Map<String, ImageInfo> allImageInfosMap, @NonNull ImageSelector imageSelector) {
-        this.allImageInfosBucket = allImageInfosBucket;
+    public ImageData(@NonNull ImageBucket allImageInfoListBucket, @NonNull List<ImageBucket> allSubBuckets, @NonNull Map<String, ImageInfo> allImageInfoListMap, @NonNull ImageSelector imageSelector) {
+        this.allImageInfoListBucket = allImageInfoListBucket;
         this.allSubBuckets = allSubBuckets;
-        this.allImageInfosMap = allImageInfosMap;
+        this.allImageInfoListMap = allImageInfoListMap;
         this.imageSelector = imageSelector;
     }
 
@@ -60,7 +60,7 @@ public class ImageData {
      * @return
      */
     public int indexOfSelected(ImageInfo imageInfo) {
-        return imageInfosSelected.indexOf(imageInfo);
+        return imageInfoListSelected.indexOf(imageInfo);
     }
 
     public static class ImageInfo {

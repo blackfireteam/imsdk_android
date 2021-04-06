@@ -23,9 +23,9 @@ public class UnionTypeImageData {
     final List<UnionTypeItemObject> unionTypeBucketItems;
 
     public int pagerPendingIndex;
-    ImagePicker3Dialog dialog;
+    ImagePickerDialog dialog;
 
-    UnionTypeImageData(ImagePicker3Dialog dialog, ImageData imageData) {
+    UnionTypeImageData(ImagePickerDialog dialog, ImageData imageData) {
         this.dialog = dialog;
         this.imageData = imageData;
 

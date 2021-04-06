@@ -17,7 +17,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="57dp"
-            android:background="@drawable/ic_common_rect_top_corners_16dp_white"
+            android:background="@drawable/imsdk_sample_ic_common_rect_top_corners_16dp_white"
             android:clickable="true"
             android:focusable="true">
 
@@ -25,15 +25,15 @@
                 android:id="@+id/grid_top_bar_close"
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/imsdk_sample_empty_text_hint"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_common_close_black" />
+                android:src="@drawable/imsdk_sample_ic_common_close_black" />
 
             <TextView
                 android:id="@+id/grid_top_bar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:drawableEnd="@drawable/ic_common_arrow_down_black"
                 android:drawablePadding="4dp"
                 android:gravity="center"
                 android:includeFontPadding="false"
@@ -41,10 +41,11 @@
                 android:paddingStart="60dp"
                 android:paddingEnd="60dp"
                 android:singleLine="true"
-                android:text="相机胶卷"
+                android:text="@string/imsdk_sample_custom_soft_keyboard_item_image"
                 android:textColor="#333333"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/imsdk_sample_ic_common_arrow_down_black" />
 
             <TextView
                 android:id="@+id/action_submit"
@@ -52,13 +53,13 @@
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="15dp"
-                android:background="@drawable/ic_common_rect_corners_4dp_fill_enable_black_normal_cccccc"
+                android:background="@drawable/imsdk_sample_ic_common_rect_corners_4dp_fill_enable_black_normal_cccccc"
                 android:enabled="false"
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="上传(0)"
+                android:text="@string/imsdk_sample_custom_soft_keyboard_item_image_picker_submit_0"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
         </FrameLayout>

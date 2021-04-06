@@ -3,9 +3,9 @@ package com.masonsoft.imsdk.sample.uniontype;
 import com.idonans.dynamic.uniontype.loadingstatus.UnionTypeLoadingStatus;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageTextReceivedViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageTextSendViewHolder;
-import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePicker3BucketViewHolder;
-import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePicker3GridViewHolder;
-import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePicker3PagerViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePickerBucketViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePickerGridViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePickerPagerViewHolder;
 
 public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
 
@@ -19,9 +19,9 @@ public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
     public UnionTypeMapperImpl() {
         put(UNION_TYPE_IM_MESSAGE_TEXT_RECEIVED, IMMessageTextReceivedViewHolder::new);
         put(UNION_TYPE_IM_MESSAGE_TEXT_SEND, IMMessageTextSendViewHolder::new);
-        put(UNION_TYPE_APP_IMPL_IMAGE_PICKER_3_GRID, ImagePicker3GridViewHolder::new);
-        put(UNION_TYPE_APP_IMPL_IMAGE_PICKER_3_BUCKET, ImagePicker3BucketViewHolder::new);
-        put(UNION_TYPE_APP_IMPL_IMAGE_PICKER_3_PAGER, ImagePicker3PagerViewHolder::new);
+        put(UNION_TYPE_APP_IMPL_IMAGE_PICKER_3_GRID, ImagePickerGridViewHolder::new);
+        put(UNION_TYPE_APP_IMPL_IMAGE_PICKER_3_BUCKET, ImagePickerBucketViewHolder::new);
+        put(UNION_TYPE_APP_IMPL_IMAGE_PICKER_3_PAGER, ImagePickerPagerViewHolder::new);
     }
 
 }

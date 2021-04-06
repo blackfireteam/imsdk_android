@@ -11,13 +11,13 @@ import com.masonsoft.imsdk.sample.common.imagepicker.UnionTypeImageData;
 import com.masonsoft.imsdk.sample.databinding.UnionTypeAppImplImagePicker3GridBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 
-public class ImagePicker3GridViewHolder extends UnionTypeViewHolder {
+public class ImagePickerGridViewHolder extends UnionTypeViewHolder {
 
     private static final long DURATION = 120L;
     private final UnionTypeAppImplImagePicker3GridBinding mBinding;
 
-    public ImagePicker3GridViewHolder(@NonNull Host host) {
-        super(host, R.layout.union_type_app_impl_image_picker_3_grid);
+    public ImagePickerGridViewHolder(@NonNull Host host) {
+        super(host, R.layout.imsdk_sample_union_type_impl_image_picker_grid);
         mBinding = UnionTypeAppImplImagePicker3GridBinding.bind(itemView);
     }
 
@@ -43,13 +43,13 @@ public class ImagePicker3GridViewHolder extends UnionTypeViewHolder {
             int currentSelectedIndex = imageData.indexOfSelected(imageInfo);
             if (currentSelectedIndex >= 0) {
                 // 取消选中
-                if (imageData.imageSelector.canDeselect(imageData.imageInfosSelected, currentSelectedIndex, imageInfo)) {
-                    imageData.imageInfosSelected.remove(imageInfo);
+                if (imageData.imageSelector.canDeselect(imageData.imageInfoListSelected, currentSelectedIndex, imageInfo)) {
+                    imageData.imageInfoListSelected.remove(imageInfo);
                 }
             } else {
                 // 选中
-                if (imageData.imageSelector.canSelect(imageData.imageInfosSelected, imageInfo)) {
-                    imageData.imageInfosSelected.add(imageInfo);
+                if (imageData.imageSelector.canSelect(imageData.imageInfoListSelected, imageInfo)) {
+                    imageData.imageInfoListSelected.add(imageInfo);
                 }
             }
             host.getAdapter().notifyDataSetChanged();
@@ -59,7 +59,7 @@ public class ImagePicker3GridViewHolder extends UnionTypeViewHolder {
         });
         ViewUtil.onClick(itemView, v -> {
             if (itemObject.getExtHolderItemClick1() != null) {
-                itemObject.getExtHolderItemClick1().onItemClick(ImagePicker3GridViewHolder.this);
+                itemObject.getExtHolderItemClick1().onItemClick(ImagePickerGridViewHolder.this);
             }
             /*
             // FIXME
