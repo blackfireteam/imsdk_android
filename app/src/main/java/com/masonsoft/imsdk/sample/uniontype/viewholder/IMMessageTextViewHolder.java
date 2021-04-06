@@ -42,6 +42,7 @@ public abstract class IMMessageTextViewHolder extends IMMessageViewHolder {
         final IMMessage imMessage = itemObject.object;
 
         updateMessageTimeView(mMessageTime, itemObject);
+        // TODO FIXME
         mMessageText.setText(imMessage.body.getOrDefault(null) + " id:" + imMessage.id.get() + ", seq:" + imMessage.seq.get() + ", toUserId:" + imMessage.toUserId.get() + ", fromUserId:" + imMessage.fromUserId.get());
 
         GestureDetectorCompat gestureDetectorCompat = new GestureDetectorCompat(mMessageText.getContext(), new GestureDetector.SimpleOnGestureListener() {
