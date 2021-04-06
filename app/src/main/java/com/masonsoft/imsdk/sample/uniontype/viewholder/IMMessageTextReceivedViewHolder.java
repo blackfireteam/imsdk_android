@@ -12,16 +12,16 @@ import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImMessageTextReceivedBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImMessageTextReceivedBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 
 public class IMMessageTextReceivedViewHolder extends IMMessageTextViewHolder {
 
-    private final ImsdkSampleUnionTypeImMessageTextReceivedBinding mBinding;
+    private final ImsdkSampleUnionTypeImplImMessageTextReceivedBinding mBinding;
 
     public IMMessageTextReceivedViewHolder(@NonNull Host host) {
         super(host, R.layout.imsdk_sample_union_type_impl_im_message_text_received);
-        mBinding = ImsdkSampleUnionTypeImMessageTextReceivedBinding.bind(itemView);
+        mBinding = ImsdkSampleUnionTypeImplImMessageTextReceivedBinding.bind(itemView);
     }
 
     @CallSuper

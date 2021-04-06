@@ -6,17 +6,18 @@ import com.idonans.lang.util.ViewUtil;
 import com.idonans.uniontype.Host;
 import com.idonans.uniontype.UnionTypeViewHolder;
 import com.masonsoft.imsdk.sample.R;
+import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
-import com.masonsoft.imsdk.sample.databinding.UnionTypeAppImplImagePicker3BucketBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImagePickerBucketBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 
 public class ImagePickerBucketViewHolder extends UnionTypeViewHolder {
 
-    private final UnionTypeAppImplImagePicker3BucketBinding mBinding;
+    private final ImsdkSampleUnionTypeImplImagePickerBucketBinding mBinding;
 
     public ImagePickerBucketViewHolder(@NonNull Host host) {
         super(host, R.layout.imsdk_sample_union_type_impl_image_picker_bucket);
-        mBinding = UnionTypeAppImplImagePicker3BucketBinding.bind(itemView);
+        mBinding = ImsdkSampleUnionTypeImplImagePickerBucketBinding.bind(itemView);
     }
 
     @Override
@@ -33,8 +34,7 @@ public class ImagePickerBucketViewHolder extends UnionTypeViewHolder {
         mBinding.image.setUrl(url);
         mBinding.count.setText(String.valueOf(imageBucket.imageInfos.size()));
         if (imageBucket.allImageInfos) {
-            // FIXME
-            mBinding.title.setText("所有照片");
+            mBinding.title.setText(R.string.imsdk_sample_custom_soft_keyboard_item_image_bucket_all);
         } else {
             mBinding.title.setText(imageBucket.name);
         }
@@ -43,16 +43,12 @@ public class ImagePickerBucketViewHolder extends UnionTypeViewHolder {
                 itemObject.getExtHolderItemClick1().onItemClick(ImagePickerBucketViewHolder.this);
             }
 
-            /*
-            // TODO
-            // FIXME
-            if (host.getAdapter() instanceof OnItemClickAdapter) {
-                OnItemClickAdapter onItemClickAdapter = (OnItemClickAdapter) host.getAdapter();
-                if (onItemClickAdapter.onItemClickListener != null) {
-                    onItemClickAdapter.onItemClickListener.ItemClick(itemObject.object, position);
+            if (host.getAdapter() instanceof ItemClickUnionTypeAdapter) {
+                ItemClickUnionTypeAdapter adapter = (ItemClickUnionTypeAdapter) host.getAdapter();
+                if (adapter.getOnItemClickListener() != null) {
+                    adapter.getOnItemClickListener().onItemClick(ImagePickerBucketViewHolder.this);
                 }
             }
-            */
         });
     }
 

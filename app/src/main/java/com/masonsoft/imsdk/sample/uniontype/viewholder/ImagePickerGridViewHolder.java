@@ -6,19 +6,19 @@ import com.idonans.lang.util.ViewUtil;
 import com.idonans.uniontype.Host;
 import com.idonans.uniontype.UnionTypeViewHolder;
 import com.masonsoft.imsdk.sample.R;
+import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
 import com.masonsoft.imsdk.sample.common.imagepicker.UnionTypeImageData;
-import com.masonsoft.imsdk.sample.databinding.UnionTypeAppImplImagePicker3GridBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImagePickerGridBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 
 public class ImagePickerGridViewHolder extends UnionTypeViewHolder {
 
-    private static final long DURATION = 120L;
-    private final UnionTypeAppImplImagePicker3GridBinding mBinding;
+    private final ImsdkSampleUnionTypeImplImagePickerGridBinding mBinding;
 
     public ImagePickerGridViewHolder(@NonNull Host host) {
         super(host, R.layout.imsdk_sample_union_type_impl_image_picker_grid);
-        mBinding = UnionTypeAppImplImagePicker3GridBinding.bind(itemView);
+        mBinding = ImsdkSampleUnionTypeImplImagePickerGridBinding.bind(itemView);
     }
 
     @Override
@@ -61,16 +61,13 @@ public class ImagePickerGridViewHolder extends UnionTypeViewHolder {
             if (itemObject.getExtHolderItemClick1() != null) {
                 itemObject.getExtHolderItemClick1().onItemClick(ImagePickerGridViewHolder.this);
             }
-            /*
-            // FIXME
-            if (host.getAdapter() instanceof OnItemClickAdapter) {
-                OnItemClickAdapter onItemClickAdapter = (OnItemClickAdapter) host.getAdapter();
-                if (onItemClickAdapter.onItemClickListener != null) {
-                    onItemClickAdapter.onItemClickListener.ItemClick(itemObject.object, position);
+            if (host.getAdapter() instanceof ItemClickUnionTypeAdapter) {
+                final ItemClickUnionTypeAdapter adapter = (ItemClickUnionTypeAdapter) host.getAdapter();
+                if (adapter.getOnItemClickListener() != null) {
+                    adapter.getOnItemClickListener().onItemClick(ImagePickerGridViewHolder.this);
                 }
-            }*/
+            }
         });
-
     }
 
 }

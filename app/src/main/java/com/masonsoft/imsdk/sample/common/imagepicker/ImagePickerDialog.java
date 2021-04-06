@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.util.ObjectsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
@@ -19,16 +20,17 @@ import com.idonans.core.thread.Threads;
 import com.idonans.core.util.DimenUtil;
 import com.idonans.lang.util.ViewUtil;
 import com.idonans.uniontype.Host;
-import com.idonans.uniontype.UnionTypeAdapter;
 import com.idonans.uniontype.UnionTypeItemObject;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.sample.databinding.CommonImagePickerDialogBinding;
 import com.masonsoft.imsdk.sample.databinding.CommonImagePickerDialogBucketViewBinding;
 import com.masonsoft.imsdk.sample.databinding.CommonImagePickerDialogPagerViewBinding;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.widget.GridItemDecoration;
+import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.List;
 
@@ -149,7 +151,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
         private final RecyclerView mRecyclerView;
         private final TextView mActionSubmit;
 
-        private final UnionTypeAdapter mDataAdapter;
+        private final ItemClickUnionTypeAdapter mDataAdapter;
 
         private GridView(CommonImagePickerDialogBinding parentBinding) {
             mGridTopBarClose = parentBinding.gridTopBarClose;
@@ -161,22 +163,16 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
                     new GridLayoutManager(mRecyclerView.getContext(), 3));
             mRecyclerView.setHasFixedSize(true);
             mRecyclerView.addItemDecoration(new GridItemDecoration(3, DimenUtil.dp2px(2), false));
-            mDataAdapter = new UnionTypeAdapter();
+            mDataAdapter = new ItemClickUnionTypeAdapter();
             mDataAdapter.setHost(Host.Factory.create(mActivity, mRecyclerView, mDataAdapter));
             mDataAdapter.setUnionTypeMapper(new UnionTypeMapperImpl());
-
-            /*
-            // FIXME
-            mDataAdapter.setOnItemClickListener(new OnItemClickAdapter.OnItemClickListener() {
-                @Override
-                public void ItemClick(Object o, int position) {
-                    Preconditions.checkNotNull(mUnionTypeImageData);
-                    mUnionTypeImageData.pagerPendingIndex = position;
-                    notifyImageDataChanged();
-                    mPagerView.show();
-                }
+            mDataAdapter.setOnItemClickListener(viewHolder -> {
+                Preconditions.checkNotNull(mUnionTypeImageData);
+                final int position = viewHolder.getAdapterPosition();
+                mUnionTypeImageData.pagerPendingIndex = Math.max(position, 0);
+                notifyImageDataChanged();
+                mPagerView.show();
             });
-            */
 
             mRecyclerView.setAdapter(mDataAdapter);
 
@@ -234,7 +230,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
     private class BucketView {
         private final ViewDialog mBucketViewDialog;
         private final RecyclerView mRecyclerView;
-        private final UnionTypeAdapter mDataAdapter;
+        private final ItemClickUnionTypeAdapter mDataAdapter;
 
         private BucketView(CommonImagePickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.bucketOverlayContainer;
@@ -253,17 +249,15 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
             mRecyclerView.setLayoutManager(
                     new LinearLayoutManager(mRecyclerView.getContext()));
             mRecyclerView.setHasFixedSize(false);
-            mDataAdapter = new UnionTypeAdapter();
+            mDataAdapter = new ItemClickUnionTypeAdapter();
             mDataAdapter.setHost(Host.Factory.create(mActivity, mRecyclerView, mDataAdapter));
             mDataAdapter.setUnionTypeMapper(new UnionTypeMapperImpl());
-
-            /*
-            // FIXME
-            mDataAdapter.setOnItemClickListener((OnItemClickAdapter.OnItemClickListener<ImageData.ImageBucket>) (t, position) -> {
+            mDataAdapter.setOnItemClickListener(viewHolder -> {
                 Preconditions.checkNotNull(mUnionTypeImageData);
                 int size = mUnionTypeImageData.imageData.allSubBuckets.size();
+                final int position = viewHolder.getAdapterPosition();
                 if ((position < 0 || position >= size)) {
-                    Timber.e("BucketView onItemClick invalid position: %s, size:%s", position, size);
+                    SampleLog.e("BucketView onItemClick invalid position: %s, size:%s", position, size);
                     BucketView.this.hide();
                     return;
                 }
@@ -271,7 +265,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
                 ImageData.ImageBucket imageBucket = mUnionTypeImageData.imageData.allSubBuckets.get(position);
                 if (ObjectsCompat.equals(mUnionTypeImageData.imageData.bucketSelected, imageBucket)) {
                     if (DEBUG) {
-                        Timber.v("BucketView onItemClick ignore. same as last bucket selected");
+                        SampleLog.v("BucketView onItemClick ignore. same as last bucket selected");
                     }
                     BucketView.this.hide();
                     return;
@@ -281,7 +275,6 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
                 mUnionTypeImageData.imageData.bucketSelected = imageBucket;
                 notifyImageDataChanged();
             });
-            */
 
             mRecyclerView.setAdapter(mDataAdapter);
         }
@@ -309,7 +302,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
         private final CommonImagePickerDialogPagerViewBinding mBinding;
         private final RecyclerView mRecyclerView;
 
-        private UnionTypeAdapter mDataAdapter;
+        private ItemClickUnionTypeAdapter mDataAdapter;
 
         private PagerView(CommonImagePickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.pagerOverlayContainer;
@@ -326,15 +319,10 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
             mRecyclerView.setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING);
             PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
             pagerSnapHelper.attachToRecyclerView(mRecyclerView);
-            mDataAdapter = new UnionTypeAdapter();
+            mDataAdapter = new ItemClickUnionTypeAdapter();
             mDataAdapter.setHost(Host.Factory.create(mActivity, mRecyclerView, mDataAdapter));
             mDataAdapter.setUnionTypeMapper(new UnionTypeMapperImpl());
-
-            /*
-            // FIXME
-            mDataAdapter.setOnItemClickListener((o, position) -> PagerView.this.hide());
-            */
-
+            mDataAdapter.setOnItemClickListener(viewHolder -> PagerView.this.hide());
             mRecyclerView.setAdapter(mDataAdapter);
         }
 
