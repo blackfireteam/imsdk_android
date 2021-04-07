@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginStart="63dp"
+        android:layout_marginStart="72dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="10dp"
@@ -40,8 +40,9 @@
 
         <com.masonsoft.imsdk.sample.widget.ResizeImageView
             android:id="@+id/resize_image_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/imsdk_sample_ic_common_rect_corners_16dp_white"
             android:minWidth="93dp"
             android:minHeight="93dp">
@@ -53,5 +54,12 @@
                 app:roundSize="16dp" />
 
         </com.masonsoft.imsdk.sample.widget.ResizeImageView>
+
+        <com.masonsoft.imsdk.sample.widget.UserCacheAvatar
+            android:id="@+id/avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="15dp" />
     </LinearLayout>
 </LinearLayout>
