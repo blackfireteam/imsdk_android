@@ -324,7 +324,7 @@ public class IMMessageUploadManager {
                             @Override
                             protected void onUpdate() {
                                 super.onUpdate();
-                                // TODO
+                                setSendProgress(getPercent() / 100f);
                             }
                         });
                         // 备份原始地址
