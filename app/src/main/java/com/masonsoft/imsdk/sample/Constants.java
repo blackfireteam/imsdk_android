@@ -33,7 +33,7 @@ public class Constants {
     /**
      * 图片选择中允许的最大图片文件大小
      */
-    public static final long SELECTOR_MAX_IMAGE_FILE_SIZE = 5 * HumanUtil.MB;
+    public static final long SELECTOR_MAX_IMAGE_FILE_SIZE = 10 * HumanUtil.MB;
     /**
      * 视频选择中允许的最大视频文件大小(file.length)
      */
