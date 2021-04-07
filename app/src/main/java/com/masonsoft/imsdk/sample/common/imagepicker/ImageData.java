@@ -32,7 +32,7 @@ import java.util.Objects;
 
 public class ImageData {
 
-    private static boolean USE_DOCUMENT_ID = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+    private static final boolean USE_DOCUMENT_ID = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
     @NonNull
     public final ImageBucket allImageInfoListBucket;
@@ -329,7 +329,7 @@ public class ImageData {
             target.addTime = cursor.getLong(++index);
             target.id = cursor.getInt(++index);
 
-            IMLog.v("cursorToImageInfo -> %s", target);
+            IMLog.v("cursorToImageInfo USE_DOCUMENT_ID:%s -> %s", USE_DOCUMENT_ID, target);
 
             if (TextUtils.isEmpty(target.path)) {
                 SampleLog.v("invalid path:%s", target.path);
