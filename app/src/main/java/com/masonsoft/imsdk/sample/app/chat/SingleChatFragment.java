@@ -148,8 +148,16 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 });
 
                 if (customSoftKeyboard) {
-                    ViewUtil.setVisibilityIfChanged(binding.keyboardEmoji, View.GONE);
-                    ViewUtil.setVisibilityIfChanged(binding.keyboardEmojiSystemSoftKeyboard, View.VISIBLE);
+                    if (binding.customSoftKeyboard.isLayerEmojiShown()) {
+                        ViewUtil.setVisibilityIfChanged(binding.keyboardEmoji, View.GONE);
+                        ViewUtil.setVisibilityIfChanged(binding.keyboardEmojiSystemSoftKeyboard, View.VISIBLE);
+                    } else if (binding.customSoftKeyboard.isLayerMoreShown()) {
+                        ViewUtil.setVisibilityIfChanged(binding.keyboardEmoji, View.VISIBLE);
+                        ViewUtil.setVisibilityIfChanged(binding.keyboardEmojiSystemSoftKeyboard, View.GONE);
+                    } else {
+                        final Throwable e = new IllegalStateException();
+                        SampleLog.e(e);
+                    }
                 } else {
                     ViewUtil.setVisibilityIfChanged(binding.keyboardEmoji, View.VISIBLE);
                     ViewUtil.setVisibilityIfChanged(binding.keyboardEmojiSystemSoftKeyboard, View.GONE);
@@ -204,8 +212,6 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 SampleLog.e(Constants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
                 return;
             }
-            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmoji, View.GONE);
-            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmojiSystemSoftKeyboard, View.VISIBLE);
             mBinding.customSoftKeyboard.showLayerEmoji();
             mSoftKeyboardHelper.requestShowCustomSoftKeyboard();
         });
@@ -218,8 +224,6 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 SampleLog.e(Constants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
                 return;
             }
-            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmoji, View.VISIBLE);
-            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmojiSystemSoftKeyboard, View.GONE);
             mSoftKeyboardHelper.requestShowSystemSoftKeyboard();
         });
         ViewUtil.onClick(mBinding.keyboardMore, v -> {
@@ -231,8 +235,6 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 SampleLog.e(Constants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
                 return;
             }
-            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmoji, View.VISIBLE);
-            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmojiSystemSoftKeyboard, View.GONE);
             mBinding.customSoftKeyboard.showLayerMore();
             mSoftKeyboardHelper.requestShowCustomSoftKeyboard();
         });
@@ -258,6 +260,15 @@ public class SingleChatFragment extends SystemInsetsFragment {
             @Override
             public void onImagePicked(@NonNull List<ImageData.ImageInfo> imageInfoList) {
                 SampleLog.v("onImagePicked size:%s", imageInfoList.size());
+                if (mBinding == null) {
+                    SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                    return;
+                }
+                if (mSoftKeyboardHelper == null) {
+                    SampleLog.e(Constants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                    return;
+                }
+                mSoftKeyboardHelper.requestHideAllSoftKeyboard();
                 // TODO
             }
 

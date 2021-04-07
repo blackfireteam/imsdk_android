@@ -92,6 +92,14 @@ public class CustomSoftKeyboard extends FrameLayout {
         ViewUtil.setVisibilityIfChanged(mBinding.layerMore, View.VISIBLE);
     }
 
+    public boolean isLayerEmojiShown() {
+        return mBinding.layerEmoji.getVisibility() == View.VISIBLE;
+    }
+
+    public boolean isLayerMoreShown() {
+        return mBinding.layerMore.getVisibility() == View.VISIBLE;
+    }
+
     /**
      * 硬编码自定义键盘上的数据
      */
