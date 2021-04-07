@@ -199,10 +199,20 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             if (msgType == IMConstants.MessageType.TEXT) {
                 return received
                         ? UnionTypeItemObject.valueOf(
-                        UnionTypeMapperImpl.UNION_TYPE_IM_MESSAGE_TEXT_RECEIVED,
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_TEXT_RECEIVED,
                         dataObject)
                         : UnionTypeItemObject.valueOf(
-                        UnionTypeMapperImpl.UNION_TYPE_IM_MESSAGE_TEXT_SEND,
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_TEXT_SEND,
+                        dataObject);
+            }
+
+            // 图片消息
+            if (msgType == IMConstants.MessageType.IMAGE) {
+                return received ? UnionTypeItemObject.valueOf(
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_RECEIVED,
+                        dataObject)
+                        : UnionTypeItemObject.valueOf(
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND,
                         dataObject);
             }
 
