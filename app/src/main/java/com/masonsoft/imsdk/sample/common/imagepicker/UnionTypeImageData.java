@@ -34,10 +34,10 @@ public class UnionTypeImageData {
         this.unionTypeBucketItems = new ArrayList<>(this.imageData.allSubBuckets.size());
 
         for (ImageData.ImageBucket bucket : this.imageData.allSubBuckets) {
-            List<UnionTypeItemObject> gridItems = new ArrayList<>(bucket.imageInfos.size());
-            List<UnionTypeItemObject> pagerItems = new ArrayList<>(bucket.imageInfos.size());
+            List<UnionTypeItemObject> gridItems = new ArrayList<>(bucket.imageInfoList.size());
+            List<UnionTypeItemObject> pagerItems = new ArrayList<>(bucket.imageInfoList.size());
 
-            for (ImageData.ImageInfo imageInfo : bucket.imageInfos) {
+            for (ImageData.ImageInfo imageInfo : bucket.imageInfoList) {
                 gridItems.add(UnionTypeItemObject.valueOf(
                         UnionTypeMapperImpl.UNION_TYPE_IMPL_IMAGE_PICKER_GRID,
                         new DataObject<>(imageInfo)

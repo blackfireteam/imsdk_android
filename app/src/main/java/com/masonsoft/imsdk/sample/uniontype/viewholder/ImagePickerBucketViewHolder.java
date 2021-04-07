@@ -32,8 +32,8 @@ public class ImagePickerBucketViewHolder extends UnionTypeViewHolder {
             url = imageBucket.cover.path;
         }
         mBinding.image.setUrl(url);
-        mBinding.count.setText(String.valueOf(imageBucket.imageInfos.size()));
-        if (imageBucket.allImageInfos) {
+        mBinding.count.setText(String.valueOf(imageBucket.imageInfoList.size()));
+        if (imageBucket.allImageInfo) {
             mBinding.title.setText(R.string.imsdk_sample_custom_soft_keyboard_item_image_bucket_all);
         } else {
             mBinding.title.setText(imageBucket.name);

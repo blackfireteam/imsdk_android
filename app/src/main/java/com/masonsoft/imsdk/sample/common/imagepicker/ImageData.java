@@ -3,6 +3,7 @@ package com.masonsoft.imsdk.sample.common.imagepicker;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
@@ -15,7 +16,9 @@ import com.idonans.core.WeakAbortSignal;
 import com.idonans.core.thread.Threads;
 import com.idonans.core.util.AbortUtil;
 import com.idonans.core.util.ContextUtil;
+import com.idonans.core.util.HumanUtil;
 import com.idonans.core.util.IOUtil;
+import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 
@@ -28,6 +31,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ImageData {
+
+    private static boolean USE_DOCUMENT_ID = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
     @NonNull
     public final ImageBucket allImageInfoListBucket;
@@ -64,6 +69,7 @@ public class ImageData {
     }
 
     public static class ImageInfo {
+        public String documentId;
         @NonNull
         public String path;
         public long size;
@@ -103,33 +109,56 @@ public class ImageData {
         public int hashCode() {
             return Objects.hash(path);
         }
+
+        @NonNull
+        public String toShortString() {
+            //noinspection StringBufferReplaceableByString
+            final StringBuilder builder = new StringBuilder();
+            builder.append("ImageInfo");
+            builder.append(" documentId:").append(this.documentId);
+            builder.append(" path:").append(this.path);
+            builder.append(" size:").append(this.size).append(" ").append(HumanUtil.getHumanSizeFromByte(this.size));
+            builder.append(" width:").append(this.width);
+            builder.append(" height:").append(this.height);
+            builder.append(" mimeType:").append(this.mimeType);
+            builder.append(" title:").append(this.title);
+            builder.append(" addTime:").append(this.addTime);
+            builder.append(" id:").append(this.id);
+            return builder.toString();
+        }
+
+        @Override
+        @NonNull
+        public String toString() {
+            return this.toShortString();
+        }
     }
 
     public static class ImageBucket {
         /**
          * 是否是总的那个 bucket, 包含了所有的图片
          */
-        public boolean allImageInfos;
+        public boolean allImageInfo;
         public String name;
         public String path;
         @Nullable
         public ImageInfo cover;
 
         @NonNull
-        public final List<ImageInfo> imageInfos = new ArrayList<>();
+        public final List<ImageInfo> imageInfoList = new ArrayList<>();
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             ImageBucket that = (ImageBucket) o;
-            return allImageInfos == that.allImageInfos &&
+            return allImageInfo == that.allImageInfo &&
                     ObjectsCompat.equals(path, that.path);
         }
 
         @Override
         public int hashCode() {
-            return ObjectsCompat.hash(allImageInfos, path);
+            return ObjectsCompat.hash(allImageInfo, path);
         }
     }
 
@@ -165,7 +194,7 @@ public class ImageData {
         @Override
         public void run() {
             final ImageBucket allImageInfosBucket = new ImageBucket();
-            allImageInfosBucket.allImageInfos = true;
+            allImageInfosBucket.allImageInfo = true;
 
             final List<ImageBucket> allBuckets = new ArrayList<>();
             allBuckets.add(allImageInfosBucket);
@@ -196,7 +225,7 @@ public class ImageData {
                     if (allImageInfosBucket.cover == null) {
                         allImageInfosBucket.cover = itemImageInfo;
                     }
-                    allImageInfosBucket.imageInfos.add(itemImageInfo);
+                    allImageInfosBucket.imageInfoList.add(itemImageInfo);
                     allImageInfosMap.put(itemImageInfo.path, itemImageInfo);
 
                     ImageBucket newBucket = createImageBucket(itemImageInfo);
@@ -204,7 +233,7 @@ public class ImageData {
                     ImageBucket targetBucket;
                     if (oldBucket != null) {
                         // update old bucket
-                        oldBucket.imageInfos.add(itemImageInfo);
+                        oldBucket.imageInfoList.add(itemImageInfo);
                         targetBucket = oldBucket;
                     } else {
                         // add new bucket;
@@ -244,7 +273,7 @@ public class ImageData {
         private ImageBucket createImageBucket(ImageInfo imageInfo) {
             ImageBucket target = new ImageBucket();
             target.cover = imageInfo;
-            target.imageInfos.add(imageInfo);
+            target.imageInfoList.add(imageInfo);
 
             File dir = new File(imageInfo.path).getParentFile();
             target.path = dir.getAbsolutePath();
@@ -255,22 +284,39 @@ public class ImageData {
 
         @NonNull
         private String[] allColumns() {
-            return new String[]{
-                    MediaStore.Images.Media.DATA,           //图片的真实路径  /storage/emulated/0/pp/downloader/wallpaper/aaa.jpg
-                    MediaStore.Images.Media.SIZE,           //图片的大小，long型  132492
-                    MediaStore.Images.Media.WIDTH,          //图片的宽度，int型  1920
-                    MediaStore.Images.Media.HEIGHT,         //图片的高度，int型  1080
-                    MediaStore.Images.Media.MIME_TYPE,      //图片的类型     image/jpeg
-                    MediaStore.Images.Media.TITLE,
-                    MediaStore.Images.Media.DATE_ADDED,    //添加时间
-                    MediaStore.Images.Media._ID      //id
-            };
+            if (USE_DOCUMENT_ID) {
+                return new String[]{
+                        MediaStore.Images.Media.DOCUMENT_ID,
+                        MediaStore.Images.Media.DATA,           // 图片的真实路径  /storage/emulated/0/pp/downloader/wallpaper/aaa.jpg
+                        MediaStore.Images.Media.SIZE,           //图片的大小，long型  132492
+                        MediaStore.Images.Media.WIDTH,          //图片的宽度，int型  1920
+                        MediaStore.Images.Media.HEIGHT,         //图片的高度，int型  1080
+                        MediaStore.Images.Media.MIME_TYPE,      //图片的类型     image/jpeg
+                        MediaStore.Images.Media.TITLE,
+                        MediaStore.Images.Media.DATE_ADDED,    //添加时间
+                        MediaStore.Images.Media._ID,      //id
+                };
+            } else {
+                return new String[]{
+                        MediaStore.Images.Media.DATA,           // 图片的真实路径  /storage/emulated/0/pp/downloader/wallpaper/aaa.jpg
+                        MediaStore.Images.Media.SIZE,           //图片的大小，long型  132492
+                        MediaStore.Images.Media.WIDTH,          //图片的宽度，int型  1920
+                        MediaStore.Images.Media.HEIGHT,         //图片的高度，int型  1080
+                        MediaStore.Images.Media.MIME_TYPE,      //图片的类型     image/jpeg
+                        MediaStore.Images.Media.TITLE,
+                        MediaStore.Images.Media.DATE_ADDED,    //添加时间
+                        MediaStore.Images.Media._ID,      //id
+                };
+            }
         }
 
         @Nullable
         private ImageInfo cursorToImageInfo(Cursor cursor) {
             ImageInfo target = new ImageInfo();
             int index = -1;
+            if (USE_DOCUMENT_ID) {
+                target.documentId = cursor.getString(++index);
+            }
             target.path = cursor.getString(++index);
             target.size = cursor.getLong(++index);
             target.width = cursor.getInt(++index);
@@ -282,6 +328,8 @@ public class ImageData {
             target.title = cursor.getString(++index);
             target.addTime = cursor.getLong(++index);
             target.id = cursor.getInt(++index);
+
+            IMLog.v("cursorToImageInfo -> %s", target);
 
             if (TextUtils.isEmpty(target.path)) {
                 SampleLog.v("invalid path:%s", target.path);
