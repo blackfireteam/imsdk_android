@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.core.processor;
 
+import android.net.Uri;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
@@ -13,8 +14,6 @@ import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.lang.ImageInfo;
 import com.masonsoft.imsdk.lang.StateProp;
 import com.masonsoft.imsdk.util.BitmapUtil;
-
-import java.io.File;
 
 /**
  * 发送图片类型的消息合法性检查
@@ -39,19 +38,8 @@ public class SendMessageTypeImageValidateProcessor extends SendMessageTypeValida
             return true;
         }
 
-        String imagePath = body.get();
-        if (imagePath != null) {
-            imagePath = imagePath.trim();
-
-            if (imagePath.startsWith("file://")) {
-                imagePath = imagePath.substring(6);
-            }
-
-            // 应用文件地址变更
-            body.set(imagePath);
-        }
-
-        if (TextUtils.isEmpty(imagePath)) {
+        final String bodyUri = body.get();
+        if (TextUtils.isEmpty(bodyUri)) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
                     IMSessionMessage.EnqueueCallback.ERROR_CODE_IMAGE_MESSAGE_IMAGE_PATH_INVALID,
@@ -59,6 +47,7 @@ public class SendMessageTypeImageValidateProcessor extends SendMessageTypeValida
             );
             return true;
         }
+        final Uri imageUri = Uri.parse(bodyUri);
 
         // 是否需要解码图片尺寸信息
         boolean requireDecodeImageSize = true;
@@ -71,7 +60,7 @@ public class SendMessageTypeImageValidateProcessor extends SendMessageTypeValida
             requireDecodeImageSize = false;
         }
 
-        if (URLUtil.isNetworkUrl(imagePath)) {
+        if (URLUtil.isNetworkUrl(bodyUri)) {
             // 文件本身是一个网络地址
             if (requireDecodeImageSize) {
                 // 网络地址的图片没有设置合法的宽高值，直接报错(不适宜去下载图片再解码宽高值，会阻塞队列执行速度)
@@ -83,19 +72,25 @@ public class SendMessageTypeImageValidateProcessor extends SendMessageTypeValida
                 return true;
             }
         } else {
-            // 猜测图片地址是一个本地文件地址
-            // 校验图片文件是否存在并且文件的大小的是否合法
-            final File imageFile = new File(imagePath);
-            if (!imageFile.exists() || !imageFile.isFile()) {
+            // 分析图片信息
+            final ImageInfo imageInfo = BitmapUtil.decodeImageInfo(imageUri);
+            if (imageInfo == null) {
+                // 解码图片信息失败, 通常来说都是由于图片格式不支持导致(或者图片 Uri 指向的不是一张真实的图片)
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_IMAGE_MESSAGE_IMAGE_PATH_INVALID,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_image_message_image_path_invalid)
+                        IMSessionMessage.EnqueueCallback.ERROR_CODE_IMAGE_MESSAGE_IMAGE_FORMAT_NOT_SUPPORT,
+                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_image_message_image_format_not_support)
                 );
                 return true;
             }
+
+            // 设置图片宽高值(覆盖)
+            width.set((long) imageInfo.getViewWidth());
+            height.set((long) imageInfo.getViewHeight());
+
+            // 校验图片文件的大小的是否合法
             if (IMConstants.SendMessageOption.Image.MAX_FILE_SIZE > 0
-                    && imageFile.length() > IMConstants.SendMessageOption.Image.MAX_FILE_SIZE) {
+                    && imageInfo.length > IMConstants.SendMessageOption.Image.MAX_FILE_SIZE) {
                 // 图片文件太大
                 final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Image.MAX_FILE_SIZE);
                 target.getEnqueueCallback().onEnqueueFail(
@@ -104,24 +99,6 @@ public class SendMessageTypeImageValidateProcessor extends SendMessageTypeValida
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_image_message_image_file_size_too_large, maxFileSizeAsHumanString)
                 );
                 return true;
-            }
-
-            if (requireDecodeImageSize) {
-                // 尝试从 imagePath 中解码出图片的尺寸信息
-                final ImageInfo imageInfo = BitmapUtil.decodeImageInfo(imagePath);
-                if (imageInfo == null) {
-                    // 解码图片信息失败, 通常来说都是由于图片格式不支持导致(或者图片地址指向的不是一张真实的图片)
-                    target.getEnqueueCallback().onEnqueueFail(
-                            target,
-                            IMSessionMessage.EnqueueCallback.ERROR_CODE_IMAGE_MESSAGE_IMAGE_FORMAT_NOT_SUPPORT,
-                            I18nResources.getString(R.string.msimsdk_enqueue_callback_error_image_message_image_format_not_support)
-                    );
-                    return true;
-                }
-
-                // 设置图片宽高值
-                width.set((long) imageInfo.getViewWidth());
-                height.set((long) imageInfo.getViewHeight());
             }
         }
 

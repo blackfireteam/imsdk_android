@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk.lang;
 
+import android.net.Uri;
+
 /**
  * @since 1.0
  */
@@ -22,9 +24,13 @@ public class ImageInfo {
      */
     public String mimeType;
     /**
-     * 图片的文件路径
+     * 图片的 uri
      */
-    public String filePath;
+    public Uri uri;
+    /**
+     * 图片对应的文件内容的长度
+     */
+    public long length;
     /**
      * 图片的旋转角度(jpeg的图片可能有旋转角度)，取值范围 [0, 90, 180, 270]
      */
