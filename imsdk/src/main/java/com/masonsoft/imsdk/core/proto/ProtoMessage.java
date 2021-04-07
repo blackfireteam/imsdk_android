@@ -307,6 +307,15 @@ public final class ProtoMessage {
      */
     com.google.protobuf.ByteString
     getTokenBytes();
+
+    /**
+     * <pre>
+     *客户端类型 0:Android   1:ios    2:web
+     * </pre>
+     *
+     * <code>optional int64 ct = 3;</code>
+     */
+    long getCt();
   }
   /**
    * <pre>
@@ -412,6 +421,41 @@ public final class ProtoMessage {
       token_ = value.toStringUtf8();
     }
 
+    public static final int CT_FIELD_NUMBER = 3;
+    private long ct_;
+    /**
+     * <pre>
+     *客户端类型 0:Android   1:ios    2:web
+     * </pre>
+     *
+     * <code>optional int64 ct = 3;</code>
+     */
+    public long getCt() {
+      return ct_;
+    }
+    /**
+     * <pre>
+     *客户端类型 0:Android   1:ios    2:web
+     * </pre>
+     *
+     * <code>optional int64 ct = 3;</code>
+     */
+    private void setCt(long value) {
+
+      ct_ = value;
+    }
+    /**
+     * <pre>
+     *客户端类型 0:Android   1:ios    2:web
+     * </pre>
+     *
+     * <code>optional int64 ct = 3;</code>
+     */
+    private void clearCt() {
+
+      ct_ = 0L;
+    }
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
       if (sign_ != 0L) {
@@ -419,6 +463,9 @@ public final class ProtoMessage {
       }
       if (!token_.isEmpty()) {
         output.writeString(2, getToken());
+      }
+      if (ct_ != 0L) {
+        output.writeInt64(3, ct_);
       }
     }
 
@@ -434,6 +481,10 @@ public final class ProtoMessage {
       if (!token_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
                 .computeStringSize(2, getToken());
+      }
+      if (ct_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(3, ct_);
       }
       memoizedSerializedSize = size;
       return size;
@@ -608,6 +659,41 @@ public final class ProtoMessage {
         return this;
       }
 
+      /**
+       * <pre>
+       *客户端类型 0:Android   1:ios    2:web
+       * </pre>
+       *
+       * <code>optional int64 ct = 3;</code>
+       */
+      public long getCt() {
+        return instance.getCt();
+      }
+      /**
+       * <pre>
+       *客户端类型 0:Android   1:ios    2:web
+       * </pre>
+       *
+       * <code>optional int64 ct = 3;</code>
+       */
+      public Builder setCt(long value) {
+        copyOnWrite();
+        instance.setCt(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *客户端类型 0:Android   1:ios    2:web
+       * </pre>
+       *
+       * <code>optional int64 ct = 3;</code>
+       */
+      public Builder clearCt() {
+        copyOnWrite();
+        instance.clearCt();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:ImLogin)
     }
     protected final Object dynamicMethod(
@@ -633,6 +719,8 @@ public final class ProtoMessage {
                   other.sign_ != 0L, other.sign_);
           token_ = visitor.visitString(!token_.isEmpty(), token_,
                   !other.token_.isEmpty(), other.token_);
+          ct_ = visitor.visitLong(ct_ != 0L, ct_,
+                  other.ct_ != 0L, other.ct_);
           if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
                   .INSTANCE) {
           }
@@ -666,6 +754,11 @@ public final class ProtoMessage {
                   String s = input.readStringRequireUtf8();
 
                   token_ = s;
+                  break;
+                }
+                case 24: {
+
+                  ct_ = input.readInt64();
                   break;
                 }
               }
@@ -14898,6 +14991,849 @@ public final class ProtoMessage {
     private static volatile com.google.protobuf.Parser<UsrOffline> PARSER;
 
     public static com.google.protobuf.Parser<UsrOffline> parser() {
+      return DEFAULT_INSTANCE.getParserForType();
+    }
+  }
+
+  public interface SignupOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:Signup)
+          com.google.protobuf.MessageLiteOrBuilder {
+
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    long getSign();
+
+    /**
+     * <code>optional string nick_name = 2;</code>
+     */
+    java.lang.String getNickName();
+    /**
+     * <code>optional string nick_name = 2;</code>
+     */
+    com.google.protobuf.ByteString
+    getNickNameBytes();
+
+    /**
+     * <code>optional string avatar = 3;</code>
+     */
+    java.lang.String getAvatar();
+    /**
+     * <code>optional string avatar = 3;</code>
+     */
+    com.google.protobuf.ByteString
+    getAvatarBytes();
+
+    /**
+     * <pre>
+     *用户spark界面的封面图
+     * </pre>
+     *
+     * <code>optional string pic = 4;</code>
+     */
+    java.lang.String getPic();
+    /**
+     * <pre>
+     *用户spark界面的封面图
+     * </pre>
+     *
+     * <code>optional string pic = 4;</code>
+     */
+    com.google.protobuf.ByteString
+    getPicBytes();
+
+    /**
+     * <pre>
+     *是否gold用户
+     * </pre>
+     *
+     * <code>optional bool gold = 5;</code>
+     */
+    boolean getGold();
+
+    /**
+     * <pre>
+     *是否是认证用户
+     * </pre>
+     *
+     * <code>optional bool verified = 6;</code>
+     */
+    boolean getVerified();
+  }
+  /**
+   * <pre>
+   *53 for demo：注册新用户
+   * </pre>
+   *
+   * Protobuf type {@code Signup}
+   */
+  public  static final class Signup extends
+          com.google.protobuf.GeneratedMessageLite<
+                  Signup, Signup.Builder> implements
+          // @@protoc_insertion_point(message_implements:Signup)
+          SignupOrBuilder {
+    private Signup() {
+      nickName_ = "";
+      avatar_ = "";
+      pic_ = "";
+    }
+    public static final int SIGN_FIELD_NUMBER = 1;
+    private long sign_;
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    public long getSign() {
+      return sign_;
+    }
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    private void setSign(long value) {
+
+      sign_ = value;
+    }
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    private void clearSign() {
+
+      sign_ = 0L;
+    }
+
+    public static final int NICK_NAME_FIELD_NUMBER = 2;
+    private java.lang.String nickName_;
+    /**
+     * <code>optional string nick_name = 2;</code>
+     */
+    public java.lang.String getNickName() {
+      return nickName_;
+    }
+    /**
+     * <code>optional string nick_name = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+    getNickNameBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(nickName_);
+    }
+    /**
+     * <code>optional string nick_name = 2;</code>
+     */
+    private void setNickName(
+            java.lang.String value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+
+      nickName_ = value;
+    }
+    /**
+     * <code>optional string nick_name = 2;</code>
+     */
+    private void clearNickName() {
+
+      nickName_ = getDefaultInstance().getNickName();
+    }
+    /**
+     * <code>optional string nick_name = 2;</code>
+     */
+    private void setNickNameBytes(
+            com.google.protobuf.ByteString value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      checkByteStringIsUtf8(value);
+
+      nickName_ = value.toStringUtf8();
+    }
+
+    public static final int AVATAR_FIELD_NUMBER = 3;
+    private java.lang.String avatar_;
+    /**
+     * <code>optional string avatar = 3;</code>
+     */
+    public java.lang.String getAvatar() {
+      return avatar_;
+    }
+    /**
+     * <code>optional string avatar = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+    getAvatarBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(avatar_);
+    }
+    /**
+     * <code>optional string avatar = 3;</code>
+     */
+    private void setAvatar(
+            java.lang.String value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+
+      avatar_ = value;
+    }
+    /**
+     * <code>optional string avatar = 3;</code>
+     */
+    private void clearAvatar() {
+
+      avatar_ = getDefaultInstance().getAvatar();
+    }
+    /**
+     * <code>optional string avatar = 3;</code>
+     */
+    private void setAvatarBytes(
+            com.google.protobuf.ByteString value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      checkByteStringIsUtf8(value);
+
+      avatar_ = value.toStringUtf8();
+    }
+
+    public static final int PIC_FIELD_NUMBER = 4;
+    private java.lang.String pic_;
+    /**
+     * <pre>
+     *用户spark界面的封面图
+     * </pre>
+     *
+     * <code>optional string pic = 4;</code>
+     */
+    public java.lang.String getPic() {
+      return pic_;
+    }
+    /**
+     * <pre>
+     *用户spark界面的封面图
+     * </pre>
+     *
+     * <code>optional string pic = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+    getPicBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(pic_);
+    }
+    /**
+     * <pre>
+     *用户spark界面的封面图
+     * </pre>
+     *
+     * <code>optional string pic = 4;</code>
+     */
+    private void setPic(
+            java.lang.String value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+
+      pic_ = value;
+    }
+    /**
+     * <pre>
+     *用户spark界面的封面图
+     * </pre>
+     *
+     * <code>optional string pic = 4;</code>
+     */
+    private void clearPic() {
+
+      pic_ = getDefaultInstance().getPic();
+    }
+    /**
+     * <pre>
+     *用户spark界面的封面图
+     * </pre>
+     *
+     * <code>optional string pic = 4;</code>
+     */
+    private void setPicBytes(
+            com.google.protobuf.ByteString value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      checkByteStringIsUtf8(value);
+
+      pic_ = value.toStringUtf8();
+    }
+
+    public static final int GOLD_FIELD_NUMBER = 5;
+    private boolean gold_;
+    /**
+     * <pre>
+     *是否gold用户
+     * </pre>
+     *
+     * <code>optional bool gold = 5;</code>
+     */
+    public boolean getGold() {
+      return gold_;
+    }
+    /**
+     * <pre>
+     *是否gold用户
+     * </pre>
+     *
+     * <code>optional bool gold = 5;</code>
+     */
+    private void setGold(boolean value) {
+
+      gold_ = value;
+    }
+    /**
+     * <pre>
+     *是否gold用户
+     * </pre>
+     *
+     * <code>optional bool gold = 5;</code>
+     */
+    private void clearGold() {
+
+      gold_ = false;
+    }
+
+    public static final int VERIFIED_FIELD_NUMBER = 6;
+    private boolean verified_;
+    /**
+     * <pre>
+     *是否是认证用户
+     * </pre>
+     *
+     * <code>optional bool verified = 6;</code>
+     */
+    public boolean getVerified() {
+      return verified_;
+    }
+    /**
+     * <pre>
+     *是否是认证用户
+     * </pre>
+     *
+     * <code>optional bool verified = 6;</code>
+     */
+    private void setVerified(boolean value) {
+
+      verified_ = value;
+    }
+    /**
+     * <pre>
+     *是否是认证用户
+     * </pre>
+     *
+     * <code>optional bool verified = 6;</code>
+     */
+    private void clearVerified() {
+
+      verified_ = false;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (sign_ != 0L) {
+        output.writeInt64(1, sign_);
+      }
+      if (!nickName_.isEmpty()) {
+        output.writeString(2, getNickName());
+      }
+      if (!avatar_.isEmpty()) {
+        output.writeString(3, getAvatar());
+      }
+      if (!pic_.isEmpty()) {
+        output.writeString(4, getPic());
+      }
+      if (gold_ != false) {
+        output.writeBool(5, gold_);
+      }
+      if (verified_ != false) {
+        output.writeBool(6, verified_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (sign_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(1, sign_);
+      }
+      if (!nickName_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeStringSize(2, getNickName());
+      }
+      if (!avatar_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeStringSize(3, getAvatar());
+      }
+      if (!pic_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeStringSize(4, getPic());
+      }
+      if (gold_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBoolSize(5, gold_);
+      }
+      if (verified_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBoolSize(6, verified_);
+      }
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.Signup parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, data);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.Signup parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.Signup parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, data);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.Signup parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.Signup parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, input);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.Signup parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.Signup parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.Signup parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.Signup parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, input);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.Signup parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.masonsoft.imsdk.core.proto.ProtoMessage.Signup prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    /**
+     * <pre>
+     *53 for demo：注册新用户
+     * </pre>
+     *
+     * Protobuf type {@code Signup}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageLite.Builder<
+                    com.masonsoft.imsdk.core.proto.ProtoMessage.Signup, Builder> implements
+            // @@protoc_insertion_point(builder_implements:Signup)
+            com.masonsoft.imsdk.core.proto.ProtoMessage.SignupOrBuilder {
+      // Construct using com.masonsoft.imsdk.core.proto.ProtoMessage.Signup.newBuilder()
+      private Builder() {
+        super(DEFAULT_INSTANCE);
+      }
+
+
+      /**
+       * <code>optional int64 sign = 1;</code>
+       */
+      public long getSign() {
+        return instance.getSign();
+      }
+      /**
+       * <code>optional int64 sign = 1;</code>
+       */
+      public Builder setSign(long value) {
+        copyOnWrite();
+        instance.setSign(value);
+        return this;
+      }
+      /**
+       * <code>optional int64 sign = 1;</code>
+       */
+      public Builder clearSign() {
+        copyOnWrite();
+        instance.clearSign();
+        return this;
+      }
+
+      /**
+       * <code>optional string nick_name = 2;</code>
+       */
+      public java.lang.String getNickName() {
+        return instance.getNickName();
+      }
+      /**
+       * <code>optional string nick_name = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+      getNickNameBytes() {
+        return instance.getNickNameBytes();
+      }
+      /**
+       * <code>optional string nick_name = 2;</code>
+       */
+      public Builder setNickName(
+              java.lang.String value) {
+        copyOnWrite();
+        instance.setNickName(value);
+        return this;
+      }
+      /**
+       * <code>optional string nick_name = 2;</code>
+       */
+      public Builder clearNickName() {
+        copyOnWrite();
+        instance.clearNickName();
+        return this;
+      }
+      /**
+       * <code>optional string nick_name = 2;</code>
+       */
+      public Builder setNickNameBytes(
+              com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setNickNameBytes(value);
+        return this;
+      }
+
+      /**
+       * <code>optional string avatar = 3;</code>
+       */
+      public java.lang.String getAvatar() {
+        return instance.getAvatar();
+      }
+      /**
+       * <code>optional string avatar = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+      getAvatarBytes() {
+        return instance.getAvatarBytes();
+      }
+      /**
+       * <code>optional string avatar = 3;</code>
+       */
+      public Builder setAvatar(
+              java.lang.String value) {
+        copyOnWrite();
+        instance.setAvatar(value);
+        return this;
+      }
+      /**
+       * <code>optional string avatar = 3;</code>
+       */
+      public Builder clearAvatar() {
+        copyOnWrite();
+        instance.clearAvatar();
+        return this;
+      }
+      /**
+       * <code>optional string avatar = 3;</code>
+       */
+      public Builder setAvatarBytes(
+              com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setAvatarBytes(value);
+        return this;
+      }
+
+      /**
+       * <pre>
+       *用户spark界面的封面图
+       * </pre>
+       *
+       * <code>optional string pic = 4;</code>
+       */
+      public java.lang.String getPic() {
+        return instance.getPic();
+      }
+      /**
+       * <pre>
+       *用户spark界面的封面图
+       * </pre>
+       *
+       * <code>optional string pic = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+      getPicBytes() {
+        return instance.getPicBytes();
+      }
+      /**
+       * <pre>
+       *用户spark界面的封面图
+       * </pre>
+       *
+       * <code>optional string pic = 4;</code>
+       */
+      public Builder setPic(
+              java.lang.String value) {
+        copyOnWrite();
+        instance.setPic(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *用户spark界面的封面图
+       * </pre>
+       *
+       * <code>optional string pic = 4;</code>
+       */
+      public Builder clearPic() {
+        copyOnWrite();
+        instance.clearPic();
+        return this;
+      }
+      /**
+       * <pre>
+       *用户spark界面的封面图
+       * </pre>
+       *
+       * <code>optional string pic = 4;</code>
+       */
+      public Builder setPicBytes(
+              com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setPicBytes(value);
+        return this;
+      }
+
+      /**
+       * <pre>
+       *是否gold用户
+       * </pre>
+       *
+       * <code>optional bool gold = 5;</code>
+       */
+      public boolean getGold() {
+        return instance.getGold();
+      }
+      /**
+       * <pre>
+       *是否gold用户
+       * </pre>
+       *
+       * <code>optional bool gold = 5;</code>
+       */
+      public Builder setGold(boolean value) {
+        copyOnWrite();
+        instance.setGold(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *是否gold用户
+       * </pre>
+       *
+       * <code>optional bool gold = 5;</code>
+       */
+      public Builder clearGold() {
+        copyOnWrite();
+        instance.clearGold();
+        return this;
+      }
+
+      /**
+       * <pre>
+       *是否是认证用户
+       * </pre>
+       *
+       * <code>optional bool verified = 6;</code>
+       */
+      public boolean getVerified() {
+        return instance.getVerified();
+      }
+      /**
+       * <pre>
+       *是否是认证用户
+       * </pre>
+       *
+       * <code>optional bool verified = 6;</code>
+       */
+      public Builder setVerified(boolean value) {
+        copyOnWrite();
+        instance.setVerified(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *是否是认证用户
+       * </pre>
+       *
+       * <code>optional bool verified = 6;</code>
+       */
+      public Builder clearVerified() {
+        copyOnWrite();
+        instance.clearVerified();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:Signup)
+    }
+    protected final Object dynamicMethod(
+            com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
+            Object arg0, Object arg1) {
+      switch (method) {
+        case NEW_MUTABLE_INSTANCE: {
+          return new com.masonsoft.imsdk.core.proto.ProtoMessage.Signup();
+        }
+        case IS_INITIALIZED: {
+          return DEFAULT_INSTANCE;
+        }
+        case MAKE_IMMUTABLE: {
+          return null;
+        }
+        case NEW_BUILDER: {
+          return new Builder();
+        }
+        case VISIT: {
+          Visitor visitor = (Visitor) arg0;
+          com.masonsoft.imsdk.core.proto.ProtoMessage.Signup other = (com.masonsoft.imsdk.core.proto.ProtoMessage.Signup) arg1;
+          sign_ = visitor.visitLong(sign_ != 0L, sign_,
+                  other.sign_ != 0L, other.sign_);
+          nickName_ = visitor.visitString(!nickName_.isEmpty(), nickName_,
+                  !other.nickName_.isEmpty(), other.nickName_);
+          avatar_ = visitor.visitString(!avatar_.isEmpty(), avatar_,
+                  !other.avatar_.isEmpty(), other.avatar_);
+          pic_ = visitor.visitString(!pic_.isEmpty(), pic_,
+                  !other.pic_.isEmpty(), other.pic_);
+          gold_ = visitor.visitBoolean(gold_ != false, gold_,
+                  other.gold_ != false, other.gold_);
+          verified_ = visitor.visitBoolean(verified_ != false, verified_,
+                  other.verified_ != false, other.verified_);
+          if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
+                  .INSTANCE) {
+          }
+          return this;
+        }
+        case MERGE_FROM_STREAM: {
+          com.google.protobuf.CodedInputStream input =
+                  (com.google.protobuf.CodedInputStream) arg0;
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry =
+                  (com.google.protobuf.ExtensionRegistryLite) arg1;
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                default: {
+                  if (!input.skipField(tag)) {
+                    done = true;
+                  }
+                  break;
+                }
+                case 8: {
+
+                  sign_ = input.readInt64();
+                  break;
+                }
+                case 18: {
+                  String s = input.readStringRequireUtf8();
+
+                  nickName_ = s;
+                  break;
+                }
+                case 26: {
+                  String s = input.readStringRequireUtf8();
+
+                  avatar_ = s;
+                  break;
+                }
+                case 34: {
+                  String s = input.readStringRequireUtf8();
+
+                  pic_ = s;
+                  break;
+                }
+                case 40: {
+
+                  gold_ = input.readBool();
+                  break;
+                }
+                case 48: {
+
+                  verified_ = input.readBool();
+                  break;
+                }
+              }
+            }
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw new RuntimeException(e.setUnfinishedMessage(this));
+          } catch (java.io.IOException e) {
+            throw new RuntimeException(
+                    new com.google.protobuf.InvalidProtocolBufferException(
+                            e.getMessage()).setUnfinishedMessage(this));
+          } finally {
+          }
+        }
+        case GET_DEFAULT_INSTANCE: {
+          return DEFAULT_INSTANCE;
+        }
+        case GET_PARSER: {
+          if (PARSER == null) {    synchronized (com.masonsoft.imsdk.core.proto.ProtoMessage.Signup.class) {
+            if (PARSER == null) {
+              PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
+            }
+          }
+          }
+          return PARSER;
+        }
+      }
+      throw new UnsupportedOperationException();
+    }
+
+
+    // @@protoc_insertion_point(class_scope:Signup)
+    private static final com.masonsoft.imsdk.core.proto.ProtoMessage.Signup DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new Signup();
+      DEFAULT_INSTANCE.makeImmutable();
+    }
+
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.Signup getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static volatile com.google.protobuf.Parser<Signup> PARSER;
+
+    public static com.google.protobuf.Parser<Signup> parser() {
       return DEFAULT_INSTANCE.getParserForType();
     }
   }

@@ -1,7 +1,7 @@
 syntax = "proto3";
 option java_package = "com.masonsoft.imsdk.core.proto";
 
-// 最近修改时间-2021-03-26 12:34:02
+// 最近修改时间-2021-04-07 12:34:02
 
 //0
 message Ping
@@ -13,6 +13,7 @@ message ImLogin
 {
   int64 sign = 1;
   string token = 2; //从应用方获取的imtoken
+  int64 ct = 3;//客户端类型 0:Android   1:ios    2:web
 }
 //2
 message ImLogout
@@ -201,4 +202,14 @@ message ProfileOnline
 message UsrOffline
 {
   int64 uid = 1;
+}
+//53 for demo：注册新用户
+message Signup
+{
+  int64 sign = 1;
+  string nick_name = 2;
+  string avatar = 3;
+  string pic = 4;//用户spark界面的封面图
+  bool gold = 5;//是否gold用户
+  bool verified = 6;//是否是认证用户
 }
