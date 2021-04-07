@@ -10,7 +10,6 @@ import com.idonans.core.Progress;
 import com.idonans.core.Singleton;
 import com.idonans.core.thread.TaskQueue;
 import com.idonans.core.thread.Threads;
-import com.idonans.core.util.FileUtil;
 import com.masonsoft.imsdk.core.block.MessageBlock;
 import com.masonsoft.imsdk.core.db.LocalSendingMessage;
 import com.masonsoft.imsdk.core.db.LocalSendingMessageProvider;
@@ -26,7 +25,6 @@ import com.masonsoft.imsdk.lang.SafetyRunnable;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.Preconditions;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -144,14 +142,6 @@ public class IMMessageUploadManager {
          */
         private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN = sNextErrorCode++;
         /**
-         * 文件不存在
-         */
-        private static final int ERROR_CODE_FILE_NOT_EXISTS = sNextErrorCode++;
-        /**
-         * 文件为空
-         */
-        private static final int ERROR_CODE_FILE_EMPTY = sNextErrorCode++;
-        /**
          * 文件上传失败
          */
         private static final int ERROR_CODE_FILE_UPLOAD_FAIL = sNextErrorCode++;
@@ -176,8 +166,6 @@ public class IMMessageUploadManager {
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_FILE_NOT_EXISTS, "ERROR_CODE_FILE_NOT_EXISTS");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_FILE_EMPTY, "ERROR_CODE_FILE_EMPTY");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_FILE_UPLOAD_FAIL, "ERROR_CODE_FILE_UPLOAD_FAIL");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_FAIL, "ERROR_CODE_MESSAGE_PACKET_SEND_FAIL");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT, "ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT");
@@ -353,21 +341,11 @@ public class IMMessageUploadManager {
                 return null;
             }
 
-            private String uploadFile(final String filePath, @NonNull final Progress progress) {
-                final File file = new File(filePath);
-                if (!FileUtil.isFile(file)) {
-                    throw new LocalErrorCodeException(LocalErrorCode.ERROR_CODE_FILE_NOT_EXISTS);
-                }
-                final long fileLength = file.length();
-                if (fileLength <= 0) {
-                    throw new LocalErrorCodeException(LocalErrorCode.ERROR_CODE_FILE_EMPTY);
-                }
-                progress.set(fileLength, 0);
-
+            private String uploadFile(final String fileUri, @NonNull final Progress progress) {
                 try {
                     final String accessUrl = FileUploadManager.getInstance().getFileUploadProvider()
-                            .uploadFile(filePath, progress);
-                    IMLog.v("uploadFile success %s -> %s", filePath, accessUrl);
+                            .uploadFile(fileUri, progress);
+                    IMLog.v("uploadFile success %s -> %s", fileUri, accessUrl);
                     return accessUrl;
                 } catch (Throwable e) {
                     IMLog.e(e);
