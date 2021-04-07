@@ -76,7 +76,7 @@ public class SendMessageTypeVideoValidateProcessor extends SendMessageTypeValida
         } else {
             validateLocalVideoPath = true;
             if (videoPath.startsWith("file://")) {
-                videoPath = videoPath.substring(6);
+                videoPath = videoPath.substring(7);
 
                 // 应用文件地址变更
                 body.set(videoPath);
@@ -151,7 +151,7 @@ public class SendMessageTypeVideoValidateProcessor extends SendMessageTypeValida
         } else {
             validateLocalThumbPath = true;
             if (thumbPath.startsWith("file://")) {
-                thumbPath = thumbPath.substring(6);
+                thumbPath = thumbPath.substring(7);
 
                 // 应用文件地址变更
                 thumb.set(thumbPath);

@@ -1,18 +1,23 @@
 package com.masonsoft.imsdk.core;
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 
 import com.idonans.core.Progress;
 import com.idonans.core.Singleton;
+import com.idonans.core.manager.TmpFileManager;
 import com.idonans.core.util.ContextUtil;
 import com.idonans.core.util.FileUtil;
+import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.lang.ImageInfo;
 import com.masonsoft.imsdk.util.BitmapUtil;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.io.File;
+import java.io.InputStream;
 
 import top.zibin.luban.Luban;
 
@@ -82,21 +87,21 @@ public class FileUploadManager {
 
         @NonNull
         @Override
-        public String uploadFile(@NonNull String filePath, @NonNull Progress progress) throws Throwable {
-            final String cache = MemoryFullCache.DEFAULT.getFullCache(filePath);
+        public String uploadFile(@NonNull String fileUri, @NonNull Progress progress) throws Throwable {
+            final String cache = MemoryFullCache.DEFAULT.getFullCache(fileUri);
             if (cache != null) {
                 IMLog.v(Objects.defaultObjectTag(this) + " uploadFile cache hit. %s -> %s",
-                        filePath, cache);
+                        fileUri, cache);
                 return cache;
             }
 
-            final String compressFilePath = compressImage(filePath);
-            IMLog.v(Objects.defaultObjectTag(this) + " compress image %s -> %s", filePath, compressFilePath);
+            final String compressFilePath = compressImage(fileUri);
+            IMLog.v(Objects.defaultObjectTag(this) + " compress image %s -> %s", fileUri, compressFilePath);
 
             final FileUploadProvider provider = mProvider;
             if (provider != null) {
                 final String accessUrl = provider.uploadFile(compressFilePath, progress);
-                MemoryFullCache.DEFAULT.addFullCache(filePath, accessUrl);
+                MemoryFullCache.DEFAULT.addFullCache(fileUri, accessUrl);
                 return accessUrl;
             }
             throw new IllegalAccessError("provider not found");
@@ -105,18 +110,45 @@ public class FileUploadManager {
         /**
          * 压缩图片
          *
-         * @param filePath 图片的本地路径
+         * @param fileUri 图片 Uri
          * @return 如果成功压缩图片，返回压缩后的图片路径。如果不是图片格式，返回原始路径。
          * @throws Throwable
          */
         @NonNull
-        private String compressImage(@NonNull String filePath) throws Throwable {
+        private String compressImage(@NonNull String fileUri) throws Throwable {
+            final Uri uri = Uri.parse(fileUri);
+            final String scheme = uri.getScheme();
+            File tmpFile = null;
+            String filePath = null;
+            if ("content".equalsIgnoreCase(scheme)) {
+                InputStream is = null;
+                try {
+                    tmpFile = TmpFileManager.getInstance().createNewTmpFileQuietly("__compress_image_copy_", null);
+                    if (tmpFile == null) {
+                        throw new IllegalAccessError("tmp file create fail");
+                    }
+                    is = ContextUtil.getContext().getContentResolver().openInputStream(uri);
+                    IOUtil.copy(is, tmpFile, null, null);
+                    filePath = tmpFile.getAbsolutePath();
+                } catch (Throwable e) {
+                    FileUtil.deleteFileQuietly(tmpFile);
+                    tmpFile = null;
+                    throw e;
+                } finally {
+                    IOUtil.closeQuietly(is);
+                }
+            } else if ("file".equalsIgnoreCase(scheme)) {
+                filePath = fileUri.substring(7);
+            } else {
+                filePath = fileUri;
+            }
+
             final File file = new File(filePath);
             if (!FileUtil.isFile(file)) {
                 throw new IllegalAccessError(filePath + " is not a exists file");
             }
 
-            final ImageInfo imageInfo = BitmapUtil.decodeImageInfo(filePath);
+            final ImageInfo imageInfo = BitmapUtil.decodeImageInfo(Uri.fromFile(file));
             if (imageInfo == null) {
                 // not a image
                 return filePath;

@@ -74,7 +74,7 @@ public class BitmapUtil {
             final String scheme = imageUri.getScheme();
             final String imageUriString = imageUri.toString();
             if ("file".equalsIgnoreCase(scheme)) {
-                final String filePath = imageUriString.substring("file://".length() - 1);
+                final String filePath = imageUriString.substring(7);
                 final ImageInfo imageInfo = decodeImageInfoFromFile(new File(filePath));
                 if (imageInfo == null) {
                     return null;
@@ -87,8 +87,9 @@ public class BitmapUtil {
                 InputStream is = null;
                 File tmpFile = null;
                 try {
-                    tmpFile = TmpFileManager.getInstance().createNewTmpFileQuietly("imsdk_bitmap_decode", null);
+                    tmpFile = TmpFileManager.getInstance().createNewTmpFileQuietly("__decode_image_copy_", null);
                     if (tmpFile == null) {
+                        IMLog.e("tmp file create fail");
                         return null;
                     }
                     is = ContextUtil.getContext().getContentResolver().openInputStream(imageUri);

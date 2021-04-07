@@ -67,7 +67,7 @@ public class SendMessageTypeAudioValidateProcessor extends SendMessageTypeValida
         }
 
         if (audioPath.startsWith("file://")) {
-            audioPath = audioPath.substring(6);
+            audioPath = audioPath.substring(7);
 
             // 应用文件地址变更
             audio.set(audioPath);
