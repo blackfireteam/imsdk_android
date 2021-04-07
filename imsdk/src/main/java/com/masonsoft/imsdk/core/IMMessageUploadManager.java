@@ -368,8 +368,6 @@ public class IMMessageUploadManager {
                     final String accessUrl = FileUploadManager.getInstance().getFileUploadProvider()
                             .uploadFile(filePath, progress);
                     IMLog.v("uploadFile success %s -> %s", filePath, accessUrl);
-                    // 设置进度为 100%
-                    progress.setCurrent(fileLength);
                     return accessUrl;
                 } catch (Throwable e) {
                     IMLog.e(e);
