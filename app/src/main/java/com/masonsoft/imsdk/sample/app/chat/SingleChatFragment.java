@@ -269,9 +269,8 @@ public class SingleChatFragment extends SystemInsetsFragment {
                     return;
                 }
                 mSoftKeyboardHelper.requestHideAllSoftKeyboard();
-                // TODO
+                submitImageMessage(imageInfoList);
             }
-
         });
 
         ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmoji, View.VISIBLE);
@@ -303,6 +302,29 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 mTargetUserId,
                 new IMSessionMessage.WeakEnqueueCallbackAdapter(mEnqueueCallback, true)
         );
+    }
+
+    private void submitImageMessage(@NonNull List<ImageData.ImageInfo> imageInfoList) {
+        final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+        if (binding == null) {
+            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        for (ImageData.ImageInfo imageInfo : imageInfoList) {
+            final IMMessage imMessage = IMMessageFactory.createImageMessage(imageInfo.path);
+            IMMessageQueueManager.getInstance().enqueueSendMessage(
+                    imMessage,
+                    mTargetUserId,
+                    new IMSessionMessage.EnqueueCallbackAdapter() {
+                        @Override
+                        public void onEnqueueFail(@NonNull IMSessionMessage imSessionMessage, int errorCode, String errorMessage) {
+                            super.onEnqueueFail(imSessionMessage, errorCode, errorMessage);
+                            TipUtil.show(errorMessage);
+                        }
+                    }
+            );
+        }
     }
 
     private void clearPresenter() {
