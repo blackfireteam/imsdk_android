@@ -29,7 +29,7 @@ public class ImagePickerGridViewHolder extends UnionTypeViewHolder {
         ImageData imageData = itemObject.getExtObjectObject1(null);
         UnionTypeImageData unionTypeImageData = itemObject.getExtObjectObject2(null);
 
-        mBinding.image.setUrl(imageInfo.path);
+        mBinding.image.setUrl(imageInfo.uri.toString());
         int selectedIndex = imageData.indexOfSelected(imageInfo);
         if (selectedIndex >= 0) {
             mBinding.flagSelect.setSelected(true);

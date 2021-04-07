@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk;
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -29,13 +31,13 @@ public class IMMessageFactory {
     /**
      * 图片消息
      *
-     * @param localImagePath 图片的本地完整路径
+     * @param imageUri 图片 Uri
      */
     @NonNull
-    public static IMMessage createImageMessage(String localImagePath) {
+    public static IMMessage createImageMessage(Uri imageUri) {
         final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.IMAGE);
-        target.body.set(localImagePath);
+        target.body.set(imageUri.toString());
         return target;
     }
 

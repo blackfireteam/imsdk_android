@@ -29,14 +29,14 @@ public class ImagePickerBucketViewHolder extends UnionTypeViewHolder {
         final ImageData imageData = itemObject.getExtObjectObject1(null);
         String url = null;
         if (imageBucket.cover != null) {
-            url = imageBucket.cover.path;
+            url = imageBucket.cover.uri.toString();
         }
         mBinding.image.setUrl(url);
         mBinding.count.setText(String.valueOf(imageBucket.imageInfoList.size()));
         if (imageBucket.allImageInfo) {
             mBinding.title.setText(R.string.imsdk_sample_custom_soft_keyboard_item_image_bucket_all);
         } else {
-            mBinding.title.setText(imageBucket.name);
+            mBinding.title.setText(imageBucket.bucketDisplayName);
         }
         ViewUtil.onClick(itemView, v -> {
             if (itemObject.getExtHolderItemClick1() != null) {

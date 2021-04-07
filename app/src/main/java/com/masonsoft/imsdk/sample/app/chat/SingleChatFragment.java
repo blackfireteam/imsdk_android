@@ -312,7 +312,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
         }
 
         for (ImageData.ImageInfo imageInfo : imageInfoList) {
-            final IMMessage imMessage = IMMessageFactory.createImageMessage(imageInfo.path);
+            final IMMessage imMessage = IMMessageFactory.createImageMessage(imageInfo.uri);
             IMMessageQueueManager.getInstance().enqueueSendMessage(
                     imMessage,
                     mTargetUserId,

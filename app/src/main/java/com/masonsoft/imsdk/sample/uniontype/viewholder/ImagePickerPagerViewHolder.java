@@ -1,7 +1,5 @@
 package com.masonsoft.imsdk.sample.uniontype.viewholder;
 
-import android.net.Uri;
-
 import androidx.annotation.NonNull;
 
 import com.idonans.uniontype.Host;
@@ -12,8 +10,6 @@ import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImagePickerPagerBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
-
-import java.io.File;
 
 public class ImagePickerPagerViewHolder extends UnionTypeViewHolder {
 
@@ -31,8 +27,8 @@ public class ImagePickerPagerViewHolder extends UnionTypeViewHolder {
         final ImageData.ImageInfo imageInfo = itemObject.object;
         final ImageData imageData = itemObject.getExtObjectObject1(null);
 
-        SampleLog.v("ImagePickerPagerViewHolder onBind position:%s path:%s", position, imageInfo.path);
-        mBinding.image.setPhotoUri(Uri.fromFile(new File(imageInfo.path)));
+        SampleLog.v("ImagePickerPagerViewHolder onBind position:%s uri:%s", position, imageInfo.uri);
+        mBinding.image.setPhotoUri(imageInfo.uri);
 
         mBinding.image.setOnPhotoTapListener((view, x, y) -> {
             if (itemObject.getExtHolderItemClick1() != null) {

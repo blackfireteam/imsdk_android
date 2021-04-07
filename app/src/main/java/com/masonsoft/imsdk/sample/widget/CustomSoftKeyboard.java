@@ -336,7 +336,7 @@ public class CustomSoftKeyboard extends FrameLayout {
 
             for (ImageData.ImageInfo imageInfo : imageInfoList) {
                 if (!imageInfo.isImageMimeType()) {
-                    Throwable e = new Throwable("unknown mime type:" + imageInfo.mimeType + ", path:" + imageInfo.path);
+                    Throwable e = new Throwable("unknown mime type:" + imageInfo.mimeType + ", uri:" + imageInfo.uri);
                     SampleLog.e(e);
                     return false;
                 }

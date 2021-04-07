@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.ObjectsCompat;
 
-import com.google.common.base.Preconditions;
 import com.idonans.core.WeakAbortSignal;
 import com.idonans.core.thread.Threads;
 import com.idonans.core.util.AbortUtil;
@@ -21,6 +20,7 @@ import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.util.Preconditions;
 
 import java.io.Closeable;
 import java.io.File;
@@ -32,7 +32,7 @@ import java.util.Objects;
 
 public class ImageData {
 
-    private static final boolean USE_DOCUMENT_ID = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+    private static final boolean USE_CONTENT_URI = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
     @NonNull
     public final ImageBucket allImageInfoListBucket;
@@ -41,7 +41,7 @@ public class ImageData {
     public final List<ImageBucket> allSubBuckets;
 
     @NonNull
-    public final Map<String, ImageInfo> allImageInfoListMap;
+    public final Map<Uri, ImageInfo> allImageInfoListMap;
 
     public ImageBucket bucketSelected;
 
@@ -51,7 +51,7 @@ public class ImageData {
     @NonNull
     public final ImageSelector imageSelector;
 
-    public ImageData(@NonNull ImageBucket allImageInfoListBucket, @NonNull List<ImageBucket> allSubBuckets, @NonNull Map<String, ImageInfo> allImageInfoListMap, @NonNull ImageSelector imageSelector) {
+    public ImageData(@NonNull ImageBucket allImageInfoListBucket, @NonNull List<ImageBucket> allSubBuckets, @NonNull Map<Uri, ImageInfo> allImageInfoListMap, @NonNull ImageSelector imageSelector) {
         this.allImageInfoListBucket = allImageInfoListBucket;
         this.allSubBuckets = allSubBuckets;
         this.allImageInfoListMap = allImageInfoListMap;
@@ -69,9 +69,8 @@ public class ImageData {
     }
 
     public static class ImageInfo {
-        public String documentId;
         @NonNull
-        public String path;
+        public Uri uri;
         public long size;
         public int width;
         public int height;
@@ -81,6 +80,9 @@ public class ImageData {
         public int id;
         @NonNull
         public ImageBucket imageBucket;
+
+        private String bucketId;
+        private String bucketDisplayName;
 
         public boolean isImageMimeType() {
             return this.mimeType != null && this.mimeType.startsWith("image/");
@@ -102,12 +104,12 @@ public class ImageData {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             ImageInfo imageInfo = (ImageInfo) o;
-            return Objects.equals(path, imageInfo.path);
+            return Objects.equals(uri, imageInfo.uri);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(path);
+            return Objects.hash(this.uri);
         }
 
         @NonNull
@@ -115,8 +117,7 @@ public class ImageData {
             //noinspection StringBufferReplaceableByString
             final StringBuilder builder = new StringBuilder();
             builder.append("ImageInfo");
-            builder.append(" documentId:").append(this.documentId);
-            builder.append(" path:").append(this.path);
+            builder.append(" uri:").append(this.uri);
             builder.append(" size:").append(this.size).append(" ").append(HumanUtil.getHumanSizeFromByte(this.size));
             builder.append(" width:").append(this.width);
             builder.append(" height:").append(this.height);
@@ -124,6 +125,8 @@ public class ImageData {
             builder.append(" title:").append(this.title);
             builder.append(" addTime:").append(this.addTime);
             builder.append(" id:").append(this.id);
+            builder.append(" bucketId:").append(this.bucketId);
+            builder.append(" bucketDisplayName:").append(this.bucketDisplayName);
             return builder.toString();
         }
 
@@ -139,8 +142,8 @@ public class ImageData {
          * 是否是总的那个 bucket, 包含了所有的图片
          */
         public boolean allImageInfo;
-        public String name;
-        public String path;
+        public String bucketDisplayName;
+        public String bucketId;
         @Nullable
         public ImageInfo cover;
 
@@ -153,12 +156,12 @@ public class ImageData {
             if (o == null || getClass() != o.getClass()) return false;
             ImageBucket that = (ImageBucket) o;
             return allImageInfo == that.allImageInfo &&
-                    ObjectsCompat.equals(path, that.path);
+                    ObjectsCompat.equals(bucketId, that.bucketId);
         }
 
         @Override
         public int hashCode() {
-            return ObjectsCompat.hash(allImageInfo, path);
+            return ObjectsCompat.hash(allImageInfo, bucketId);
         }
     }
 
@@ -193,13 +196,13 @@ public class ImageData {
 
         @Override
         public void run() {
-            final ImageBucket allImageInfosBucket = new ImageBucket();
-            allImageInfosBucket.allImageInfo = true;
+            final ImageBucket allImageInfoBucket = new ImageBucket();
+            allImageInfoBucket.allImageInfo = true;
 
             final List<ImageBucket> allBuckets = new ArrayList<>();
-            allBuckets.add(allImageInfosBucket);
+            allBuckets.add(allImageInfoBucket);
 
-            final Map<String, ImageInfo> allImageInfosMap = new HashMap<>();
+            final Map<Uri, ImageInfo> allImageInfoMap = new HashMap<>();
 
             Cursor cursor = null;
             try {
@@ -222,11 +225,11 @@ public class ImageData {
                         continue;
                     }
 
-                    if (allImageInfosBucket.cover == null) {
-                        allImageInfosBucket.cover = itemImageInfo;
+                    if (allImageInfoBucket.cover == null) {
+                        allImageInfoBucket.cover = itemImageInfo;
                     }
-                    allImageInfosBucket.imageInfoList.add(itemImageInfo);
-                    allImageInfosMap.put(itemImageInfo.path, itemImageInfo);
+                    allImageInfoBucket.imageInfoList.add(itemImageInfo);
+                    allImageInfoMap.put(itemImageInfo.uri, itemImageInfo);
 
                     ImageBucket newBucket = createImageBucket(itemImageInfo);
                     ImageBucket oldBucket = queryOldImageBucket(allBuckets, newBucket);
@@ -246,13 +249,13 @@ public class ImageData {
                 AbortUtil.throwIfAbort(this);
                 ImageLoaderCallback callback = getCallback();
                 if (callback != null) {
-                    callback.onLoadFinish(new ImageData(allImageInfosBucket, allBuckets, allImageInfosMap, mImageSelector));
+                    callback.onLoadFinish(new ImageData(allImageInfoBucket, allBuckets, allImageInfoMap, mImageSelector));
                 }
             } catch (Throwable e) {
                 SampleLog.e(e);
                 ImageLoaderCallback callback = getCallback();
                 if (callback != null) {
-                    callback.onLoadFinish(new ImageData(allImageInfosBucket, allBuckets, allImageInfosMap, mImageSelector));
+                    callback.onLoadFinish(new ImageData(allImageInfoBucket, allBuckets, allImageInfoMap, mImageSelector));
                 }
             } finally {
                 IOUtil.closeQuietly(cursor);
@@ -274,20 +277,17 @@ public class ImageData {
             ImageBucket target = new ImageBucket();
             target.cover = imageInfo;
             target.imageInfoList.add(imageInfo);
-
-            File dir = new File(imageInfo.path).getParentFile();
-            target.path = dir.getAbsolutePath();
-            target.name = dir.getName();
-
+            target.bucketId = imageInfo.bucketId;
+            target.bucketDisplayName = imageInfo.bucketDisplayName;
             return target;
         }
 
         @NonNull
         private String[] allColumns() {
-            if (USE_DOCUMENT_ID) {
+            if (USE_CONTENT_URI) {
                 return new String[]{
-                        MediaStore.Images.Media.DOCUMENT_ID,
-                        MediaStore.Images.Media.DATA,           // 图片的真实路径  /storage/emulated/0/pp/downloader/wallpaper/aaa.jpg
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
                         MediaStore.Images.Media.SIZE,           //图片的大小，long型  132492
                         MediaStore.Images.Media.WIDTH,          //图片的宽度，int型  1920
                         MediaStore.Images.Media.HEIGHT,         //图片的高度，int型  1080
@@ -295,10 +295,17 @@ public class ImageData {
                         MediaStore.Images.Media.TITLE,
                         MediaStore.Images.Media.DATE_ADDED,    //添加时间
                         MediaStore.Images.Media._ID,      //id
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
+                        MediaStore.Images.Media.BUCKET_ID,
+                        MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
                 };
             } else {
                 return new String[]{
-                        MediaStore.Images.Media.DATA,           // 图片的真实路径  /storage/emulated/0/pp/downloader/wallpaper/aaa.jpg
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
                         MediaStore.Images.Media.SIZE,           //图片的大小，long型  132492
                         MediaStore.Images.Media.WIDTH,          //图片的宽度，int型  1920
                         MediaStore.Images.Media.HEIGHT,         //图片的高度，int型  1080
@@ -306,6 +313,11 @@ public class ImageData {
                         MediaStore.Images.Media.TITLE,
                         MediaStore.Images.Media.DATE_ADDED,    //添加时间
                         MediaStore.Images.Media._ID,      //id
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
+                        MediaStore.Images.Media.DATA,           // 图片的真实路径  /storage/emulated/0/pp/downloader/wallpaper/aaa.jpg
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
                 };
             }
         }
@@ -314,10 +326,6 @@ public class ImageData {
         private ImageInfo cursorToImageInfo(Cursor cursor) {
             ImageInfo target = new ImageInfo();
             int index = -1;
-            if (USE_DOCUMENT_ID) {
-                target.documentId = cursor.getString(++index);
-            }
-            target.path = cursor.getString(++index);
             target.size = cursor.getLong(++index);
             target.width = cursor.getInt(++index);
             target.height = cursor.getInt(++index);
@@ -329,16 +337,34 @@ public class ImageData {
             target.addTime = cursor.getLong(++index);
             target.id = cursor.getInt(++index);
 
-            IMLog.v("cursorToImageInfo USE_DOCUMENT_ID:%s -> %s", USE_DOCUMENT_ID, target);
-
-            if (TextUtils.isEmpty(target.path)) {
-                SampleLog.v("invalid path:%s", target.path);
-                return null;
+            if (USE_CONTENT_URI) {
+                target.bucketId = cursor.getString(++index);
+                target.bucketDisplayName = cursor.getString(++index);
+                target.uri = MediaStore.Images.Media
+                        .EXTERNAL_CONTENT_URI
+                        .buildUpon()
+                        .appendPath(String.valueOf(target.id))
+                        .build();
+            } else {
+                final String path = cursor.getString(++index);
+                if (TextUtils.isEmpty(path)) {
+                    SampleLog.v("invalid path:%s, target:%s", path, target);
+                    return null;
+                }
+                final File dir = new File(path).getParentFile();
+                Preconditions.checkNotNull(dir);
+                target.bucketId = dir.getAbsolutePath();
+                target.bucketDisplayName = dir.getName();
+                target.uri = Uri.fromFile(new File(path));
             }
+
+            IMLog.v("cursorToImageInfo USE_CONTENT_URI:%s -> %s", USE_CONTENT_URI, target);
+
             if (TextUtils.isEmpty(target.mimeType)) {
                 SampleLog.v("invalid mimeType:%s", target.mimeType);
                 return null;
             }
+
             return target;
         }
 

@@ -139,7 +139,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
         String bucketSelectedName = I18nResources.getString(R.string.imsdk_sample_custom_soft_keyboard_item_image);
         if (mUnionTypeImageData.imageData.bucketSelected != null
                 && !mUnionTypeImageData.imageData.bucketSelected.allImageInfo) {
-            bucketSelectedName = mUnionTypeImageData.imageData.bucketSelected.name;
+            bucketSelectedName = mUnionTypeImageData.imageData.bucketSelected.bucketDisplayName;
         }
         mGridView.mGridTopBarTitle.setText(bucketSelectedName);
         mGridView.updateConfirmNextStatus();
