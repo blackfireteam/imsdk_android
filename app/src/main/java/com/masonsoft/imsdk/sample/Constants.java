@@ -29,15 +29,15 @@ public class Constants {
     /**
      * 图片选择中允许的最大图片尺寸(width*height*4)
      */
-    public static final long SELECTOR_MAX_IMAGE_SIZE = 50 * HumanUtil.MB;
+    public static final long SELECTOR_MAX_IMAGE_SIZE = 200 * HumanUtil.MB;
     /**
      * 图片选择中允许的最大图片文件大小
      */
-    public static final long SELECTOR_MAX_IMAGE_FILE_SIZE = 10 * HumanUtil.MB;
+    public static final long SELECTOR_MAX_IMAGE_FILE_SIZE = 15 * HumanUtil.MB;
     /**
      * 视频选择中允许的最大视频文件大小(file.length)
      */
-    public static final long SELECTOR_MAX_VIDEO_SIZE = 200 * HumanUtil.MB;
+    public static final long SELECTOR_MAX_VIDEO_SIZE = 300 * HumanUtil.MB;
     /**
      * 视频选择中允许的最长时长 ms (video.duration)
      */
