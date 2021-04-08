@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.idonans.core.util.DimenUtil;
@@ -32,6 +33,11 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
         initFromAttributes(context, attrs, defStyleAttr, 0);
     }
 
+    public IMConversationUnreadCountView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
+    }
+
     private Paint mBackgroundPaint;
     private Paint mTextPaint;
 
@@ -39,7 +45,7 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
 
     private long mUnreadCount;
     private String mUnreadCountText;
-    private RectF mTextRect = new RectF();
+    private final RectF mTextRect = new RectF();
 
     private final int mDefaultMeasureSize = DimenUtil.dp2px(18);
     private final int mAdjustPaddingLeftRight = DimenUtil.dp2px(5);
@@ -73,11 +79,11 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
     }
 
     @Override
-    protected void onConversationUpdate(@Nullable IMConversation imConversation) {
-        if (imConversation == null) {
+    protected void onConversationUpdate(@Nullable IMConversation conversation) {
+        if (conversation == null) {
             setUnreadCount(0L);
         } else {
-            setUnreadCount(imConversation.unreadCount.getOrDefault(0L));
+            setUnreadCount(conversation.unreadCount.getOrDefault(0L));
         }
     }
 

@@ -52,18 +52,18 @@ public abstract class IMConversationChangedViewHelper {
         }
         mRequestHolder.set(Single.fromCallable(
                 () -> {
-                    final IMConversation imConversation = IMConversationManager.getInstance().getConversation(
+                    final IMConversation conversation = IMConversationManager.getInstance().getConversation(
                             mSessionUserId,
                             mConversationId
                     );
-                    return new ObjectWrapper(imConversation);
+                    return new ObjectWrapper(conversation);
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(objectWrapper -> onConversationChanged((IMConversation) objectWrapper.getObject()), SampleLog::e));
     }
 
-    protected abstract void onConversationChanged(@Nullable IMConversation imConversation);
+    protected abstract void onConversationChanged(@Nullable IMConversation conversation);
 
     @SuppressWarnings("FieldCanBeLocal")
     private final ConversationObservable.ConversationObserver mConversationObserver = new ConversationObservable.ConversationObserver() {

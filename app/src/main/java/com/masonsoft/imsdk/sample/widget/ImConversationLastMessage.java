@@ -42,16 +42,16 @@ public class ImConversationLastMessage extends IMConversationDynamicFrameLayout 
     }
 
     @Override
-    protected void onConversationUpdate(@Nullable IMConversation imConversation) {
-        if (imConversation == null) {
+    protected void onConversationUpdate(@Nullable IMConversation conversation) {
+        if (conversation == null) {
             ViewUtil.setVisibilityIfChanged(mLastMessageView, View.GONE);
         } else {
             ViewUtil.setVisibilityIfChanged(mLastMessageView, View.VISIBLE);
             mLastMessageView.setMessage(
-                    imConversation._sessionUserId.get(),
-                    imConversation.type.get(),
-                    imConversation.targetUserId.get(),
-                    imConversation.showMessageId.getOrDefault(0L)
+                    conversation._sessionUserId.get(),
+                    conversation.type.get(),
+                    conversation.targetUserId.get(),
+                    conversation.showMessageId.getOrDefault(0L)
             );
         }
     }

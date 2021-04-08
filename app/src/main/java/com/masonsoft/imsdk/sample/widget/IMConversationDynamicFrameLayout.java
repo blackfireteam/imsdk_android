@@ -36,8 +36,8 @@ public abstract class IMConversationDynamicFrameLayout extends FrameLayout {
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mConversationChangedViewHelper = new IMConversationChangedViewHelper() {
             @Override
-            protected void onConversationChanged(@Nullable IMConversation imConversation) {
-                IMConversationDynamicFrameLayout.this.onConversationUpdate(imConversation);
+            protected void onConversationChanged(@Nullable IMConversation conversation) {
+                IMConversationDynamicFrameLayout.this.onConversationUpdate(conversation);
             }
         };
     }
@@ -54,6 +54,6 @@ public abstract class IMConversationDynamicFrameLayout extends FrameLayout {
         return mConversationChangedViewHelper.getConversationId();
     }
 
-    protected abstract void onConversationUpdate(@Nullable IMConversation imConversation);
+    protected abstract void onConversationUpdate(@Nullable IMConversation conversation);
 
 }
