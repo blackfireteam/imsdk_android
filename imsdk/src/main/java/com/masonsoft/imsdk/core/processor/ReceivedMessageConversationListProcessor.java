@@ -7,12 +7,14 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMSessionManager;
+import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.db.Conversation;
 import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
 import com.masonsoft.imsdk.core.db.ConversationFactory;
 import com.masonsoft.imsdk.core.db.DatabaseHelper;
 import com.masonsoft.imsdk.core.db.DatabaseProvider;
 import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
+import com.masonsoft.imsdk.core.db.Sequence;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.util.Objects;
@@ -26,6 +28,8 @@ import java.util.List;
  * @since 1.0
  */
 public class ReceivedMessageConversationListProcessor extends ReceivedMessageNotNullValidateProcessor {
+
+    private static final long NEW_SEQ_DIFF = 1577808000000000L;
 
     @Override
     protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
@@ -78,6 +82,8 @@ public class ReceivedMessageConversationListProcessor extends ReceivedMessageNot
 
                     if (dbConversation == null) {
                         // 会话在本地不存在
+                        // 设置一个较小的 seq
+                        conversation.localSeq.set(Sequence.create(SignGenerator.next() - NEW_SEQ_DIFF));
                         if (!ConversationDatabaseProvider.getInstance().insertConversation(sessionUserId, conversation)) {
                             final Throwable e = new IllegalAccessError("unexpected insertConversation return false " + conversation);
                             IMLog.e(e);
