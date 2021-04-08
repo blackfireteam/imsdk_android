@@ -12,24 +12,24 @@ import com.idonans.lang.util.ViewUtil;
 import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.sample.Constants;
 
-public class ImConversationLastMessage extends IMConversationDynamicFrameLayout {
+public class IMConversationLastMessage extends IMConversationDynamicFrameLayout {
 
     private final boolean DEBUG = Constants.DEBUG_WIDGET;
 
-    public ImConversationLastMessage(Context context) {
+    public IMConversationLastMessage(Context context) {
         this(context, null);
     }
 
-    public ImConversationLastMessage(Context context, AttributeSet attrs) {
+    public IMConversationLastMessage(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ImConversationLastMessage(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IMConversationLastMessage(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initFromAttributes(context, attrs, defStyleAttr, 0);
     }
 
-    public ImConversationLastMessage(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public IMConversationLastMessage(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }

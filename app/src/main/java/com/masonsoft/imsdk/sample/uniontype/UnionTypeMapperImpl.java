@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk.sample.uniontype;
 
 import com.idonans.dynamic.uniontype.loadingstatus.UnionTypeLoadingStatus;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.IMConversationViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageImageReceivedViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageImageSendViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageTextReceivedViewHolder;
@@ -22,7 +23,7 @@ public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND = sNextUnionType++; // 聊天消息-发送的图片
 
     public UnionTypeMapperImpl() {
-        // TODO FIXME add UNION_TYPE_IMPL_IM_CONVERSATION
+        put(UNION_TYPE_IMPL_IM_CONVERSATION, IMConversationViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_TEXT_RECEIVED, IMMessageTextReceivedViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_TEXT_SEND, IMMessageTextSendViewHolder::new);
         put(UNION_TYPE_IMPL_IMAGE_PICKER_GRID, ImagePickerGridViewHolder::new);
