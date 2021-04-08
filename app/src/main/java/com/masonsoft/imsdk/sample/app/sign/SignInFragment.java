@@ -149,7 +149,7 @@ public class SignInFragment extends SystemInsetsFragment {
             ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_empty_phone));
             return;
         }
-        final String localHost = mBinding.editText.getText().toString().trim();
+        final String localHost = mBinding.localHost.getText().toString().trim();
         if (TextUtils.isEmpty(localHost)) {
             ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_empty_local_host));
             return;
