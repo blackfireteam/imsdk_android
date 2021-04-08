@@ -67,9 +67,9 @@ public class IMConversationTimeView extends IMConversationDynamicFrameLayout {
 
     private String buildConversationTime(@NonNull IMConversation conversation) {
         // 用会话的更新时间
-        final long lastModifyMs = conversation.lastModifyMs.getOrDefault(0L);
-        if (lastModifyMs > 0) {
-            return FormatUtil.getHumanTimeDistance(lastModifyMs, new FormatUtil.DefaultShortDateFormatOptions());
+        final long timeMs = conversation.timeMs.getOrDefault(0L);
+        if (timeMs > 0) {
+            return FormatUtil.getHumanTimeDistance(timeMs, new FormatUtil.DefaultShortDateFormatOptions());
         }
 
         return null;
