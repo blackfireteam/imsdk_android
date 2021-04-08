@@ -65,22 +65,24 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
     }
 
     @Override
-    protected void onMessageUpdate(@Nullable IMMessage imMessage) {
+    protected void onMessageUpdate(@Nullable IMMessage message) {
         if (DEBUG) {
-            SampleLog.v("onMessageUpdate %s", imMessage);
+            SampleLog.v("onMessageUpdate %s", message);
         }
-        if (imMessage == null) {
-            mTextView.setText(null);
+        if (message == null) {
+            // TODO FIXME
+            mTextView.setText("message is null");
         } else {
-            mTextView.setText(buildStatusText(imMessage));
+            // TODO FIXME
+            mTextView.setText("message id:" + message.id.get() + buildStatusText(message));
         }
     }
 
-    private CharSequence buildStatusText(@NonNull IMMessage imMessage) {
+    private CharSequence buildStatusText(@NonNull IMMessage message) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        if (!imMessage.sendState.isUnset()) {
+        if (!message.sendState.isUnset()) {
             // 消息发送状态
-            switch (imMessage.sendState.get()) {
+            switch (message.sendState.get()) {
                 case IMConstants.SendStatus.IDLE:
                 case IMConstants.SendStatus.SENDING:
                     SpannableString sendingSpan = new SpannableString("[sending]");
@@ -96,7 +98,7 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
         }
 
         String msgText;
-        switch (imMessage.type.getOrDefault(-1)) {
+        switch (message.type.getOrDefault(-1)) {
             case IMConstants.MessageType.IMAGE:
                 msgText = "[图片]";
                 break;
@@ -116,7 +118,7 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
                 msgText = "[已撤回]";
                 break;
             default:
-                msgText = imMessage.body.getOrDefault(null);
+                msgText = message.body.getOrDefault(null);
         }
         if (msgText != null) {
             msgText = msgText.trim();
