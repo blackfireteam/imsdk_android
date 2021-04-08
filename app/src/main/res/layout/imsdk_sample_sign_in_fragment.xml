@@ -18,9 +18,23 @@
         android:inputType="phone"
         android:maxLines="1"
         android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@id/internet_switch"
+        app:layout_constraintBottom_toTopOf="@id/local_host"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
+
+    <EditText
+        android:id="@+id/local_host"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:hint="@string/imsdk_sample_edit_hint_local_host"
+        android:importantForAutofill="no"
+        android:includeFontPadding="false"
+        android:inputType="number"
+        android:maxLines="1"
+        android:singleLine="true"
+        app:layout_constraintBottom_toTopOf="@id/internet_switch"
+        app:layout_constraintTop_toBottomOf="@id/edit_text" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/internet_switch"
@@ -30,7 +44,7 @@
         android:text="链接外网"
         app:layout_constraintBottom_toTopOf="@id/token_spinner"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text"
+        app:layout_constraintTop_toBottomOf="@id/local_host"
         tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatSpinner

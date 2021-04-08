@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.idonans.core.FormValidator;
 import com.idonans.core.util.ToastUtil;
 import com.idonans.lang.util.ViewUtil;
+import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.sample.Constants;
@@ -37,6 +38,8 @@ public class SignInFragment extends SystemInsetsFragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    private static final String TEST_LOCAL_HOST = "192.168.50.254";
 
     private static final String[] TEST_TOKEN_ARRAY = new String[]{
             "mz4ERZKaqS+Exjie4R5BsQ==",
@@ -100,6 +103,7 @@ public class SignInFragment extends SystemInsetsFragment {
         FormValidator.bind(
                 new FormValidator.InputView[]{
                         FormValidator.InputViewFactory.create(mBinding.editText),
+                        FormValidator.InputViewFactory.create(mBinding.localHost),
                 },
                 new FormValidator.SubmitView[]{
                         FormValidator.SubmitViewFactory.create(mBinding.submit),
@@ -113,6 +117,7 @@ public class SignInFragment extends SystemInsetsFragment {
             }
             return false;
         });
+        mBinding.localHost.setText(TEST_LOCAL_HOST);
         mBinding.tokenSpinner.setAdapter(new SimpleAdapter(
                 mBinding.tokenSpinner.getContext(),
                 TEST_TOKEN_MAP_LIST,
@@ -141,7 +146,12 @@ public class SignInFragment extends SystemInsetsFragment {
 
         final String phone = mBinding.editText.getText().toString().trim();
         if (TextUtils.isEmpty(phone)) {
-            ToastUtil.show(getString(R.string.imsdk_sample_input_error_empty_phone));
+            ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_empty_phone));
+            return;
+        }
+        final String localHost = mBinding.editText.getText().toString().trim();
+        if (TextUtils.isEmpty(localHost)) {
+            ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_empty_local_host));
             return;
         }
         final boolean internetSwitch = mBinding.internetSwitch.isChecked();
@@ -161,7 +171,7 @@ public class SignInFragment extends SystemInsetsFragment {
         //noinspection UnnecessaryLocalVariable
         final String debugToken = token;
         final String debugAesKey = null;
-        final String debugHost = internetSwitch ? "im.ekfree.com" : "192.168.50.254";
+        final String debugHost = internetSwitch ? "im.ekfree.com" : localHost;
         final int debugPort = 18888;
         final Session session = new Session(
                 debugToken,
