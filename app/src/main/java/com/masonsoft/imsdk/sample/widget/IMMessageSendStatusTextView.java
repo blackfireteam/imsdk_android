@@ -20,6 +20,7 @@ import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.util.Objects;
 
 public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
 
@@ -67,14 +68,12 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
     @Override
     protected void onMessageUpdate(@Nullable IMMessage message) {
         if (DEBUG) {
-            SampleLog.v("onMessageUpdate %s", message);
+            SampleLog.v(Objects.defaultObjectTag(this) + " onMessageUpdate %s", message);
         }
         if (message == null) {
-            // TODO FIXME
-            mTextView.setText("message is null, sessionUserId:" + getSessionUserId() + ", targetUserId:" + getTargetUserId() + ", localMessageId:" + getLocalMessageId());
+            mTextView.setText(null);
         } else {
-            // TODO FIXME
-            mTextView.setText("sessionUserId:" + getSessionUserId() + ", targetUserId:" + getTargetUserId() + ", localMessageId:" + getLocalMessageId() + " " + buildStatusText(message));
+            mTextView.setText(buildStatusText(message));
         }
     }
 
