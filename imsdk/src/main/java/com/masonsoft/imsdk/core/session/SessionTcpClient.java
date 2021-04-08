@@ -19,6 +19,7 @@ import com.masonsoft.imsdk.core.observable.SessionObservable;
 import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
 import com.masonsoft.imsdk.lang.MultiProcessor;
 import com.masonsoft.imsdk.util.Objects;
+import com.masonsoft.imsdk.util.Preconditions;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -35,7 +36,6 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class SessionTcpClient extends NettyTcpClient {
 
-    private static final String AES_KEY_DEFAULT = "10231234545613465926778834590126";
     private static final String AES_IV = "3101238945674526";
 
     @NonNull
@@ -150,12 +150,10 @@ public class SessionTcpClient extends NettyTcpClient {
     @NonNull
     private static byte[] crypt(@NonNull byte[] input, @Nullable String key, boolean encrypt/*是否为加密模式*/) {
         try {
-            if (key == null) {
-                // 如果没有自定义 key, 则使用默认 key
-                key = AES_KEY_DEFAULT;
-            }
-
+            Preconditions.checkNotNull(key);
+            //noinspection CharsetObjectCanBeUsed
             final AlgorithmParameterSpec ivSpec = new IvParameterSpec(AES_IV.getBytes(Charsets.UTF8));
+            //noinspection CharsetObjectCanBeUsed
             final SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(Charsets.UTF8), "AES");
             final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding", new BouncyCastleProvider());
             cipher.init(encrypt ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE, keySpec, ivSpec);
