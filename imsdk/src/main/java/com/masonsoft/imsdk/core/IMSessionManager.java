@@ -61,13 +61,13 @@ public class IMSessionManager {
         return KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_PREFIX + sessionUserId;
     }
 
-    private static void setConversationListLastSyncTimeBySessionUserId(long sessionUserId, long syncTime) {
+    public static void setConversationListLastSyncTimeBySessionUserId(long sessionUserId, long syncTime) {
         Threads.mustNotUi();
         synchronized (KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE) {
             {
                 final Long cache = KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE.get(sessionUserId);
                 if (cache != null) {
-                    if (cache > syncTime) {
+                    if (cache >= syncTime) {
                         // 忽略
                         return;
                     }
@@ -80,7 +80,7 @@ public class IMSessionManager {
         }
     }
 
-    private static long getConversationListLastSyncTimeBySessionUserId(long sessionUserId) {
+    public static long getConversationListLastSyncTimeBySessionUserId(long sessionUserId) {
         Threads.mustNotUi();
         synchronized (KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE) {
             {

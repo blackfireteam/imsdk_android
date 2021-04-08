@@ -1,0 +1,100 @@
+package com.masonsoft.imsdk.core.processor;
+
+import android.database.sqlite.SQLiteDatabase;
+
+import androidx.annotation.NonNull;
+
+import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.core.IMSessionManager;
+import com.masonsoft.imsdk.core.db.Conversation;
+import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
+import com.masonsoft.imsdk.core.db.ConversationFactory;
+import com.masonsoft.imsdk.core.db.DatabaseHelper;
+import com.masonsoft.imsdk.core.db.DatabaseProvider;
+import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
+import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
+import com.masonsoft.imsdk.core.proto.ProtoMessage;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 解析收到的批量会话列表
+ *
+ * @since 1.0
+ */
+public class ReceivedMessageConversationListProcessor extends ReceivedMessageNotNullValidateProcessor {
+
+    @Override
+    protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
+        final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
+
+        if (protoMessageObject instanceof ProtoMessage.ChatList) {
+            final long sessionUserId = target.getSessionUserId();
+            final ProtoMessage.ChatList chatList = (ProtoMessage.ChatList) protoMessageObject;
+            final List<ProtoMessage.ChatItem> chatItemList = chatList.getChatItemsList();
+            final List<Conversation> conversationList = new ArrayList<>();
+            if (chatItemList != null) {
+                for (ProtoMessage.ChatItem item : chatItemList) {
+                    conversationList.add(ConversationFactory.create(item));
+                }
+            }
+
+            if (!conversationList.isEmpty()) {
+                updateConversationList(sessionUserId, conversationList);
+            }
+
+            final long updateTime = chatList.getUpdateTime();
+            if (updateTime > 0) {
+                IMSessionManager.setConversationListLastSyncTimeBySessionUserId(sessionUserId, updateTime);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    private void updateConversationList(final long sessionUserId, @NonNull final List<Conversation> conversationList) {
+        final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+            final SQLiteDatabase database = databaseHelper.getDBHelper().getWritableDatabase();
+            database.beginTransaction();
+            try {
+                for (Conversation conversation : conversationList) {
+                    final long targetUserId = conversation.targetUserId.get();
+                    final int conversationType = IMConstants.ConversationType.C2C;
+
+                    // 设置会话的类型
+                    conversation.localConversationType.set(conversationType);
+
+                    final Conversation dbConversation = ConversationDatabaseProvider
+                            .getInstance()
+                            .getConversationByTargetUserId(sessionUserId, conversationType, targetUserId);
+
+                    if (dbConversation == null) {
+                        // 会话在本地不存在
+                        if (!ConversationDatabaseProvider.getInstance().insertConversation(sessionUserId, conversation)) {
+                            final Throwable e = new IllegalAccessError("unexpected insertConversation return false " + conversation);
+                            IMLog.e(e);
+                        }
+                    } else {
+                        // 会话已经存在
+                        // 回写 localId
+                        conversation.localId.set(dbConversation.localId.get());
+                        if (!ConversationDatabaseProvider.getInstance().updateConversation(
+                                sessionUserId,
+                                conversation)) {
+                            final Throwable e = new IllegalAccessError("unexpected updateConversation return false " + conversation);
+                            IMLog.e(e);
+                        }
+                    }
+                }
+                database.setTransactionSuccessful();
+            } finally {
+                database.endTransaction();
+            }
+        }
+    }
+
+}
