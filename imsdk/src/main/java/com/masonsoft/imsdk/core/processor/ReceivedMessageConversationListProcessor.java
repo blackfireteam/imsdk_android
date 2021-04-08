@@ -15,6 +15,7 @@ import com.masonsoft.imsdk.core.db.DatabaseProvider;
 import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
+import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class ReceivedMessageConversationListProcessor extends ReceivedMessageNot
         if (protoMessageObject instanceof ProtoMessage.ChatList) {
             final long sessionUserId = target.getSessionUserId();
             final ProtoMessage.ChatList chatList = (ProtoMessage.ChatList) protoMessageObject;
+            final long updateTime = chatList.getUpdateTime();
             final List<ProtoMessage.ChatItem> chatItemList = chatList.getChatItemsList();
             final List<Conversation> conversationList = new ArrayList<>();
             if (chatItemList != null) {
@@ -40,12 +42,13 @@ public class ReceivedMessageConversationListProcessor extends ReceivedMessageNot
                     conversationList.add(ConversationFactory.create(item));
                 }
             }
+            IMLog.v(Objects.defaultObjectTag(this) + " received conversation list size:%s, sessionUserId:%s, updateTime:%s",
+                    conversationList.size(), sessionUserId, updateTime);
 
             if (!conversationList.isEmpty()) {
                 updateConversationList(sessionUserId, conversationList);
             }
 
-            final long updateTime = chatList.getUpdateTime();
             if (updateTime > 0) {
                 IMSessionManager.setConversationListLastSyncTimeBySessionUserId(sessionUserId, updateTime);
             }
