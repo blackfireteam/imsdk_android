@@ -166,6 +166,7 @@ public class IMConversationManager {
                 conversationUpdate.localId.set(imConversation.id.get());
                 conversationUpdate.localShowMessageId.set(localMessageId);
                 conversationUpdate.localTimeMs.set(newShowMessage.localTimeMs.get());
+                conversationUpdate.localSeq.set(newShowMessage.localSeq.get());
                 ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate);
             }
         }
