@@ -4,12 +4,14 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.collection.LruCache;
 
 import com.idonans.core.SimpleAbortSignal;
 import com.idonans.core.Singleton;
 import com.idonans.core.thread.Threads;
 import com.idonans.core.util.AbortUtil;
 import com.idonans.core.util.IOUtil;
+import com.masonsoft.imsdk.core.message.packet.GetConversationListMessagePacket;
 import com.masonsoft.imsdk.core.observable.SessionObservable;
 import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
 import com.masonsoft.imsdk.core.session.Session;
@@ -38,6 +40,11 @@ public class IMSessionManager {
     }
 
     private static final String KEY_SESSION_USER_ID_BY_TOKEN_PREFIX = "SessionUserIdByToken_20210306_";
+    /**
+     * 上一次成功同步完所有会话内容时的时间(服务器返回)(微秒)
+     */
+    private static final String KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_PREFIX = "conversationListLastSyncTimeBySessionUserId_20210408_";
+    private static final LruCache<Long, Long> KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE = new LruCache<>(10);
 
     private final Object mSessionLock = new Object();
     @Nullable
@@ -48,6 +55,54 @@ public class IMSessionManager {
     private SessionTcpClientProxy mSessionTcpClientProxy;
 
     private IMSessionManager() {
+    }
+
+    private static String createConversationListLastSyncTimeBySessionUserIdPrefix(final long sessionUserId) {
+        return KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_PREFIX + sessionUserId;
+    }
+
+    private static void setConversationListLastSyncTimeBySessionUserId(long sessionUserId, long syncTime) {
+        Threads.mustNotUi();
+        synchronized (KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE) {
+            {
+                final Long cache = KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE.get(sessionUserId);
+                if (cache != null) {
+                    if (cache > syncTime) {
+                        // 忽略
+                        return;
+                    }
+                }
+            }
+
+            final String key = createConversationListLastSyncTimeBySessionUserIdPrefix(sessionUserId);
+            KeyValueStorage.set(key, String.valueOf(syncTime));
+            KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE.put(sessionUserId, syncTime);
+        }
+    }
+
+    private static long getConversationListLastSyncTimeBySessionUserId(long sessionUserId) {
+        Threads.mustNotUi();
+        synchronized (KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE) {
+            {
+                final Long cache = KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE.get(sessionUserId);
+                if (cache != null) {
+                    return cache;
+                }
+            }
+
+            final String key = createConversationListLastSyncTimeBySessionUserIdPrefix(sessionUserId);
+            final String value = KeyValueStorage.get(key);
+            long syncTime = 0L;
+            try {
+                if (!TextUtils.isEmpty(value)) {
+                    syncTime = Long.parseLong(value);
+                }
+            } catch (Throwable e) {
+                IMLog.e(e);
+            }
+            KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE.put(sessionUserId, syncTime);
+            return syncTime;
+        }
     }
 
     /**
@@ -211,9 +266,18 @@ public class IMSessionManager {
 
         @Nullable
         private SessionTcpClient mSessionTcpClient;
+        private GetConversationListMessagePacket mGetConversationListMessagePacket;
 
         private SessionTcpClientProxy(@NonNull Session session) {
             mSessionTcpClient = new SessionTcpClient(session);
+            mSessionTcpClient.getLocalMessageProcessor().addLastProcessor(target -> {
+                // 处理获取会话列表的响应结果
+                final GetConversationListMessagePacket getConversationListMessagePacket = mGetConversationListMessagePacket;
+                if (getConversationListMessagePacket != null) {
+                    return getConversationListMessagePacket.doProcess(target);
+                }
+                return false;
+            });
             SessionTcpClientObservable.DEFAULT.registerObserver(this);
         }
 
@@ -277,6 +341,9 @@ public class IMSessionManager {
                 if (sessionUserId > 0) {
                     // 长连接上有合法的用户 id 时，同步到本地存储
                     setSessionUserId(session, sessionUserId);
+                    // 读取会话列表
+                    mGetConversationListMessagePacket = GetConversationListMessagePacket.create(getConversationListLastSyncTimeBySessionUserId(sessionUserId));
+                    sessionTcpClient.sendMessagePacketQuietly(mGetConversationListMessagePacket);
                 }
             }
         }

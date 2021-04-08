@@ -110,6 +110,11 @@ public class SessionTcpClient extends NettyTcpClient {
         }
     }
 
+    @NonNull
+    public MultiProcessor<ProtoByteMessageWrapper> getLocalMessageProcessor() {
+        return mLocalMessageProcessor;
+    }
+
     /**
      * 校验当前长连接上的 Session 状态，如果 Session 已经与当前登录的 Session 不一致，或者当前已经退出登录，则强制中断长连接.
      */
