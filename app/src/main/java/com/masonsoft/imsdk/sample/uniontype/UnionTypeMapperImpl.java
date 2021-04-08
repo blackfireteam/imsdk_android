@@ -12,6 +12,7 @@ import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePickerPagerViewHolde
 public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
 
     private static int sNextUnionType = 1;
+    public static final int UNION_TYPE_IMPL_IM_CONVERSATION = sNextUnionType++; // 会话列表中的一条会话
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_TEXT_RECEIVED = sNextUnionType++; // 聊天消息-接收的文字
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_TEXT_SEND = sNextUnionType++; // 聊天消息-发送的文字
     public static final int UNION_TYPE_IMPL_IMAGE_PICKER_GRID = sNextUnionType++; // 图片选择器 Grid 视图中的一个 item
@@ -21,6 +22,7 @@ public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND = sNextUnionType++; // 聊天消息-发送的图片
 
     public UnionTypeMapperImpl() {
+        // TODO FIXME add UNION_TYPE_IMPL_IM_CONVERSATION
         put(UNION_TYPE_IMPL_IM_MESSAGE_TEXT_RECEIVED, IMMessageTextReceivedViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_TEXT_SEND, IMMessageTextSendViewHolder::new);
         put(UNION_TYPE_IMPL_IMAGE_PICKER_GRID, ImagePickerGridViewHolder::new);

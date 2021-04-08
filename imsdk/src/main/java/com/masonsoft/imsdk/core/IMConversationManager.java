@@ -11,6 +11,12 @@ import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
 import com.masonsoft.imsdk.core.db.ConversationFactory;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
+import com.masonsoft.imsdk.core.db.TinyPage;
+import com.masonsoft.imsdk.user.UserInfoSyncManager;
+import com.masonsoft.imsdk.util.Objects;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 处理会话相关内容
@@ -163,6 +169,36 @@ public class IMConversationManager {
                 ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate);
             }
         }
+    }
+
+    @NonNull
+    public TinyPage<IMConversation> pageQueryConversation(final long sessionUserId,
+                                                          final long seq,
+                                                          final int limit,
+                                                          final int conversationType) {
+        if (seq == 0) {
+            // 读取第一页消息时，尝试同步用户信息
+            UserInfoSyncManager.getInstance().enqueueSyncUserInfo(sessionUserId);
+        }
+
+        final TinyPage<Conversation> page = ConversationDatabaseProvider.getInstance().pageQueryConversation(
+                sessionUserId, seq, limit, conversationType, false, null);
+
+        final List<IMConversation> filterItems = new ArrayList<>();
+        for (Conversation item : page.items) {
+            filterItems.add(IMConversationFactory.create(item));
+        }
+
+        final TinyPage<IMConversation> result = new TinyPage<>();
+        result.items = filterItems;
+        result.hasMore = page.hasMore;
+        if (filterItems.size() < page.items.size()) {
+            result.hasMore = false;
+        }
+
+        IMLog.v(Objects.defaultObjectTag(this) + " pageQueryConversation result:%s with sessionUserId:%s, seq:%s, limit:%s, conversationType:%s",
+                result, sessionUserId, seq, limit, conversationType);
+        return result;
     }
 
 }

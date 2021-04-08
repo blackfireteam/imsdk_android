@@ -81,15 +81,6 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
             Threads.postUi(() -> onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId));
         }
 
-        @Override
-        public void onMultiConversationChanged(long sessionUserId) {
-            if (notMatch(sessionUserId, IMConstants.ID_ANY, IMConstants.ID_ANY, IMConstants.ID_ANY)) {
-                return;
-            }
-
-            Threads.postUi(() -> onConversationChangedInternal(sessionUserId, IMConstants.ID_ANY, IMConstants.ID_ANY, IMConstants.ID_ANY));
-        }
-
         private void onConversationChangedInternal(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
             if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
                 return;
@@ -130,8 +121,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                 mPageSize,
                 mConversationType,
                 mTargetUserId,
-                true,
-                null))
+                true))
                 .map(page -> {
                     List<IMMessage> imMessages = page.items;
                     if (imMessages == null) {
@@ -205,8 +195,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                 mPageSize,
                 mConversationType,
                 mTargetUserId,
-                true,
-                null))
+                true))
                 .map(page -> {
                     List<IMMessage> imMessages = page.items;
                     if (imMessages == null) {
@@ -267,8 +256,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                 mPageSize,
                 mConversationType,
                 mTargetUserId,
-                false,
-                null))
+                false))
                 .map(page -> {
                     List<IMMessage> imMessages = page.items;
                     if (imMessages == null) {

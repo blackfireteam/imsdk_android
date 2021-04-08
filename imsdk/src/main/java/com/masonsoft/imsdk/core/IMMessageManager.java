@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 import com.idonans.core.Singleton;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
-import com.masonsoft.imsdk.core.db.ColumnsSelector;
 import com.masonsoft.imsdk.core.db.LocalSendingMessage;
 import com.masonsoft.imsdk.core.db.LocalSendingMessageProvider;
 import com.masonsoft.imsdk.core.db.Message;
@@ -95,8 +94,7 @@ public class IMMessageManager {
                                                 final int limit,
                                                 final int conversationType,
                                                 final long targetUserId,
-                                                final boolean queryHistory,
-                                                @Nullable ColumnsSelector<Message> columnsSelector) {
+                                                final boolean queryHistory) {
         if (seq == 0) {
             // 读取第一页消息时，尝试同步用户信息
             UserInfoSyncManager.getInstance().enqueueSyncUserInfo(sessionUserId);
@@ -110,7 +108,7 @@ public class IMMessageManager {
         }
 
         final TinyPage<Message> page = MessageDatabaseProvider.getInstance().pageQueryMessage(
-                sessionUserId, seq, limit, conversationType, targetUserId, queryHistory, columnsSelector);
+                sessionUserId, seq, limit, conversationType, targetUserId, queryHistory, null);
 
         final List<IMMessage> filterItems = new ArrayList<>();
         for (Message item : page.items) {
