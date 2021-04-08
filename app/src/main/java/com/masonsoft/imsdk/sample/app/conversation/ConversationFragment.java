@@ -146,6 +146,9 @@ public class ConversationFragment extends SystemInsetsFragment {
                     }
                 }
             }
+
+            SampleLog.v(Objects.defaultObjectTag(this) + " replaceConversation removedPosition:%s, insertPosition:%s", removedPosition, insertPosition);
+
             if (removedPosition >= 0) {
                 if (!getAdapter().removeGroupItem(GROUP_DEFAULT, removedPosition)) {
                     final Throwable e = new IllegalAccessError("fail to removeGroupItem GROUP_DEFAULT removedPosition:" + removedPosition);
