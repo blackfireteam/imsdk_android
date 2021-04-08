@@ -71,10 +71,10 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
         }
         if (message == null) {
             // TODO FIXME
-            mTextView.setText("message is null");
+            mTextView.setText("message is null, sessionUserId:" + getSessionUserId() + ", targetUserId:" + getTargetUserId() + ", localMessageId:" + getLocalMessageId());
         } else {
             // TODO FIXME
-            mTextView.setText("message id:" + message.id.get() + buildStatusText(message));
+            mTextView.setText("sessionUserId:" + getSessionUserId() + ", targetUserId:" + getTargetUserId() + ", localMessageId:" + getLocalMessageId() + " " + buildStatusText(message));
         }
     }
 
