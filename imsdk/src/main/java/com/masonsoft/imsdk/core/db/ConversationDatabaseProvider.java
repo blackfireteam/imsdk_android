@@ -236,7 +236,7 @@ public class ConversationDatabaseProvider {
 
             if (cursor.moveToNext()) {
                 final Conversation result = columnsSelector.cursorToObjectWithQueryColumns(cursor);
-                result.applyLogicField(conversationId);
+                result.applyLogicField(sessionUserId);
 
                 IMLog.v("conversation found with sessionUserId:%s, conversationId:%s", sessionUserId, conversationId);
 
