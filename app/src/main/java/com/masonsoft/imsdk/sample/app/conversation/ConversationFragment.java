@@ -138,11 +138,14 @@ public class ConversationFragment extends SystemInsetsFragment {
                     final UnionTypeItemObject existsOne = groupDefaultList.get(i);
                     if (existsOne.isSameItem(unionTypeItemObject)) {
                         removedPosition = i;
-                        continue;
                     }
                     final IMConversation existsConversation = (IMConversation) ((DataObject<?>) existsOne.itemObject).object;
-                    if (updateConversation.seq.get() > existsConversation.seq.get()) {
+                    if (updateConversation.seq.get() > existsConversation.seq.get() && insertPosition == -1) {
                         insertPosition = i;
+                    }
+
+                    if (removedPosition >= 0 && insertPosition >= 0) {
+                        break;
                     }
                 }
             }
