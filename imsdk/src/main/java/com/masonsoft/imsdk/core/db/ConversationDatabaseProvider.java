@@ -166,6 +166,7 @@ public class ConversationDatabaseProvider {
 
             while (cursor.moveToNext()) {
                 Conversation item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                item.applyLogicField(sessionUserId);
                 items.add(item);
             }
         } catch (Throwable e) {
@@ -235,6 +236,8 @@ public class ConversationDatabaseProvider {
 
             if (cursor.moveToNext()) {
                 final Conversation result = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                result.applyLogicField(conversationId);
+
                 IMLog.v("conversation found with sessionUserId:%s, conversationId:%s", sessionUserId, conversationId);
 
                 MemoryFullCache.DEFAULT.addFullCache(sessionUserId, result);
@@ -306,6 +309,8 @@ public class ConversationDatabaseProvider {
 
             if (cursor.moveToNext()) {
                 Conversation result = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                result.applyLogicField(sessionUserId);
+
                 IMLog.v("conversation found with sessionUserId:%s, targetUserId:%s, conversationType:%s",
                         sessionUserId, targetUserId, conversationType);
 

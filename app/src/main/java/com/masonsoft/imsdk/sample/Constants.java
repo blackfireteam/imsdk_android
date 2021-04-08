@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Constants {
 
+    public static final boolean DEBUG_WIDGET = true;
+
     public interface ExtrasKey {
         String TARGET_USER_ID = "extra:targetUserId";
     }

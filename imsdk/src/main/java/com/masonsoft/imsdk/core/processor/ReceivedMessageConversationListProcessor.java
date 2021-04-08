@@ -65,6 +65,7 @@ public class ReceivedMessageConversationListProcessor extends ReceivedMessageNot
             database.beginTransaction();
             try {
                 for (Conversation conversation : conversationList) {
+                    conversation.applyLogicField(sessionUserId);
                     final long targetUserId = conversation.targetUserId.get();
                     final int conversationType = IMConstants.ConversationType.C2C;
 

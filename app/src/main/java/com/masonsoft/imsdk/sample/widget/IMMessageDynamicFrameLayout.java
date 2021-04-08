@@ -14,8 +14,6 @@ public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
 
     protected final boolean DEBUG = true;
 
-    private IMMessageChangedViewHelper mIMMessageChangedViewHelper;
-
     public IMMessageDynamicFrameLayout(Context context) {
         this(context, null);
     }
@@ -33,6 +31,8 @@ public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
+
+    private IMMessageChangedViewHelper mIMMessageChangedViewHelper;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mIMMessageChangedViewHelper = new IMMessageChangedViewHelper() {

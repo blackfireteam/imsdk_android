@@ -2,6 +2,7 @@ package com.masonsoft.imsdk;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.annotation.LogicField;
 import com.masonsoft.imsdk.lang.StateProp;
 import com.masonsoft.imsdk.util.Objects;
 
@@ -11,6 +12,13 @@ import com.masonsoft.imsdk.util.Objects;
  * @since 1.0
  */
 public class IMConversation {
+
+    /**
+     * 会话所属的 sessionUserId
+     */
+    @NonNull
+    @LogicField
+    public final StateProp<Long> _sessionUserId = new StateProp<>();
 
     /**
      * 会话 id, 在同一个登录信息下是唯一的.
@@ -116,10 +124,15 @@ public class IMConversation {
     @NonNull
     public final StateProp<Integer> connected = new StateProp<>();
 
+    public void applyLogicField(long _sessionUserId) {
+        this._sessionUserId.set(_sessionUserId);
+    }
+
     /**
      * 使用 input 对象的内容替换当前内容
      */
     public void apply(@NonNull IMConversation input) {
+        this._sessionUserId.apply(input._sessionUserId);
         this.id.apply(input.id);
         this.lastModifyMs.apply(input.lastModifyMs);
         this.seq.apply(input.seq);

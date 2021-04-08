@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.annotation.LogicField;
 import com.masonsoft.imsdk.core.db.DatabaseHelper.ColumnsConversation;
 import com.masonsoft.imsdk.lang.StateProp;
 import com.masonsoft.imsdk.util.CursorUtil;
@@ -16,6 +17,13 @@ import com.masonsoft.imsdk.util.Objects;
  * @since 1.0
  */
 public class Conversation {
+
+    /**
+     * 会话所属的 sessionUserId
+     */
+    @NonNull
+    @LogicField
+    public final StateProp<Long> _sessionUserId = new StateProp<>();
 
     /**
      * @see ColumnsConversation#C_LOCAL_ID
@@ -184,6 +192,10 @@ public class Conversation {
     @NonNull
     public String toString() {
         return this.toShortString();
+    }
+
+    public void applyLogicField(long _sessionUserId) {
+        this._sessionUserId.set(_sessionUserId);
     }
 
     @NonNull

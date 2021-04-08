@@ -22,6 +22,7 @@ public class IMConversationFactory {
     @NonNull
     public static IMConversation create(@NonNull Conversation input) {
         final IMConversation target = new IMConversation();
+        target._sessionUserId.apply(input._sessionUserId);
         target.id.apply(input.localId);
         target.lastModifyMs.apply(input.localLastModifyMs);
         target.seq.apply(input.localSeq);
