@@ -127,7 +127,7 @@ public class ReceivedMessageConversationListProcessor extends ReceivedMessageNot
      */
     private void syncLastMessages(final long sessionUserId, @NonNull final List<Conversation> conversationList) {
         for (Conversation conversation : conversationList) {
-            if (conversation.localId.isUnset()) {
+            if (!conversation.localId.isUnset()) {
                 MessageSyncManager.getInstance().enqueueLoadLatestMessages(sessionUserId, conversation.localId.get());
             }
         }
