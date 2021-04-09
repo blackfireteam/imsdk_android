@@ -17,6 +17,7 @@ import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.observable.ConversationObservable;
+import com.masonsoft.imsdk.core.observable.SessionObservable;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
@@ -33,7 +34,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     private static final boolean DEBUG = true;
 
-    private final long mSessionUserId;
+    private long mSessionUserId;
     private final int mConversationType = IMConstants.ConversationType.C2C;
     private final int mPageSize = 20;
     private long mFirstConversationSeq = -1;
@@ -45,13 +46,34 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
     public ConversationFragmentPresenter(@NonNull ConversationFragment.ViewImpl view) {
         super(view, false, true);
         mSessionUserId = IMSessionManager.getInstance().getSessionUserId();
+        SessionObservable.DEFAULT.registerObserver(mSessionObserver);
         ConversationObservable.DEFAULT.registerObserver(mConversationObserver);
+    }
+
+    private void reloadWithNewSessionUserId() {
+        final long newSessionUserId = IMSessionManager.getInstance().getSessionUserId();
+        if (mSessionUserId != newSessionUserId) {
+            mSessionUserId = newSessionUserId;
+            requestInit(true);
+        }
     }
 
     @Nullable
     public ConversationFragment.ViewImpl getView() {
         return (ConversationFragment.ViewImpl) super.getView();
     }
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private final SessionObservable.SessionObserver mSessionObserver = new SessionObservable.SessionObserver() {
+        @Override
+        public void onSessionChanged() {
+        }
+
+        @Override
+        public void onSessionUserIdChanged() {
+            Threads.postUi(() -> reloadWithNewSessionUserId());
+        }
+    };
 
     @SuppressWarnings("FieldCanBeLocal")
     private final ConversationObservable.ConversationObserver mConversationObserver = new ConversationObservable.ConversationObserver() {
