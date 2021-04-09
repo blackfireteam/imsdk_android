@@ -402,6 +402,12 @@ public class LocalSendingMessageProvider {
 
             // 自增主键
             localSendingMessage.localId.set(rowId);
+            MessageObservable.DEFAULT.notifyMessageChanged(
+                    sessionUserId,
+                    localSendingMessage.conversationType.get(),
+                    localSendingMessage.targetUserId.get(),
+                    localSendingMessage.messageLocalId.get()
+            );
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
@@ -544,7 +550,23 @@ public class LocalSendingMessageProvider {
                 );
             }
 
+            final LocalSendingMessage cache = getLocalSendingMessage(sessionUserId, localSendingMessage.localId.get());
             MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, localSendingMessage.localId.get());
+            if (rowsAffected > 0 && cache != null) {
+                MessageObservable.DEFAULT.notifyMessageChanged(
+                        sessionUserId,
+                        cache.conversationType.get(),
+                        cache.targetUserId.get(),
+                        cache.messageLocalId.get()
+                );
+            } else if (cache == null) {
+                IMLog.e(
+                        new IllegalAccessError("unexpected localSendingMessage not found"),
+                        "getLocalSendingMessage return null with sessionUserId:%s, localSendingMessage localId:%s",
+                        sessionUserId,
+                        localSendingMessage.localId.get()
+                );
+            }
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);
@@ -573,6 +595,8 @@ public class LocalSendingMessageProvider {
             where.append(" " + DatabaseHelper.ColumnsLocalSendingMessage.C_LOCAL_ID + "=? ");
             whereArgs.add(String.valueOf(localId));
 
+            final LocalSendingMessage cache = getLocalSendingMessage(sessionUserId, localId);
+
             int rowsAffected = db.delete(
                     DatabaseHelper.TABLE_NAME_LOCAL_SENDING_MESSAGE,
                     where.toString(),
@@ -594,6 +618,14 @@ public class LocalSendingMessageProvider {
             }
 
             MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, localId);
+            if (cache != null) {
+                MessageObservable.DEFAULT.notifyMessageChanged(
+                        sessionUserId,
+                        cache.conversationType.get(),
+                        cache.targetUserId.get(),
+                        cache.messageLocalId.get()
+                );
+            }
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);
