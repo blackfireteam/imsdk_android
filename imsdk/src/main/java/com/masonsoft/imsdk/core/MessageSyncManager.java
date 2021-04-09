@@ -134,6 +134,11 @@ public class MessageSyncManager {
             }
             checkValid();
 
+            IMLog.v(Objects.defaultObjectTag(this) + " GetHistoryMessagePacket conversation:%s, blockId:%s, maxRemoteMessageId:%s",
+                    conversation,
+                    blockId,
+                    maxRemoteMessageId);
+
             final GetHistoryMessagePacket messagePacket = GetHistoryMessagePacket.create(conversation, blockId, maxRemoteMessageId);
             proxy.getSessionTcpClient().sendMessagePacketQuietly(messagePacket);
             if (messagePacket.getState() != MessagePacket.STATE_WAIT_RESULT) {
