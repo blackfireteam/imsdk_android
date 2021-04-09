@@ -82,11 +82,11 @@ public class UserInfoManager {
      * 注意：此方法不会走缓存。
      */
     @NonNull
-    public List<UserInfo> getByUserIdList(final long[] userIdList) {
+    public List<UserInfo> getByUserIdList(final List<Long> userIdList) {
         if (userIdList == null) {
             return new ArrayList<>();
         }
-        if (userIdList.length <= 0) {
+        if (userIdList.size() <= 0) {
             return new ArrayList<>();
         }
 

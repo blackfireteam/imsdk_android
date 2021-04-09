@@ -17,6 +17,7 @@ import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
 import com.masonsoft.imsdk.core.db.Sequence;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
+import com.masonsoft.imsdk.user.UserInfoSyncManager;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class ReceivedMessageConversationListProcessor extends ReceivedMessageNot
                     conversationList.size(), sessionUserId, updateTime);
 
             if (!conversationList.isEmpty()) {
+                syncConversationUserInfo(conversationList);
                 updateConversationList(sessionUserId, conversationList);
             }
 
@@ -60,6 +62,14 @@ public class ReceivedMessageConversationListProcessor extends ReceivedMessageNot
         }
 
         return false;
+    }
+
+    private void syncConversationUserInfo(@NonNull final List<Conversation> conversationList) {
+        final List<Long> userIdList = new ArrayList<>();
+        for (Conversation conversation : conversationList) {
+            userIdList.add(conversation.targetUserId.get());
+        }
+        UserInfoSyncManager.getInstance().enqueueSyncUserInfoList(userIdList);
     }
 
     private void updateConversationList(final long sessionUserId, @NonNull final List<Conversation> conversationList) {

@@ -42,7 +42,7 @@ public class UserInfoDatabaseProvider {
     }
 
     @NonNull
-    public List<UserInfo> getUserInfoByUserIdList(final long[] userIdList) {
+    public List<UserInfo> getUserInfoByUserIdList(final List<Long> userIdList) {
         final ColumnsSelector<UserInfo> columnsSelector = UserInfo.COLUMNS_SELECTOR_ALL;
         final List<UserInfo> result = new ArrayList<>();
 

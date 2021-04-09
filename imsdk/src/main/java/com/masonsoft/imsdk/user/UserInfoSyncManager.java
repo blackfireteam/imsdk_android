@@ -15,6 +15,7 @@ import com.masonsoft.imsdk.core.message.packet.ResultIgnoreMessagePacket;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
+import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -151,8 +152,8 @@ public class UserInfoSyncManager {
         return false;
     }
 
-    public void enqueueSyncUserInfoList(final long... userId) {
-        mSyncQueue.enqueue(new SafetyRunnable(new MultiUserInfoSyncTask(userId)));
+    public void enqueueSyncUserInfoList(final List<Long> userIdList) {
+        mSyncQueue.enqueue(new SafetyRunnable(new MultiUserInfoSyncTask(userIdList)));
     }
 
     public void enqueueSyncUserInfo(final long userId) {
@@ -283,34 +284,99 @@ public class UserInfoSyncManager {
 
     private static class MultiUserInfoSyncTask implements Runnable {
 
-        private static final int MAX_LENGTH = 100;
-        private final long[] mUserIdList;
+        /**
+         * 超过此时间间隔时总是请求更新
+         */
+        private final long MAX_INTERVAL_MS = TimeUnit.DAYS.toMillis(1);
+        /**
+         * 当本地完全没有目标用户的信息时(一次都没有同步成功过), 发起重复请求的最少间隔时间
+         */
+        private final long REQUIRE_AT_LEAST_ONE_USER_INFO_MIN_INTERVAL_MS = TimeUnit.MINUTES.toMillis(2);
 
-        private MultiUserInfoSyncTask(long[] userIdList) {
-            mUserIdList = userIdList;
+        private static final int MAX_LENGTH = 100;
+        private final List<Long> mOriginUserIdList;
+
+        private MultiUserInfoSyncTask(final List<Long> userIdList) {
+            mOriginUserIdList = userIdList;
+        }
+
+        @NonNull
+        private List<Long> filterUserIdList() {
+            List<Long> filterUserIdList = new ArrayList<>();
+            if (mOriginUserIdList != null) {
+                for (long userId : mOriginUserIdList) {
+                    if (accept(userId)) {
+                        filterUserIdList.add(userId);
+                    }
+                }
+            }
+
+            if (filterUserIdList.size() > MAX_LENGTH) {
+                final List<Long> overflow = filterUserIdList.subList(MAX_LENGTH, filterUserIdList.size());
+                UserInfoSyncManager.getInstance().enqueueSyncUserInfoList(overflow);
+                filterUserIdList = filterUserIdList.subList(0, MAX_LENGTH);
+            }
+            return filterUserIdList;
+        }
+
+        private boolean accept(final long userId) {
+            boolean requireSync = false;
+            long localLastSyncTimeMs = 0L;
+            long userUpdateTimeMs = 0L;
+
+            final UserInfoSync userInfoSync = UserInfoSyncManager.getInstance().getUserInfoSyncByUserId(userId);
+            if (userInfoSync == null) {
+                requireSync = true;
+                UserInfoSyncManager.getInstance().touchUserInfoSync(userId);
+            } else {
+                localLastSyncTimeMs = userInfoSync.localLastSyncTimeMs.get();
+                if ((System.currentTimeMillis() - localLastSyncTimeMs) >= MAX_INTERVAL_MS) {
+                    requireSync = true;
+                }
+            }
+
+            final UserInfo userInfo = UserInfoManager.getInstance().getByUserId(userId);
+            if (userInfo == null) {
+                requireSync = true;
+                UserInfoManager.getInstance().touchUserInfo(userId);
+            } else {
+                userUpdateTimeMs = userInfo.updateTimeMs.getOrDefault(0L);
+            }
+
+            if (!requireSync) {
+                if (userUpdateTimeMs == 0L) {
+                    // 本地还没有至少一次完整的用户信息
+                    if (System.currentTimeMillis() - localLastSyncTimeMs >= REQUIRE_AT_LEAST_ONE_USER_INFO_MIN_INTERVAL_MS) {
+                        final UserInfoSync userInfoSyncUpdate = new UserInfoSync();
+                        userInfoSyncUpdate.uid.set(userId);
+                        userInfoSyncUpdate.localLastSyncTimeMs.set(System.currentTimeMillis());
+                        UserInfoSyncManager.getInstance().insertOrUpdateUserInfoSync(userInfoSyncUpdate);
+                        requireSync = true;
+                    }
+                }
+            }
+
+            return requireSync;
         }
 
         @Override
         public void run() {
-            if (mUserIdList == null || mUserIdList.length <= 0) {
-                IMLog.e("ignore. invalid user id list");
-                return;
-            }
-
-            if (mUserIdList.length > MAX_LENGTH) {
-                final Throwable e = new IllegalArgumentException("length:" + mUserIdList.length + " too long, allow max:" + MAX_LENGTH);
-                IMLog.e(e);
+            final List<Long> filterUserIdList = filterUserIdList();
+            IMLog.v(Objects.defaultObjectTag(this) + " run mOriginUserIdList.size:%s -> filterUserIdList.size:%s",
+                    mOriginUserIdList.size(), filterUserIdList.size());
+            if (filterUserIdList.size() <= 0) {
+                IMLog.e("ignore. filterUserIdList is empty");
                 return;
             }
 
             final Map<Long, Long> updateTimeMsMap = new HashMap<>();
-            final List<UserInfo> userInfoList = UserInfoManager.getInstance().getByUserIdList(mUserIdList);
+            final List<UserInfo> userInfoList = UserInfoManager.getInstance().getByUserIdList(filterUserIdList);
             for (UserInfo userInfo : userInfoList) {
                 updateTimeMsMap.put(userInfo.uid.get(), userInfo.updateTimeMs.get());
             }
 
             final List<ProtoMessage.GetProfile> getProfileList = new ArrayList<>();
-            for (long userId : mUserIdList) {
+            for (long userId : filterUserIdList) {
                 Long updateTimeMs = updateTimeMsMap.get(userId);
                 if (updateTimeMs == null) {
                     updateTimeMs = 0L;
@@ -349,9 +415,9 @@ public class UserInfoSyncManager {
                 IMLog.e(e);
             } else {
                 final long syncTimeMs = System.currentTimeMillis();
-                final int size = mUserIdList.length;
+                final int size = filterUserIdList.size();
                 int index = 0;
-                for (long userId : mUserIdList) {
+                for (long userId : filterUserIdList) {
                     IMLog.v("multi [%s/%s] send sync user info for user id:%s", ++index, size, userId);
                     final UserInfoSync userInfoSyncUpdate = new UserInfoSync();
                     userInfoSyncUpdate.uid.set(userId);
