@@ -65,7 +65,7 @@ public class UserInfoManager {
     public UserInfo getByUserId(long userId) {
         final UserInfo cache = MemoryFullCache.DEFAULT.getFullCache(userId);
         if (cache != null) {
-            IMLog.v("getByUserId cache hint userId:%s", userId);
+            IMLog.v("getByUserId cache hit userId:%s", userId);
             return cache;
         }
 

@@ -191,7 +191,7 @@ public class LocalSendingMessageProvider {
 
         final LocalSendingMessage cache = MemoryFullCache.DEFAULT.getFullCache(sessionUserId, localSendingMessageLocalId);
         if (cache != null) {
-            IMLog.v("getLocalSendingMessage cache hint sessionUserId:%s, localSendingMessageLocalId:%s",
+            IMLog.v("getLocalSendingMessage cache hit sessionUserId:%s, localSendingMessageLocalId:%s",
                     sessionUserId,
                     localSendingMessageLocalId);
             return cache;
@@ -261,7 +261,7 @@ public class LocalSendingMessageProvider {
         final LocalSendingMessage cache = MemoryFullCache.DEFAULT.getFullCacheWithTargetMessage(
                 sessionUserId, conversationType, targetUserId, messageLocalId);
         if (cache != null) {
-            IMLog.v("getLocalSendingMessageByTargetMessage cache hint sessionUserId:%s, conversationType:%s, targetUserId:%s, messageLocalId:%s",
+            IMLog.v("getLocalSendingMessageByTargetMessage cache hit sessionUserId:%s, conversationType:%s, targetUserId:%s, messageLocalId:%s",
                     sessionUserId,
                     conversationType,
                     targetUserId,

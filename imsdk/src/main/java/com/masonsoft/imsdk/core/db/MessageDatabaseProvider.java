@@ -299,7 +299,7 @@ public class MessageDatabaseProvider {
 
         final Message cache = MemoryFullCache.DEFAULT.getFullCache(sessionUserId, conversationType, targetUserId, localMessageId);
         if (cache != null) {
-            IMLog.v("getMessage cache hint sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
+            IMLog.v("getMessage cache hit sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
                     sessionUserId,
                     conversationType,
                     targetUserId,
@@ -379,7 +379,7 @@ public class MessageDatabaseProvider {
 
         final Message cache = MemoryFullCache.DEFAULT.getFullCacheWithRemoteMessageId(sessionUserId, conversationType, targetUserId, remoteMessageId);
         if (cache != null) {
-            IMLog.v("getMessageWithRemoteMessageId cache hint sessionUserId:%s, conversationType:%s, targetUserId:%s, remoteMessageId:%s",
+            IMLog.v("getMessageWithRemoteMessageId cache hit sessionUserId:%s, conversationType:%s, targetUserId:%s, remoteMessageId:%s",
                     sessionUserId,
                     conversationType,
                     targetUserId,

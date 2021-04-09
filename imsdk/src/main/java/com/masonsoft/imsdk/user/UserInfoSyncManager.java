@@ -78,7 +78,7 @@ public class UserInfoSyncManager {
     public UserInfoSync getUserInfoSyncByUserId(long userId) {
         final UserInfoSync cache = MemoryFullCache.DEFAULT.getFullCache(userId);
         if (cache != null) {
-            IMLog.v(Objects.defaultObjectTag(this) + " getUserInfoSyncByUserId cache hint userId:%s", userId);
+            IMLog.v(Objects.defaultObjectTag(this) + " getUserInfoSyncByUserId cache hit userId:%s", userId);
             return cache;
         }
 

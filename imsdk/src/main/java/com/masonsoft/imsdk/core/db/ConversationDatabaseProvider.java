@@ -201,7 +201,7 @@ public class ConversationDatabaseProvider {
 
         final Conversation cache = MemoryFullCache.DEFAULT.getFullCache(sessionUserId, conversationId);
         if (cache != null) {
-            IMLog.v("getConversation cache hint sessionUserId:%s, conversationId:%s",
+            IMLog.v("getConversation cache hit sessionUserId:%s, conversationId:%s",
                     sessionUserId,
                     conversationId);
             return cache;
@@ -270,7 +270,7 @@ public class ConversationDatabaseProvider {
 
         final Conversation cache = MemoryFullCache.DEFAULT.getFullCacheWithTargetUserId(sessionUserId, conversationType, targetUserId);
         if (cache != null) {
-            IMLog.v("getConversationByTargetUserId cache hint sessionUserId:%s, conversationType:%s, targetUserId:%s",
+            IMLog.v("getConversationByTargetUserId cache hit sessionUserId:%s, conversationType:%s, targetUserId:%s",
                     sessionUserId,
                     conversationType,
                     targetUserId);
