@@ -372,7 +372,7 @@ public class UserInfoSyncManager {
             final Map<Long, Long> updateTimeMsMap = new HashMap<>();
             final List<UserInfo> userInfoList = UserInfoManager.getInstance().getByUserIdList(filterUserIdList);
             for (UserInfo userInfo : userInfoList) {
-                updateTimeMsMap.put(userInfo.uid.get(), userInfo.updateTimeMs.get());
+                updateTimeMsMap.put(userInfo.uid.get(), userInfo.updateTimeMs.getOrDefault(0L));
             }
 
             final List<ProtoMessage.GetProfile> getProfileList = new ArrayList<>();
