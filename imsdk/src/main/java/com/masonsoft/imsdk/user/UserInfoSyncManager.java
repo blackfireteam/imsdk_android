@@ -53,7 +53,7 @@ public class UserInfoSyncManager {
 
         private void addFullCache(@NonNull UserInfoSync userInfoSync) {
             if (userInfoSync.uid.isUnset()) {
-                IMLog.e("uid is unset %s", userInfoSync);
+                IMLog.e(Objects.defaultObjectTag(this) + " uid is unset %s", userInfoSync);
                 return;
             }
             mFullCaches.put(userInfoSync.uid.get(), userInfoSync);
@@ -78,11 +78,11 @@ public class UserInfoSyncManager {
     public UserInfoSync getUserInfoSyncByUserId(long userId) {
         final UserInfoSync cache = MemoryFullCache.DEFAULT.getFullCache(userId);
         if (cache != null) {
-            IMLog.v("getUserInfoSyncByUserId cache hint userId:%s", userId);
+            IMLog.v(Objects.defaultObjectTag(this) + " getUserInfoSyncByUserId cache hint userId:%s", userId);
             return cache;
         }
 
-        IMLog.v("getUserInfoSyncByUserId cache miss, try read from db, userId:%s", userId);
+        IMLog.v(Objects.defaultObjectTag(this) + " getUserInfoSyncByUserId cache miss, try read from db, userId:%s", userId);
         final UserInfoSync userInfoSync = UserInfoSyncDatabaseProvider.getInstance().getUserInfoSyncByUserId(userId);
         if (userInfoSync != null) {
             MemoryFullCache.DEFAULT.addFullCache(userInfoSync);
@@ -101,7 +101,7 @@ public class UserInfoSyncManager {
 
         final long userId = userInfoSync.uid.getOrDefault(-1L);
         if (userId <= 0) {
-            IMLog.e("insertOrUpdateUserInfoSync ignore. invalid user id %s.", userId);
+            IMLog.e(Objects.defaultObjectTag(this) + " insertOrUpdateUserInfoSync ignore. invalid user id %s.", userId);
             return;
         }
 
@@ -110,7 +110,7 @@ public class UserInfoSyncManager {
             if (!cacheUserInfoSync.localLastSyncTimeMs.isUnset()
                     && !userInfoSync.localLastSyncTimeMs.isUnset()) {
                 if (cacheUserInfoSync.localLastSyncTimeMs.get() >= userInfoSync.localLastSyncTimeMs.get()) {
-                    IMLog.v("ignore insertOrUpdateUserInfoSync cacheUserInfoSync is newer");
+                    IMLog.v(Objects.defaultObjectTag(this) + " ignore insertOrUpdateUserInfoSync cacheUserInfoSync is newer");
                     return;
                 }
             }
@@ -137,7 +137,7 @@ public class UserInfoSyncManager {
      */
     public boolean touchUserInfoSync(final long userId) {
         if (userId <= 0) {
-            IMLog.e("touchUserInfoSync ignore. invalid user id %s", userId);
+            IMLog.e(Objects.defaultObjectTag(this) + " touchUserInfoSync ignore. invalid user id %s", userId);
             return false;
         }
 
@@ -198,7 +198,7 @@ public class UserInfoSyncManager {
         @Override
         public void run() {
             if (mUserId <= 0) {
-                IMLog.v("ignore. invalid user id: %s", mUserId);
+                IMLog.v(Objects.defaultObjectTag(this) + " ignore. invalid user id: %s", mUserId);
                 return;
             }
 
@@ -248,16 +248,16 @@ public class UserInfoSyncManager {
 
             final IMSessionManager.SessionTcpClientProxy proxy = IMSessionManager.getInstance().getSessionTcpClientProxy();
             if (proxy == null) {
-                IMLog.v("SessionTcpClientProxy is null, abort sync user info. userId:%s", mUserId);
+                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy is null, abort sync user info. userId:%s", mUserId);
                 return;
             }
             if (!proxy.isOnline()) {
-                IMLog.v("SessionTcpClientProxy is not online, abort sync user info. userId:%s", mUserId);
+                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy is not online, abort sync user info. userId:%s", mUserId);
                 return;
             }
             final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
             if (sessionTcpClient == null) {
-                IMLog.v("SessionTcpClient is null, abort sync user info. userId:%s", mUserId);
+                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClient is null, abort sync user info. userId:%s", mUserId);
                 return;
             }
 
@@ -273,7 +273,7 @@ public class UserInfoSyncManager {
                 final Throwable e = new IllegalArgumentException("GetProfile message packet state error " + messagePacket);
                 IMLog.e(e);
             } else {
-                IMLog.v("send sync user info for user id:%s", mUserId);
+                IMLog.v(Objects.defaultObjectTag(this) + " send sync user info for user id:%s", mUserId);
                 final UserInfoSync userInfoSyncUpdate = new UserInfoSync();
                 userInfoSyncUpdate.uid.set(mUserId);
                 userInfoSyncUpdate.localLastSyncTimeMs.set(System.currentTimeMillis());
@@ -390,16 +390,16 @@ public class UserInfoSyncManager {
 
             final IMSessionManager.SessionTcpClientProxy proxy = IMSessionManager.getInstance().getSessionTcpClientProxy();
             if (proxy == null) {
-                IMLog.v("SessionTcpClientProxy is null, abort sync user id list");
+                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy is null, abort sync user id list");
                 return;
             }
             if (!proxy.isOnline()) {
-                IMLog.v("SessionTcpClientProxy is not online, abort sync user id list");
+                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy is not online, abort sync user id list");
                 return;
             }
             final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
             if (sessionTcpClient == null) {
-                IMLog.v("SessionTcpClient is null, abort sync user id list");
+                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClient is null, abort sync user id list");
                 return;
             }
 
@@ -418,7 +418,7 @@ public class UserInfoSyncManager {
                 final int size = filterUserIdList.size();
                 int index = 0;
                 for (long userId : filterUserIdList) {
-                    IMLog.v("multi [%s/%s] send sync user info for user id:%s", ++index, size, userId);
+                    IMLog.v(Objects.defaultObjectTag(this) + " multi [%s/%s] send sync user info for user id:%s", ++index, size, userId);
                     final UserInfoSync userInfoSyncUpdate = new UserInfoSync();
                     userInfoSyncUpdate.uid.set(userId);
                     userInfoSyncUpdate.localLastSyncTimeMs.set(syncTimeMs);
