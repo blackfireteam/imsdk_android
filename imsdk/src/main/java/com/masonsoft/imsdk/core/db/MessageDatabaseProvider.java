@@ -121,6 +121,108 @@ public class MessageDatabaseProvider {
     private MessageDatabaseProvider() {
     }
 
+    /**
+     * 获取该 block 中 remote message id 的最大值对应的消息.
+     */
+    @Nullable
+    public Message getMaxRemoteMessageIdWithBlockId(
+            final long sessionUserId,
+            final int conversationType,
+            final long targetUserId,
+            final long blockId) {
+        return getMinMaxRemoteMessageIdWithBlockId(
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                blockId,
+                true);
+    }
+
+    /**
+     * 获取该 block 中 remote message id 的最小值对应的消息.
+     */
+    @Nullable
+    public Message getMinRemoteMessageIdWithBlockId(
+            final long sessionUserId,
+            final int conversationType,
+            final long targetUserId,
+            final long blockId) {
+        return getMinMaxRemoteMessageIdWithBlockId(
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                blockId,
+                false);
+    }
+
+    /**
+     * 获取该 block 中 remote message id 的最大值或最小值对应的消息.
+     */
+    @Nullable
+    private Message getMinMaxRemoteMessageIdWithBlockId(
+            final long sessionUserId,
+            final int conversationType,
+            final long targetUserId,
+            final long blockId,
+            final boolean max) {
+        IMConstants.ConversationType.check(conversationType);
+
+        final ColumnsSelector<Message> columnsSelector = Message.COLUMNS_SELECTOR_ALL;
+        Cursor cursor = null;
+        try {
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            final String tableName = dbHelper.createTableMessageIfNeed(conversationType, targetUserId);
+            SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
+
+            final StringBuilder selection = new StringBuilder();
+            final List<String> selectionArgs = new ArrayList<>();
+
+            selection.append(" " + DatabaseHelper.ColumnsMessage.C_REMOTE_MSG_ID + ">0 ");
+            selection.append(" and " + DatabaseHelper.ColumnsMessage.C_LOCAL_BLOCK_ID + "=? ");
+            selectionArgs.add(String.valueOf(blockId));
+
+            cursor = db.query(
+                    tableName,
+                    columnsSelector.queryColumns(),
+                    selection.toString(),
+                    selectionArgs.toArray(new String[]{}),
+                    null,
+                    null,
+                    DatabaseHelper.ColumnsMessage.C_REMOTE_MSG_ID + (max ? " desc" : " asc"),
+                    "0,1"
+            );
+
+            if (cursor.moveToNext()) {
+                final Message item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                item.applyLogicField(sessionUserId, conversationType, targetUserId);
+
+                IMLog.v(
+                        "found remoteMessageId:%s with sessionUserId:%s, conversationType:%s, targetUserId:%s, blockId:%s, max:%s",
+                        item.remoteMessageId.get(),
+                        sessionUserId,
+                        conversationType,
+                        targetUserId,
+                        blockId,
+                        max);
+
+                return item;
+            }
+        } catch (Throwable e) {
+            IMLog.e(e);
+            RuntimeMode.throwIfDebug(e);
+        } finally {
+            IOUtil.closeQuietly(cursor);
+        }
+
+        IMLog.v(
+                "remoteMessageId not found with sessionUserId:%s, conversationType:%s, targetUserId:%s, blockId:%s, max:%s",
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                blockId,
+                max);
+        return null;
+    }
 
     /**
      * 获取与 seq 关联最紧密的 block id 值

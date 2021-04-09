@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMSessionManager;
+import com.masonsoft.imsdk.core.MessageSyncManager;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.db.Conversation;
 import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
@@ -53,6 +54,7 @@ public class ReceivedMessageConversationListProcessor extends ReceivedMessageNot
             if (!conversationList.isEmpty()) {
                 syncConversationUserInfo(conversationList);
                 updateConversationList(sessionUserId, conversationList);
+                syncLastMessages(sessionUserId, conversationList);
             }
 
             if (updateTime > 0) {
@@ -113,6 +115,20 @@ public class ReceivedMessageConversationListProcessor extends ReceivedMessageNot
                 database.setTransactionSuccessful();
             } finally {
                 database.endTransaction();
+            }
+        }
+    }
+
+    /**
+     * 同步会话的最后一页消息数据
+     *
+     * @param sessionUserId
+     * @param conversationList
+     */
+    private void syncLastMessages(final long sessionUserId, @NonNull final List<Conversation> conversationList) {
+        for (Conversation conversation : conversationList) {
+            if (conversation.localId.isUnset()) {
+                MessageSyncManager.getInstance().enqueueLoadLatestMessages(sessionUserId, conversation.localId.get());
             }
         }
     }
