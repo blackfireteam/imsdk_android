@@ -5,12 +5,11 @@ import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatTextView;
 
 import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.sample.widget.IMConversationChangedViewHelper;
 
-public class ConversationDebugView extends AppCompatTextView {
+public class ConversationDebugView extends DebugTextView {
 
     public ConversationDebugView(@NonNull Context context) {
         super(context);
@@ -36,10 +35,6 @@ public class ConversationDebugView extends AppCompatTextView {
                 ConversationDebugView.this.showConversationDebugInfo(conversation);
             }
         };
-
-        setTextSize(12);
-        setIncludeFontPadding(false);
-        setTextColor(0x60ff0000);
     }
 
     public void setConversation(long sessionUserId, long conversationId) {
@@ -48,7 +43,7 @@ public class ConversationDebugView extends AppCompatTextView {
 
     private void showConversationDebugInfo(@Nullable IMConversation conversation) {
         if (conversation == null) {
-            setText("conversation is null");
+            setText(mConversationChangedViewHelper.getDebugString());
             return;
         }
 

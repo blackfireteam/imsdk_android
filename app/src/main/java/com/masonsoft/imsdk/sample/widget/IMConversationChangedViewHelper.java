@@ -8,6 +8,7 @@ import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.core.observable.ConversationObservable;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.ObjectWrapper;
+import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.lang.DisposableHolder;
@@ -33,6 +34,15 @@ public abstract class IMConversationChangedViewHelper {
             mConversationId = conversationId;
             requestLoadData(true);
         }
+    }
+
+    public String getDebugString() {
+        //noinspection StringBufferReplaceableByString
+        final StringBuilder builder = new StringBuilder();
+        builder.append(Objects.defaultObjectTag(this));
+        builder.append(" sessionUserId:").append(this.mSessionUserId);
+        builder.append(" conversationId:").append(this.mConversationId);
+        return builder.toString();
     }
 
     public long getSessionUserId() {

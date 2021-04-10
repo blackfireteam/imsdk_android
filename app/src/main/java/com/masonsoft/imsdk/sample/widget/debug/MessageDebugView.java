@@ -5,12 +5,11 @@ import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatTextView;
 
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.sample.widget.IMMessageChangedViewHelper;
 
-public class MessageDebugView extends AppCompatTextView {
+public class MessageDebugView extends DebugTextView {
 
     public MessageDebugView(@NonNull Context context) {
         super(context);
@@ -36,10 +35,6 @@ public class MessageDebugView extends AppCompatTextView {
                 MessageDebugView.this.showMessageDebugInfo(message);
             }
         };
-
-        setTextSize(12);
-        setIncludeFontPadding(false);
-        setTextColor(0x60ff0000);
     }
 
     public void setMessage(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
