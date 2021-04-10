@@ -61,4 +61,9 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="15dp" />
     </LinearLayout>
+
+    <com.masonsoft.imsdk.sample.widget.debug.MessageDebugView
+        android:id="@+id/message_debug_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

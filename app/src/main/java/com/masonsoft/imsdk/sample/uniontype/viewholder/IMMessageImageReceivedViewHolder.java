@@ -24,17 +24,15 @@ public class IMMessageImageReceivedViewHolder extends IMMessageImageViewHolder {
     }
 
     @Override
-    public void onBind(int position, @NonNull Object originObject) {
-        super.onBind(position, originObject);
-        //noinspection unchecked
-        final DataObject<IMMessage> itemObject = (DataObject<IMMessage>) originObject;
-        final IMMessage imMessage = itemObject.object;
+    protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
+        super.onBindItemObject(position, itemObject);
+        final IMMessage message = itemObject.object;
 
-        mBinding.avatar.setTargetUserId(imMessage.fromUserId.get());
+        mBinding.avatar.setTargetUserId(message.fromUserId.get());
         mBinding.avatar.setShowBorder(false);
 
         ViewUtil.onClick(mBinding.avatar, v -> {
-            Activity innerActivity = host.getActivity();
+            final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
                 SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
                 return;

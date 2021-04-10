@@ -6,7 +6,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.core.view.GestureDetectorCompat;
 
@@ -19,37 +18,30 @@ import io.github.idonans.uniontype.Host;
 
 public abstract class IMMessageTextViewHolder extends IMMessageViewHolder {
 
-    private final TextView mMessageTime;
     private final TextView mMessageText;
 
     public IMMessageTextViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
-        mMessageTime = itemView.findViewById(R.id.message_time);
         mMessageText = itemView.findViewById(R.id.message_text);
     }
 
     public IMMessageTextViewHolder(@NonNull Host host, @NonNull View itemView) {
         super(host, itemView);
-        mMessageTime = itemView.findViewById(R.id.message_time);
         mMessageText = itemView.findViewById(R.id.message_text);
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    @CallSuper
     @Override
-    public void onBind(int position, @NonNull Object originObject) {
-        //noinspection unchecked
-        final DataObject<IMMessage> itemObject = (DataObject<IMMessage>) originObject;
-        final IMMessage imMessage = itemObject.object;
+    protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
+        super.onBindItemObject(position, itemObject);
+        final IMMessage message = itemObject.object;
 
-        updateMessageTimeView(mMessageTime, itemObject);
-        // TODO FIXME
-        mMessageText.setText(imMessage.body.getOrDefault(null) + " id:" + imMessage.id.get() + ", seq:" + imMessage.seq.get() + ", toUserId:" + imMessage.toUserId.get() + ", fromUserId:" + imMessage.fromUserId.get());
+        mMessageText.setText(message.body.getOrDefault(null));
 
         GestureDetectorCompat gestureDetectorCompat = new GestureDetectorCompat(mMessageText.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();
+                final UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();
                 if (listener != null) {
                     listener.onItemClick(IMMessageTextViewHolder.this);
                 }
@@ -59,7 +51,7 @@ public abstract class IMMessageTextViewHolder extends IMMessageViewHolder {
         mMessageText.setOnTouchListener((v, event) -> gestureDetectorCompat.onTouchEvent(event));
 
         mMessageText.setOnLongClickListener(v -> {
-            UnionTypeViewHolderListeners.OnItemLongClickListener listener = itemObject.getExtHolderItemLongClick1();
+            final UnionTypeViewHolderListeners.OnItemLongClickListener listener = itemObject.getExtHolderItemLongClick1();
             if (listener != null) {
                 listener.onItemLongClick(this);
             }

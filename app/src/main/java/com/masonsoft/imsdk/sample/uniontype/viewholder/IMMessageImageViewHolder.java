@@ -1,7 +1,6 @@
 package com.masonsoft.imsdk.sample.uniontype.viewholder;
 
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -17,43 +16,38 @@ import io.github.idonans.uniontype.Host;
 
 public abstract class IMMessageImageViewHolder extends IMMessageViewHolder {
 
-    protected final TextView mMessageTime;
     protected final ResizeImageView mResizeImageView;
     protected final IMImageView mImage;
 
     public IMMessageImageViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
-        mMessageTime = itemView.findViewById(R.id.message_time);
         mResizeImageView = itemView.findViewById(R.id.resize_image_view);
         mImage = itemView.findViewById(R.id.image);
     }
 
     public IMMessageImageViewHolder(@NonNull Host host, @NonNull View itemView) {
         super(host, itemView);
-        mMessageTime = itemView.findViewById(R.id.message_time);
         mResizeImageView = itemView.findViewById(R.id.resize_image_view);
         mImage = itemView.findViewById(R.id.image);
     }
 
     @Override
-    public void onBind(int position, @NonNull Object originObject) {
-        //noinspection unchecked
-        final DataObject<IMMessage> itemObject = (DataObject<IMMessage>) originObject;
-        final IMMessage imMessage = itemObject.object;
+    protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
+        super.onBindItemObject(position, itemObject);
+        final IMMessage message = itemObject.object;
 
-        updateMessageTimeView(mMessageTime, itemObject);
-        mResizeImageView.setImageSize(imMessage.width.getOrDefault(0L), imMessage.height.getOrDefault(0L));
-        mImage.setChatMessage(imMessage);
+        mResizeImageView.setImageSize(message.width.getOrDefault(0L), message.height.getOrDefault(0L));
+        mImage.setChatMessage(message);
 
         mResizeImageView.setOnLongClickListener(v -> {
-            UnionTypeViewHolderListeners.OnItemLongClickListener listener = itemObject.getExtHolderItemLongClick1();
+            final UnionTypeViewHolderListeners.OnItemLongClickListener listener = itemObject.getExtHolderItemLongClick1();
             if (listener != null) {
                 listener.onItemLongClick(this);
             }
             return true;
         });
         ViewUtil.onClick(mResizeImageView, v -> {
-            UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();
+            final UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();
             if (listener != null) {
                 listener.onItemClick(this);
             }

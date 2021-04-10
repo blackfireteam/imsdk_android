@@ -51,4 +51,9 @@
             android:textSize="15sp"
             tools:text="hihihihiihihihi" />
     </LinearLayout>
+
+    <com.masonsoft.imsdk.sample.widget.debug.MessageDebugView
+        android:id="@+id/message_debug_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -2,7 +2,6 @@ package com.masonsoft.imsdk.sample.uniontype.viewholder;
 
 import android.app.Activity;
 
-import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.IMMessage;
@@ -25,16 +24,13 @@ public class IMMessageTextSendViewHolder extends IMMessageTextViewHolder {
         mBinding = ImsdkSampleUnionTypeImplImMessageTextSendBinding.bind(itemView);
     }
 
-    @CallSuper
     @Override
-    public void onBind(int position, @NonNull Object originObject) {
-        super.onBind(position, originObject);
-        //noinspection unchecked
-        final DataObject<IMMessage> itemObject = (DataObject<IMMessage>) originObject;
-        final IMMessage imMessage = itemObject.object;
-        mBinding.sendStatusView.setMessage(imMessage);
+    protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
+        super.onBindItemObject(position, itemObject);
+        final IMMessage message = itemObject.object;
+        mBinding.sendStatusView.setMessage(message);
 
-        mBinding.avatar.setTargetUserId(imMessage.fromUserId.getOrDefault(0L));
+        mBinding.avatar.setTargetUserId(message.fromUserId.getOrDefault(0L));
         mBinding.avatar.setShowBorder(false);
 
         ViewUtil.onClick(mBinding.avatar, v -> {
@@ -44,7 +40,7 @@ public class IMMessageTextSendViewHolder extends IMMessageTextViewHolder {
                 return;
             }
 
-            // TODO open profile ?
+            // TODO FIXME open profile ?
             IMLog.w("require open profile");
         });
     }

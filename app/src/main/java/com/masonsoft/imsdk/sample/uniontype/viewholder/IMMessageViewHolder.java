@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.Constants;
+import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.TopActivity;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
@@ -25,6 +27,7 @@ import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.util.FileDownloadHelper;
 import com.masonsoft.imsdk.sample.util.FormatUtil;
 import com.masonsoft.imsdk.sample.util.TipUtil;
+import com.masonsoft.imsdk.sample.widget.debug.MessageDebugView;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import java.io.File;
@@ -92,12 +95,49 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 });
     }
 
+    @Nullable
+    private final MessageDebugView mMessageDebugView;
+    @Nullable
+    private final TextView mMessageTime;
+
     public IMMessageViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
+        mMessageDebugView = itemView.findViewById(R.id.message_debug_view);
+        mMessageTime = itemView.findViewById(R.id.message_time);
     }
 
     public IMMessageViewHolder(@NonNull Host host, @NonNull View itemView) {
         super(host, itemView);
+        mMessageDebugView = itemView.findViewById(R.id.message_debug_view);
+        mMessageTime = itemView.findViewById(R.id.message_time);
+    }
+
+    @Override
+    public final void onBind(int position, @NonNull Object originObject) {
+        //noinspection unchecked
+        onBindItemObject(position, (DataObject<IMMessage>) originObject);
+    }
+
+    @CallSuper
+    protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
+        final IMMessage imMessage = itemObject.object;
+
+        final long sessionUserId = imMessage._sessionUserId.get();
+        final int conversationType = imMessage._conversationType.get();
+        final long targetUserId = imMessage._targetUserId.get();
+        final long localMessageId = imMessage.id.get();
+        if (mMessageDebugView != null) {
+            mMessageDebugView.setMessage(
+                    sessionUserId,
+                    conversationType,
+                    targetUserId,
+                    localMessageId
+            );
+        }
+
+        if (mMessageTime != null) {
+            updateMessageTimeView(mMessageTime, itemObject);
+        }
     }
 
     /**
