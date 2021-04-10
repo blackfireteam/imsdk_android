@@ -123,6 +123,13 @@ public class IMConversationManager {
         }
     }
 
+    /**
+     * 如果 localMessageId 比当前会话上已经记录的 showMessageId 的 seq 更大，则将 showMessageId 替换为 localMessageId
+     * @param sessionUserId
+     * @param conversationType
+     * @param targetUserId
+     * @param localMessageId
+     */
     public void updateConversationLastMessage(final long sessionUserId,
                                               final int conversationType,
                                               final long targetUserId,
