@@ -129,6 +129,12 @@ public class ConversationFragment extends SystemInsetsFragment {
         }
 
         public void replaceConversation(@NonNull final UnionTypeItemObject unionTypeItemObject) {
+            if (!hasPageContent()) {
+                SampleLog.v(Objects.defaultObjectTag(this) + " page content is empty, use requestInit instead of replace");
+                mPresenter.requestInit(true);
+                return;
+            }
+
             final IMConversation updateConversation = (IMConversation) ((DataObject<?>) unionTypeItemObject.itemObject).object;
             final List<UnionTypeItemObject> groupDefaultList = getAdapter().getData().getGroupItems(GROUP_DEFAULT);
             int removedPosition = -1;
