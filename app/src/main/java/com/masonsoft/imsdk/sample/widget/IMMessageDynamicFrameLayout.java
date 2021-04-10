@@ -37,8 +37,8 @@ public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mIMMessageChangedViewHelper = new IMMessageChangedViewHelper() {
             @Override
-            protected void onMessageChanged(@Nullable IMMessage imMessage) {
-                IMMessageDynamicFrameLayout.this.onMessageUpdate(imMessage);
+            protected void onMessageChanged(@Nullable IMMessage message) {
+                IMMessageDynamicFrameLayout.this.onMessageUpdate(message);
             }
         };
     }

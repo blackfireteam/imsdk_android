@@ -8,6 +8,7 @@ import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.observable.MessageObservable;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.ObjectWrapper;
+import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.lang.DisposableHolder;
@@ -39,6 +40,17 @@ public abstract class IMMessageChangedViewHelper {
             mLocalMessageId = localMessageId;
             requestLoadData(true);
         }
+    }
+
+    public String getDebugString() {
+        //noinspection StringBufferReplaceableByString
+        final StringBuilder builder = new StringBuilder();
+        builder.append(Objects.defaultObjectTag(this));
+        builder.append(" sessionUserId:").append(this.mSessionUserId);
+        builder.append(" conversationType:").append(this.mConversationType);
+        builder.append(" targetUserId:").append(this.mTargetUserId);
+        builder.append(" localMessageId:").append(this.mLocalMessageId);
+        return builder.toString();
     }
 
     public long getSessionUserId() {
@@ -79,7 +91,7 @@ public abstract class IMMessageChangedViewHelper {
                 .subscribe(objectWrapper -> onMessageChanged((IMMessage) objectWrapper.getObject()), SampleLog::e));
     }
 
-    protected abstract void onMessageChanged(@Nullable IMMessage imMessage);
+    protected abstract void onMessageChanged(@Nullable IMMessage message);
 
     @SuppressWarnings("FieldCanBeLocal")
     private final MessageObservable.MessageObserver mMessageObserver = new MessageObservable.MessageObserver() {
