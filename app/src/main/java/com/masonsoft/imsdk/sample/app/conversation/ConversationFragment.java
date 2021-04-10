@@ -156,6 +156,10 @@ public class ConversationFragment extends SystemInsetsFragment {
                     }
                 }
             }
+            if (removedPosition == insertPosition) {
+                SampleLog.v(Objects.defaultObjectTag(this) + " ignore. replaceConversation removedPosition:%s, insertPosition:%s", removedPosition, insertPosition);
+                return;
+            }
 
             SampleLog.v(Objects.defaultObjectTag(this) + " replaceConversation removedPosition:%s, insertPosition:%s", removedPosition, insertPosition);
 
