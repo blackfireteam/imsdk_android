@@ -665,9 +665,11 @@ public class IMMessageUploadManager {
 
         @Nullable
         private MessageUploadObjectWrapperTask getTask(final long sign) {
-            for (MessageUploadObjectWrapperTask task : mAllRunningTasks) {
-                if (task.mMessageUploadObjectWrapper.mSign == sign) {
-                    return task;
+            synchronized (mAllRunningTasks) {
+                for (MessageUploadObjectWrapperTask task : mAllRunningTasks) {
+                    if (task.mMessageUploadObjectWrapper.mSign == sign) {
+                        return task;
+                    }
                 }
             }
             return null;
@@ -675,10 +677,12 @@ public class IMMessageUploadManager {
 
         @Nullable
         private MessageUploadObjectWrapperTask getTask(@NonNull LocalSendingMessage localSendingMessage) {
-            final long localId = localSendingMessage.localId.get();
-            for (MessageUploadObjectWrapperTask task : mAllRunningTasks) {
-                if (localId == task.mMessageUploadObjectWrapper.mLocalSendingMessage.localId.get()) {
-                    return task;
+            synchronized (mAllRunningTasks) {
+                final long localId = localSendingMessage.localId.get();
+                for (MessageUploadObjectWrapperTask task : mAllRunningTasks) {
+                    if (localId == task.mMessageUploadObjectWrapper.mLocalSendingMessage.localId.get()) {
+                        return task;
+                    }
                 }
             }
             return null;
@@ -686,11 +690,13 @@ public class IMMessageUploadManager {
 
         @Nullable
         private MessageUploadObjectWrapperTask removeTask(@NonNull LocalSendingMessage localSendingMessage) {
-            final long localId = localSendingMessage.localId.get();
-            for (int i = 0; i < mAllRunningTasks.size(); i++) {
-                final MessageUploadObjectWrapperTask task = mAllRunningTasks.get(i);
-                if (localId == task.mMessageUploadObjectWrapper.mLocalSendingMessage.localId.get()) {
-                    return mAllRunningTasks.remove(i);
+            synchronized (mAllRunningTasks) {
+                final long localId = localSendingMessage.localId.get();
+                for (int i = 0; i < mAllRunningTasks.size(); i++) {
+                    final MessageUploadObjectWrapperTask task = mAllRunningTasks.get(i);
+                    if (localId == task.mMessageUploadObjectWrapper.mLocalSendingMessage.localId.get()) {
+                        return mAllRunningTasks.remove(i);
+                    }
                 }
             }
             return null;
