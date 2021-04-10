@@ -125,6 +125,7 @@ public class IMConversationManager {
 
     /**
      * 如果 localMessageId 比当前会话上已经记录的 showMessageId 的 seq 更大，则将 showMessageId 替换为 localMessageId
+     *
      * @param sessionUserId
      * @param conversationType
      * @param targetUserId
@@ -175,9 +176,24 @@ public class IMConversationManager {
                 conversationUpdate.localShowMessageId.set(localMessageId);
                 conversationUpdate.localTimeMs.set(newShowMessage.localTimeMs.get());
                 conversationUpdate.localSeq.set(newShowMessage.localSeq.get());
-                ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate);
+                if (!ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate)) {
+                    final Throwable e = new IllegalAccessError("unexpected. updateConversation return false");
+                    IMLog.e(e, "sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
+                            sessionUserId,
+                            conversationType,
+                            targetUserId,
+                            localMessageId);
+                    RuntimeMode.throwIfDebug(e);
+                }
+                return;
             }
         }
+
+        IMLog.v("updateConversationLastMessage ignore sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                localMessageId);
     }
 
     @NonNull
