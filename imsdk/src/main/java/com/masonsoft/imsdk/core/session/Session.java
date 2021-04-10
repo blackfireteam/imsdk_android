@@ -4,7 +4,7 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.core.util.TextUtil;
+import io.github.idonans.core.util.TextUtil;
 
 /**
  * 发起或者保持会话的必要信息。包括链接使用的 token，传输数据使用的加密信息，动态的长连接地址信息等。

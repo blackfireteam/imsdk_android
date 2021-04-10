@@ -2,11 +2,11 @@ package com.masonsoft.imsdk.core.db;
 
 import androidx.annotation.NonNull;
 
-import com.idonans.core.Singleton;
-import com.idonans.core.thread.TaskQueue;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import io.github.idonans.core.Singleton;
+import io.github.idonans.core.thread.TaskQueue;
 
 /**
  * 数据库内容写入时，每一个登录用户至多只有一个线程在写入。

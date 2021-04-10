@@ -3,11 +3,12 @@ package com.masonsoft.imsdk;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.core.WeakAbortSignal;
-import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.util.Objects;
+
+import io.github.idonans.core.WeakAbortSignal;
+import io.github.idonans.core.thread.Threads;
 
 public class IMSessionMessage {
 

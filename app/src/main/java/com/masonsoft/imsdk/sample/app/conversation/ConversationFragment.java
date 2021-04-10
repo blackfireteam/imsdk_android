@@ -12,10 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.collect.Lists;
-import com.idonans.dynamic.page.UnionTypeStatusPageView;
-import com.idonans.uniontype.Host;
-import com.idonans.uniontype.UnionTypeAdapter;
-import com.idonans.uniontype.UnionTypeItemObject;
 import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
@@ -26,6 +22,11 @@ import com.masonsoft.imsdk.util.Objects;
 
 import java.util.Collection;
 import java.util.List;
+
+import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
+import io.github.idonans.uniontype.Host;
+import io.github.idonans.uniontype.UnionTypeAdapter;
+import io.github.idonans.uniontype.UnionTypeItemObject;
 
 /**
  * 会话

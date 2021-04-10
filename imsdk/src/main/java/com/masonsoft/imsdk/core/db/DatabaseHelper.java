@@ -5,8 +5,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.NonNull;
 
-import com.idonans.core.manager.ProcessManager;
-import com.idonans.core.util.ContextUtil;
 import com.masonsoft.imsdk.annotation.Local;
 import com.masonsoft.imsdk.annotation.Remote;
 import com.masonsoft.imsdk.core.IMConstants;
@@ -14,6 +12,9 @@ import com.masonsoft.imsdk.core.IMLog;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.github.idonans.core.manager.ProcessManager;
+import io.github.idonans.core.util.ContextUtil;
 
 /**
  * 每一个登录用户分别属于单独的数据库文件

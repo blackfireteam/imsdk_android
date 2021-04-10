@@ -8,15 +8,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
-import com.idonans.core.manager.TmpFileManager;
-import com.idonans.core.util.ContextUtil;
-import com.idonans.core.util.FileUtil;
-import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.lang.ImageInfo;
 
 import java.io.File;
 import java.io.InputStream;
+
+import io.github.idonans.core.manager.TmpFileManager;
+import io.github.idonans.core.util.ContextUtil;
+import io.github.idonans.core.util.FileUtil;
+import io.github.idonans.core.util.IOUtil;
 
 /**
  * @since 1.0

@@ -3,7 +3,6 @@ package com.masonsoft.imsdk.core;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.core.Singleton;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.core.db.LocalSendingMessage;
@@ -16,6 +15,8 @@ import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.github.idonans.core.Singleton;
 
 /**
  * 处理消息相关内容。

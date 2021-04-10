@@ -5,8 +5,6 @@ import android.app.Activity;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 
-import com.idonans.lang.util.ViewUtil;
-import com.idonans.uniontype.Host;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.sample.Constants;
@@ -14,6 +12,9 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImMessageTextSendBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
+
+import io.github.idonans.lang.util.ViewUtil;
+import io.github.idonans.uniontype.Host;
 
 public class IMMessageTextSendViewHolder extends IMMessageTextViewHolder {
 

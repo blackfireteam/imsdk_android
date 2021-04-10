@@ -1,6 +1,6 @@
 package com.masonsoft.imsdk.sample.uniontype;
 
-import com.idonans.uniontype.UnionTypeViewHolder;
+import io.github.idonans.uniontype.UnionTypeViewHolder;
 
 public interface UnionTypeViewHolderListeners {
 

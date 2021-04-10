@@ -7,9 +7,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.core.Singleton;
-
 import java.lang.ref.WeakReference;
+
+import io.github.idonans.core.Singleton;
 
 public class TopActivity {
 

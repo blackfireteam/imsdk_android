@@ -8,9 +8,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.lang.util.ViewUtil;
 import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.sample.Constants;
+
+import io.github.idonans.lang.util.ViewUtil;
 
 public class IMConversationLastMessage extends IMConversationDynamicFrameLayout {
 

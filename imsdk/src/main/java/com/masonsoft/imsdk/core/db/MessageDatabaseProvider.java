@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 
-import com.idonans.core.Singleton;
-import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
@@ -18,6 +16,9 @@ import com.masonsoft.imsdk.core.observable.MessageObservable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.github.idonans.core.Singleton;
+import io.github.idonans.core.util.IOUtil;
 
 /**
  * 消息表(每一个会话是一个单独的消息表)

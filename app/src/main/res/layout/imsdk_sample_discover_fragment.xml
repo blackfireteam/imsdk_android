@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/imsdk_sample_color_white_grey_background">
 
-    <com.idonans.systeminsets.SystemInsetsFrameLayout
+    <io.github.idonans.systeminsets.SystemInsetsFrameLayout
         android:id="@+id/top_system_insets"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="@dimen/imsdk_sample_main_top_bar_height" />
-    </com.idonans.systeminsets.SystemInsetsFrameLayout>
+    </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
 
     <ScrollView
         android:id="@+id/scroll_view"
@@ -32,7 +32,7 @@
             android:orientation="vertical" />
     </ScrollView>
 
-    <com.idonans.systeminsets.SystemInsetsFrameLayout
+    <io.github.idonans.systeminsets.SystemInsetsFrameLayout
         android:id="@+id/bottom_system_insets"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,5 +44,5 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="@dimen/imsdk_sample_main_bottom_bar_height" />
-    </com.idonans.systeminsets.SystemInsetsFrameLayout>
+    </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

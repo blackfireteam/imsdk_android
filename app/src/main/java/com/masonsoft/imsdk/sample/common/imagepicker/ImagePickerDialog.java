@@ -14,13 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.idonans.backstack.ViewBackLayer;
-import com.idonans.backstack.dialog.ViewDialog;
-import com.idonans.core.thread.Threads;
-import com.idonans.core.util.DimenUtil;
-import com.idonans.lang.util.ViewUtil;
-import com.idonans.uniontype.Host;
-import com.idonans.uniontype.UnionTypeItemObject;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -33,6 +26,14 @@ import com.masonsoft.imsdk.sample.widget.GridItemDecoration;
 import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.List;
+
+import io.github.idonans.backstack.ViewBackLayer;
+import io.github.idonans.backstack.dialog.ViewDialog;
+import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.lang.util.ViewUtil;
+import io.github.idonans.uniontype.Host;
+import io.github.idonans.uniontype.UnionTypeItemObject;
 
 public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBackLayer.OnBackPressedListener {
 

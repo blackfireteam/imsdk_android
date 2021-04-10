@@ -3,7 +3,6 @@ package com.masonsoft.imsdk.core.session;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.core.Charsets;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.NettyTcpClient;
@@ -28,6 +27,8 @@ import java.security.spec.AlgorithmParameterSpec;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import io.github.idonans.core.Charsets;
 
 /**
  * 维护长连接的可用性，包括在长连接上进行 Session 认证，发送心跳等。

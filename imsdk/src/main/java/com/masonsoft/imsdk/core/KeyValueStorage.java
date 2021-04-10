@@ -2,7 +2,7 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.Nullable;
 
-import com.idonans.core.manager.StorageManager;
+import io.github.idonans.core.manager.StorageManager;
 
 /**
  * 简单数据的 key-value 加密存储

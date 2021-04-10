@@ -7,7 +7,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.UiThread;
 import androidx.core.math.MathUtils;
 
-import com.idonans.core.util.DimenUtil;
+import io.github.idonans.core.util.DimenUtil;
 
 public class ResizeImageView extends FrameLayout {
 

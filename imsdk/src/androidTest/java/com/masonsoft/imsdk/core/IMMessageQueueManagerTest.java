@@ -5,7 +5,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.IMSessionMessage;
@@ -13,6 +12,8 @@ import com.masonsoft.imsdk.core.session.Session;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import io.github.idonans.core.thread.Threads;
 
 @RunWith(AndroidJUnit4.class)
 public class IMMessageQueueManagerTest {

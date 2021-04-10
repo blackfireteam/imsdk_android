@@ -6,12 +6,13 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.Nullable;
 
-import com.idonans.core.Singleton;
-import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.db.ColumnsSelector;
+
+import io.github.idonans.core.Singleton;
+import io.github.idonans.core.util.IOUtil;
 
 /**
  * @since 1.0

@@ -12,9 +12,6 @@ import android.widget.SimpleAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.core.FormValidator;
-import com.idonans.core.util.ToastUtil;
-import com.idonans.lang.util.ViewUtil;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.session.Session;
@@ -29,6 +26,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.github.idonans.core.FormValidator;
+import io.github.idonans.core.util.ToastUtil;
+import io.github.idonans.lang.util.ViewUtil;
 
 public class SignInFragment extends SystemInsetsFragment {
 

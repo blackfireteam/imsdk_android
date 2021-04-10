@@ -19,9 +19,6 @@ import androidx.emoji.widget.EmojiTextView;
 import androidx.gridlayout.widget.GridLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.idonans.core.util.DimenUtil;
-import com.idonans.lang.DisposableHolder;
-import com.idonans.lang.util.ViewUtil;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -35,6 +32,10 @@ import com.masonsoft.imsdk.sample.util.ActivityUtil;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import java.util.List;
+
+import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.lang.DisposableHolder;
+import io.github.idonans.lang.util.ViewUtil;
 
 public class CustomSoftKeyboard extends FrameLayout {
 

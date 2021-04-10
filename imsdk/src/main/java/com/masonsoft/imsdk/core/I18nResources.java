@@ -2,7 +2,7 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.StringRes;
 
-import com.idonans.core.util.ContextUtil;
+import io.github.idonans.core.util.ContextUtil;
 
 public final class I18nResources {
 

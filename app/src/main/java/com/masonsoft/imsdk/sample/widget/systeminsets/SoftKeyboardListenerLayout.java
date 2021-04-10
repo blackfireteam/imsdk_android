@@ -9,13 +9,13 @@ import android.view.ViewConfiguration;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.core.util.ContextUtil;
-import com.idonans.core.util.DimenUtil;
-import com.idonans.systeminsets.SystemInsetsFrameLayout;
-import com.idonans.systeminsets.SystemInsetsLayoutHelper;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import io.github.idonans.core.util.ContextUtil;
+import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.systeminsets.SystemInsetsFrameLayout;
+import io.github.idonans.systeminsets.SystemInsetsLayoutHelper;
 
 public class SoftKeyboardListenerLayout extends SystemInsetsFrameLayout {
 

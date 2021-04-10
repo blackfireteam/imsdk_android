@@ -4,13 +4,14 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.idonans.core.WeakAbortSignal;
-import com.idonans.core.thread.Threads;
-import com.idonans.systeminsets.SystemUiHelper;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.app.sign.SignInActivity;
+
+import io.github.idonans.core.WeakAbortSignal;
+import io.github.idonans.core.thread.Threads;
+import io.github.idonans.systeminsets.SystemUiHelper;
 
 public class SplashActivity extends FragmentDelegateActivity {
 

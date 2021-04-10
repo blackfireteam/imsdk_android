@@ -2,7 +2,7 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 
-import com.idonans.core.Singleton;
+import io.github.idonans.core.Singleton;
 
 /**
  * IM 统一管理类, 核心类, 业务层使用 IM 功能的最外层入口。包括登录，消息，会话等 IM 强相关功能。

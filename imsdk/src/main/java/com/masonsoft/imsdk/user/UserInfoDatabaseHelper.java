@@ -5,12 +5,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.NonNull;
 
-import com.idonans.core.Singleton;
-import com.idonans.core.manager.ProcessManager;
-import com.idonans.core.util.ContextUtil;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
+
+import io.github.idonans.core.Singleton;
+import io.github.idonans.core.manager.ProcessManager;
+import io.github.idonans.core.util.ContextUtil;
 
 /**
  * @since 1.0

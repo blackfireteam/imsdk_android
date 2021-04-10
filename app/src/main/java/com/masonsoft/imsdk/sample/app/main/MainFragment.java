@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.idonans.systeminsets.SystemInsetsLayout;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
@@ -19,6 +18,8 @@ import com.masonsoft.imsdk.sample.app.conversation.ConversationFragment;
 import com.masonsoft.imsdk.sample.app.discover.DiscoverFragment;
 import com.masonsoft.imsdk.sample.app.mine.MineFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMainFragmentBinding;
+
+import io.github.idonans.systeminsets.SystemInsetsLayout;
 
 public class MainFragment extends SystemInsetsFragment {
 

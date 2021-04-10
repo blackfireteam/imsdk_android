@@ -6,16 +6,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 
-import com.idonans.core.SimpleAbortSignal;
-import com.idonans.core.Singleton;
-import com.idonans.core.thread.Threads;
-import com.idonans.core.util.AbortUtil;
-import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.core.message.packet.GetConversationListMessagePacket;
 import com.masonsoft.imsdk.core.observable.SessionObservable;
 import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
+
+import io.github.idonans.core.SimpleAbortSignal;
+import io.github.idonans.core.Singleton;
+import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.AbortUtil;
+import io.github.idonans.core.util.IOUtil;
 
 /**
  * 处理登录状态相关内容，当登录状态发生变更时，将强制断开长连接然后发起新的长连接(如果有登录信息)。

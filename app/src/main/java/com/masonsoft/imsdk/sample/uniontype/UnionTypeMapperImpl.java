@@ -1,6 +1,5 @@
 package com.masonsoft.imsdk.sample.uniontype;
 
-import com.idonans.dynamic.uniontype.loadingstatus.UnionTypeLoadingStatus;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMConversationViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageImageReceivedViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageImageSendViewHolder;
@@ -9,6 +8,8 @@ import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageTextSendViewHold
 import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePickerBucketViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePickerGridViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePickerPagerViewHolder;
+
+import io.github.idonans.dynamic.uniontype.loadingstatus.UnionTypeLoadingStatus;
 
 public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
 

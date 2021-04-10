@@ -2,9 +2,10 @@ package com.masonsoft.imsdk.sample.util;
 
 import androidx.annotation.StringRes;
 
-import com.idonans.core.util.ContextUtil;
-import com.idonans.core.util.ToastUtil;
 import com.masonsoft.imsdk.sample.R;
+
+import io.github.idonans.core.util.ContextUtil;
+import io.github.idonans.core.util.ToastUtil;
 
 public class TipUtil {
 

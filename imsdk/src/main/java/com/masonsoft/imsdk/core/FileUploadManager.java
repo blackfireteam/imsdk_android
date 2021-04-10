@@ -6,12 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 
-import com.idonans.core.Progress;
-import com.idonans.core.Singleton;
-import com.idonans.core.manager.TmpFileManager;
-import com.idonans.core.util.ContextUtil;
-import com.idonans.core.util.FileUtil;
-import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.lang.ImageInfo;
 import com.masonsoft.imsdk.util.BitmapUtil;
 import com.masonsoft.imsdk.util.Objects;
@@ -19,6 +13,12 @@ import com.masonsoft.imsdk.util.Objects;
 import java.io.File;
 import java.io.InputStream;
 
+import io.github.idonans.core.Progress;
+import io.github.idonans.core.Singleton;
+import io.github.idonans.core.manager.TmpFileManager;
+import io.github.idonans.core.util.ContextUtil;
+import io.github.idonans.core.util.FileUtil;
+import io.github.idonans.core.util.IOUtil;
 import top.zibin.luban.Luban;
 
 /**

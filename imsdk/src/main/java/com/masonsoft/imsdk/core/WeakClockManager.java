@@ -3,10 +3,11 @@ package com.masonsoft.imsdk.core;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-import com.idonans.core.SimpleAbortSignal;
-import com.idonans.core.Singleton;
-import com.idonans.core.thread.TaskQueue;
 import com.masonsoft.imsdk.core.observable.ClockObservable;
+
+import io.github.idonans.core.SimpleAbortSignal;
+import io.github.idonans.core.Singleton;
+import io.github.idonans.core.thread.TaskQueue;
 
 /**
  * 以 weak 引用持有需要按照时间周期性处理的对象，当没有任何对象需要处理时，会挂起计时器。

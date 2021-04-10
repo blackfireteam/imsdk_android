@@ -3,7 +3,6 @@ package com.masonsoft.imsdk.core;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.core.Singleton;
 import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.IMConversationFactory;
 import com.masonsoft.imsdk.core.db.Conversation;
@@ -17,6 +16,8 @@ import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.github.idonans.core.Singleton;
 
 /**
  * 处理会话相关内容

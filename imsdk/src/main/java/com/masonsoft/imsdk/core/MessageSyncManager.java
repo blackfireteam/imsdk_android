@@ -2,8 +2,6 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 
-import com.idonans.core.Singleton;
-import com.idonans.core.thread.TaskQueue;
 import com.masonsoft.imsdk.core.db.Conversation;
 import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
 import com.masonsoft.imsdk.core.db.Message;
@@ -14,6 +12,9 @@ import com.masonsoft.imsdk.core.message.packet.NotNullTimeoutMessagePacket;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
 import com.masonsoft.imsdk.util.Objects;
+
+import io.github.idonans.core.Singleton;
+import io.github.idonans.core.thread.TaskQueue;
 
 /**
  * 处理消息同步

@@ -4,8 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.idonans.systeminsets.SystemUiHelper;
 import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
+
+import io.github.idonans.systeminsets.SystemUiHelper;
 
 public class MainActivity extends FragmentDelegateActivity {
 

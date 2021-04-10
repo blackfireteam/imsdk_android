@@ -14,11 +14,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 
-import com.idonans.core.util.NetUtil;
-import com.idonans.core.util.SystemUtil;
-import com.idonans.uniontype.Host;
-import com.idonans.uniontype.UnionTypeItemObject;
-import com.idonans.uniontype.UnionTypeViewHolder;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMSessionManager;
@@ -34,6 +29,12 @@ import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+
+import io.github.idonans.core.util.NetUtil;
+import io.github.idonans.core.util.SystemUtil;
+import io.github.idonans.uniontype.Host;
+import io.github.idonans.uniontype.UnionTypeItemObject;
+import io.github.idonans.uniontype.UnionTypeViewHolder;
 
 public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
 

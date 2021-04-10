@@ -11,12 +11,13 @@ import com.facebook.common.logging.FLogDefaultLoggingDelegate;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.backends.okhttp3.OkHttpNetworkFetcher;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
-import com.idonans.core.manager.ProcessManager;
-import com.idonans.dynamic.DynamicLog;
 import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.sample.common.TopActivity;
 import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
+
+import io.github.idonans.core.manager.ProcessManager;
+import io.github.idonans.dynamic.DynamicLog;
 
 public class SampleApplication extends Application {
 

@@ -1,8 +1,8 @@
 package com.masonsoft.imsdk.sample;
 
-import com.idonans.core.util.HumanUtil;
-
 import java.util.concurrent.TimeUnit;
+
+import io.github.idonans.core.util.HumanUtil;
 
 public class Constants {
 

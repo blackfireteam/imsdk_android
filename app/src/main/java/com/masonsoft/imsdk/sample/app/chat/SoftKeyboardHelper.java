@@ -4,9 +4,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
-import com.idonans.core.util.SystemUtil;
-import com.idonans.lang.util.ViewUtil;
 import com.masonsoft.imsdk.sample.widget.systeminsets.SoftKeyboardListenerLayout;
+
+import io.github.idonans.core.util.SystemUtil;
+import io.github.idonans.lang.util.ViewUtil;
 
 /**
  * 处理自定义键盘和系统软键盘的显示，隐藏交互

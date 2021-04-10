@@ -11,13 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import com.idonans.core.util.DimenUtil;
-import com.idonans.lang.util.ViewUtil;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
+
+import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.lang.util.ViewUtil;
 
 public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
 

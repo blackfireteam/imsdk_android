@@ -6,8 +6,9 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.idonans.systeminsets.SystemUiHelper;
 import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
+
+import io.github.idonans.systeminsets.SystemUiHelper;
 
 /**
  * 登录

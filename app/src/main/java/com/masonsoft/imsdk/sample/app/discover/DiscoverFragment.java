@@ -11,13 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 
-import com.idonans.lang.util.ViewUtil;
-import com.idonans.systeminsets.SystemInsetsLayout;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleDiscoverFragmentBinding;
+
+import io.github.idonans.lang.util.ViewUtil;
+import io.github.idonans.systeminsets.SystemInsetsLayout;
 
 /**
  * 发现

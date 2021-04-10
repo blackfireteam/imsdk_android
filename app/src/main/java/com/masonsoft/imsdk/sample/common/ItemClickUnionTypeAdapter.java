@@ -1,7 +1,8 @@
 package com.masonsoft.imsdk.sample.common;
 
-import com.idonans.uniontype.UnionTypeAdapter;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
+
+import io.github.idonans.uniontype.UnionTypeAdapter;
 
 public class ItemClickUnionTypeAdapter extends UnionTypeAdapter {
 

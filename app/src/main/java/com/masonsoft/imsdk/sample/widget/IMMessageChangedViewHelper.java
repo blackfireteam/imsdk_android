@@ -2,8 +2,6 @@ package com.masonsoft.imsdk.sample.widget;
 
 import androidx.annotation.Nullable;
 
-import com.idonans.core.thread.Threads;
-import com.idonans.lang.DisposableHolder;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMMessageManager;
@@ -11,6 +9,8 @@ import com.masonsoft.imsdk.core.observable.MessageObservable;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.ObjectWrapper;
 
+import io.github.idonans.core.thread.Threads;
+import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;

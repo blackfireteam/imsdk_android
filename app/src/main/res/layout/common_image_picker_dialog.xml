@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.idonans.systeminsets.SystemInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<io.github.idonans.systeminsets.SystemInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pager_overlay_container"
@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:background="#FF000000">
 
-    <com.idonans.systeminsets.SystemInsetsLinearLayout
+    <io.github.idonans.systeminsets.SystemInsetsLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -76,6 +76,6 @@
                 android:layout_height="match_parent"
                 android:background="#FFf2f2f2" />
         </FrameLayout>
-    </com.idonans.systeminsets.SystemInsetsLinearLayout>
+    </io.github.idonans.systeminsets.SystemInsetsLinearLayout>
 
-</com.idonans.systeminsets.SystemInsetsFrameLayout>
+</io.github.idonans.systeminsets.SystemInsetsFrameLayout>

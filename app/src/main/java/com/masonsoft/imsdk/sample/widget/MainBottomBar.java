@@ -8,8 +8,9 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.lang.util.ViewUtil;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetMainBottomBarBinding;
+
+import io.github.idonans.lang.util.ViewUtil;
 
 public class MainBottomBar extends FrameLayout {
 

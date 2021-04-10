@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 
-import com.idonans.core.Singleton;
-import com.idonans.core.thread.TaskQueue;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.IMSessionManager;
@@ -22,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import io.github.idonans.core.Singleton;
+import io.github.idonans.core.thread.TaskQueue;
 
 /**
  * 用户信息的同步管理

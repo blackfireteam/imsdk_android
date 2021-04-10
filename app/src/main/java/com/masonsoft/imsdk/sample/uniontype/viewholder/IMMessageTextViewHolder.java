@@ -10,11 +10,12 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.core.view.GestureDetectorCompat;
 
-import com.idonans.uniontype.Host;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
+
+import io.github.idonans.uniontype.Host;
 
 public abstract class IMMessageTextViewHolder extends IMMessageViewHolder {
 

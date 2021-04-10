@@ -1,6 +1,6 @@
 package com.masonsoft.imsdk.core;
 
-import com.idonans.core.manager.ProcessManager;
+import io.github.idonans.core.manager.ProcessManager;
 
 public class IMProcessValidator {
 

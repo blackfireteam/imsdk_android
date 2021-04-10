@@ -21,11 +21,12 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.idonans.core.util.DimenUtil;
 import com.masonsoft.imsdk.sample.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.github.idonans.core.util.DimenUtil;
 
 public class ImageLayout extends ClipLayout {
 

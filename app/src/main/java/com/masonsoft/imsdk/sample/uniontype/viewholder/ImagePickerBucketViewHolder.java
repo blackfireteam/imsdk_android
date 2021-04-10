@@ -2,14 +2,15 @@ package com.masonsoft.imsdk.sample.uniontype.viewholder;
 
 import androidx.annotation.NonNull;
 
-import com.idonans.lang.util.ViewUtil;
-import com.idonans.uniontype.Host;
-import com.idonans.uniontype.UnionTypeViewHolder;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImagePickerBucketBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
+
+import io.github.idonans.lang.util.ViewUtil;
+import io.github.idonans.uniontype.Host;
+import io.github.idonans.uniontype.UnionTypeViewHolder;
 
 public class ImagePickerBucketViewHolder extends UnionTypeViewHolder {
 

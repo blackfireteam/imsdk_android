@@ -5,7 +5,6 @@ import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 
-import com.idonans.core.util.HumanUtil;
 import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
@@ -13,6 +12,8 @@ import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.lang.StateProp;
 
 import java.io.File;
+
+import io.github.idonans.core.util.HumanUtil;
 
 /**
  * 发送语音类型的消息合法性检查

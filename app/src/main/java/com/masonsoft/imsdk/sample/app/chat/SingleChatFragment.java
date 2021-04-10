@@ -14,13 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.idonans.core.AbortSignal;
-import com.idonans.core.FormValidator;
-import com.idonans.dynamic.page.UnionTypeStatusPageView;
-import com.idonans.lang.util.ViewUtil;
-import com.idonans.uniontype.Host;
-import com.idonans.uniontype.UnionTypeAdapter;
-import com.idonans.uniontype.UnionTypeItemObject;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.IMSessionMessage;
@@ -43,6 +36,14 @@ import com.masonsoft.imsdk.util.Objects;
 
 import java.util.Collection;
 import java.util.List;
+
+import io.github.idonans.core.AbortSignal;
+import io.github.idonans.core.FormValidator;
+import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
+import io.github.idonans.lang.util.ViewUtil;
+import io.github.idonans.uniontype.Host;
+import io.github.idonans.uniontype.UnionTypeAdapter;
+import io.github.idonans.uniontype.UnionTypeItemObject;
 
 /**
  * 单聊页面

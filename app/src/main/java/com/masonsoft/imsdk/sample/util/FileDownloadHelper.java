@@ -6,12 +6,6 @@ import android.webkit.URLUtil;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.core.Progress;
-import com.idonans.core.WeakAbortSignal;
-import com.idonans.core.thread.TaskQueue;
-import com.idonans.core.thread.Threads;
-import com.idonans.core.util.FileUtil;
-import com.idonans.core.util.IOUtil;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
 import com.masonsoft.imsdk.sample.SampleLog;
 
@@ -21,6 +15,12 @@ import java.io.InputStream;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import io.github.idonans.core.Progress;
+import io.github.idonans.core.WeakAbortSignal;
+import io.github.idonans.core.thread.TaskQueue;
+import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.FileUtil;
+import io.github.idonans.core.util.IOUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;

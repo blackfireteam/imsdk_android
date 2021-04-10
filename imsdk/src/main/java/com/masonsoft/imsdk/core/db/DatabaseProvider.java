@@ -1,11 +1,11 @@
 package com.masonsoft.imsdk.core.db;
 
-
-import com.idonans.core.Singleton;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.github.idonans.core.Singleton;
 
 /**
  * @since 1.0

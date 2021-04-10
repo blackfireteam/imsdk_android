@@ -1,8 +1,9 @@
 package com.masonsoft.imsdk.sample.widget;
 
-import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.observable.SessionObservable;
+
+import io.github.idonans.core.thread.Threads;
 
 public abstract class SessionUserIdChangedViewHelper {
 

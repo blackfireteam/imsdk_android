@@ -6,10 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 
-import com.idonans.core.Progress;
-import com.idonans.core.Singleton;
-import com.idonans.core.thread.TaskQueue;
-import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.core.block.MessageBlock;
 import com.masonsoft.imsdk.core.db.LocalSendingMessage;
 import com.masonsoft.imsdk.core.db.LocalSendingMessageProvider;
@@ -30,6 +26,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import io.github.idonans.core.Progress;
+import io.github.idonans.core.Singleton;
+import io.github.idonans.core.thread.TaskQueue;
+import io.github.idonans.core.thread.Threads;
 
 /**
  * 消息上传队列. 从 LocalSendingMessage 表中读取需要发送的内容依次处理, 并处理对应的消息响应。

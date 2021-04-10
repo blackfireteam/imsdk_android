@@ -5,10 +5,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.core.thread.Threads;
-import com.idonans.core.util.IOUtil;
-import com.idonans.core.util.ZipUtil;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -17,6 +13,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.IOUtil;
+import io.github.idonans.core.util.ZipUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;

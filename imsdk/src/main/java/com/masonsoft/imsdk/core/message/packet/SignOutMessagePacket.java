@@ -2,13 +2,14 @@ package com.masonsoft.imsdk.core.message.packet;
 
 import androidx.annotation.NonNull;
 
-import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.util.Objects;
+
+import io.github.idonans.core.thread.Threads;
 
 /**
  * 在长连接上的退出登录消息包

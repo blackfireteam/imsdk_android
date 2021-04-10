@@ -5,14 +5,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.idonans.lang.util.ViewUtil;
-import com.idonans.uniontype.Host;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.sample.widget.IMImageView;
 import com.masonsoft.imsdk.sample.widget.ResizeImageView;
+
+import io.github.idonans.lang.util.ViewUtil;
+import io.github.idonans.uniontype.Host;
 
 public abstract class IMMessageImageViewHolder extends IMMessageViewHolder {
 

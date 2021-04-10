@@ -2,7 +2,6 @@ package com.masonsoft.imsdk.sample.common.imagepicker;
 
 import androidx.annotation.NonNull;
 
-import com.idonans.uniontype.UnionTypeItemObject;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 
@@ -10,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.github.idonans.uniontype.UnionTypeItemObject;
 
 public class UnionTypeImageData {
 

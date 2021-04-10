@@ -6,9 +6,6 @@ import android.view.ViewParent;
 
 import androidx.annotation.NonNull;
 
-import com.idonans.lang.util.ViewUtil;
-import com.idonans.uniontype.Host;
-import com.idonans.uniontype.UnionTypeViewHolder;
 import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
@@ -16,6 +13,10 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImConversationBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
+
+import io.github.idonans.lang.util.ViewUtil;
+import io.github.idonans.uniontype.Host;
+import io.github.idonans.uniontype.UnionTypeViewHolder;
 
 public class IMConversationViewHolder extends UnionTypeViewHolder {
 

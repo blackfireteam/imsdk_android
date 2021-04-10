@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         tools:background="@color/imsdk_sample_color_white_grey_background" />
 
-    <com.idonans.systeminsets.SystemInsetsFrameLayout
+    <io.github.idonans.systeminsets.SystemInsetsFrameLayout
         android:id="@+id/main_top_bar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,9 +23,9 @@
             android:id="@+id/main_top_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/imsdk_sample_main_top_bar_height" />
-    </com.idonans.systeminsets.SystemInsetsFrameLayout>
+    </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
 
-    <com.idonans.systeminsets.SystemInsetsFrameLayout
+    <io.github.idonans.systeminsets.SystemInsetsFrameLayout
         android:id="@+id/main_bottom_bar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,6 +38,6 @@
             android:id="@+id/main_bottom_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/imsdk_sample_main_bottom_bar_height" />
-    </com.idonans.systeminsets.SystemInsetsFrameLayout>
+    </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
 
 </FrameLayout>

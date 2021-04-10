@@ -11,10 +11,11 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.core.util.DimenUtil;
-import com.idonans.lang.util.ViewUtil;
 import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.sample.Constants;
+
+import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.lang.util.ViewUtil;
 
 public class IMConversationUnreadCountView extends IMConversationDynamicFrameLayout {
 

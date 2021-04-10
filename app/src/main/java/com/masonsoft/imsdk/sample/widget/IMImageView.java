@@ -4,12 +4,13 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.AttributeSet;
 
-import com.idonans.core.util.DimenUtil;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.sample.SampleLog;
 
 import java.util.Locale;
+
+import io.github.idonans.core.util.DimenUtil;
 
 public class IMImageView extends ImageLayout {
 

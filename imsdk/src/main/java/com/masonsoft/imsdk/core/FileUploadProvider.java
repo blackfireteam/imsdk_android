@@ -3,7 +3,7 @@ package com.masonsoft.imsdk.core;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
-import com.idonans.core.Progress;
+import io.github.idonans.core.Progress;
 
 /**
  * 文件上传服务，实现将文件内容上传至服务器并生成可访问网络地址

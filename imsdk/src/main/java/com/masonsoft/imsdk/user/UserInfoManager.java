@@ -4,13 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 
-import com.idonans.core.Singleton;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.observable.UserInfoObservable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.github.idonans.core.Singleton;
 
 /**
  * 用户信息管理。会缓存一部分用户信息到内存中。

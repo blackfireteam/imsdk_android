@@ -4,12 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.idonans.core.thread.Threads;
-import com.idonans.dynamic.page.PagePresenter;
-import com.idonans.dynamic.page.PageView;
-import com.idonans.dynamic.page.UnionTypeStatusPageView;
-import com.idonans.lang.DisposableHolder;
-import com.idonans.uniontype.UnionTypeItemObject;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
@@ -25,6 +19,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import io.github.idonans.core.thread.Threads;
+import io.github.idonans.dynamic.page.PagePresenter;
+import io.github.idonans.dynamic.page.PageView;
+import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
+import io.github.idonans.lang.DisposableHolder;
+import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 

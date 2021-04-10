@@ -2,8 +2,6 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 
-import com.idonans.core.Singleton;
-import com.idonans.core.thread.TaskQueue;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.IMSessionMessage;
@@ -18,6 +16,9 @@ import com.masonsoft.imsdk.core.processor.ReceivedMessageUploadResponseProcessor
 import com.masonsoft.imsdk.core.processor.SendMessageRecoveryProcessor;
 import com.masonsoft.imsdk.core.processor.SendMessageWriteDatabaseProcessor;
 import com.masonsoft.imsdk.lang.MultiProcessor;
+
+import io.github.idonans.core.Singleton;
+import io.github.idonans.core.thread.TaskQueue;
 
 /**
  * 消息收发队列

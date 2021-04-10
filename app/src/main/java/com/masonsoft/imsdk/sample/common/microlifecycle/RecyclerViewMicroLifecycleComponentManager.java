@@ -5,8 +5,9 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.idonans.core.thread.Threads;
 import com.masonsoft.imsdk.sample.SampleLog;
+
+import io.github.idonans.core.thread.Threads;
 
 public abstract class RecyclerViewMicroLifecycleComponentManager extends MicroLifecycleComponentManager {
 
