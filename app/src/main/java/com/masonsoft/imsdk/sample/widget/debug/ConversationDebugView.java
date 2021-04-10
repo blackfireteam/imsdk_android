@@ -39,7 +39,7 @@ public class ConversationDebugView extends AppCompatTextView {
 
         setTextSize(12);
         setIncludeFontPadding(false);
-        setTextColor(0x60000000);
+        setTextColor(0x60ff0000);
     }
 
     public void setConversation(long sessionUserId, long conversationId) {
@@ -52,32 +52,7 @@ public class ConversationDebugView extends AppCompatTextView {
             return;
         }
 
-        setText(buildConversationDebugInfo(conversation));
-    }
-
-    private static String buildConversationDebugInfo(@NonNull IMConversation conversation) {
-        final StringBuilder builder = new StringBuilder();
-        if (conversation.id.isUnset()) {
-            builder.append(" id:unset");
-        } else {
-            builder.append(" id:").append(conversation.id.get());
-        }
-        if (conversation.seq.isUnset()) {
-            builder.append(" seq:unset");
-        } else {
-            builder.append(" seq:").append(conversation.seq.get());
-        }
-        if (conversation.lastModifyMs.isUnset()) {
-            builder.append(" lastModifyMs:unset");
-        } else {
-            builder.append(" lastModifyMs:").append(conversation.lastModifyMs.get());
-        }
-        if (conversation.type.isUnset()) {
-            builder.append(" type:unset");
-        } else {
-            builder.append(" type:").append(conversation.type.get());
-        }
-        return builder.toString();
+        setText(conversation.toShortString());
     }
 
 }

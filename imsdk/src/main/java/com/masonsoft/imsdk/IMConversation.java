@@ -161,6 +161,11 @@ public class IMConversation {
         } else {
             builder.append(" id:").append(this.id.get());
         }
+        if (this.seq.isUnset()) {
+            builder.append(" seq:unset");
+        } else {
+            builder.append(" seq:").append(this.seq.get());
+        }
         if (this.lastModifyMs.isUnset()) {
             builder.append(" lastModifyMs:unset");
         } else {
@@ -170,11 +175,6 @@ public class IMConversation {
             builder.append(" type:unset");
         } else {
             builder.append(" type:").append(this.type.get());
-        }
-        if (this.seq.isUnset()) {
-            builder.append(" seq:unset");
-        } else {
-            builder.append(" seq:").append(this.seq.get());
         }
         return builder.toString();
     }
