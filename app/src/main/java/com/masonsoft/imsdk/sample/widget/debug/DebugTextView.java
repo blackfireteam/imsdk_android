@@ -27,7 +27,8 @@ class DebugTextView extends AppCompatTextView {
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         this.setTextSize(12);
         this.setIncludeFontPadding(false);
-        this.setTextColor(0x60ff0000);
+        this.setTextColor(0xffff0000);
+        this.setBackgroundColor(0x90999999);
     }
 
 }
