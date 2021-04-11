@@ -287,6 +287,7 @@ public class IMMessageUploadManager {
 
                 final Message message = this.mMessage;
                 if (message == null) {
+                    IMLog.e(Objects.defaultObjectTag(this) + " unexpected. mMessage is null");
                     return null;
                 }
 

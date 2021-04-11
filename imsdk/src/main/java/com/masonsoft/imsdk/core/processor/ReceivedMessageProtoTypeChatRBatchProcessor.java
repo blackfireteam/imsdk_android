@@ -15,6 +15,7 @@ import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.MessageFactory;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
+import com.masonsoft.imsdk.core.observable.FetchMessageHistoryObservable;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.util.Preconditions;
 
@@ -36,7 +37,15 @@ public class ReceivedMessageProtoTypeChatRBatchProcessor extends ReceivedMessage
     protected boolean doNotNullProtoMessageObjectProcess(
             @NonNull SessionProtoByteMessageWrapper target,
             @NonNull ProtoMessage.ChatRBatch protoMessageObject) {
+        final boolean result = this.doNotNullProtoMessageObjectProcessInternal(target, protoMessageObject);
         final long sign = protoMessageObject.getSign();
+        FetchMessageHistoryObservable.DEFAULT.notifyMessageHistoryFetched(sign);
+        return result;
+    }
+
+    private boolean doNotNullProtoMessageObjectProcessInternal(
+            @NonNull SessionProtoByteMessageWrapper target,
+            @NonNull ProtoMessage.ChatRBatch protoMessageObject) {
         final List<Message> messageList = new ArrayList<>();
         final List<ProtoMessage.ChatR> chatRList = protoMessageObject.getMsgsList();
         if (chatRList != null) {

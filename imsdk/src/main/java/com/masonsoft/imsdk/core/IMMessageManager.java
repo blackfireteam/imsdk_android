@@ -2,9 +2,12 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
+import com.masonsoft.imsdk.core.db.Conversation;
+import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
 import com.masonsoft.imsdk.core.db.LocalSendingMessage;
 import com.masonsoft.imsdk.core.db.LocalSendingMessageProvider;
 import com.masonsoft.imsdk.core.db.Message;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.idonans.core.Singleton;
+import io.github.idonans.core.thread.Threads;
 
 /**
  * 处理消息相关内容。
@@ -42,8 +46,11 @@ public class IMMessageManager {
     private IMMessageManager() {
     }
 
+    @WorkerThread
     @NonNull
     private IMMessage buildInternal(@NonNull final Message message) {
+        Threads.mustNotUi();
+
         IMMessage target = IMMessageFactory.create(message);
 
         if (message.remoteMessageId.get() <= 0) {
@@ -72,12 +79,15 @@ public class IMMessageManager {
         return target;
     }
 
+    @WorkerThread
     @Nullable
     public IMMessage getMessage(
             final long sessionUserId,
             final int conversationType,
             final long targetUserId,
             final long localMessageId) {
+        Threads.mustNotUi();
+
         final Message message = MessageDatabaseProvider.getInstance().getMessage(
                 sessionUserId,
                 conversationType,
@@ -89,6 +99,7 @@ public class IMMessageManager {
         return null;
     }
 
+    @WorkerThread
     @NonNull
     public TinyPage<IMMessage> pageQueryMessage(final long sessionUserId,
                                                 final long seq,
@@ -96,6 +107,8 @@ public class IMMessageManager {
                                                 final int conversationType,
                                                 final long targetUserId,
                                                 final boolean queryHistory) {
+        Threads.mustNotUi();
+
         if (seq == 0) {
             // 读取第一页消息时，尝试同步用户信息
             UserInfoSyncManager.getInstance().enqueueSyncUserInfo(sessionUserId);
@@ -138,6 +151,26 @@ public class IMMessageManager {
         if (filterItems.size() < page.items.size()) {
             result.hasMore = false;
         }
+
+        if (result.items.size() < limit) {
+            // 检查该 block 在此时是否有缺失的消息
+
+            final Conversation conversation = ConversationDatabaseProvider.getInstance()
+                    .getConversationByTargetUserId(
+                            sessionUserId,
+                            conversationType,
+                            targetUserId);
+            if (conversation == null) {
+                final Throwable e = new IllegalAccessError("unexpected. conversation is null");
+                IMLog.e(e, "sessionUserId:%s, conversationType:%s, targetUserId:%s",
+                        sessionUserId,
+                        conversationType,
+                        targetUserId);
+            } else {
+                // 当前会话中的消息是否已经
+            }
+        }
+        // TODO
 
         IMLog.v(Objects.defaultObjectTag(this) + " pageQueryMessage result:%s, targetBlockId:%s with sessionUserId:%s, seq:%s, limit:%s, conversationType:%s, targetUserId:%s, queryHistory:%s",
                 result, targetBlockId, sessionUserId, seq, limit, conversationType, targetUserId, queryHistory);

@@ -1,7 +1,9 @@
 package com.masonsoft.imsdk.sample;
 
 import android.app.Application;
+import android.os.Build;
 import android.util.Log;
+import android.webkit.WebView;
 
 import androidx.emoji.bundled.BundledEmojiCompatConfig;
 import androidx.emoji.text.EmojiCompat;
@@ -26,6 +28,9 @@ public class SampleApplication extends Application {
         super.onCreate();
 
         IMLog.setLogLevel(Log.VERBOSE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            WebView.setDataDirectorySuffix(ProcessManager.getInstance().getProcessTag());
+        }
         // 设置文件上服务
         FileUploadManager.getInstance().setFileUploadProvider(new TencentOSSFileUploadProvider());
 
