@@ -13,14 +13,18 @@ import com.masonsoft.imsdk.core.db.LocalSendingMessageProvider;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.TinyPage;
+import com.masonsoft.imsdk.core.observable.ClockObservable;
+import com.masonsoft.imsdk.core.observable.FetchMessageHistoryObservable;
 import com.masonsoft.imsdk.user.UserInfoSyncManager;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.Threads;
+import io.reactivex.rxjava3.subjects.SingleSubject;
 
 /**
  * 处理消息相关内容。
@@ -153,8 +157,7 @@ public class IMMessageManager {
         }
 
         if (result.items.size() < limit) {
-            // 检查该 block 在此时是否有缺失的消息
-
+            // 检查是否有缺失的消息
             final Conversation conversation = ConversationDatabaseProvider.getInstance()
                     .getConversationByTargetUserId(
                             sessionUserId,
@@ -167,14 +170,187 @@ public class IMMessageManager {
                         conversationType,
                         targetUserId);
             } else {
-                // 当前会话中的消息是否已经
+                boolean requireLoadMoreFromRemote = false;
+                if (queryHistory) {
+                    if (targetBlockId > 0) {
+                        // 检查 block start 是否到达了 conversation message start
+                        final Message blockStartMessage = MessageDatabaseProvider.getInstance().getMinRemoteMessageIdWithBlockId(
+                                sessionUserId,
+                                conversationType,
+                                targetUserId,
+                                targetBlockId
+                        );
+                        if (blockStartMessage != null) {
+                            final long blockStartRemoteMessageId = blockStartMessage.remoteMessageId.get();
+                            final long conversationRemoteMessageStart = conversation.remoteMessageStart.get();
+                            if (blockStartRemoteMessageId > conversationRemoteMessageStart + 1) {
+                                // 还有更多历史消息没有加载
+                                requireLoadMoreFromRemote = true;
+                            }
+                        } else {
+                            // unexpected. block id 逻辑错误
+                            IMLog.e(new IllegalArgumentException("unexpected. block start message id null."),
+                                    "sessionUserId:%s, conversationType:%s, targetUserId:%s, targetBlockId:%s, queryHistory:%s",
+                                    sessionUserId, conversationType, targetUserId, targetBlockId, queryHistory);
+                        }
+                    } else {
+                        // 检查整体 message start 是否到达了 conversation message start
+                        final long conversationRemoteMessageStart = conversation.remoteMessageStart.get();
+                        final long conversationRemoteMessageEnd = conversation.remoteMessageEnd.get();
+                        final Message globalStartMessage = MessageDatabaseProvider.getInstance().getMinRemoteMessageId(
+                                sessionUserId,
+                                conversationType,
+                                targetUserId
+                        );
+                        if (globalStartMessage == null) {
+                            if (conversationRemoteMessageEnd > conversationRemoteMessageStart) {
+                                // 本地没有消息，但是服务器有消息没有加载
+                                requireLoadMoreFromRemote = true;
+                            }
+                        } else {
+                            final long globalStartRemoteMessageId = globalStartMessage.remoteMessageId.get();
+                            if (globalStartRemoteMessageId > conversationRemoteMessageStart + 1) {
+                                // 还有更多历史消息没有加载
+                                requireLoadMoreFromRemote = true;
+                            }
+                        }
+                    }
+                } else {
+                    if (targetBlockId > 0) {
+                        // 检查 block end 是否到达了 conversation message end
+                        final Message blockEndMessage = MessageDatabaseProvider.getInstance().getMaxRemoteMessageIdWithBlockId(
+                                sessionUserId,
+                                conversationType,
+                                targetUserId,
+                                targetBlockId
+                        );
+                        if (blockEndMessage != null) {
+                            final long blockEndRemoteMessageId = blockEndMessage.remoteMessageId.get();
+                            final long conversationRemoteMessageEnd = conversation.remoteMessageEnd.get();
+                            if (blockEndRemoteMessageId < conversationRemoteMessageEnd) {
+                                // 还有更多新消息没有加载
+                                requireLoadMoreFromRemote = true;
+                            }
+                        } else {
+                            // unexpected. block id 逻辑错误
+                            IMLog.e(new IllegalArgumentException("unexpected. block end message id null."),
+                                    "sessionUserId:%s, conversationType:%s, targetUserId:%s, targetBlockId:%s, queryHistory:%s",
+                                    sessionUserId, conversationType, targetUserId, targetBlockId, queryHistory);
+                        }
+                    } else {
+                        // 检查整体 message end 是否到达了 conversation message end
+                        final long conversationRemoteMessageStart = conversation.remoteMessageStart.get();
+                        final long conversationRemoteMessageEnd = conversation.remoteMessageEnd.get();
+                        final Message globalEndMessage = MessageDatabaseProvider.getInstance().getMaxRemoteMessageId(
+                                sessionUserId,
+                                conversationType,
+                                targetUserId
+                        );
+                        if (globalEndMessage == null) {
+                            if (conversationRemoteMessageEnd > conversationRemoteMessageStart) {
+                                // 本地没有消息，但是服务器有消息没有加载
+                                requireLoadMoreFromRemote = true;
+                            }
+                        } else {
+                            final long globalEndRemoteMessageId = globalEndMessage.remoteMessageId.get();
+                            if (globalEndRemoteMessageId < conversationRemoteMessageEnd) {
+                                // 还有更多新消息没有加载
+                                requireLoadMoreFromRemote = true;
+                            }
+                        }
+                    }
+                }
+                if (requireLoadMoreFromRemote) {
+                    final long sign = SignGenerator.next();
+                    IMLog.v(Objects.defaultObjectTag(this) + " requireLoadMoreFromRemote start fetchWithBlockOrTimeout." +
+                                    " targetBlockId:%s with sessionUserId:%s, seq:%s, limit:%s, conversationType:%s, targetUserId:%s, queryHistory:%s, sign:%s",
+                            targetBlockId, sessionUserId, seq, limit, conversationType, targetUserId, queryHistory, sign);
+                    final boolean success = fetchWithBlockOrTimeout(sign, sessionUserId,
+                            conversationType,
+                            targetUserId,
+                            targetBlockId,
+                            queryHistory);
+                    // query again
+                    IMLog.v(Objects.defaultObjectTag(this) + " requireLoadMoreFromRemote end of fetchWithBlockOrTimeout, success:%s." +
+                                    " targetBlockId:%s with sessionUserId:%s, seq:%s, limit:%s, conversationType:%s, targetUserId:%s, queryHistory:%s, sign:%s",
+                            success, targetBlockId, sessionUserId, seq, limit, conversationType, targetUserId, queryHistory, sign);
+                    if (success) {
+                        return pageQueryMessage(sessionUserId, seq, limit, conversationType, targetUserId, queryHistory);
+                    }
+                }
             }
         }
-        // TODO
 
         IMLog.v(Objects.defaultObjectTag(this) + " pageQueryMessage result:%s, targetBlockId:%s with sessionUserId:%s, seq:%s, limit:%s, conversationType:%s, targetUserId:%s, queryHistory:%s",
                 result, targetBlockId, sessionUserId, seq, limit, conversationType, targetUserId, queryHistory);
         return result;
+    }
+
+    private boolean fetchWithBlockOrTimeout(
+            final long sign,
+            final long sessionUserId,
+            final int conversationType,
+            final long targetUserId,
+            final long blockId,
+            final boolean history) {
+        // 需要从服务器获取更多消息
+        final long originSign = sign;
+        final SingleSubject<Boolean> subject = SingleSubject.create();
+
+        final FetchMessageHistoryObservable.FetchMessageHistoryObserver fetchMessageHistoryObserver = new FetchMessageHistoryObservable.FetchMessageHistoryObserver() {
+            @Override
+            public void onMessageHistoryFetchedLoading(long sign) {
+                if (originSign != sign) {
+                    return;
+                }
+                IMLog.v(Objects.defaultObjectTag(this) + " fetchWithBlockOrTimeout onMessageHistoryFetchedLoading sign:%s", sign);
+            }
+
+            @Override
+            public void onMessageHistoryFetchedSuccess(long sign) {
+                if (originSign != sign) {
+                    return;
+                }
+                IMLog.v(Objects.defaultObjectTag(this) + " fetchWithBlockOrTimeout onMessageHistoryFetchedSuccess sign:%s", sign);
+                subject.onSuccess(true);
+            }
+
+            @Override
+            public void onMessageHistoryFetchedError(long sign, long errorCode, String errorMessage) {
+                if (originSign != sign) {
+                    return;
+                }
+                IMLog.v(Objects.defaultObjectTag(this) + " fetchWithBlockOrTimeout onMessageHistoryFetchedError sign:%s, errorCode:%s, errorMessage:%s",
+                        sign, errorCode, errorMessage);
+                subject.onSuccess(false);
+            }
+        };
+        final ClockObservable.ClockObserver clockObserver = new ClockObservable.ClockObserver() {
+
+            // 超时时间
+            private final long TIME_OUT = TimeUnit.SECONDS.toMillis(60);
+            private final long mTimeStart = System.currentTimeMillis();
+
+            @Override
+            public void onClock() {
+                if (System.currentTimeMillis() - mTimeStart > TIME_OUT) {
+                    // 超时
+                    IMLog.v(Objects.defaultObjectTag(this) + " fetchWithBlockOrTimeout onClock timeout sign:%s", originSign);
+                    subject.onSuccess(false);
+                }
+            }
+        };
+        FetchMessageHistoryObservable.DEFAULT.registerObserver(fetchMessageHistoryObserver);
+        ClockObservable.DEFAULT.registerObserver(clockObserver);
+        FetchMessageHistoryManager.getInstance().enqueueFetchMessageHistory(
+                sessionUserId,
+                sign,
+                conversationType,
+                targetUserId,
+                blockId,
+                history);
+
+        return subject.blockingGet();
     }
 
 }

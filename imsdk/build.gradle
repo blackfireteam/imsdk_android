@@ -46,6 +46,7 @@ dependencies {
     implementation rootProject.ext.bcfg.deps.androidx_appcompat
     implementation rootProject.ext.bcfg.deps.idonans_appcontext
     implementation rootProject.ext.bcfg.deps.idonans_core
+    implementation rootProject.ext.bcfg.deps.rxjava
     implementation 'org.bouncycastle:bcprov-jdk16:1.46'
     implementation 'com.google.protobuf:protobuf-lite:3.0.1'
     implementation "androidx.exifinterface:exifinterface:1.3.2"
