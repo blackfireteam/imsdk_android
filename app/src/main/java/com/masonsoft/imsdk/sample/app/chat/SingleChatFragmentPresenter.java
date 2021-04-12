@@ -12,6 +12,7 @@ import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.observable.ConversationObservable;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
+import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageViewHolder;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.dynamic.page.PageView;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.lang.DisposableHolder;
+import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
@@ -94,12 +96,22 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         }
     };
 
+    private final UnionTypeViewHolderListeners.OnItemLongClickListener mOnHolderItemLongClickListener = viewHolder -> {
+        SingleChatFragment.ViewImpl view = getView();
+        if (view != null) {
+            if (IMMessageViewHolder.Helper.showMenu(viewHolder)) {
+                ViewUtil.requestParentDisallowInterceptTouchEvent(viewHolder.itemView);
+            }
+        }
+    };
+
     @Nullable
     private UnionTypeItemObject createDefault(@Nullable IMMessage imMessage) {
         if (imMessage == null) {
             return null;
         }
-        final DataObject<IMMessage> dataObject = new DataObject<>(imMessage);
+        final DataObject<IMMessage> dataObject = new DataObject<>(imMessage)
+                .putExtHolderItemLongClick1(mOnHolderItemLongClickListener);
         return IMMessageViewHolder.Helper.createDefault(dataObject, mSessionUserId);
     }
 
