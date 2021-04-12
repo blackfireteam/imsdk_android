@@ -15,7 +15,7 @@ public class InternalReceivedMessageProtoTypeProcessor extends MultiProcessor<Se
         addLastProcessor(new ReceivedMessageProtoTypeProfileProcessor());
         addLastProcessor(new ReceivedMessageProtoTypeProfileListProcessor());
         addLastProcessor(new ReceivedMessageProtoTypeChatRProcessor());
-        addLastProcessor(new ReceivedMessageProtoTypeChatRBatchProcessor());
+        addLastProcessor(new ReceivedMessageFetchMessageHistoryProcessor());
     }
 
 }
