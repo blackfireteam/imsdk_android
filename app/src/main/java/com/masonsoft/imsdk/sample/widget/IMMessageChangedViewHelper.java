@@ -6,8 +6,8 @@ import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.observable.MessageObservable;
+import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.common.ObjectWrapper;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.thread.Threads;
