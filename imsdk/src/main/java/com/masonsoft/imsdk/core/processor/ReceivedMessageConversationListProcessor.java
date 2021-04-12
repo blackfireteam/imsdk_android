@@ -4,10 +4,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.core.FetchMessageHistoryManager;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMSessionManager;
-import com.masonsoft.imsdk.core.MessageSyncManager;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.db.Conversation;
 import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
@@ -128,7 +128,14 @@ public class ReceivedMessageConversationListProcessor extends ReceivedMessageNot
     private void syncLastMessages(final long sessionUserId, @NonNull final List<Conversation> conversationList) {
         for (Conversation conversation : conversationList) {
             if (!conversation.localId.isUnset()) {
-                MessageSyncManager.getInstance().enqueueLoadLatestMessages(sessionUserId, conversation.localId.get());
+                FetchMessageHistoryManager.getInstance().enqueueFetchMessageHistory(
+                        sessionUserId,
+                        SignGenerator.next(),
+                        conversation.localConversationType.get(),
+                        conversation.targetUserId.get(),
+                        0,
+                        true
+                );
             }
         }
     }
