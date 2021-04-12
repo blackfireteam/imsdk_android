@@ -123,6 +123,40 @@ public class MessageDatabaseProvider {
     }
 
     /**
+     * 获取 remote message id 的最大值
+     */
+    @NonNull
+    public Message getMaxRemoteMessageId(final long sessionUserId,
+                                         final int conversationType,
+                                         final long targetUserId) {
+        return getMinMaxRemoteMessageIdWithBlockId(
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                0,
+                true,
+                false
+        );
+    }
+
+    /**
+     * 获取 remote message id 的最小值
+     */
+    @NonNull
+    public Message getMinRemoteMessageId(final long sessionUserId,
+                                         final int conversationType,
+                                         final long targetUserId) {
+        return getMinMaxRemoteMessageIdWithBlockId(
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                0,
+                false,
+                false
+        );
+    }
+
+    /**
      * 获取该 block 中 remote message id 的最大值对应的消息.
      */
     @Nullable
@@ -136,6 +170,7 @@ public class MessageDatabaseProvider {
                 conversationType,
                 targetUserId,
                 blockId,
+                true,
                 true);
     }
 
@@ -153,7 +188,8 @@ public class MessageDatabaseProvider {
                 conversationType,
                 targetUserId,
                 blockId,
-                false);
+                false,
+                true);
     }
 
     /**
@@ -165,7 +201,8 @@ public class MessageDatabaseProvider {
             final int conversationType,
             final long targetUserId,
             final long blockId,
-            final boolean max) {
+            final boolean max,
+            final boolean withSameBlockId) {
         IMConstants.ConversationType.check(conversationType);
 
         final ColumnsSelector<Message> columnsSelector = Message.COLUMNS_SELECTOR_ALL;
@@ -179,8 +216,11 @@ public class MessageDatabaseProvider {
             final List<String> selectionArgs = new ArrayList<>();
 
             selection.append(" " + DatabaseHelper.ColumnsMessage.C_REMOTE_MSG_ID + ">0 ");
-            selection.append(" and " + DatabaseHelper.ColumnsMessage.C_LOCAL_BLOCK_ID + "=? ");
-            selectionArgs.add(String.valueOf(blockId));
+
+            if (withSameBlockId) {
+                selection.append(" and " + DatabaseHelper.ColumnsMessage.C_LOCAL_BLOCK_ID + "=? ");
+                selectionArgs.add(String.valueOf(blockId));
+            }
 
             cursor = db.query(
                     tableName,
@@ -198,13 +238,15 @@ public class MessageDatabaseProvider {
                 item.applyLogicField(sessionUserId, conversationType, targetUserId);
 
                 IMLog.v(
-                        "found remoteMessageId:%s with sessionUserId:%s, conversationType:%s, targetUserId:%s, blockId:%s, max:%s",
+                        "found remoteMessageId:%s with sessionUserId:%s, conversationType:%s, targetUserId:%s," +
+                                " blockId:%s, max:%s, withSameBlockId:%s",
                         item.remoteMessageId.get(),
                         sessionUserId,
                         conversationType,
                         targetUserId,
                         blockId,
-                        max);
+                        max,
+                        withSameBlockId);
 
                 return item;
             }
@@ -216,12 +258,14 @@ public class MessageDatabaseProvider {
         }
 
         IMLog.v(
-                "remoteMessageId not found with sessionUserId:%s, conversationType:%s, targetUserId:%s, blockId:%s, max:%s",
+                "remoteMessageId not found with sessionUserId:%s, conversationType:%s, targetUserId:%s," +
+                        " blockId:%s, max:%s, withSameBlockId:%s",
                 sessionUserId,
                 conversationType,
                 targetUserId,
                 blockId,
-                max);
+                max,
+                withSameBlockId);
         return null;
     }
 

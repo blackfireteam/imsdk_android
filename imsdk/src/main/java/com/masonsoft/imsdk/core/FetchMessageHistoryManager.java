@@ -265,6 +265,9 @@ public class FetchMessageHistoryManager {
 
         private static class FetchMessageObjectWrapper {
 
+            // 自动获取历史消息时(block id 为 0), 是否允许获取到该会话的第一条消息(否则获取到 remoteShowMessageId 即可)
+            private static final boolean AUTO_FETCH_HISTORY_TO_START = false;
+
             private final long mSessionUserId;
             private final long mSign;
             private final int mConversationType;
@@ -401,8 +404,101 @@ public class FetchMessageHistoryManager {
                 }
 
                 if (mBlockId <= 0) {
-                    mRemoteMessageStart = 0;
-                    mRemoteMessageEnd = 0;
+                    // 读取最新一页消息
+                    final long remoteMessageEnd = conversation.remoteMessageEnd.get();
+                    if (remoteMessageEnd <= 0) {
+                        // 没有消息
+                        IMLog.v(Objects.defaultObjectTag(this) + " ignore. remoteMessageEnd:" + remoteMessageEnd);
+                        return null;
+                    }
+                    final Message message = MessageDatabaseProvider.getInstance().getMessageWithRemoteMessageId(
+                            mSessionUserId,
+                            mConversationType,
+                            mTargetUserId,
+                            remoteMessageEnd
+                    );
+                    if (message == null) {
+                        // 消息不在本地，从最新的开始获取
+                        mRemoteMessageEnd = 0;
+
+                        final Message maxMessage = MessageDatabaseProvider.getInstance().getMaxRemoteMessageId(
+                                mSessionUserId,
+                                mConversationType,
+                                mTargetUserId
+                        );
+                        if (maxMessage != null) {
+                            mRemoteMessageStart = maxMessage.remoteMessageId.get();
+                        } else {
+                            mRemoteMessageStart = 0;
+                        }
+                    } else {
+                        // 消息在本地
+                        // 获取该消息在本地所属 block 的最小 remote message id
+                        final long blockId = message.localBlockId.get();
+                        Preconditions.checkArgument(blockId > 0);
+                        final Message minMessage = MessageDatabaseProvider.getInstance().getMinRemoteMessageIdWithBlockId(
+                                mSessionUserId,
+                                mConversationType,
+                                mTargetUserId,
+                                blockId
+                        );
+                        Preconditions.checkNotNull(minMessage);
+                        mRemoteMessageEnd = minMessage.remoteMessageId.get();
+
+                        final long blockMinMessageId = minMessage.localBlockId.get();
+                        final long remoteMessageStart = conversation.remoteMessageStart.get();
+                        if (blockMinMessageId <= remoteMessageStart) {
+                            // 所有消息已经获取完整
+                            IMLog.v("ignore. all message are loaded. sessionUserId:%s, conversationType:%s, targetUserId:%s",
+                                    mSessionUserId, mConversationType, mTargetUserId);
+                            return null;
+                        }
+
+                        if (!AUTO_FETCH_HISTORY_TO_START) {
+                            final long remoteShowMessageId = conversation.remoteShowMessageId.get();
+                            if (remoteShowMessageId > 0) {
+                                // 获取到 remoteShowMessageId 即止
+                                final Message exists = MessageDatabaseProvider.getInstance().getMessageWithRemoteMessageId(
+                                        mSessionUserId,
+                                        mConversationType,
+                                        mTargetUserId,
+                                        remoteShowMessageId
+                                );
+                                if (exists != null) {
+                                    IMLog.v("ignore. already load to remote show message id. sessionUserId:%s, conversationType:%s, targetUserId:%s, remoteShowMessageId:%s",
+                                            mSessionUserId, mConversationType, mTargetUserId, remoteShowMessageId);
+                                    return null;
+                                }
+
+                                // 紧挨着 remoteShowMessageId 的前一条消息(比 remoteShowMessageId 小的)
+                                final Message closestLessThanRemoteShowMessageId = MessageDatabaseProvider.getInstance().getClosestLessThanRemoteMessageIdWithRemoteMessageId(
+                                        mSessionUserId,
+                                        mConversationType,
+                                        mTargetUserId,
+                                        remoteShowMessageId
+                                );
+                                if (closestLessThanRemoteShowMessageId != null) {
+                                    mRemoteMessageStart = closestLessThanRemoteShowMessageId.remoteMessageId.get();
+                                }
+                            }
+                        }
+
+                        if (mRemoteMessageStart <= 0) {
+                            final Message closestLessThanRemoteMessage = MessageDatabaseProvider.getInstance().getClosestLessThanRemoteMessageIdWithRemoteMessageId(
+                                    mSessionUserId,
+                                    mConversationType,
+                                    mTargetUserId,
+                                    mRemoteMessageEnd
+                            );
+                            if (closestLessThanRemoteMessage != null) {
+                                // 获取到这一个为止
+                                mRemoteMessageStart = closestLessThanRemoteMessage.remoteMessageId.get();
+                            } else {
+                                // 获取到会话的最开始
+                                mRemoteMessageStart = 0;
+                            }
+                        }
+                    }
                 } else {
                     final Message minRemoteMessage = MessageDatabaseProvider.getInstance().getMinRemoteMessageIdWithBlockId(
                             mSessionUserId,
