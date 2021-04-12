@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
 import androidx.annotation.CallSuper;
@@ -22,8 +23,11 @@ import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.TopActivity;
+import com.masonsoft.imsdk.sample.common.impopup.IMChatMessageMenuDialog;
+import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentConfirmDialog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
+import com.masonsoft.imsdk.sample.util.ClipboardUtil;
 import com.masonsoft.imsdk.sample.util.FileDownloadHelper;
 import com.masonsoft.imsdk.sample.util.FormatUtil;
 import com.masonsoft.imsdk.sample.util.TipUtil;
@@ -33,6 +37,7 @@ import com.tbruyelle.rxpermissions3.RxPermissions;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.NetUtil;
 import io.github.idonans.core.util.SystemUtil;
 import io.github.idonans.uniontype.Host;
@@ -391,6 +396,40 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 return false;
             }
             final long type = holderFinder.imMessage.type.get();
+            if (type == IMConstants.MessageType.TEXT) {
+                // 文字
+                View anchorView = holder.itemView.findViewById(R.id.message_text);
+                if (anchorView == null) {
+                    SampleLog.v("showMenu MESSAGE_TYPE_TEXT R.id.message_text not found");
+                    return false;
+                }
+
+                if (anchorView.getWidth() <= 0 || anchorView.getHeight() <= 0) {
+                    SampleLog.v("showMenu anchor view not layout");
+                    return false;
+                }
+
+                IMChatMessageMenuDialog menuDialog = new IMChatMessageMenuDialog(
+                        holderFinder.innerActivity,
+                        holderFinder.innerActivity.findViewById(Window.ID_ANDROID_CONTENT),
+                        anchorView,
+                        0,
+                        new String[]{"复制", "删除"});
+                menuDialog.setOnIMMenuClickListener((menuText, menuIndex) -> {
+                    if (menuIndex == 0) {
+                        // 复制
+                        ClipboardUtil.copy(holderFinder.imMessage.body.getOrDefault(""));
+                    } else if (menuIndex == 1) {
+                        // 删除
+                        confirmToDelete(holder);
+                    } else {
+                        SampleLog.e("showMenu onItemMenuClick invalid menuText:%s, menuIndex:%s",
+                                menuText, menuIndex);
+                    }
+                });
+                menuDialog.show();
+                return true;
+            }
 
             // TODO
             SampleLog.e("imMessage type is unknown %s", holderFinder.imMessage);
@@ -403,8 +442,21 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 return;
             }
             final HolderFinder holderFinder = holderFinders[0];
-
-            // TODO
+            new SimpleContentConfirmDialog(holderFinder.innerActivity, "确认删除?")
+                    .setOnBtnRightClickListener(() -> {
+                        HolderFinder[] innerHolderFinders = new HolderFinder[1];
+                        if (!getHolderFinder(holder, innerHolderFinders)) {
+                            return;
+                        }
+                        HolderFinder innerHolderFinder = innerHolderFinders[0];
+                        if (holder.host.getAdapter().removeItem(innerHolderFinder.position)) {
+                            Threads.postBackground(() -> {
+                                // TODO FIXME
+                                // ImManager.getInstance().deleteChatMessage(innerHolderFinder.imMessage);
+                            });
+                        }
+                    })
+                    .show();
         }
 
     }
