@@ -18,7 +18,10 @@ import io.github.idonans.core.thread.TaskQueue;
 
 /**
  * 处理消息同步
+ *
+ * @see FetchMessageHistoryManager
  */
+@Deprecated
 public class MessageSyncManager {
 
     private static final Singleton<MessageSyncManager> INSTANCE = new Singleton<MessageSyncManager>() {

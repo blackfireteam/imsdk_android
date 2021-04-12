@@ -170,7 +170,7 @@ public class FetchMessageHistoryManager {
         //////////////////////////////////////////////////////////////////////
     }
 
-    private class SessionWorker {
+    private static class SessionWorker {
 
         private final long mSessionUserId;
         private final List<FetchMessageObjectWrapperTask> mAllRunningTasks = new ArrayList<>();
@@ -270,6 +270,11 @@ public class FetchMessageHistoryManager {
             private final long mBlockId;
             private final boolean mHistory;
 
+            // 本地数据库中存在的与 mBlockId 处于同一个 block 的 min remote message id
+            private long mLocalMinRemoteMessageIdWithSameBlockId;
+            // 本地数据库中存在的与 mBlockId 处于同一个 block 的 max remote message id
+            private long mLocalMaxRemoteMessageIdWithSameBlockId;
+
             private long mRemoteMessageStart;
             private long mRemoteMessageEnd;
 
@@ -365,26 +370,61 @@ public class FetchMessageHistoryManager {
                     mRemoteMessageStart = 0;
                     mRemoteMessageEnd = 0;
                 } else {
+                    final Message minRemoteMessage = MessageDatabaseProvider.getInstance().getMinRemoteMessageIdWithBlockId(
+                            mSessionUserId,
+                            mConversationType,
+                            mTargetUserId,
+                            mBlockId
+                    );
+                    if (minRemoteMessage != null) {
+                        mLocalMinRemoteMessageIdWithSameBlockId = minRemoteMessage.remoteMessageId.get();
+                    }
+                    final Message maxRemoteMessage = MessageDatabaseProvider.getInstance().getMaxRemoteMessageIdWithBlockId(
+                            mSessionUserId,
+                            mConversationType,
+                            mTargetUserId,
+                            mBlockId
+                    );
+                    if (maxRemoteMessage != null) {
+                        mLocalMaxRemoteMessageIdWithSameBlockId = maxRemoteMessage.remoteMessageId.get();
+                    }
+
                     if (mHistory) {
-                        final Message minRemoteMessage = MessageDatabaseProvider.getInstance().getMinRemoteMessageIdWithBlockId(
-                                mSessionUserId,
-                                mConversationType,
-                                mTargetUserId,
-                                mBlockId
-                        );
-                        if (minRemoteMessage == null) {
-                            IMLog.e(Objects.defaultObjectTag(this + " unexpected. minRemoteMessage is null"));
-                            return null;
+                        if (mLocalMinRemoteMessageIdWithSameBlockId > 0) {
+                            final Message closestLessThanRemoteMessage = MessageDatabaseProvider.getInstance().getClosestLessThanRemoteMessageIdWithRemoteMessageId(
+                                    mSessionUserId,
+                                    mConversationType,
+                                    mTargetUserId,
+                                    mLocalMinRemoteMessageIdWithSameBlockId
+                            );
+                            mRemoteMessageEnd = mLocalMinRemoteMessageIdWithSameBlockId;
+                            if (closestLessThanRemoteMessage != null) {
+                                mRemoteMessageStart = closestLessThanRemoteMessage.remoteMessageId.get();
+                            }
                         }
-                        final long minRemoteMessageId = minRemoteMessage.remoteMessageId.get();
-                        final long conversationMinRemoteMessageId = conversation.remoteMessageStart.get();
-                        // TODO
                     } else {
-                        // TODO
+                        if (mLocalMaxRemoteMessageIdWithSameBlockId > 0) {
+                            final Message closestGreaterThanRemoteMessage = MessageDatabaseProvider.getInstance().getClosestGreaterThanRemoteMessageIdWithRemoteMessageId(
+                                    mSessionUserId,
+                                    mConversationType,
+                                    mTargetUserId,
+                                    mLocalMaxRemoteMessageIdWithSameBlockId
+                            );
+                            if (closestGreaterThanRemoteMessage != null) {
+                                mRemoteMessageStart = mLocalMaxRemoteMessageIdWithSameBlockId;
+                                mRemoteMessageEnd = closestGreaterThanRemoteMessage.remoteMessageId.get();
+                            }
+                        }
                     }
 
                 }
-                // TODO FIXME query remote message start, remote message end
+
+                IMLog.v("ProtoMessage.GetHistory sign:%s, targetUserId:%s, blockId:%s," +
+                                " remoteMessageStart:%s, remoteMessageEnd:%s," +
+                                " localMinRemoteMessageIdWithSameBlockId:%s, localMaxRemoteMessageIdWithSameBlockId:%s",
+                        mSign, mTargetUserId, mBlockId,
+                        mRemoteMessageStart, mRemoteMessageEnd,
+                        mLocalMinRemoteMessageIdWithSameBlockId, mLocalMaxRemoteMessageIdWithSameBlockId);
 
                 final ProtoMessage.GetHistory getHistory = ProtoMessage.GetHistory.newBuilder()
                         .setSign(mSign)
@@ -502,7 +542,53 @@ public class FetchMessageHistoryManager {
                     }
 
                     if (messageList.isEmpty()) {
-                        IMLog.e(new IllegalArgumentException("unexpected ChatRBatch is empty"));
+                        IMLog.w(new IllegalArgumentException("unexpected ChatRBatch is empty"));
+
+                        // mRemoteMessageStart 与 mRemoteMessageEnd 直接连通
+                        if (mRemoteMessageStart > 0 && mRemoteMessageEnd > 0) {
+                            long blockId = 0L;
+                            {
+                                final Message message = MessageDatabaseProvider.getInstance().getMessageWithRemoteMessageId(
+                                        mSessionUserId,
+                                        mConversationType,
+                                        mTargetUserId,
+                                        mRemoteMessageEnd
+                                );
+                                if (message == null) {
+                                    IMLog.e(new IllegalArgumentException("unexpected message[mRemoteMessageEnd:" + mRemoteMessageEnd + "] not found"));
+                                } else {
+                                    blockId = message.localBlockId.get();
+                                }
+                            }
+                            if (blockId > 0) {
+                                final Message message = MessageDatabaseProvider.getInstance().getMessageWithRemoteMessageId(
+                                        mSessionUserId,
+                                        mConversationType,
+                                        mTargetUserId,
+                                        mRemoteMessageStart
+                                );
+                                if (message == null) {
+                                    IMLog.e(new IllegalArgumentException("unexpected message[mRemoteMessageStart:" + mRemoteMessageStart + "] not found"));
+                                } else {
+                                    final long preBlockId = message.localBlockId.get();
+                                    if (preBlockId == blockId) {
+                                        IMLog.e(new IllegalArgumentException("unexpected message[mRemoteMessageStart:" + mRemoteMessageStart
+                                                + ", mRemoteMessageEnd:" + mRemoteMessageEnd + "] already has same block id:" + preBlockId));
+                                    } else {
+                                        IMLog.v("start update block id %s -> %s. mRemoteMessageStart:%s, mRemoteMessageEnd:%s",
+                                                preBlockId, blockId, mRemoteMessageStart, mRemoteMessageEnd);
+                                        if (!MessageDatabaseProvider.getInstance().updateBlockId(
+                                                mSessionUserId,
+                                                mConversationType,
+                                                mTargetUserId,
+                                                preBlockId,
+                                                blockId)) {
+                                            IMLog.e(Objects.defaultObjectTag(this) + " unexpected. updateBlockId return false");
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         return true;
                     }
 
@@ -565,12 +651,33 @@ public class FetchMessageHistoryManager {
                         }
                     }
 
-                    final long blockId = MessageBlock.generateBlockId(
-                            sessionUserId,
-                            conversationType,
-                            targetUserId,
-                            maxMessage.remoteMessageId.get()
-                    );
+                    long bestBlockId = 0L;
+                    if (mRemoteMessageEnd > 0) {
+                        // 使用与 mRemoteMessageEnd 相同的 blockId
+                        final Message message = MessageDatabaseProvider.getInstance().getMessageWithRemoteMessageId(
+                                mSessionUserId,
+                                mConversationType,
+                                mTargetUserId,
+                                mRemoteMessageEnd
+                        );
+                        if (message == null) {
+                            IMLog.e("unexpected. message is null, mRemoteMessageEnd:%s", mRemoteMessageEnd);
+                        } else {
+                            bestBlockId = message.localBlockId.get();
+                        }
+                    }
+
+                    final long blockId;
+                    if (bestBlockId > 0) {
+                        blockId = bestBlockId;
+                    } else {
+                        blockId = MessageBlock.generateBlockId(
+                                sessionUserId,
+                                conversationType,
+                                targetUserId,
+                                maxMessage.remoteMessageId.get()
+                        );
+                    }
                     Preconditions.checkArgument(blockId > 0);
 
                     final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);

@@ -226,6 +226,112 @@ public class MessageDatabaseProvider {
     }
 
     /**
+     * 获取紧挨着 remote message id 的更小的 remote message id
+     */
+    @Nullable
+    public Message getClosestLessThanRemoteMessageIdWithRemoteMessageId(final long sessionUserId,
+                                                                        final int conversationType,
+                                                                        final long targetUserId,
+                                                                        final long remoteMessageId) {
+        return getClosestRemoteMessageIdWithRemoteMessageId(
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                remoteMessageId,
+                true
+        );
+    }
+
+    /**
+     * 获取紧挨着 remote message id 的更大的 remote message id
+     */
+    @Nullable
+    public Message getClosestGreaterThanRemoteMessageIdWithRemoteMessageId(final long sessionUserId,
+                                                                           final int conversationType,
+                                                                           final long targetUserId,
+                                                                           final long remoteMessageId) {
+        return getClosestRemoteMessageIdWithRemoteMessageId(
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                remoteMessageId,
+                false
+        );
+    }
+
+    /**
+     * 获取与 remote message id 的最接近的 remote message id
+     */
+    @Nullable
+    private Message getClosestRemoteMessageIdWithRemoteMessageId(
+            final long sessionUserId,
+            final int conversationType,
+            final long targetUserId,
+            final long remoteMessageId,
+            final boolean history) {
+        IMConstants.ConversationType.check(conversationType);
+
+        final ColumnsSelector<Message> columnsSelector = Message.COLUMNS_SELECTOR_ALL;
+        Cursor cursor = null;
+        try {
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            final String tableName = dbHelper.createTableMessageIfNeed(conversationType, targetUserId);
+            SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
+
+            final StringBuilder selection = new StringBuilder();
+            final List<String> selectionArgs = new ArrayList<>();
+
+            selection.append(" " + DatabaseHelper.ColumnsMessage.C_REMOTE_MSG_ID + ">0 ");
+
+            if (history) {
+                selection.append(" and " + DatabaseHelper.ColumnsMessage.C_REMOTE_MSG_ID + "<? ");
+            } else {
+                selection.append(" and " + DatabaseHelper.ColumnsMessage.C_REMOTE_MSG_ID + ">? ");
+            }
+            selectionArgs.add(String.valueOf(remoteMessageId));
+
+            cursor = db.query(
+                    tableName,
+                    columnsSelector.queryColumns(),
+                    selection.toString(),
+                    selectionArgs.toArray(new String[]{}),
+                    null,
+                    null,
+                    DatabaseHelper.ColumnsMessage.C_REMOTE_MSG_ID + (history ? " desc" : " asc"),
+                    "0,1"
+            );
+
+            if (cursor.moveToNext()) {
+                final Message item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                item.applyLogicField(sessionUserId, conversationType, targetUserId);
+
+                IMLog.v(
+                        "found remoteMessageId:%s with sessionUserId:%s, conversationType:%s, targetUserId:%s, history:%s",
+                        item.remoteMessageId.get(),
+                        sessionUserId,
+                        conversationType,
+                        targetUserId,
+                        history);
+
+                return item;
+            }
+        } catch (Throwable e) {
+            IMLog.e(e);
+            RuntimeMode.throwIfDebug(e);
+        } finally {
+            IOUtil.closeQuietly(cursor);
+        }
+
+        IMLog.v(
+                "remoteMessageId not found with sessionUserId:%s, conversationType:%s, targetUserId:%s, history:%s",
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                history);
+        return null;
+    }
+
+    /**
      * 获取与 seq 关联最紧密的 block id 值
      *
      * @param sessionUserId
