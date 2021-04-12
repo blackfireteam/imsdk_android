@@ -22,7 +22,7 @@ public class MessageFactory {
         target.toUserId.set(input.getToUid());
         target.remoteMessageId.set(input.getMsgId());
         target.remoteMessageTime.set(input.getMsgTime());
-        target.localTimeMs.set(System.currentTimeMillis());
+        target.localTimeMs.set(input.getMsgTime() / 1000);
 
         // 将服务器返回的秒转换为毫秒
         target.remoteFromUserProfileLastModifyMs.set(input.getSput() * 1000);

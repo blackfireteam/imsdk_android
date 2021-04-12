@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.block.MessageBlock;
 import com.masonsoft.imsdk.core.db.DatabaseHelper;
 import com.masonsoft.imsdk.core.db.DatabaseProvider;
@@ -12,6 +13,7 @@ import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.MessageFactory;
+import com.masonsoft.imsdk.core.db.Sequence;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.user.UserInfoSyncManager;
@@ -33,6 +35,12 @@ public class ReceivedMessageProtoTypeChatRProcessor extends ReceivedMessageProto
             @NonNull SessionProtoByteMessageWrapper target,
             @NonNull ProtoMessage.ChatR protoMessageObject) {
         final Message message = MessageFactory.create(protoMessageObject);
+        // 接收到新消息
+        // 设置新消息的 seq
+        message.localSeq.set(Sequence.create(SignGenerator.next()));
+        // 设置新消息的显示时间为当前时间
+        message.localTimeMs.set(System.currentTimeMillis());
+
         final long sessionUserId = target.getSessionUserId();
         final long fromUserId = message.fromUserId.get();
         final long toUserId = message.toUserId.get();
