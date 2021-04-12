@@ -17,6 +17,7 @@ import com.masonsoft.imsdk.core.db.MessageFactory;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.NotNullTimeoutMessagePacket;
+import com.masonsoft.imsdk.core.observable.FetchMessageHistoryObservable;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
@@ -203,6 +204,7 @@ public class FetchMessageHistoryManager {
                         } catch (Throwable e) {
                             IMLog.e(e, "unexpected");
                         }
+                        fetchMessageObjectWrapper.onTaskEnd();
                         synchronized (mAllRunningTasks) {
                             final FetchMessageObjectWrapperTask existsTask = removeTask(sign);
                             if (existsTask == null) {
@@ -261,7 +263,7 @@ public class FetchMessageHistoryManager {
             return null;
         }
 
-        private class FetchMessageObjectWrapper {
+        private static class FetchMessageObjectWrapper {
 
             private final long mSessionUserId;
             private final long mSign;
@@ -310,9 +312,11 @@ public class FetchMessageHistoryManager {
                         } else if (fetchMessageHistoryMessagePacket.isTimeoutTriggered()) {
                             setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT);
                         }
+                        notifySendStatus(IMConstants.SendStatus.FAIL);
                     } else if (newState == MessagePacket.STATE_SUCCESS) {
                         // 消息发送成功
                         notify = true;
+                        notifySendStatus(IMConstants.SendStatus.SUCCESS);
                     }
 
                     if (notify) {
@@ -348,6 +352,36 @@ public class FetchMessageHistoryManager {
                 }
                 this.mErrorCode = errorCode;
                 this.mErrorMessage = errorMessage;
+            }
+
+            private void notifySendStatus(int sendStatus) {
+                switch (sendStatus) {
+                    case IMConstants.SendStatus.IDLE:
+                    case IMConstants.SendStatus.SENDING:
+                        FetchMessageHistoryObservable.DEFAULT.notifyMessageHistoryFetchedLoading(mSign);
+                        break;
+                    case IMConstants.SendStatus.SUCCESS:
+                        FetchMessageHistoryObservable.DEFAULT.notifyMessageHistoryFetchedSuccess(mSign);
+                        break;
+                    case IMConstants.SendStatus.FAIL:
+                        FetchMessageHistoryObservable.DEFAULT.notifyMessageHistoryFetchedError(mSign, mErrorCode, mErrorMessage);
+                        break;
+                    default:
+                        final Throwable e = new IllegalStateException("unexpected send status:" + sendStatus);
+                        IMLog.e(e);
+                }
+            }
+
+            /**
+             * 任务执行结束
+             */
+            private void onTaskEnd() {
+                final FetchMessageHistoryMessagePacket fetchMessageHistoryMessagePacket = mFetchMessageHistoryMessagePacket;
+                if (fetchMessageHistoryMessagePacket == null || fetchMessageHistoryMessagePacket.getState() != IMConstants.SendStatus.SUCCESS) {
+                    notifySendStatus(IMConstants.SendStatus.FAIL);
+                } else {
+                    notifySendStatus(IMConstants.SendStatus.SUCCESS);
+                }
             }
 
             @Nullable
@@ -787,6 +821,8 @@ public class FetchMessageHistoryManager {
                     if (mFetchMessageObjectWrapper.hasError()) {
                         return;
                     }
+
+                    mFetchMessageObjectWrapper.notifySendStatus(IMConstants.SendStatus.SENDING);
 
                     final MessagePacket messagePacket = mFetchMessageObjectWrapper.buildMessagePacket();
                     if (messagePacket == null) {
