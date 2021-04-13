@@ -18,4 +18,6 @@
     <string name="imsdk_sample_custom_soft_keyboard_item_image_bucket_all">所有照片</string>
     <string name="imsdk_sample_custom_soft_keyboard_item_image_picker_submit_format">确定(%1$s)</string>
     <string name="imsdk_sample_custom_soft_keyboard_item_image_picker_submit_0">确定(0)</string>
+    <string name="imsdk_sample_menu_copy">复制</string>
+    <string name="imsdk_sample_menu_recall">撤回</string>
 </resources>

@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 
 import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.Constants;
@@ -414,14 +415,17 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                         holderFinder.innerActivity.findViewById(Window.ID_ANDROID_CONTENT),
                         anchorView,
                         0,
-                        new String[]{"复制", "删除"});
+                        new String[]{
+                                I18nResources.getString(R.string.imsdk_sample_menu_copy),
+                                I18nResources.getString(R.string.imsdk_sample_menu_recall),
+                        });
                 menuDialog.setOnIMMenuClickListener((menuText, menuIndex) -> {
                     if (menuIndex == 0) {
                         // 复制
                         ClipboardUtil.copy(holderFinder.imMessage.body.getOrDefault(""));
                     } else if (menuIndex == 1) {
-                        // 删除
-                        confirmToDelete(holder);
+                        // 撤回
+                        revoke(holder);
                     } else {
                         SampleLog.e("showMenu onItemMenuClick invalid menuText:%s, menuIndex:%s",
                                 menuText, menuIndex);
@@ -434,6 +438,19 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             // TODO
             SampleLog.e("imMessage type is unknown %s", holderFinder.imMessage);
             return false;
+        }
+
+        /**
+         * 撤回
+         */
+        private static void revoke(UnionTypeViewHolder holder) {
+            final HolderFinder[] holderFinders = new HolderFinder[1];
+            if (!getHolderFinder(holder, holderFinders)) {
+                return;
+            }
+            final HolderFinder holderFinder = holderFinders[0];
+            final IMMessage message = holderFinder.imMessage;
+            // TODO FIXME
         }
 
         private static void confirmToDelete(UnionTypeViewHolder holder) {
