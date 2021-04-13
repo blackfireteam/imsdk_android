@@ -122,10 +122,7 @@ public class IMSessionManager {
             if (mSession != session) {
                 notifySessionChanged = true;
 
-                if (mSessionTcpClientProxy != null) {
-                    mSessionTcpClientProxy.setAbort();
-                    mSessionTcpClientProxy = null;
-                }
+                destroySessionTcpClient();
 
                 mSession = session;
                 // 重新设置 session 时，清除 session user id.
@@ -134,9 +131,7 @@ public class IMSessionManager {
                 // 从历史记录中恢复可能存在的 token 与 session user id 的对应关系
                 tryRestoreSessionUserIdFromDB(session);
 
-                if (mSession != null) {
-                    mSessionTcpClientProxy = new SessionTcpClientProxy(mSession);
-                }
+                recreateSessionTcpClient();
             }
         }
 
