@@ -189,6 +189,7 @@ public class IMMessageManager {
                             }
                         } else {
                             // unexpected. block id 逻辑错误
+                            //noinspection ConstantConditions
                             IMLog.e(new IllegalArgumentException("unexpected. block start message id null."),
                                     "sessionUserId:%s, conversationType:%s, targetUserId:%s, targetBlockId:%s, queryHistory:%s",
                                     sessionUserId, conversationType, targetUserId, targetBlockId, queryHistory);
@@ -233,6 +234,7 @@ public class IMMessageManager {
                             }
                         } else {
                             // unexpected. block id 逻辑错误
+                            //noinspection ConstantConditions
                             IMLog.e(new IllegalArgumentException("unexpected. block end message id null."),
                                     "sessionUserId:%s, conversationType:%s, targetUserId:%s, targetBlockId:%s, queryHistory:%s",
                                     sessionUserId, conversationType, targetUserId, targetBlockId, queryHistory);

@@ -125,7 +125,7 @@ public class MessageDatabaseProvider {
     /**
      * 获取 remote message id 的最大值
      */
-    @NonNull
+    @Nullable
     public Message getMaxRemoteMessageId(final long sessionUserId,
                                          final int conversationType,
                                          final long targetUserId) {
@@ -142,7 +142,7 @@ public class MessageDatabaseProvider {
     /**
      * 获取 remote message id 的最小值
      */
-    @NonNull
+    @Nullable
     public Message getMinRemoteMessageId(final long sessionUserId,
                                          final int conversationType,
                                          final long targetUserId) {
@@ -378,12 +378,6 @@ public class MessageDatabaseProvider {
     /**
      * 获取与 seq 关联最紧密的 block id 值
      *
-     * @param sessionUserId
-     * @param conversationType
-     * @param targetUserId
-     * @param seq
-     * @param queryHistory
-     * @return
      * @see #getMessage(long, int, long, long)
      * @see #pageQueryMessage(long, long, int, int, long, boolean, ColumnsSelector)
      */
@@ -703,8 +697,6 @@ public class MessageDatabaseProvider {
     /**
      * 插入一条新消息数据。新消息插入成功时，会自动设置消息的 localId
      *
-     * @param sessionUserId
-     * @param message
      * @return 插入成功返回 true, 否则返回 false.
      * @see Message#localId
      */
@@ -763,7 +755,6 @@ public class MessageDatabaseProvider {
     }
 
     /**
-     * @param message
      * @return 更新成功返回 true, 否则返回 false.
      */
     public boolean updateMessage(
