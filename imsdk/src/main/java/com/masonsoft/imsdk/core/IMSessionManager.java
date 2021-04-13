@@ -191,6 +191,35 @@ public class IMSessionManager {
         }
 
         final SingleSubject<GeneralResult> subject = SingleSubject.create();
+        final Runnable validateSubjectState = () -> {
+            // 检查当前 SessionTcpClientProxy 是否已经正常了
+            final SessionTcpClientProxy innerProxy = mSessionTcpClientProxy;
+            if (innerProxy != null && innerProxy.isOnline()) {
+                subject.onSuccess(GeneralResult.success());
+            }
+        };
+        final Runnable subjectTimeout = () ->
+                subject.onSuccess(GeneralResult.valueOf(
+                        GeneralResult.CODE_ERROR_TIMEOUT,
+                        GeneralResult.defaultMessage(GeneralResult.CODE_ERROR_TIMEOUT)
+                ));
+        final SessionTcpClientObservable.SessionTcpClientObserver sessionTcpClientObserver = new SessionTcpClientObservable.SessionTcpClientObserver() {
+            @Override
+            public void onConnectionStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
+                validateSubjectState.run();
+            }
+
+            @Override
+            public void onSignInStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
+                validateSubjectState.run();
+            }
+
+            @Override
+            public void onSignOutStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
+                validateSubjectState.run();
+            }
+
+        };
         final ClockObservable.ClockObserver clockObserver = new ClockObservable.ClockObserver() {
 
             // 超时时间
@@ -202,16 +231,13 @@ public class IMSessionManager {
                 if (System.currentTimeMillis() - mTimeStart > TIME_OUT) {
                     // 超时
                     IMLog.v(Objects.defaultObjectTag(this) + " getSessionTcpClientProxyWithBlockOrTimeout onClock timeout");
-                    subject.onSuccess(GeneralResult.valueOf(GeneralResult.CODE_ERROR_TIMEOUT, GeneralResult.defaultMessage(GeneralResult.CODE_ERROR_TIMEOUT)));
+                    subjectTimeout.run();
                 } else {
-                    // 检查当前 SessionTcpClientProxy 是否已经正常了
-                    final SessionTcpClientProxy proxy = mSessionTcpClientProxy;
-                    if (proxy != null && proxy.isOnline()) {
-                        subject.onSuccess(GeneralResult.success());
-                    }
+                    validateSubjectState.run();
                 }
             }
         };
+        SessionTcpClientObservable.DEFAULT.registerObserver(sessionTcpClientObserver);
         ClockObservable.DEFAULT.registerObserver(clockObserver);
 
         final GeneralResult result = subject.blockingGet();
