@@ -8,6 +8,8 @@ import androidx.annotation.WorkerThread;
 import androidx.collection.LruCache;
 
 import com.masonsoft.imsdk.core.message.packet.GetConversationListMessagePacket;
+import com.masonsoft.imsdk.core.message.packet.SignInMessagePacket;
+import com.masonsoft.imsdk.core.message.packet.SignOutMessagePacket;
 import com.masonsoft.imsdk.core.observable.ClockObservable;
 import com.masonsoft.imsdk.core.observable.SessionObservable;
 import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
@@ -212,12 +214,12 @@ public class IMSessionManager {
             }
 
             @Override
-            public void onSignInStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
+            public void onSignInStateChanged(@NonNull SessionTcpClient sessionTcpClient, @NonNull SignInMessagePacket messagePacket) {
                 validateSubjectState.run();
             }
 
             @Override
-            public void onSignOutStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
+            public void onSignOutStateChanged(@NonNull SessionTcpClient sessionTcpClient, @NonNull SignOutMessagePacket messagePacket) {
                 validateSubjectState.run();
             }
 
@@ -404,7 +406,7 @@ public class IMSessionManager {
         }
 
         @Override
-        public void onSignInStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
+        public void onSignInStateChanged(@NonNull SessionTcpClient sessionTcpClient, @NonNull SignInMessagePacket messagePacket) {
             if (AbortUtil.isAbort(this)) {
                 IMLog.v("ignore onSignInStateChanged. SessionTcpClientProxy is abort.");
                 return;
@@ -429,7 +431,7 @@ public class IMSessionManager {
         }
 
         @Override
-        public void onSignOutStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
+        public void onSignOutStateChanged(@NonNull SessionTcpClient sessionTcpClient, @NonNull SignOutMessagePacket messagePacket) {
             if (AbortUtil.isAbort(this)) {
                 IMLog.v("ignore onSignOutStateChanged. SessionTcpClientProxy is abort.");
                 return;

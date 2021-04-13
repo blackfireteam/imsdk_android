@@ -80,12 +80,12 @@ public class SessionTcpClient extends NettyTcpClient {
 
         mSignInMessagePacketStateObserver = (packet, oldState, newState) -> {
             // 登录的消息包发生状态变化
-            SessionTcpClientObservable.DEFAULT.notifySignInStateChanged(this);
+            SessionTcpClientObservable.DEFAULT.notifySignInStateChanged(this, (SignInMessagePacket) packet);
         };
         mSignInMessagePacket.getMessagePacketStateObservable().registerObserver(mSignInMessagePacketStateObserver);
         mSignOutMessagePacketStateObserver = (packet, oldState, newState) -> {
             // 退出登录的消息包发生状态变化
-            SessionTcpClientObservable.DEFAULT.notifySignOutStateChanged(this);
+            SessionTcpClientObservable.DEFAULT.notifySignOutStateChanged(this, (SignOutMessagePacket) packet);
         };
         mSignOutMessagePacket.getMessagePacketStateObservable().registerObserver(mSignOutMessagePacketStateObserver);
 
