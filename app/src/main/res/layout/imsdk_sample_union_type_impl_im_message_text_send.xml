@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -18,29 +19,29 @@
         android:textSize="12sp"
         tools:text="17:30" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
         android:layout_marginStart="72dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
+        app:alignItems="flex_start"
+        app:flexDirection="row_reverse">
 
-        <com.masonsoft.imsdk.sample.widget.IMMessageSendStatusView
-            android:id="@+id/send_status_view"
-            android:layout_width="42dp"
-            android:layout_height="22dp"
-            android:layout_gravity="center_vertical"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp" />
+        <com.masonsoft.imsdk.sample.widget.UserCacheAvatar
+            android:id="@+id/avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="15dp"
+            app:layout_flexGrow="0"
+            app:layout_flexShrink="0" />
 
         <TextView
             android:id="@+id/message_text"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:background="@drawable/imsdk_sample_chat_bubble_send"
             android:gravity="center_vertical"
             android:includeFontPadding="false"
@@ -52,15 +53,20 @@
             android:paddingBottom="10dp"
             android:textColor="@android:color/white"
             android:textSize="15sp"
-            tools:text="hihihihihihihihihiihihihihihihihihihihihihihihihihihihiihihihihihihihihihihihihihihihihihihiihihihihihihihihihihihihihihihihihihiihihihihihihihihihi" />
+            app:layout_flexGrow="0"
+            app:layout_flexShrink="1"
+            tools:text="中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文" />
 
-        <com.masonsoft.imsdk.sample.widget.UserCacheAvatar
-            android:id="@+id/avatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="15dp" />
-    </LinearLayout>
+        <com.masonsoft.imsdk.sample.widget.IMMessageSendStatusView
+            android:id="@+id/send_status_view"
+            android:layout_width="42dp"
+            android:layout_height="22dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:layout_alignSelf="center"
+            app:layout_flexGrow="0"
+            app:layout_flexShrink="0" />
+    </com.google.android.flexbox.FlexboxLayout>
 
     <com.masonsoft.imsdk.sample.widget.debug.MessageDebugView
         android:id="@+id/message_debug_view"
