@@ -144,6 +144,7 @@ public class IMSessionManager {
      * 销毁长连接
      */
     public void destroySessionTcpClient() {
+        IMLog.v(Objects.defaultObjectTag(this) + " destroySessionTcpClient");
         synchronized (mSessionLock) {
             if (mSessionTcpClientProxy != null) {
                 mSessionTcpClientProxy.setAbort();
@@ -156,6 +157,7 @@ public class IMSessionManager {
      * 终止旧的长连接，建立新的长连接(如果存在有效的登录信息)
      */
     public void recreateSessionTcpClient() {
+        IMLog.v(Objects.defaultObjectTag(this) + " recreateSessionTcpClient");
         synchronized (mSessionLock) {
             if (mSessionTcpClientProxy != null) {
                 mSessionTcpClientProxy.setAbort();
@@ -340,6 +342,7 @@ public class IMSessionManager {
         private GetConversationListMessagePacket mGetConversationListMessagePacket;
 
         private SessionTcpClientProxy(@NonNull Session session) {
+            IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy init");
             SessionTcpClientObservable.DEFAULT.registerObserver(this);
 
             mSessionTcpClient = new SessionTcpClient(session);
@@ -351,7 +354,11 @@ public class IMSessionManager {
                 }
                 return false;
             });
+            IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy init before connect. SessionTcpClient state:%s",
+                    SessionTcpClient.stateToString(mSessionTcpClient.getState()));
             mSessionTcpClient.connect();
+            IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy init after connect. SessionTcpClient state:%s",
+                    SessionTcpClient.stateToString(mSessionTcpClient.getState()));
         }
 
         @Override
