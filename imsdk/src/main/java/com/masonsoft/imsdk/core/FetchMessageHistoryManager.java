@@ -104,18 +104,6 @@ public class FetchMessageHistoryManager {
          */
         private static final int ERROR_CODE_UNKNOWN = sNextErrorCode++;
         /**
-         * 期望的目标对象没有找到
-         */
-        private static final int ERROR_CODE_TARGET_NOT_FOUND = sNextErrorCode++;
-        /**
-         * 绑定 abort id 失败
-         */
-        private static final int ERROR_CODE_BIND_ABORT_ID_FAIL = sNextErrorCode++;
-        /**
-         * 更新 sendStatus 失败
-         */
-        private static final int ERROR_CODE_UPDATE_SEND_STATUS_FAIL = sNextErrorCode++;
-        /**
          * 构建 protoByteMessage 失败
          */
         private static final int ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL = sNextErrorCode++;
@@ -136,10 +124,6 @@ public class FetchMessageHistoryManager {
          */
         private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN = sNextErrorCode++;
         /**
-         * 文件上传失败
-         */
-        private static final int ERROR_CODE_FILE_UPLOAD_FAIL = sNextErrorCode++;
-        /**
          * messagePacket 发送失败
          */
         private static final int ERROR_CODE_MESSAGE_PACKET_SEND_FAIL = sNextErrorCode++;
@@ -152,15 +136,11 @@ public class FetchMessageHistoryManager {
 
         static {
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_UNKNOWN, "ERROR_CODE_UNKNOWN");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_TARGET_NOT_FOUND, "ERROR_CODE_TARGET_NOT_FOUND");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_BIND_ABORT_ID_FAIL, "ERROR_CODE_BIND_ABORT_ID_FAIL");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_UPDATE_SEND_STATUS_FAIL, "ERROR_CODE_UPDATE_SEND_STATUS_FAIL");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL, "ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_FILE_UPLOAD_FAIL, "ERROR_CODE_FILE_UPLOAD_FAIL");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_FAIL, "ERROR_CODE_MESSAGE_PACKET_SEND_FAIL");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT, "ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT");
 
@@ -524,6 +504,7 @@ public class FetchMessageHistoryManager {
                             final long remoteMessageStart = conversation.remoteMessageStart.get();
                             if (mRemoteMessageEnd <= remoteMessageStart + 1) {
                                 // 所有消息已经获取完整
+                                //noinspection ConstantConditions
                                 IMLog.v("ignore. all message are loaded. sessionUserId:%s, conversationType:%s, targetUserId:%s, history:%s",
                                         mSessionUserId, mConversationType, mTargetUserId, mHistory);
                                 return null;
@@ -545,6 +526,7 @@ public class FetchMessageHistoryManager {
                             final long remoteMessageEnd = conversation.remoteMessageEnd.get();
                             if (mRemoteMessageStart >= remoteMessageEnd) {
                                 // 所有消息已经获取完整
+                                //noinspection ConstantConditions
                                 IMLog.v("ignore. all message are loaded. sessionUserId:%s, conversationType:%s, targetUserId:%s, history:%s",
                                         mSessionUserId, mConversationType, mTargetUserId, mHistory);
                                 return null;
