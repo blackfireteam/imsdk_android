@@ -1,7 +1,9 @@
 package com.masonsoft.imsdk.core.db;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.List;
@@ -14,6 +16,9 @@ public class TinyPage<T> {
     public List<T> items;
     public boolean hasMore;
 
+    @Nullable
+    public GeneralResult generalResult;
+
     @NonNull
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
@@ -24,6 +29,11 @@ public class TinyPage<T> {
             builder.append(" items size:").append(items.size());
         }
         builder.append(" hasMore:").append(hasMore);
+        if (this.generalResult == null) {
+            builder.append(" generalResult:null");
+        } else {
+            builder.append(" generalResult:").append(this.generalResult.toShortString());
+        }
         return builder.toString();
     }
 

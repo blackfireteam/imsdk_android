@@ -15,6 +15,7 @@ import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.TinyPage;
 import com.masonsoft.imsdk.core.observable.ClockObservable;
 import com.masonsoft.imsdk.core.observable.FetchMessageHistoryObservable;
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.user.UserInfoSyncManager;
 import com.masonsoft.imsdk.util.Objects;
 
@@ -263,21 +264,26 @@ public class IMMessageManager {
                     }
                 }
                 if (requireLoadMoreFromRemote) {
+                    // 需要从服务器加载更多消息
+                    result.hasMore = true;
+
                     final long sign = SignGenerator.next();
                     IMLog.v(Objects.defaultObjectTag(this) + " requireLoadMoreFromRemote start fetchWithBlockOrTimeout." +
                                     " targetBlockId:%s with sessionUserId:%s, seq:%s, limit:%s, conversationType:%s, targetUserId:%s, queryHistory:%s, sign:%s",
                             targetBlockId, sessionUserId, seq, limit, conversationType, targetUserId, queryHistory, sign);
-                    final boolean success = fetchWithBlockOrTimeout(sign, sessionUserId,
+                    final GeneralResult generalResult = fetchWithBlockOrTimeout(sign, sessionUserId,
                             conversationType,
                             targetUserId,
                             targetBlockId,
                             queryHistory);
                     // query again
-                    IMLog.v(Objects.defaultObjectTag(this) + " requireLoadMoreFromRemote end of fetchWithBlockOrTimeout, success:%s." +
+                    IMLog.v(Objects.defaultObjectTag(this) + " requireLoadMoreFromRemote end of fetchWithBlockOrTimeout, generalResult:%s." +
                                     " targetBlockId:%s with sessionUserId:%s, seq:%s, limit:%s, conversationType:%s, targetUserId:%s, queryHistory:%s, sign:%s",
-                            success, targetBlockId, sessionUserId, seq, limit, conversationType, targetUserId, queryHistory, sign);
-                    if (success) {
+                            generalResult, targetBlockId, sessionUserId, seq, limit, conversationType, targetUserId, queryHistory, sign);
+                    if (generalResult.isSuccess()) {
                         return pageQueryMessage(sessionUserId, seq, limit, conversationType, targetUserId, queryHistory);
+                    } else {
+                        result.generalResult = generalResult;
                     }
                 }
             }
@@ -288,7 +294,7 @@ public class IMMessageManager {
         return result;
     }
 
-    private boolean fetchWithBlockOrTimeout(
+    private GeneralResult fetchWithBlockOrTimeout(
             final long sign,
             final long sessionUserId,
             final int conversationType,
@@ -297,7 +303,7 @@ public class IMMessageManager {
             final boolean history) {
         // 需要从服务器获取更多消息
         final long originSign = sign;
-        final SingleSubject<Boolean> subject = SingleSubject.create();
+        final SingleSubject<GeneralResult> subject = SingleSubject.create();
 
         final FetchMessageHistoryObservable.FetchMessageHistoryObserver fetchMessageHistoryObserver = new FetchMessageHistoryObservable.FetchMessageHistoryObserver() {
             @Override
@@ -314,7 +320,7 @@ public class IMMessageManager {
                     return;
                 }
                 IMLog.v(Objects.defaultObjectTag(this) + " fetchWithBlockOrTimeout onMessageHistoryFetchedSuccess sign:%s", sign);
-                subject.onSuccess(true);
+                subject.onSuccess(GeneralResult.success());
             }
 
             @Override
@@ -324,7 +330,7 @@ public class IMMessageManager {
                 }
                 IMLog.v(Objects.defaultObjectTag(this) + " fetchWithBlockOrTimeout onMessageHistoryFetchedError sign:%s, errorCode:%s, errorMessage:%s",
                         sign, errorCode, errorMessage);
-                subject.onSuccess(false);
+                subject.onSuccess(GeneralResult.valueOfSubResult(GeneralResult.valueOf((int) errorCode, errorMessage)));
             }
         };
         final ClockObservable.ClockObserver clockObserver = new ClockObservable.ClockObserver() {
@@ -338,7 +344,7 @@ public class IMMessageManager {
                 if (System.currentTimeMillis() - mTimeStart > TIME_OUT) {
                     // 超时
                     IMLog.v(Objects.defaultObjectTag(this) + " fetchWithBlockOrTimeout onClock timeout sign:%s", originSign);
-                    subject.onSuccess(false);
+                    subject.onSuccess(GeneralResult.valueOf(GeneralResult.CODE_ERROR_TIMEOUT, GeneralResult.defaultMessage(GeneralResult.CODE_ERROR_TIMEOUT)));
                 }
             }
         };
