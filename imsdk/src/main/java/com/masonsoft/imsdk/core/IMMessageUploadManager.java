@@ -803,6 +803,40 @@ public class IMMessageUploadManager {
                 mMessageUploadObjectWrapper = messageUploadObjectWrapper;
             }
 
+            @Nullable
+            private SessionTcpClient waitTcpClientConnected() {
+                final IMSessionManager.SessionTcpClientProxy proxy = IMSessionManager.getInstance().getSessionTcpClientProxyWithBlockOrTimeout();
+                if (mMessageUploadObjectWrapper.hasErrorOrAbort()) {
+                    return null;
+                }
+
+                if (proxy == null) {
+                    mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL);
+                    return null;
+                }
+
+                if (IMSessionManager.getInstance().getSessionUserId() != mSessionUserId) {
+                    mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID);
+                    return null;
+                }
+
+                if (!proxy.isOnline()) {
+                    mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR);
+                    return null;
+                }
+
+                final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
+                if (sessionTcpClient == null) {
+                    mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN);
+                    return null;
+                }
+
+                if (mMessageUploadObjectWrapper.hasErrorOrAbort()) {
+                    return null;
+                }
+                return sessionTcpClient;
+            }
+
             @Override
             public void run() {
                 try {
@@ -821,6 +855,14 @@ public class IMMessageUploadManager {
                         return;
                     }
 
+                    {
+                        // wait tcp client connected
+                        final SessionTcpClient sessionTcpClient = this.waitTcpClientConnected();
+                        if (sessionTcpClient == null) {
+                            return;
+                        }
+                    }
+
                     final MessagePacket messagePacket = mMessageUploadObjectWrapper.buildMessagePacket();
                     if (messagePacket == null) {
                         mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL);
@@ -828,25 +870,8 @@ public class IMMessageUploadManager {
                     }
 
                     // 通过长连接发送 proto buf
-                    final IMSessionManager.SessionTcpClientProxy proxy = IMSessionManager.getInstance().getSessionTcpClientProxy();
-                    if (proxy == null) {
-                        mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL);
-                        return;
-                    }
-
-                    if (IMSessionManager.getInstance().getSessionUserId() != mSessionUserId) {
-                        mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID);
-                        return;
-                    }
-
-                    if (!proxy.isOnline()) {
-                        mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR);
-                        return;
-                    }
-
-                    final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
+                    final SessionTcpClient sessionTcpClient = this.waitTcpClientConnected();
                     if (sessionTcpClient == null) {
-                        mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN);
                         return;
                     }
 

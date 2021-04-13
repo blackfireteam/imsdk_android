@@ -1,18 +1,26 @@
 package com.masonsoft.imsdk.lang;
 
+import androidx.annotation.Nullable;
+
 /**
  * @since 1.0
  */
 public class ObjectWrapper {
 
-    private final Object mObject;
+    @Nullable
+    private Object mObject;
 
-    public ObjectWrapper(Object object) {
+    public ObjectWrapper(@Nullable Object object) {
         mObject = object;
     }
 
+    @Nullable
     public Object getObject() {
         return mObject;
+    }
+
+    public void setObject(@Nullable Object object) {
+        mObject = object;
     }
 
 }

@@ -196,11 +196,38 @@ public class UserInfoSyncManager {
             mForce = force;
         }
 
+        @Nullable
+        private SessionTcpClient waitTcpClientConnected() {
+            final IMSessionManager.SessionTcpClientProxy proxy = IMSessionManager.getInstance().getSessionTcpClientProxyWithBlockOrTimeout();
+            if (proxy == null) {
+                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy is null, abort sync user info. userId:%s", mUserId);
+                return null;
+            }
+            if (!proxy.isOnline()) {
+                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy is not online, abort sync user info. userId:%s", mUserId);
+                return null;
+            }
+
+            if (!proxy.isOnline()) {
+                return null;
+            }
+
+            return proxy.getSessionTcpClient();
+        }
+
         @Override
         public void run() {
             if (mUserId <= 0) {
                 IMLog.v(Objects.defaultObjectTag(this) + " ignore. invalid user id: %s", mUserId);
                 return;
+            }
+
+            {
+                // wait tcp client connected
+                final SessionTcpClient sessionTcpClient = this.waitTcpClientConnected();
+                if (sessionTcpClient == null) {
+                    return;
+                }
             }
 
             boolean requireSync = mForce;
@@ -247,16 +274,8 @@ public class UserInfoSyncManager {
                 return;
             }
 
-            final IMSessionManager.SessionTcpClientProxy proxy = IMSessionManager.getInstance().getSessionTcpClientProxy();
-            if (proxy == null) {
-                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy is null, abort sync user info. userId:%s", mUserId);
-                return;
-            }
-            if (!proxy.isOnline()) {
-                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy is not online, abort sync user info. userId:%s", mUserId);
-                return;
-            }
-            final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
+            // wait tcp client connected
+            final SessionTcpClient sessionTcpClient = this.waitTcpClientConnected();
             if (sessionTcpClient == null) {
                 IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClient is null, abort sync user info. userId:%s", mUserId);
                 return;
@@ -360,8 +379,35 @@ public class UserInfoSyncManager {
             return requireSync;
         }
 
+        @Nullable
+        private SessionTcpClient waitTcpClientConnected() {
+            final IMSessionManager.SessionTcpClientProxy proxy = IMSessionManager.getInstance().getSessionTcpClientProxyWithBlockOrTimeout();
+            if (proxy == null) {
+                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy is null, abort sync user id list");
+                return null;
+            }
+            if (!proxy.isOnline()) {
+                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy is not online, abort sync user id list");
+                return null;
+            }
+
+            if (!proxy.isOnline()) {
+                return null;
+            }
+
+            return proxy.getSessionTcpClient();
+        }
+
         @Override
         public void run() {
+            {
+                // wait tcp client connected
+                final SessionTcpClient sessionTcpClient = this.waitTcpClientConnected();
+                if (sessionTcpClient == null) {
+                    return;
+                }
+            }
+
             final List<Long> filterUserIdList = filterUserIdList();
             IMLog.v(Objects.defaultObjectTag(this) + " run mOriginUserIdList.size:%s -> filterUserIdList.size:%s",
                     mOriginUserIdList.size(), filterUserIdList.size());
@@ -389,16 +435,7 @@ public class UserInfoSyncManager {
                         .build());
             }
 
-            final IMSessionManager.SessionTcpClientProxy proxy = IMSessionManager.getInstance().getSessionTcpClientProxy();
-            if (proxy == null) {
-                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy is null, abort sync user id list");
-                return;
-            }
-            if (!proxy.isOnline()) {
-                IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy is not online, abort sync user id list");
-                return;
-            }
-            final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
+            final SessionTcpClient sessionTcpClient = this.waitTcpClientConnected();
             if (sessionTcpClient == null) {
                 IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClient is null, abort sync user id list");
                 return;

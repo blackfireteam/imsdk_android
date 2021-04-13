@@ -4,19 +4,26 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.collection.LruCache;
 
 import com.masonsoft.imsdk.core.message.packet.GetConversationListMessagePacket;
+import com.masonsoft.imsdk.core.observable.ClockObservable;
 import com.masonsoft.imsdk.core.observable.SessionObservable;
 import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
+import com.masonsoft.imsdk.lang.GeneralResult;
+import com.masonsoft.imsdk.util.Objects;
+
+import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.SimpleAbortSignal;
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.AbortUtil;
 import io.github.idonans.core.util.IOUtil;
+import io.reactivex.rxjava3.subjects.SingleSubject;
 
 /**
  * 处理登录状态相关内容，当登录状态发生变更时，将强制断开长连接然后发起新的长连接(如果有登录信息)。
@@ -172,6 +179,48 @@ public class IMSessionManager {
 
     @Nullable
     public SessionTcpClientProxy getSessionTcpClientProxy() {
+        return mSessionTcpClientProxy;
+    }
+
+    /**
+     * 尽可能获取一个可用的长连接，如果长连接暂时不可用，则会先 block, 直到长连接恢复或者超时.
+     *
+     * @return 即使返回结果不为空，也需要进一步校验返回结果中包含的具体长连接信息是否可用。
+     */
+    @WorkerThread
+    @Nullable
+    public SessionTcpClientProxy getSessionTcpClientProxyWithBlockOrTimeout() {
+        final SessionTcpClientProxy proxy = mSessionTcpClientProxy;
+        if (proxy != null && proxy.isOnline()) {
+            return proxy;
+        }
+
+        final SingleSubject<GeneralResult> subject = SingleSubject.create();
+        final ClockObservable.ClockObserver clockObserver = new ClockObservable.ClockObserver() {
+
+            // 超时时间
+            private final long TIME_OUT = TimeUnit.SECONDS.toMillis(60);
+            private final long mTimeStart = System.currentTimeMillis();
+
+            @Override
+            public void onClock() {
+                if (System.currentTimeMillis() - mTimeStart > TIME_OUT) {
+                    // 超时
+                    IMLog.v(Objects.defaultObjectTag(this) + " getSessionTcpClientProxyWithBlockOrTimeout onClock timeout");
+                    subject.onSuccess(GeneralResult.valueOf(GeneralResult.CODE_ERROR_TIMEOUT, GeneralResult.defaultMessage(GeneralResult.CODE_ERROR_TIMEOUT)));
+                } else {
+                    // 检查当前 SessionTcpClientProxy 是否已经正常了
+                    final SessionTcpClientProxy proxy = mSessionTcpClientProxy;
+                    if (proxy != null && proxy.isOnline()) {
+                        subject.onSuccess(GeneralResult.success());
+                    }
+                }
+            }
+        };
+        ClockObservable.DEFAULT.registerObserver(clockObserver);
+
+        final GeneralResult result = subject.blockingGet();
+        IMLog.v("getSessionTcpClientProxyWithBlockOrTimeout GeneralResult:%s", result.toShortString());
         return mSessionTcpClientProxy;
     }
 
