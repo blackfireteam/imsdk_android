@@ -80,12 +80,12 @@ public class SessionTcpClient extends NettyTcpClient {
 
         mSignInMessagePacketStateObserver = (packet, oldState, newState) -> {
             // 登录的消息包发生状态变化
-            SessionTcpClientObservable.DEFAULT.notifySignInStateChanged();
+            SessionTcpClientObservable.DEFAULT.notifySignInStateChanged(this);
         };
         mSignInMessagePacket.getMessagePacketStateObservable().registerObserver(mSignInMessagePacketStateObserver);
         mSignOutMessagePacketStateObserver = (packet, oldState, newState) -> {
             // 退出登录的消息包发生状态变化
-            SessionTcpClientObservable.DEFAULT.notifySignOutStateChanged();
+            SessionTcpClientObservable.DEFAULT.notifySignOutStateChanged(this);
         };
         mSignOutMessagePacket.getMessagePacketStateObservable().registerObserver(mSignOutMessagePacketStateObserver);
 
@@ -104,10 +104,13 @@ public class SessionTcpClient extends NettyTcpClient {
             }
         };
         SessionObservable.DEFAULT.registerObserver(mSessionObserver);
+    }
+
+    public void connect() {
         validateSession();
 
         if (getState() == STATE_IDLE) {
-            connect(session.getTcpHost(), session.getTcpPort());
+            connect(mSession.getTcpHost(), mSession.getTcpPort());
         }
     }
 
@@ -361,7 +364,7 @@ public class SessionTcpClient extends NettyTcpClient {
     protected void onStateChanged(int oldState, int newState) {
         super.onStateChanged(oldState, newState);
 
-        SessionTcpClientObservable.DEFAULT.notifyConnectionStateChanged();
+        SessionTcpClientObservable.DEFAULT.notifyConnectionStateChanged(this);
     }
 
 }

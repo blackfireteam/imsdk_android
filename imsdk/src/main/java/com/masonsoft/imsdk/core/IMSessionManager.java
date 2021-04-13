@@ -319,6 +319,8 @@ public class IMSessionManager {
         private GetConversationListMessagePacket mGetConversationListMessagePacket;
 
         private SessionTcpClientProxy(@NonNull Session session) {
+            SessionTcpClientObservable.DEFAULT.registerObserver(this);
+
             mSessionTcpClient = new SessionTcpClient(session);
             mSessionTcpClient.getLocalMessageProcessor().addLastProcessor(target -> {
                 // 处理获取会话列表的响应结果
@@ -328,7 +330,7 @@ public class IMSessionManager {
                 }
                 return false;
             });
-            SessionTcpClientObservable.DEFAULT.registerObserver(this);
+            mSessionTcpClient.connect();
         }
 
         @Override
@@ -359,14 +361,14 @@ public class IMSessionManager {
         }
 
         @Override
-        public void onConnectionStateChanged() {
+        public void onConnectionStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
             if (AbortUtil.isAbort(this)) {
                 IMLog.v("ignore onConnectionStateChanged. SessionTcpClientProxy is abort.");
                 return;
             }
 
-            SessionTcpClient sessionTcpClient = mSessionTcpClient;
-            if (sessionTcpClient == null) {
+            if (sessionTcpClient != mSessionTcpClient) {
+                IMLog.v("ignore onConnectionStateChanged sessionTcpClient is another one");
                 return;
             }
 
@@ -374,14 +376,14 @@ public class IMSessionManager {
         }
 
         @Override
-        public void onSignInStateChanged() {
+        public void onSignInStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
             if (AbortUtil.isAbort(this)) {
                 IMLog.v("ignore onSignInStateChanged. SessionTcpClientProxy is abort.");
                 return;
             }
 
-            SessionTcpClient sessionTcpClient = mSessionTcpClient;
-            if (sessionTcpClient == null) {
+            if (sessionTcpClient != mSessionTcpClient) {
+                IMLog.v("ignore onSignInStateChanged sessionTcpClient is another one");
                 return;
             }
 
@@ -399,14 +401,14 @@ public class IMSessionManager {
         }
 
         @Override
-        public void onSignOutStateChanged() {
+        public void onSignOutStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
             if (AbortUtil.isAbort(this)) {
                 IMLog.v("ignore onSignOutStateChanged. SessionTcpClientProxy is abort.");
                 return;
             }
 
-            SessionTcpClient sessionTcpClient = mSessionTcpClient;
-            if (sessionTcpClient == null) {
+            if (sessionTcpClient != mSessionTcpClient) {
+                IMLog.v("ignore onSignOutStateChanged sessionTcpClient is another one");
                 return;
             }
 
