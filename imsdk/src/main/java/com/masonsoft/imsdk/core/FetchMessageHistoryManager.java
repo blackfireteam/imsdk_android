@@ -380,7 +380,7 @@ public class FetchMessageHistoryManager {
              */
             private void onTaskEnd() {
                 final FetchMessageHistoryMessagePacket fetchMessageHistoryMessagePacket = mFetchMessageHistoryMessagePacket;
-                if (fetchMessageHistoryMessagePacket == null || fetchMessageHistoryMessagePacket.getState() != IMConstants.SendStatus.SUCCESS) {
+                if (fetchMessageHistoryMessagePacket == null || fetchMessageHistoryMessagePacket.getState() != MessagePacket.STATE_SUCCESS) {
                     notifySendStatus(IMConstants.SendStatus.FAIL);
                 } else {
                     notifySendStatus(IMConstants.SendStatus.SUCCESS);
