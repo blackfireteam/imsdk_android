@@ -115,6 +115,16 @@ public class SessionTcpClient extends NettyTcpClient {
     }
 
     @NonNull
+    public SignInMessagePacket getSignInMessagePacket() {
+        return mSignInMessagePacket;
+    }
+
+    @NonNull
+    public SignOutMessagePacket getSignOutMessagePacket() {
+        return mSignOutMessagePacket;
+    }
+
+    @NonNull
     public MultiProcessor<ProtoByteMessageWrapper> getLocalMessageProcessor() {
         return mLocalMessageProcessor;
     }
