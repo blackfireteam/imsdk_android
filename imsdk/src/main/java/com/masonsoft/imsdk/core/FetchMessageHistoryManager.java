@@ -144,7 +144,7 @@ public class FetchMessageHistoryManager {
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_FAIL, "ERROR_CODE_MESSAGE_PACKET_SEND_FAIL");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT, "ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT");
 
-            Preconditions.checkArgument(DEFAULT_ERROR_MESSAGE_MAP.size() == ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT - FIRST_LOCAL_ERROR_CODE + 1);
+            Preconditions.checkArgument(DEFAULT_ERROR_MESSAGE_MAP.size() == sNextErrorCode - FIRST_LOCAL_ERROR_CODE);
         }
         //////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////
