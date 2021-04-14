@@ -13,6 +13,7 @@ import com.facebook.common.logging.FLogDefaultLoggingDelegate;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.backends.okhttp3.OkHttpNetworkFetcher;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.masonsoft.imsdk.core.DebugManager;
 import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.sample.common.TopActivity;
@@ -28,6 +29,7 @@ public class SampleApplication extends Application {
         super.onCreate();
 
         IMLog.setLogLevel(Log.VERBOSE);
+        DebugManager.getInstance().start();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             WebView.setDataDirectorySuffix(ProcessManager.getInstance().getProcessTag());
         }

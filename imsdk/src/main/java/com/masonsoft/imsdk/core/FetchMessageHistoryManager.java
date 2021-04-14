@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk.core;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -151,7 +152,7 @@ public class FetchMessageHistoryManager {
         //////////////////////////////////////////////////////////////////////
     }
 
-    private static class SessionWorker {
+    private static class SessionWorker implements DebugManager.DebugInfoProvider {
 
         private final long mSessionUserId;
         private final List<FetchMessageObjectWrapperTask> mAllRunningTasks = new ArrayList<>();
@@ -160,6 +161,24 @@ public class FetchMessageHistoryManager {
 
         private SessionWorker(long sessionUserId) {
             mSessionUserId = sessionUserId;
+
+            if (IMLog.getLogLevel() <= Log.VERBOSE) {
+                DebugManager.getInstance().addDebugInfoProvider(this);
+            }
+        }
+
+        @Override
+        public void fetchDebugInfo(StringBuilder builder) {
+            builder.append(Objects.defaultObjectTag(this)).append(" --:\n");
+            builder.append("mSessionUserId:").append(this.mSessionUserId).append("\n");
+            builder.append("mAllRunningTasks size:").append(this.mAllRunningTasks.size()).append("\n");
+            builder.append("mActionQueue --:").append("\n");
+            mActionQueue.printDetail(builder);
+            builder.append("mActionQueue -- end").append("\n");
+            builder.append("mQueue --:").append("\n");
+            mQueue.printDetail(builder);
+            builder.append("mQueue -- end").append("\n");
+            builder.append(Objects.defaultObjectTag(this)).append(" -- end\n");
         }
 
         public void enqueueFetchMessageHistory(final long sign, final int conversationType, final long targetUserId, final long blockId, final boolean history) {
