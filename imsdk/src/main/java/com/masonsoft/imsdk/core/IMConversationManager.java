@@ -167,11 +167,14 @@ public class IMConversationManager {
                 // showMessageId 对应的 seq 不小于 localMessageId 的 seq
                 if (oldShowMessage.localSeq.get() >= newShowMessage.localSeq.get()) {
                     useNewShowMessageId = false;
-                } else if (newShowMessage.localActionMessage.get() > 0) {
-                    // 指令消息不能作为会话的 showMessageId
-                    useNewShowMessageId = false;
                 }
             }
+
+            if (newShowMessage.localActionMessage.get() > 0) {
+                // 指令消息不能作为会话的 showMessageId
+                useNewShowMessageId = false;
+            }
+
             if (useNewShowMessageId) {
                 // 更新 conversation 的 showMessageId 为 localMessageId
                 final Conversation conversationUpdate = new Conversation();
