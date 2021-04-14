@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.collection.LruCache;
 
-import com.masonsoft.imsdk.core.message.packet.GetConversationListMessagePacket;
+import com.masonsoft.imsdk.core.message.packet.FetchConversationListMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignInMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignOutMessagePacket;
 import com.masonsoft.imsdk.core.observable.ClockObservable;
@@ -341,7 +341,7 @@ public class IMSessionManager {
 
         @Nullable
         private SessionTcpClient mSessionTcpClient;
-        private GetConversationListMessagePacket mGetConversationListMessagePacket;
+        private FetchConversationListMessagePacket mFetchConversationListMessagePacket;
 
         private SessionTcpClientProxy(@NonNull Session session) {
             IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy init");
@@ -350,9 +350,9 @@ public class IMSessionManager {
             mSessionTcpClient = new SessionTcpClient(session);
             mSessionTcpClient.getLocalMessageProcessor().addLastProcessor(target -> {
                 // 处理获取会话列表的响应结果
-                final GetConversationListMessagePacket getConversationListMessagePacket = mGetConversationListMessagePacket;
-                if (getConversationListMessagePacket != null) {
-                    return getConversationListMessagePacket.doProcess(target);
+                final FetchConversationListMessagePacket fetchConversationListMessagePacket = mFetchConversationListMessagePacket;
+                if (fetchConversationListMessagePacket != null) {
+                    return fetchConversationListMessagePacket.doProcess(target);
                 }
                 return false;
             });
@@ -424,8 +424,8 @@ public class IMSessionManager {
                     // 长连接上有合法的用户 id 时，同步到本地存储
                     setSessionUserId(session, sessionUserId);
                     // 读取会话列表
-                    mGetConversationListMessagePacket = GetConversationListMessagePacket.create(getConversationListLastSyncTimeBySessionUserId(sessionUserId));
-                    sessionTcpClient.sendMessagePacketQuietly(mGetConversationListMessagePacket);
+                    mFetchConversationListMessagePacket = FetchConversationListMessagePacket.create(getConversationListLastSyncTimeBySessionUserId(sessionUserId));
+                    sessionTcpClient.sendMessagePacketQuietly(mFetchConversationListMessagePacket);
                 }
             }
         }

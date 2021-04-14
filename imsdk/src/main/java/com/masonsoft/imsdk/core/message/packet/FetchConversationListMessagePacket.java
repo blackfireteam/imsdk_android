@@ -16,9 +16,9 @@ import io.github.idonans.core.thread.Threads;
  *
  * @since 1.0
  */
-public class GetConversationListMessagePacket extends NotNullTimeoutMessagePacket {
+public class FetchConversationListMessagePacket extends NotNullTimeoutMessagePacket {
 
-    private GetConversationListMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
+    private FetchConversationListMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
         super(protoByteMessage, sign);
     }
 
@@ -41,7 +41,7 @@ public class GetConversationListMessagePacket extends NotNullTimeoutMessagePacke
                 synchronized (getStateLock()) {
                     final int state = getState();
                     if (state != STATE_WAIT_RESULT) {
-                        IMLog.e(Objects.defaultObjectTag(GetConversationListMessagePacket.this)
+                        IMLog.e(Objects.defaultObjectTag(FetchConversationListMessagePacket.this)
                                 + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
                         return false;
                     }
@@ -49,11 +49,11 @@ public class GetConversationListMessagePacket extends NotNullTimeoutMessagePacke
                     if (result.getCode() != 0) {
                         setErrorCode(result.getCode());
                         setErrorMessage(result.getMsg());
-                        IMLog.e(Objects.defaultObjectTag(GetConversationListMessagePacket.this) +
+                        IMLog.e(Objects.defaultObjectTag(FetchConversationListMessagePacket.this) +
                                 " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
                         moveToState(STATE_FAIL);
                     } else {
-                        IMLog.v(Objects.defaultObjectTag(GetConversationListMessagePacket.this) + " success");
+                        IMLog.v(Objects.defaultObjectTag(FetchConversationListMessagePacket.this) + " success");
                         moveToState(STATE_SUCCESS);
                     }
                 }
@@ -64,9 +64,9 @@ public class GetConversationListMessagePacket extends NotNullTimeoutMessagePacke
         return false;
     }
 
-    public static GetConversationListMessagePacket create(final long updateTime) {
+    public static FetchConversationListMessagePacket create(final long updateTime) {
         final long sign = SignGenerator.next();
-        return new GetConversationListMessagePacket(
+        return new FetchConversationListMessagePacket(
                 ProtoByteMessage.Type.encode(ProtoMessage.GetChatList.newBuilder()
                         .setSign(sign)
                         .setUpdateTime(updateTime)
