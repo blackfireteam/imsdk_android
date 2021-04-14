@@ -26,4 +26,7 @@
             <enum name="large" value="2" />
         </attr>
     </declare-styleable>
+    <declare-styleable name="IMMessageRevokeTextView">
+        <attr name="received" format="boolean" />
+    </declare-styleable>
 </resources>

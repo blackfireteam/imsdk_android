@@ -14,6 +14,12 @@ import com.masonsoft.imsdk.sample.SampleLog;
 
 import io.github.idonans.lang.util.ViewUtil;
 
+/**
+ * 如果消息不存在，则都不可见。<br>
+ * 如果消息已撤回，则第一个 child 可见，否则第二个 child 可见。
+ *
+ * @since 1.0
+ */
 public class IMMessageRevokeStateFrameLayout extends IMMessageDynamicFrameLayout {
 
     protected final boolean DEBUG = Constants.DEBUG_WIDGET;
@@ -43,6 +49,13 @@ public class IMMessageRevokeStateFrameLayout extends IMMessageDynamicFrameLayout
             throw new IllegalStateException("only support 2 child. current child count:" + childCount);
         }
 
+        final View firstChild = getChildAt(0);
+        final View secondChild = getChildAt(1);
+
+        // 默认都不可见
+        ViewUtil.setVisibilityIfChanged(firstChild, View.GONE);
+        ViewUtil.setVisibilityIfChanged(secondChild, View.GONE);
+
         if (mMessageChangedViewHelper != null) {
             mMessageChangedViewHelper.requestLoadData(false);
         }
@@ -59,7 +72,7 @@ public class IMMessageRevokeStateFrameLayout extends IMMessageDynamicFrameLayout
 
         final View firstChild = getChildAt(0);
         final View secondChild = getChildAt(1);
-        final boolean isRevoked = imMessage.type.get() == IMConstants.MessageType.REVOKED;
+        final boolean isRevoked = imMessage != null && imMessage.type.get() == IMConstants.MessageType.REVOKED;
         if (isRevoked) {
             ViewUtil.setVisibilityIfChanged(firstChild, View.VISIBLE);
             ViewUtil.setVisibilityIfChanged(secondChild, View.GONE);
