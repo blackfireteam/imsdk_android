@@ -32,6 +32,8 @@ import com.masonsoft.imsdk.sample.util.ClipboardUtil;
 import com.masonsoft.imsdk.sample.util.FileDownloadHelper;
 import com.masonsoft.imsdk.sample.util.FormatUtil;
 import com.masonsoft.imsdk.sample.util.TipUtil;
+import com.masonsoft.imsdk.sample.widget.IMMessageRevokeStateFrameLayout;
+import com.masonsoft.imsdk.sample.widget.IMMessageRevokeTextView;
 import com.masonsoft.imsdk.sample.widget.debug.MessageDebugView;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
@@ -103,18 +105,29 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
     }
 
     @Nullable
+    private final IMMessageRevokeStateFrameLayout mMessageRevokeStateFrameLayout;
+    @Nullable
+    private final IMMessageRevokeTextView mMessageRevokeTextView;
+
+    @Nullable
     private final MessageDebugView mMessageDebugView;
     @Nullable
     private final TextView mMessageTime;
 
     public IMMessageViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
+        mMessageRevokeStateFrameLayout = itemView.findViewById(R.id.message_revoke_state_layout);
+        mMessageRevokeTextView = itemView.findViewById(R.id.message_revoke_text_view);
+
         mMessageDebugView = itemView.findViewById(R.id.message_debug_view);
         mMessageTime = itemView.findViewById(R.id.message_time);
     }
 
     public IMMessageViewHolder(@NonNull Host host, @NonNull View itemView) {
         super(host, itemView);
+        mMessageRevokeStateFrameLayout = itemView.findViewById(R.id.message_revoke_state_layout);
+        mMessageRevokeTextView = itemView.findViewById(R.id.message_revoke_text_view);
+
         mMessageDebugView = itemView.findViewById(R.id.message_debug_view);
         mMessageTime = itemView.findViewById(R.id.message_time);
     }
@@ -140,6 +153,13 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                     targetUserId,
                     localMessageId
             );
+        }
+
+        if (mMessageRevokeStateFrameLayout != null) {
+            mMessageRevokeStateFrameLayout.setMessage(imMessage);
+        }
+        if (mMessageRevokeTextView != null) {
+            mMessageRevokeTextView.setTargetUserId(imMessage.fromUserId.get());
         }
 
         if (mMessageTime != null) {

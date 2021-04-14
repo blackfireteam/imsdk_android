@@ -56,6 +56,10 @@ public class IMMessageRevokeStateFrameLayout extends IMMessageDynamicFrameLayout
         ViewUtil.setVisibilityIfChanged(firstChild, View.GONE);
         ViewUtil.setVisibilityIfChanged(secondChild, View.GONE);
 
+        if (isInEditMode()) {
+            ViewUtil.setVisibilityIfChanged(secondChild, View.VISIBLE);
+        }
+
         if (mMessageChangedViewHelper != null) {
             mMessageChangedViewHelper.requestLoadData(false);
         }
