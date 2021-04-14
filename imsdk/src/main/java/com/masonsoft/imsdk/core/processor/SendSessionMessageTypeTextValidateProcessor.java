@@ -15,9 +15,9 @@ import com.masonsoft.imsdk.lang.StateProp;
  *
  * @since 1.0
  */
-public class SendMessageTypeTextValidateProcessor extends SendMessageTypeValidateProcessor {
+public class SendSessionMessageTypeTextValidateProcessor extends SendSessionMessageTypeValidateProcessor {
 
-    public SendMessageTypeTextValidateProcessor() {
+    public SendSessionMessageTypeTextValidateProcessor() {
         super(IMConstants.MessageType.TEXT);
     }
 

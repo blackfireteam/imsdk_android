@@ -12,7 +12,7 @@ import com.masonsoft.imsdk.util.Objects;
 /**
  * 处理发送消息的响应结果
  */
-public class ReceivedMessageUploadResponseProcessor extends ReceivedMessageNotNullValidateProcessor {
+public class ReceivedProtoMessageUploadResponseProcessor extends ReceivedProtoMessageNotNullProcessor {
 
     @Override
     protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {

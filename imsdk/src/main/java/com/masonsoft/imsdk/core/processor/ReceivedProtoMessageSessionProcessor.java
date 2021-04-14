@@ -10,7 +10,7 @@ import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
  *
  * @since 1.0
  */
-public class ReceivedMessageSessionValidateProcessor extends ReceivedMessageNotNullValidateProcessor {
+public class ReceivedProtoMessageSessionProcessor extends ReceivedProtoMessageNotNullProcessor {
 
     @Override
     protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {

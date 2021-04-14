@@ -12,10 +12,10 @@ import com.masonsoft.imsdk.lang.StateProp;
 /**
  * 检查指定消息类型
  *
- * @see InternalSendMessageTypeValidateProcessor
+ * @see InternalSendSessionMessageTypeValidateProcessor
  * @since 1.0
  */
-public abstract class SendMessageTypeValidateProcessor extends SendMessageNotNullValidateProcessor {
+public abstract class SendSessionMessageTypeValidateProcessor extends SendSessionMessageNotNullValidateProcessor {
 
     @Nullable
     private final int[] mTypeArray;
@@ -23,7 +23,7 @@ public abstract class SendMessageTypeValidateProcessor extends SendMessageNotNul
     /**
      * @see MessageType
      */
-    public SendMessageTypeValidateProcessor(@Nullable int... type) {
+    public SendSessionMessageTypeValidateProcessor(@Nullable int... type) {
         mTypeArray = type;
     }
 

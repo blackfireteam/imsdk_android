@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @since 1.0
  */
-public class ReceivedMessageConversationListProcessor extends ReceivedMessageNotNullValidateProcessor {
+public class ReceivedProtoMessageConversationListProcessor extends ReceivedProtoMessageNotNullProcessor {
 
     private static final long NEW_SEQ_DIFF = 1577808000000000L;
 

@@ -20,9 +20,9 @@ import io.github.idonans.core.util.HumanUtil;
  *
  * @since 1.0
  */
-public class SendMessageTypeAudioValidateProcessor extends SendMessageTypeValidateProcessor {
+public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMessageTypeValidateProcessor {
 
-    public SendMessageTypeAudioValidateProcessor() {
+    public SendSessionMessageTypeAudioValidateProcessor() {
         super(IMConstants.MessageType.AUDIO);
     }
 

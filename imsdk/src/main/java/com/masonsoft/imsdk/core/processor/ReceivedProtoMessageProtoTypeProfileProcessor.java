@@ -13,9 +13,9 @@ import com.masonsoft.imsdk.user.UserInfoFactory;
  *
  * @since 1.0
  */
-public class ReceivedMessageProtoTypeProfileProcessor extends ReceivedMessageProtoTypeProcessor<ProtoMessage.Profile> {
+public class ReceivedProtoMessageProtoTypeProfileProcessor extends ReceivedProtoMessageProtoTypeProcessor<ProtoMessage.Profile> {
 
-    public ReceivedMessageProtoTypeProfileProcessor() {
+    public ReceivedProtoMessageProtoTypeProfileProcessor() {
         super(ProtoMessage.Profile.class);
     }
 

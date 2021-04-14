@@ -88,7 +88,7 @@ public class TcpClientAutoReconnectionManager {
          * 立即重连
          */
         private void reconnectNow() {
-            // TODO
+            IMSessionManager.getInstance().recreateSessionTcpClient();
         }
     }
 

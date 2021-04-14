@@ -17,9 +17,9 @@ import java.util.List;
  *
  * @since 1.0
  */
-public class ReceivedMessageProtoTypeProfileListProcessor extends ReceivedMessageProtoTypeProcessor<ProtoMessage.ProfileList> {
+public class ReceivedProtoMessageProtoTypeProfileListProcessor extends ReceivedProtoMessageProtoTypeProcessor<ProtoMessage.ProfileList> {
 
-    public ReceivedMessageProtoTypeProfileListProcessor() {
+    public ReceivedProtoMessageProtoTypeProfileListProcessor() {
         super(ProtoMessage.ProfileList.class);
     }
 

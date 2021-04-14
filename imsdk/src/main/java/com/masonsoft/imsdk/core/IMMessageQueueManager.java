@@ -7,14 +7,14 @@ import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
-import com.masonsoft.imsdk.core.processor.InternalReceivedMessageProtoTypeProcessor;
-import com.masonsoft.imsdk.core.processor.InternalSendMessageTypeValidateProcessor;
-import com.masonsoft.imsdk.core.processor.ReceivedMessageConversationListProcessor;
-import com.masonsoft.imsdk.core.processor.ReceivedMessageResultIgnoreProcessor;
-import com.masonsoft.imsdk.core.processor.ReceivedMessageSessionValidateProcessor;
-import com.masonsoft.imsdk.core.processor.ReceivedMessageUploadResponseProcessor;
-import com.masonsoft.imsdk.core.processor.SendMessageRecoveryProcessor;
-import com.masonsoft.imsdk.core.processor.SendMessageWriteDatabaseProcessor;
+import com.masonsoft.imsdk.core.processor.InternalReceivedProtoMessageProtoTypeProcessor;
+import com.masonsoft.imsdk.core.processor.InternalSendSessionMessageTypeValidateProcessor;
+import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageConversationListProcessor;
+import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageResultIgnoreProcessor;
+import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageSessionProcessor;
+import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageUploadResponseProcessor;
+import com.masonsoft.imsdk.core.processor.SendSessionMessageRecoveryProcessor;
+import com.masonsoft.imsdk.core.processor.SendSessionMessageWriteDatabaseProcessor;
 import com.masonsoft.imsdk.lang.MultiProcessor;
 
 import io.github.idonans.core.Singleton;
@@ -55,15 +55,15 @@ public class IMMessageQueueManager {
     ///////////////////////////////////////////////////////////////
 
     private IMMessageQueueManager() {
-        mReceivedMessageProcessor.addFirstProcessor(new ReceivedMessageSessionValidateProcessor());
-        mReceivedMessageProcessor.addLastProcessor(new ReceivedMessageResultIgnoreProcessor());
-        mReceivedMessageProcessor.addLastProcessor(new ReceivedMessageConversationListProcessor());
-        mReceivedMessageProcessor.addLastProcessor(new InternalReceivedMessageProtoTypeProcessor());
-        mReceivedMessageProcessor.addLastProcessor(new ReceivedMessageUploadResponseProcessor());
+        mReceivedMessageProcessor.addFirstProcessor(new ReceivedProtoMessageSessionProcessor());
+        mReceivedMessageProcessor.addLastProcessor(new ReceivedProtoMessageResultIgnoreProcessor());
+        mReceivedMessageProcessor.addLastProcessor(new ReceivedProtoMessageConversationListProcessor());
+        mReceivedMessageProcessor.addLastProcessor(new InternalReceivedProtoMessageProtoTypeProcessor());
+        mReceivedMessageProcessor.addLastProcessor(new ReceivedProtoMessageUploadResponseProcessor());
 
-        mSendMessageProcessor.addFirstProcessor(new SendMessageRecoveryProcessor());
-        mSendMessageProcessor.addLastProcessor(new InternalSendMessageTypeValidateProcessor());
-        mSendMessageProcessor.addLastProcessor(new SendMessageWriteDatabaseProcessor());
+        mSendMessageProcessor.addFirstProcessor(new SendSessionMessageRecoveryProcessor());
+        mSendMessageProcessor.addLastProcessor(new InternalSendSessionMessageTypeValidateProcessor());
+        mSendMessageProcessor.addLastProcessor(new SendSessionMessageWriteDatabaseProcessor());
     }
 
     @NonNull

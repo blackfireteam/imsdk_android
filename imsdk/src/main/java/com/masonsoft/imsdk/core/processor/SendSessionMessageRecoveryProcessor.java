@@ -11,10 +11,10 @@ import com.masonsoft.imsdk.lang.StateProp;
 /**
  * 矫正发送消息中的必要参数，如发送者，接受者，发送状态等。
  *
- * @see InternalSendMessageTypeValidateProcessor
+ * @see InternalSendSessionMessageTypeValidateProcessor
  * @since 1.0
  */
-public class SendMessageRecoveryProcessor extends SendMessageNotNullValidateProcessor {
+public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNullValidateProcessor {
 
     @Override
     protected boolean doNotNullProcess(@NonNull IMSessionMessage target) {

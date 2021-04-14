@@ -11,7 +11,7 @@ import com.masonsoft.imsdk.core.proto.ProtoMessage;
  *
  * @since 1.0
  */
-public class ReceivedMessageResultIgnoreProcessor extends ReceivedMessageNotNullValidateProcessor {
+public class ReceivedProtoMessageResultIgnoreProcessor extends ReceivedProtoMessageNotNullProcessor {
 
     @Override
     protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {

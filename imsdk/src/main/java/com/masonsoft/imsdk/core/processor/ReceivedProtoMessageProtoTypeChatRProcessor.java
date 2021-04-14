@@ -24,9 +24,9 @@ import com.masonsoft.imsdk.util.Preconditions;
  *
  * @since 1.0
  */
-public class ReceivedMessageProtoTypeChatRProcessor extends ReceivedMessageProtoTypeProcessor<ProtoMessage.ChatR> {
+public class ReceivedProtoMessageProtoTypeChatRProcessor extends ReceivedProtoMessageProtoTypeProcessor<ProtoMessage.ChatR> {
 
-    public ReceivedMessageProtoTypeChatRProcessor() {
+    public ReceivedProtoMessageProtoTypeChatRProcessor() {
         super(ProtoMessage.ChatR.class);
     }
 

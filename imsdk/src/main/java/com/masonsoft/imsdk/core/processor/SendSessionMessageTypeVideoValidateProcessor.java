@@ -20,9 +20,9 @@ import io.github.idonans.core.util.HumanUtil;
  *
  * @since 1.0
  */
-public class SendMessageTypeVideoValidateProcessor extends SendMessageTypeValidateProcessor {
+public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMessageTypeValidateProcessor {
 
-    public SendMessageTypeVideoValidateProcessor() {
+    public SendSessionMessageTypeVideoValidateProcessor() {
         super(IMConstants.MessageType.VIDEO);
     }
 

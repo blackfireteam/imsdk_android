@@ -28,7 +28,7 @@ import com.masonsoft.imsdk.core.db.Sequence;
  *
  * @since 1.0
  */
-public class SendMessageWriteDatabaseProcessor extends SendMessageNotNullValidateProcessor {
+public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessageNotNullValidateProcessor {
 
     @Override
     protected boolean doNotNullProcess(@NonNull IMSessionMessage target) {

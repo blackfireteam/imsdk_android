@@ -21,9 +21,9 @@ import io.github.idonans.core.util.HumanUtil;
  *
  * @since 1.0
  */
-public class SendMessageTypeImageValidateProcessor extends SendMessageTypeValidateProcessor {
+public class SendSessionMessageTypeImageValidateProcessor extends SendSessionMessageTypeValidateProcessor {
 
-    public SendMessageTypeImageValidateProcessor() {
+    public SendSessionMessageTypeImageValidateProcessor() {
         super(IMConstants.MessageType.IMAGE);
     }
 

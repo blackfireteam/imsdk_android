@@ -10,12 +10,12 @@ import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
  *
  * @since 1.0
  */
-public abstract class ReceivedMessageProtoTypeProcessor<T> extends ReceivedMessageNotNullValidateProcessor {
+public abstract class ReceivedProtoMessageProtoTypeProcessor<T> extends ReceivedProtoMessageNotNullProcessor {
 
     @NonNull
     private final Class<T> mProtoMessageObjectType;
 
-    public ReceivedMessageProtoTypeProcessor(@NonNull Class<T> protoMessageObjectType) {
+    public ReceivedProtoMessageProtoTypeProcessor(@NonNull Class<T> protoMessageObjectType) {
         mProtoMessageObjectType = protoMessageObjectType;
     }
 
