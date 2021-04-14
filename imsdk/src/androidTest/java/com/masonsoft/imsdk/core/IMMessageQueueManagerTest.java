@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.masonsoft.imsdk.EnqueueCallback;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.IMSessionMessage;
@@ -35,7 +36,7 @@ public class IMMessageQueueManagerTest {
         IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
                 message,
                 2,
-                new IMSessionMessage.EnqueueCallback() {
+                new EnqueueCallback() {
                     @Override
                     public void onEnqueueSuccess(@NonNull IMSessionMessage imSessionMessage) {
                         System.out.println("onEnqueueSuccess " + imSessionMessage);

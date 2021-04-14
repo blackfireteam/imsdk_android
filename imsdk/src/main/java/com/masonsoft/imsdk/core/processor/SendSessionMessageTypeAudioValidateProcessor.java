@@ -5,6 +5,7 @@ import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.EnqueueCallback;
 import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
@@ -40,7 +41,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
         if (audio.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_UNSET,
+                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_UNSET,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_path_unset)
             );
             return true;
@@ -56,7 +57,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
         if (TextUtils.isEmpty(audioPath)) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_INVALID,
+                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_INVALID,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_path_invalid)
             );
             return true;
@@ -79,7 +80,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
         if (!audioFile.exists() || !audioFile.isFile()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_INVALID,
+                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_INVALID,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_path_invalid)
             );
             return true;
@@ -90,7 +91,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
             final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Audio.MAX_FILE_SIZE);
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_FILE_SIZE_TOO_LARGE,
+                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_FILE_SIZE_TOO_LARGE,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_file_size_too_large, maxFileSizeAsHumanString)
             );
             return true;
@@ -111,7 +112,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
                 || duration.get() <= 0) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID,
+                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_duration_invalid)
             );
             return true;

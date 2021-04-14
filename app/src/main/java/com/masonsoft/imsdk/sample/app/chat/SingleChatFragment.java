@@ -14,9 +14,12 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.masonsoft.imsdk.EnqueueCallback;
+import com.masonsoft.imsdk.EnqueueCallbackAdapter;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.IMSessionMessage;
+import com.masonsoft.imsdk.WeakEnqueueCallbackAdapter;
 import com.masonsoft.imsdk.core.IMConstants.ConversationType;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.Constants;
@@ -301,7 +304,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
         IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
                 imMessage,
                 mTargetUserId,
-                new IMSessionMessage.WeakEnqueueCallbackAdapter(mEnqueueCallback, true)
+                new WeakEnqueueCallbackAdapter<>(mEnqueueCallback, true)
         );
     }
 
@@ -317,7 +320,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
                     imMessage,
                     mTargetUserId,
-                    new IMSessionMessage.EnqueueCallbackAdapter() {
+                    new EnqueueCallbackAdapter<IMSessionMessage>() {
                         @Override
                         public void onEnqueueFail(@NonNull IMSessionMessage imSessionMessage, int errorCode, String errorMessage) {
                             super.onEnqueueFail(imSessionMessage, errorCode, errorMessage);
@@ -440,7 +443,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
         }
     }
 
-    private class LocalEnqueueCallback implements IMSessionMessage.EnqueueCallback, AbortSignal {
+    private class LocalEnqueueCallback implements EnqueueCallback<IMSessionMessage>, AbortSignal {
 
         @Override
         public void onEnqueueSuccess(@NonNull IMSessionMessage imSessionMessage) {

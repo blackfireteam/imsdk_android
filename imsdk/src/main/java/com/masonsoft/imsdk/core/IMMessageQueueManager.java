@@ -2,6 +2,8 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.EnqueueCallback;
+import com.masonsoft.imsdk.EnqueueCallbackAdapter;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.IMSessionMessage;
@@ -110,24 +112,24 @@ public class IMMessageQueueManager {
      * 本地重发一个失败的消息
      */
     public void enqueueResendSessionMessage(@NonNull IMMessage imMessage) {
-        this.enqueueResendSessionMessage(imMessage, new IMSessionMessage.EnqueueCallbackAdapter());
+        this.enqueueResendSessionMessage(imMessage, new EnqueueCallbackAdapter<>());
     }
 
     /**
      * 本地重发一个失败的消息
      */
-    public void enqueueResendSessionMessage(@NonNull IMMessage imMessage, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
+    public void enqueueResendSessionMessage(@NonNull IMMessage imMessage, @NonNull EnqueueCallback<IMSessionMessage> enqueueCallback) {
         this.enqueueSendSessionMessage(imMessage, 0, true, enqueueCallback);
     }
 
     /**
      * 本地发送新消息
      */
-    public void enqueueSendSessionMessage(@NonNull IMMessage imMessage, long toUserId, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
+    public void enqueueSendSessionMessage(@NonNull IMMessage imMessage, long toUserId, @NonNull EnqueueCallback<IMSessionMessage> enqueueCallback) {
         this.enqueueSendSessionMessage(imMessage, toUserId, false, enqueueCallback);
     }
 
-    private void enqueueSendSessionMessage(@NonNull IMMessage imMessage, long toUserId, boolean resend, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
+    private void enqueueSendSessionMessage(@NonNull IMMessage imMessage, long toUserId, boolean resend, @NonNull EnqueueCallback<IMSessionMessage> enqueueCallback) {
         // sessionUserId 可能是无效值
         final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
         mSendSessionMessageQueue.enqueue(
@@ -161,7 +163,7 @@ public class IMMessageQueueManager {
 
                     mIMSessionMessage.getEnqueueCallback().onEnqueueFail(
                             mIMSessionMessage,
-                            IMSessionMessage.EnqueueCallback.ERROR_CODE_UNKNOWN,
+                            EnqueueCallback.ERROR_CODE_UNKNOWN,
                             I18nResources.getString(R.string.msimsdk_enqueue_callback_error_unknown)
                     );
                 }
@@ -171,7 +173,7 @@ public class IMMessageQueueManager {
 
                 mIMSessionMessage.getEnqueueCallback().onEnqueueFail(
                         mIMSessionMessage,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_UNKNOWN,
+                        EnqueueCallback.ERROR_CODE_UNKNOWN,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_unknown)
                 );
             }

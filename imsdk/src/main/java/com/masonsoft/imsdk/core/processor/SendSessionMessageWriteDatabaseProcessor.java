@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.EnqueueCallback;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.R;
@@ -64,7 +65,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 消息没有找到
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_ID,
+                        EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_ID,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_id)
                 );
                 return true;
@@ -75,7 +76,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 发送者信息不正确
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_FROM_USER_ID,
+                        EnqueueCallback.ERROR_CODE_INVALID_FROM_USER_ID,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_from_user_id)
                 );
                 return true;
@@ -86,7 +87,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 接收者信息不正确
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_TO_USER_ID,
+                        EnqueueCallback.ERROR_CODE_INVALID_TO_USER_ID,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_to_user_id)
                 );
                 return true;
@@ -96,7 +97,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 有服务器消息 id, 说明消息已经发送成功
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SEND_STATUS,
+                        EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SEND_STATUS,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_send_status)
                 );
                 return true;
@@ -112,7 +113,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 仅允许对发送失败的消息进行重新发送
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SEND_STATUS,
+                        EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SEND_STATUS,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_send_status)
                 );
                 return true;
@@ -166,7 +167,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 发送者信息不正确
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_FROM_USER_ID,
+                        EnqueueCallback.ERROR_CODE_INVALID_FROM_USER_ID,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_from_user_id)
                 );
                 return true;
@@ -177,7 +178,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 接收者信息不正确
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_TO_USER_ID,
+                        EnqueueCallback.ERROR_CODE_INVALID_TO_USER_ID,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_to_user_id)
                 );
                 return true;

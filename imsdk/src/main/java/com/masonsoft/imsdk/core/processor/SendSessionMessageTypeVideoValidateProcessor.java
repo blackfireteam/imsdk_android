@@ -5,6 +5,7 @@ import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.EnqueueCallback;
 import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
@@ -47,7 +48,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
         if (body.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_UNSET,
+                    EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_UNSET,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_path_unset)
             );
             return true;
@@ -63,7 +64,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
         if (TextUtils.isEmpty(videoPath)) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_INVALID,
+                    EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_INVALID,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_path_invalid)
             );
             return true;
@@ -90,7 +91,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
             if (!videoFile.exists() || !videoFile.isFile()) {
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_INVALID,
+                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_INVALID,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_path_invalid)
                 );
                 return true;
@@ -101,7 +102,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
                 final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Video.MAX_FILE_SIZE);
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_FILE_SIZE_TOO_LARGE,
+                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_FILE_SIZE_TOO_LARGE,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_file_size_too_large, maxFileSizeAsHumanString)
                 );
                 return true;
@@ -121,7 +122,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
         if (thumb.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_UNSET,
+                    EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_UNSET,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_thumb_path_unset)
             );
             return true;
@@ -137,7 +138,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
         if (TextUtils.isEmpty(thumbPath)) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_INVALID,
+                    EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_INVALID,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_thumb_path_invalid)
             );
             return true;
@@ -165,7 +166,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
             if (!thumbFile.exists() || !thumbFile.isFile()) {
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_INVALID,
+                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_INVALID,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_thumb_path_invalid)
                 );
                 return true;
@@ -176,7 +177,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
                 final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Video.MAX_THUMB_FILE_SIZE);
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FILE_SIZE_TOO_LARGE,
+                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FILE_SIZE_TOO_LARGE,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_thumb_file_size_too_large, maxFileSizeAsHumanString)
                 );
                 return true;
@@ -198,7 +199,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
                 || duration.get() <= 0) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_DURATION_INVALID,
+                    EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_DURATION_INVALID,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_duration_invalid)
             );
             return true;

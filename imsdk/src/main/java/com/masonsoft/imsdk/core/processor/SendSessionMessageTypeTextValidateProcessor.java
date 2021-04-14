@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.EnqueueCallback;
 import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
@@ -27,7 +28,7 @@ public class SendSessionMessageTypeTextValidateProcessor extends SendSessionMess
         if (body.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_TEXT_MESSAGE_TEXT_UNSET,
+                    EnqueueCallback.ERROR_CODE_TEXT_MESSAGE_TEXT_UNSET,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_text_message_text_unset)
             );
             return true;
@@ -55,7 +56,7 @@ public class SendSessionMessageTypeTextValidateProcessor extends SendSessionMess
             // 不允许发送空字符串
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_TEXT_MESSAGE_TEXT_EMPTY,
+                    EnqueueCallback.ERROR_CODE_TEXT_MESSAGE_TEXT_EMPTY,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_text_message_text_empty)
             );
             return true;
@@ -66,7 +67,7 @@ public class SendSessionMessageTypeTextValidateProcessor extends SendSessionMess
             // 文字长度超过了限制
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_TEXT_MESSAGE_TEXT_TOO_LARGE,
+                    EnqueueCallback.ERROR_CODE_TEXT_MESSAGE_TEXT_TOO_LARGE,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_text_message_text_too_large)
             );
             return true;

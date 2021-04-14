@@ -2,6 +2,7 @@ package com.masonsoft.imsdk.core.processor;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.EnqueueCallback;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.R;
@@ -54,7 +55,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
         if (target.getSessionUserId() <= 0) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_SESSION_USER_ID,
+                    EnqueueCallback.ERROR_CODE_INVALID_SESSION_USER_ID,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_session_user_id)
             );
             return true;
@@ -67,7 +68,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
                     || imMessage.fromUserId.get() != target.getSessionUserId()) {
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_FROM_USER_ID,
+                        EnqueueCallback.ERROR_CODE_INVALID_FROM_USER_ID,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_from_user_id)
                 );
                 return true;
@@ -93,7 +94,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
                     || toUserId.get() <= 0) {
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_TO_USER_ID,
+                        EnqueueCallback.ERROR_CODE_INVALID_TO_USER_ID,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_to_user_id)
                 );
                 return true;
@@ -107,7 +108,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
         if (target.getToUserId() <= 0) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_TO_USER_ID,
+                    EnqueueCallback.ERROR_CODE_INVALID_TO_USER_ID,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_to_user_id)
             );
             return true;
@@ -129,7 +130,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
                     || id.get() <= 0) {
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_ID,
+                        EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_ID,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_id)
                 );
                 return true;
@@ -155,7 +156,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
                     || seq.get() <= 0) {
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SEQ,
+                        EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SEQ,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_seq)
                 );
                 return true;
@@ -181,7 +182,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
                     || timeMs.get() <= 0) {
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        IMSessionMessage.EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_TIME,
+                        EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_TIME,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_time)
                 );
                 return true;
