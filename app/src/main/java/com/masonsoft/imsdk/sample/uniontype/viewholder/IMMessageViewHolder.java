@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
@@ -450,7 +451,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             }
             final HolderFinder holderFinder = holderFinders[0];
             final IMMessage message = holderFinder.imMessage;
-            // TODO FIXME
+            IMMessageQueueManager.getInstance().enqueueRevokeActionMessage(message);
         }
 
         private static void confirmToDelete(UnionTypeViewHolder holder) {
