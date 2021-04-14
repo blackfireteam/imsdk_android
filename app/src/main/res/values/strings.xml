@@ -14,6 +14,7 @@
     <string name="imsdk_sample_chat_input_hint">发送聊天内容</string>
     <string name="imsdk_sample_chat_input_submit">发送</string>
     <string name="imsdk_sample_tip_text_network_error">网络不给力</string>
+    <string name="imsdk_sample_tip_require_permission_storage">缺少存储权限</string>
     <string name="imsdk_sample_custom_soft_keyboard_item_image">相册</string>
     <string name="imsdk_sample_custom_soft_keyboard_item_image_bucket_all">所有照片</string>
     <string name="imsdk_sample_custom_soft_keyboard_item_image_picker_submit_format">确定(%1$s)</string>

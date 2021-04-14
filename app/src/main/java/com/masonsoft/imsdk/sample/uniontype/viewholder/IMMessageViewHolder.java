@@ -88,12 +88,14 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
+
+        //noinspection ResultOfMethodCallIgnored
         new RxPermissions((FragmentActivity) innerActivity)
                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_EXTERNAL_STORAGE)
                 .subscribe(granted -> {
                     if (!granted) {
-                        TipUtil.show("缺少存储权限");
+                        TipUtil.show(R.string.imsdk_sample_tip_require_permission_storage);
                         return;
                     }
                     FILE_DOWNLOAD_HELPER.enqueueFileDownload(null, downloadUrl);
@@ -168,7 +170,6 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 }
 
                 int position = getAdapterPosition();
-                // int position = adapter.getClickPosition(helper);
                 if (position > 0) {
                     UnionTypeItemObject preObject = host.getAdapter().getItem(position - 1);
                     if (preObject != null) {
