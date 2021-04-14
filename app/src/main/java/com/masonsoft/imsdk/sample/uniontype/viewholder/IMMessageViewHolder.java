@@ -262,6 +262,17 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             final boolean received = dataObject.object.toUserId.get() == sessionUserId;
             final long msgType = dataObject.object.type.get();
 
+            // 已撤回的消息
+            if (msgType == IMConstants.MessageType.REVOKED) {
+                return received
+                        ? UnionTypeItemObject.valueOf(
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_RECEIVED,
+                        dataObject)
+                        : UnionTypeItemObject.valueOf(
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_SEND,
+                        dataObject);
+            }
+
             // 文本消息
             if (msgType == IMConstants.MessageType.TEXT) {
                 return received

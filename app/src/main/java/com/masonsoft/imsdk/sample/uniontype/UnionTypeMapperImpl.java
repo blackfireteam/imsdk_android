@@ -3,6 +3,8 @@ package com.masonsoft.imsdk.sample.uniontype;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMConversationViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageImageReceivedViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageImageSendViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageRevokeReceivedViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageRevokeSendViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageTextReceivedViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageTextSendViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePickerBucketViewHolder;
@@ -15,6 +17,8 @@ public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
 
     private static int sNextUnionType = 1;
     public static final int UNION_TYPE_IMPL_IM_CONVERSATION = sNextUnionType++; // 会话列表中的一条会话
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_RECEIVED = sNextUnionType++; // 接收到已撤回的消息
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_SEND = sNextUnionType++; // 发送的已撤回的消息
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_TEXT_RECEIVED = sNextUnionType++; // 聊天消息-接收的文字
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_TEXT_SEND = sNextUnionType++; // 聊天消息-发送的文字
     public static final int UNION_TYPE_IMPL_IMAGE_PICKER_GRID = sNextUnionType++; // 图片选择器 Grid 视图中的一个 item
@@ -25,6 +29,8 @@ public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
 
     public UnionTypeMapperImpl() {
         put(UNION_TYPE_IMPL_IM_CONVERSATION, IMConversationViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_RECEIVED, IMMessageRevokeReceivedViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_SEND, IMMessageRevokeSendViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_TEXT_RECEIVED, IMMessageTextReceivedViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_TEXT_SEND, IMMessageTextSendViewHolder::new);
         put(UNION_TYPE_IMPL_IMAGE_PICKER_GRID, ImagePickerGridViewHolder::new);
