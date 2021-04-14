@@ -48,10 +48,8 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mSendFailDrawable = ContextCompat.getDrawable(context, R.drawable.imsdk_sample_ic_conversation_send_status_small_fail);
-        //noinspection ConstantConditions
         mSendFailDrawable.setBounds(0, 0, mSendFailDrawable.getIntrinsicWidth(), mSendFailDrawable.getIntrinsicHeight());
         mSendingDrawable = ContextCompat.getDrawable(context, R.drawable.imsdk_sample_ic_conversation_send_status_small_sending);
-        //noinspection ConstantConditions
         mSendingDrawable.setBounds(0, 0, mSendingDrawable.getIntrinsicWidth(), mSendingDrawable.getIntrinsicHeight());
 
         mTextView = new AppCompatTextView(context);

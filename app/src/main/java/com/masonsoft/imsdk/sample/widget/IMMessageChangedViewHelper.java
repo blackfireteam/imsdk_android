@@ -69,7 +69,7 @@ public abstract class IMMessageChangedViewHelper {
         return mLocalMessageId;
     }
 
-    private void requestLoadData(boolean reset) {
+    public void requestLoadData(boolean reset) {
         // abort last
         mRequestHolder.set(null);
 
