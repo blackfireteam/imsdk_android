@@ -26,7 +26,6 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.TopActivity;
 import com.masonsoft.imsdk.sample.common.impopup.IMChatMessageMenuDialog;
-import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentConfirmDialog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.util.ClipboardUtil;
@@ -39,7 +38,6 @@ import com.tbruyelle.rxpermissions3.RxPermissions;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.NetUtil;
 import io.github.idonans.core.util.SystemUtil;
 import io.github.idonans.uniontype.Host;
@@ -452,29 +450,6 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             final HolderFinder holderFinder = holderFinders[0];
             final IMMessage message = holderFinder.imMessage;
             IMMessageQueueManager.getInstance().enqueueRevokeActionMessage(message);
-        }
-
-        private static void confirmToDelete(UnionTypeViewHolder holder) {
-            final HolderFinder[] holderFinders = new HolderFinder[1];
-            if (!getHolderFinder(holder, holderFinders)) {
-                return;
-            }
-            final HolderFinder holderFinder = holderFinders[0];
-            new SimpleContentConfirmDialog(holderFinder.innerActivity, "确认删除?")
-                    .setOnBtnRightClickListener(() -> {
-                        HolderFinder[] innerHolderFinders = new HolderFinder[1];
-                        if (!getHolderFinder(holder, innerHolderFinders)) {
-                            return;
-                        }
-                        HolderFinder innerHolderFinder = innerHolderFinders[0];
-                        if (holder.host.getAdapter().removeItem(innerHolderFinder.position)) {
-                            Threads.postBackground(() -> {
-                                // TODO FIXME
-                                // ImManager.getInstance().deleteChatMessage(innerHolderFinder.imMessage);
-                            });
-                        }
-                    })
-                    .show();
         }
 
     }
