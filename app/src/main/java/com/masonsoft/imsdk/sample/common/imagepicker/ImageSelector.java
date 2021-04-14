@@ -3,6 +3,7 @@ package com.masonsoft.imsdk.sample.common.imagepicker;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.sample.Constants;
+import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.util.TipUtil;
 
 import java.util.List;
@@ -20,21 +21,21 @@ public interface ImageSelector {
     /**
      * 是否允许选中目标图片，允许返回 true, 否则返回 false.
      */
-    boolean canSelect(@NonNull List<ImageData.ImageInfo> imageInfosSelected, @NonNull ImageData.ImageInfo info);
+    boolean canSelect(@NonNull List<ImageData.ImageInfo> imageInfoListSelected, @NonNull ImageData.ImageInfo info);
 
     /**
      * 是否允许取消选中目标图片，可以取消选中返回 true, 否则返回 false.
      */
-    boolean canDeselect(@NonNull List<ImageData.ImageInfo> imageInfosSelected, int currentSelectedIndex, @NonNull ImageData.ImageInfo info);
+    boolean canDeselect(@NonNull List<ImageData.ImageInfo> imageInfoListSelected, int currentSelectedIndex, @NonNull ImageData.ImageInfo info);
 
     /**
      * 当前选中状态下是否可以显示完成按钮
      *
-     * @param imageInfosSelected
+     * @param imageInfoListSelected
      */
-    boolean canFinishSelect(@NonNull List<ImageData.ImageInfo> imageInfosSelected);
+    boolean canFinishSelect(@NonNull List<ImageData.ImageInfo> imageInfoListSelected);
 
-    public static class SimpleImageSelector implements ImageSelector {
+    class SimpleImageSelector implements ImageSelector {
 
         @Override
         public boolean accept(@NonNull ImageData.ImageInfo info) {
@@ -42,30 +43,30 @@ public interface ImageSelector {
         }
 
         @Override
-        public boolean canSelect(@NonNull List<ImageData.ImageInfo> imageInfosSelected, @NonNull ImageData.ImageInfo info) {
+        public boolean canSelect(@NonNull List<ImageData.ImageInfo> imageInfoListSelected, @NonNull ImageData.ImageInfo info) {
             if (!info.isImageMimeType()) {
-                TipUtil.show("图片无效，无法选择");
+                TipUtil.show(R.string.imsdk_sample_tip_image_invalid);
                 return false;
             }
             if (info.isImageMemorySizeTooLarge()) {
-                TipUtil.show("图片过大，无法选择");
+                TipUtil.show(R.string.imsdk_sample_tip_image_too_large);
                 return false;
             }
             if (info.size > Constants.SELECTOR_MAX_IMAGE_FILE_SIZE) {
-                TipUtil.show("图片过大，无法选择");
+                TipUtil.show(R.string.imsdk_sample_tip_image_too_large);
                 return false;
             }
             return true;
         }
 
         @Override
-        public boolean canDeselect(@NonNull List<ImageData.ImageInfo> imageInfosSelected, int currentSelectedIndex, @NonNull ImageData.ImageInfo info) {
+        public boolean canDeselect(@NonNull List<ImageData.ImageInfo> imageInfoListSelected, int currentSelectedIndex, @NonNull ImageData.ImageInfo info) {
             return true;
         }
 
         @Override
-        public boolean canFinishSelect(@NonNull List<ImageData.ImageInfo> imageInfosSelected) {
-            return !imageInfosSelected.isEmpty();
+        public boolean canFinishSelect(@NonNull List<ImageData.ImageInfo> imageInfoListSelected) {
+            return !imageInfoListSelected.isEmpty();
         }
     }
 

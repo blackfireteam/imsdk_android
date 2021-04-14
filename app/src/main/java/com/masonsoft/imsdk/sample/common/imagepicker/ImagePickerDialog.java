@@ -84,33 +84,33 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
         }
 
         @Override
-        public boolean canSelect(@NonNull List<ImageData.ImageInfo> imageInfosSelected, @NonNull ImageData.ImageInfo info) {
+        public boolean canSelect(@NonNull List<ImageData.ImageInfo> imageInfoListSelected, @NonNull ImageData.ImageInfo info) {
             if (mOutImageSelector != null) {
-                if (!mOutImageSelector.canSelect(imageInfosSelected, info)) {
+                if (!mOutImageSelector.canSelect(imageInfoListSelected, info)) {
                     return false;
                 }
             }
-            return super.canSelect(imageInfosSelected, info);
+            return super.canSelect(imageInfoListSelected, info);
         }
 
         @Override
-        public boolean canDeselect(@NonNull List<ImageData.ImageInfo> imageInfosSelected, int currentSelectedIndex, @NonNull ImageData.ImageInfo info) {
+        public boolean canDeselect(@NonNull List<ImageData.ImageInfo> imageInfoListSelected, int currentSelectedIndex, @NonNull ImageData.ImageInfo info) {
             if (mOutImageSelector != null) {
-                if (!mOutImageSelector.canDeselect(imageInfosSelected, currentSelectedIndex, info)) {
+                if (!mOutImageSelector.canDeselect(imageInfoListSelected, currentSelectedIndex, info)) {
                     return false;
                 }
             }
-            return super.canDeselect(imageInfosSelected, currentSelectedIndex, info);
+            return super.canDeselect(imageInfoListSelected, currentSelectedIndex, info);
         }
 
         @Override
-        public boolean canFinishSelect(@NonNull List<ImageData.ImageInfo> imageInfosSelected) {
+        public boolean canFinishSelect(@NonNull List<ImageData.ImageInfo> imageInfoListSelected) {
             if (mOutImageSelector != null) {
-                if (!mOutImageSelector.canFinishSelect(imageInfosSelected)) {
+                if (!mOutImageSelector.canFinishSelect(imageInfoListSelected)) {
                     return false;
                 }
             }
-            return super.canFinishSelect(imageInfosSelected);
+            return super.canFinishSelect(imageInfoListSelected);
         }
     };
 

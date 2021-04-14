@@ -55,9 +55,9 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             @Override
             public void onDownloadSuccess(String id, String localFilePath, String serverUrl) {
                 if (SystemUtil.addToMediaStore(new File(localFilePath))) {
-                    TipUtil.show("已添加到相册");
+                    TipUtil.show(R.string.imsdk_sample_tip_success_add_to_media_store);
                 } else {
-                    TipUtil.show("下载成功");
+                    TipUtil.show(R.string.imsdk_sample_tip_download_success);
                 }
             }
 
@@ -67,7 +67,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                     TipUtil.showNetworkError();
                     return;
                 }
-                TipUtil.show("消息已过期");
+                TipUtil.show(R.string.imsdk_sample_tip_download_fail);
             }
         }));
     }
