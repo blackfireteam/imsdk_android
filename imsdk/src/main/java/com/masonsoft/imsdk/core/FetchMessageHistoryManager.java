@@ -168,7 +168,7 @@ public class FetchMessageHistoryManager {
         }
 
         @Override
-        public void fetchDebugInfo(StringBuilder builder) {
+        public void fetchDebugInfo(@NonNull StringBuilder builder) {
             builder.append(Objects.defaultObjectTag(this)).append(" --:\n");
             builder.append("mSessionUserId:").append(this.mSessionUserId).append("\n");
             builder.append("mAllRunningTasks size:").append(this.mAllRunningTasks.size()).append("\n");
