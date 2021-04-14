@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.EnqueueCallback;
 import com.masonsoft.imsdk.EnqueueCallbackAdapter;
+import com.masonsoft.imsdk.IMActionMessage;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.IMSessionMessage;
@@ -15,6 +16,7 @@ import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageConversationListPr
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageResultIgnoreProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageSessionMessageResponseProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageSessionProcessor;
+import com.masonsoft.imsdk.core.processor.SendActionTypeRevokeValidateProcessor;
 import com.masonsoft.imsdk.core.processor.SendSessionMessageRecoveryProcessor;
 import com.masonsoft.imsdk.core.processor.SendSessionMessageWriteDatabaseProcessor;
 import com.masonsoft.imsdk.lang.MultiProcessor;
@@ -50,9 +52,14 @@ public class IMMessageQueueManager {
     private final TaskQueue mReceivedMessageQueue = new TaskQueue(1);
     ///////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////
-    // 处理本地发送的会话消息, 消息入库之后交由消息上传队列处理
+    // 处理本地发送的会话消息, 消息入库之后交由 IMSessionMessageUploadManager 处理
     private final MultiProcessor<IMSessionMessage> mSendSessionMessageProcessor = new MultiProcessor<>();
     private final TaskQueue mSendSessionMessageQueue = new TaskQueue(1);
+    ///////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////
+    // 处理本地发送的指令消息, 消息入对之后交由 IMActionMessageManager 处理
+    private final MultiProcessor<IMActionMessage> mSendActionMessageProcessor = new MultiProcessor<>();
+    private final TaskQueue mSendActionMessageQueue = new TaskQueue(1);
     ///////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////
 
@@ -66,6 +73,8 @@ public class IMMessageQueueManager {
         mSendSessionMessageProcessor.addFirstProcessor(new SendSessionMessageRecoveryProcessor());
         mSendSessionMessageProcessor.addLastProcessor(new InternalSendSessionMessageTypeValidateProcessor());
         mSendSessionMessageProcessor.addLastProcessor(new SendSessionMessageWriteDatabaseProcessor());
+
+        mSendActionMessageProcessor.addLastProcessor(new SendActionTypeRevokeValidateProcessor());
     }
 
     @NonNull
@@ -173,6 +182,74 @@ public class IMMessageQueueManager {
 
                 mIMSessionMessage.getEnqueueCallback().onEnqueueFail(
                         mIMSessionMessage,
+                        EnqueueCallback.ERROR_CODE_UNKNOWN,
+                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_unknown)
+                );
+            }
+        }
+    }
+
+    public MultiProcessor<IMActionMessage> getSendActionMessageProcessor() {
+        return mSendActionMessageProcessor;
+    }
+
+    /**
+     * 撤回指定会话消息(聊天消息)
+     */
+    public void enqueueRevokeActionMessage(@NonNull IMMessage message) {
+        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_REVOKE, message);
+    }
+
+    /**
+     * 发送指令消息
+     */
+    public void enqueueSendActionMessage(int actionType, Object actionObject) {
+        this.enqueueSendActionMessage(actionType, actionObject, new EnqueueCallbackAdapter<>());
+    }
+
+    /**
+     * 发送指令消息
+     */
+    public void enqueueSendActionMessage(int actionType, Object actionObject, @NonNull EnqueueCallback<IMActionMessage> enqueueCallback) {
+        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+        mSendActionMessageQueue.enqueue(new SendActionMessageTask(
+                new IMActionMessage(
+                        sessionUserId,
+                        actionType,
+                        actionObject,
+                        enqueueCallback
+                )
+        ));
+    }
+
+    private class SendActionMessageTask implements Runnable {
+
+        @NonNull
+        private final IMActionMessage mActionMessage;
+
+        private SendActionMessageTask(@NonNull IMActionMessage actionMessage) {
+            mActionMessage = actionMessage;
+        }
+
+        @Override
+        public void run() {
+            try {
+                if (!mSendActionMessageProcessor.doProcess(mActionMessage)) {
+                    Throwable e = new IllegalAccessError("SendActionMessageTask mActionMessage do process fail");
+                    IMLog.v(e);
+
+                    mActionMessage.getEnqueueCallback().onEnqueueFail(
+                            mActionMessage,
+                            EnqueueCallback.ERROR_CODE_UNKNOWN,
+                            I18nResources.getString(R.string.msimsdk_enqueue_callback_error_unknown)
+                    );
+                }
+            } catch (Throwable e) {
+                IMLog.e(e, "mActionMessage:%s", mActionMessage.toShortString());
+                RuntimeMode.throwIfDebug(e);
+
+                mActionMessage.getEnqueueCallback().onEnqueueFail(
+                        mActionMessage,
                         EnqueueCallback.ERROR_CODE_UNKNOWN,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_unknown)
                 );

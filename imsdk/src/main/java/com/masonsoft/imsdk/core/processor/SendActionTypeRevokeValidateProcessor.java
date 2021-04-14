@@ -7,6 +7,7 @@ import com.masonsoft.imsdk.IMActionMessage;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
+import com.masonsoft.imsdk.core.IMActionMessageManager;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
@@ -83,7 +84,10 @@ public class SendActionTypeRevokeValidateProcessor extends SendActionTypeValidat
         }
 
         // 派发到指令发送队列
-        // TODO
+        IMActionMessageManager.getInstance().enqueueActionMessage(
+                message._sessionUserId.get(),
+                target.getSign(),
+                target);
         return true;
     }
 
