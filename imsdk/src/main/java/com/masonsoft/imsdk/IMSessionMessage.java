@@ -5,6 +5,9 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.util.Objects;
 
+/**
+ * 会话消息(聊天消息)
+ */
 public class IMSessionMessage implements EnqueueMessage {
 
     private final long mSessionUserId;
@@ -16,6 +19,7 @@ public class IMSessionMessage implements EnqueueMessage {
 
     @NonNull
     private final IMMessage mIMMessage;
+
     @NonNull
     private final EnqueueCallback<IMSessionMessage> mEnqueueCallback;
 
