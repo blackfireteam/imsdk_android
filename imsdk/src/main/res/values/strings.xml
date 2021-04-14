@@ -6,6 +6,7 @@
     <string name="msimsdk_enqueue_callback_error_invalid_message_seq">消息 seq 不正确</string>
     <string name="msimsdk_enqueue_callback_error_invalid_message_time">消息时间不正确</string>
     <string name="msimsdk_enqueue_callback_error_invalid_message_send_status">消息发送状态不正确</string>
+    <string name="msimsdk_enqueue_callback_error_message_already_revoke">消息已撤回</string>
     <string name="msimsdk_enqueue_callback_error_text_message_text_unset">文字内容未设置</string>
     <string name="msimsdk_enqueue_callback_error_text_message_text_empty">文字内容为空</string>
     <string name="msimsdk_enqueue_callback_error_text_message_text_too_large">文字内容不能超过 %1$s 字符</string>

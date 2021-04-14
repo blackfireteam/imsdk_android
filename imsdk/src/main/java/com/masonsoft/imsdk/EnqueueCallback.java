@@ -52,6 +52,11 @@ public interface EnqueueCallback<T extends EnqueueMessage> {
      */
     int ERROR_CODE_INVALID_MESSAGE_SEND_STATUS = 8;
 
+    /**
+     * 消息已撤回
+     */
+    int ERROR_CODE_MESSAGE_ALREADY_REVOKE = 9;
+
     //////////////////////////////////////////
     //////////////////////////////////////////
     /**

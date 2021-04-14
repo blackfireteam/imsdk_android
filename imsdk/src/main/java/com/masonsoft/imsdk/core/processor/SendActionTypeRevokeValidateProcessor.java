@@ -7,6 +7,7 @@ import com.masonsoft.imsdk.IMActionMessage;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
+import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 
@@ -69,6 +70,15 @@ public class SendActionTypeRevokeValidateProcessor extends SendActionTypeValidat
                     target,
                     EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_ID,
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_id));
+            return true;
+        }
+
+        if (dbMessage.messageType.get() == IMConstants.MessageType.REVOKED) {
+            // 消息已撤回
+            target.getEnqueueCallback().onEnqueueFail(
+                    target,
+                    EnqueueCallback.ERROR_CODE_MESSAGE_ALREADY_REVOKE,
+                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_message_already_revoke));
             return true;
         }
 
