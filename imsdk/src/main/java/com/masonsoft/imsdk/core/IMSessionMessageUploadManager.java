@@ -52,24 +52,24 @@ public class IMSessionMessageUploadManager {
         return INSTANCE.get();
     }
 
-    private final Map<Long, SessionUploader> mSessionUploaderMap = new HashMap<>();
+    private final Map<Long, SessionWorker> mSessionUploaderMap = new HashMap<>();
 
     private IMSessionMessageUploadManager() {
     }
 
     @NonNull
-    private SessionUploader getSessionUploader(final long sessionUserId) {
-        SessionUploader sessionUploader = mSessionUploaderMap.get(sessionUserId);
-        if (sessionUploader != null) {
-            return sessionUploader;
+    private SessionWorker getSessionUploader(final long sessionUserId) {
+        SessionWorker sessionWorker = mSessionUploaderMap.get(sessionUserId);
+        if (sessionWorker != null) {
+            return sessionWorker;
         }
         synchronized (mSessionUploaderMap) {
-            sessionUploader = mSessionUploaderMap.get(sessionUserId);
-            if (sessionUploader == null) {
-                sessionUploader = new SessionUploader(sessionUserId);
-                mSessionUploaderMap.put(sessionUserId, sessionUploader);
+            sessionWorker = mSessionUploaderMap.get(sessionUserId);
+            if (sessionWorker == null) {
+                sessionWorker = new SessionWorker(sessionUserId);
+                mSessionUploaderMap.put(sessionUserId, sessionWorker);
             }
-            return sessionUploader;
+            return sessionWorker;
         }
     }
 
@@ -178,9 +178,9 @@ public class IMSessionMessageUploadManager {
         //////////////////////////////////////////////////////////////////////
     }
 
-    private class SessionUploader {
+    private class SessionWorker implements DebugManager.DebugInfoProvider {
 
-        private class MessageUploadObjectWrapper {
+        private class SessionMessageObjectWrapper {
             private final long mSessionUserId;
             private final long mSign;
             private final long mAbortId;
@@ -251,7 +251,7 @@ public class IMSessionMessageUploadManager {
             //////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////
 
-            public MessageUploadObjectWrapper(long sessionUserId, long sign, long abortId, @NonNull LocalSendingMessage localSendingMessage) {
+            public SessionMessageObjectWrapper(long sessionUserId, long sign, long abortId, @NonNull LocalSendingMessage localSendingMessage) {
                 this.mSessionUserId = sessionUserId;
                 this.mSign = sign;
                 this.mAbortId = abortId;
@@ -635,7 +635,7 @@ public class IMSessionMessageUploadManager {
         /**
          * 所有正在执行的消息任务
          */
-        private final List<MessageUploadObjectWrapperTask> mAllRunningTasks = new ArrayList<>();
+        private final List<SessionMessageObjectWrapperTask> mAllRunningTasks = new ArrayList<>();
 
         private final TaskQueue mCheckIdleActionQueue = new TaskQueue(1);
 
@@ -648,10 +648,32 @@ public class IMSessionMessageUploadManager {
         // 记录消息的发送进度
         private final LruCache<Long, Float> mUnsafeProgress = new LruCache<>(MAX_RUNNING_SIZE * 10);
 
-        private SessionUploader(long sessionUserId) {
+        private SessionWorker(long sessionUserId) {
             mSessionUserId = sessionUserId;
             LocalSendingMessageProvider.getInstance().updateMessageToFailIfNotSuccess(mSessionUserId);
             LocalSendingMessageProvider.getInstance().removeAllSuccessMessage(mSessionUserId);
+
+            DebugManager.getInstance().addDebugInfoProvider(this);
+        }
+
+        @Override
+        public void fetchDebugInfo(@NonNull StringBuilder builder) {
+            final String tag = Objects.defaultObjectTag(this);
+            builder.append(tag).append(" --:\n");
+            builder.append("mSessionUserId:").append(this.mSessionUserId).append("\n");
+            builder.append("MAX_RUNNING_SIZE:").append(MAX_RUNNING_SIZE).append("\n");
+            builder.append("mAllRunningTasks size:").append(this.mAllRunningTasks.size()).append("\n");
+            builder.append("mCheckIdleActionQueue --:").append("\n");
+            mCheckIdleActionQueue.printDetail(builder);
+            builder.append("mCheckIdleActionQueue -- end").append("\n");
+            builder.append("mLongTimeTaskQueue --:").append("\n");
+            mLongTimeTaskQueue.printDetail(builder);
+            builder.append("mLongTimeTaskQueue -- end").append("\n");
+            builder.append("mShortTimeTaskQueue --:").append("\n");
+            mShortTimeTaskQueue.printDetail(builder);
+            builder.append("mShortTimeTaskQueue -- end").append("\n");
+            builder.append("mUnsafeProgress size:").append(mUnsafeProgress.size()).append("\n");
+            builder.append(tag).append(" -- end\n");
         }
 
         private float getUploadProgress(final long localSendingMessageLocalId) {
@@ -665,10 +687,10 @@ public class IMSessionMessageUploadManager {
         }
 
         @Nullable
-        private MessageUploadObjectWrapperTask getTask(final long sign) {
+        private SessionMessageObjectWrapperTask getTask(final long sign) {
             synchronized (mAllRunningTasks) {
-                for (MessageUploadObjectWrapperTask task : mAllRunningTasks) {
-                    if (task.mMessageUploadObjectWrapper.mSign == sign) {
+                for (SessionMessageObjectWrapperTask task : mAllRunningTasks) {
+                    if (task.mSessionMessageObjectWrapper.mSign == sign) {
                         return task;
                     }
                 }
@@ -677,11 +699,11 @@ public class IMSessionMessageUploadManager {
         }
 
         @Nullable
-        private MessageUploadObjectWrapperTask getTask(@NonNull LocalSendingMessage localSendingMessage) {
+        private SessionMessageObjectWrapperTask getTask(@NonNull LocalSendingMessage localSendingMessage) {
             synchronized (mAllRunningTasks) {
                 final long localId = localSendingMessage.localId.get();
-                for (MessageUploadObjectWrapperTask task : mAllRunningTasks) {
-                    if (localId == task.mMessageUploadObjectWrapper.mLocalSendingMessage.localId.get()) {
+                for (SessionMessageObjectWrapperTask task : mAllRunningTasks) {
+                    if (localId == task.mSessionMessageObjectWrapper.mLocalSendingMessage.localId.get()) {
                         return task;
                     }
                 }
@@ -690,12 +712,12 @@ public class IMSessionMessageUploadManager {
         }
 
         @Nullable
-        private MessageUploadObjectWrapperTask removeTask(@NonNull LocalSendingMessage localSendingMessage) {
+        private SessionMessageObjectWrapperTask removeTask(@NonNull LocalSendingMessage localSendingMessage) {
             synchronized (mAllRunningTasks) {
                 final long localId = localSendingMessage.localId.get();
                 for (int i = 0; i < mAllRunningTasks.size(); i++) {
-                    final MessageUploadObjectWrapperTask task = mAllRunningTasks.get(i);
-                    if (localId == task.mMessageUploadObjectWrapper.mLocalSendingMessage.localId.get()) {
+                    final SessionMessageObjectWrapperTask task = mAllRunningTasks.get(i);
+                    if (localId == task.mSessionMessageObjectWrapper.mLocalSendingMessage.localId.get()) {
                         return mAllRunningTasks.remove(i);
                     }
                 }
@@ -705,11 +727,11 @@ public class IMSessionMessageUploadManager {
 
         private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
             synchronized (mAllRunningTasks) {
-                final MessageUploadObjectWrapperTask task = getTask(sign);
+                final SessionMessageObjectWrapperTask task = getTask(sign);
                 if (task == null) {
                     return false;
                 }
-                if (task.mMessageUploadObjectWrapper.dispatchTcpResponse(sign, wrapper)) {
+                if (task.mSessionMessageObjectWrapper.dispatchTcpResponse(sign, wrapper)) {
                     return true;
                 }
             }
@@ -735,7 +757,7 @@ public class IMSessionMessageUploadManager {
 
                 synchronized (mAllRunningTasks) {
                     for (LocalSendingMessage localSendingMessage : localSendingMessageList) {
-                        final MessageUploadObjectWrapperTask oldTask = getTask(localSendingMessage);
+                        final SessionMessageObjectWrapperTask oldTask = getTask(localSendingMessage);
                         if (oldTask != null) {
                             final Throwable e = new IllegalAccessError("unexpected localSendingMessage already exists in task. "
                                     + localSendingMessage + ", oldTask:" + Objects.defaultObjectTag(oldTask));
@@ -745,7 +767,7 @@ public class IMSessionMessageUploadManager {
 
                         IMLog.v("found new idle localSendingMessage %s", localSendingMessage);
                         final long sign = SignGenerator.next();
-                        final MessageUploadObjectWrapper wrapper = new MessageUploadObjectWrapper(
+                        final SessionMessageObjectWrapper wrapper = new SessionMessageObjectWrapper(
                                 mSessionUserId,
                                 sign,
                                 sign,
@@ -759,7 +781,7 @@ public class IMSessionMessageUploadManager {
                         );
                         wrapper.bindAbortId();
 
-                        final MessageUploadObjectWrapperTask task = new MessageUploadObjectWrapperTask(wrapper) {
+                        final SessionMessageObjectWrapperTask task = new SessionMessageObjectWrapperTask(wrapper) {
                             @Override
                             public void run() {
                                 try {
@@ -769,7 +791,7 @@ public class IMSessionMessageUploadManager {
                                 }
                                 wrapper.onTaskEnd();
                                 synchronized (mAllRunningTasks) {
-                                    final MessageUploadObjectWrapperTask existsTask = removeTask(localSendingMessage);
+                                    final SessionMessageObjectWrapperTask existsTask = removeTask(localSendingMessage);
                                     if (existsTask == null) {
                                         IMLog.e("unexpected removeTask return null %s", localSendingMessage);
                                     } else if (existsTask != this) {
@@ -794,44 +816,44 @@ public class IMSessionMessageUploadManager {
             }));
         }
 
-        private class MessageUploadObjectWrapperTask implements Runnable {
+        private class SessionMessageObjectWrapperTask implements Runnable {
 
             @NonNull
-            private final MessageUploadObjectWrapper mMessageUploadObjectWrapper;
+            private final SessionMessageObjectWrapper mSessionMessageObjectWrapper;
 
-            private MessageUploadObjectWrapperTask(@NonNull MessageUploadObjectWrapper messageUploadObjectWrapper) {
-                mMessageUploadObjectWrapper = messageUploadObjectWrapper;
+            private SessionMessageObjectWrapperTask(@NonNull SessionMessageObjectWrapper sessionMessageObjectWrapper) {
+                mSessionMessageObjectWrapper = sessionMessageObjectWrapper;
             }
 
             @Nullable
             private SessionTcpClient waitTcpClientConnected() {
                 final IMSessionManager.SessionTcpClientProxy proxy = IMSessionManager.getInstance().getSessionTcpClientProxyWithBlockOrTimeout();
-                if (mMessageUploadObjectWrapper.hasErrorOrAbort()) {
+                if (mSessionMessageObjectWrapper.hasErrorOrAbort()) {
                     return null;
                 }
 
                 if (proxy == null) {
-                    mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL);
+                    mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL);
                     return null;
                 }
 
                 if (IMSessionManager.getInstance().getSessionUserId() != mSessionUserId) {
-                    mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID);
+                    mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID);
                     return null;
                 }
 
                 if (!proxy.isOnline()) {
-                    mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR);
+                    mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR);
                     return null;
                 }
 
                 final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
                 if (sessionTcpClient == null) {
-                    mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN);
+                    mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN);
                     return null;
                 }
 
-                if (mMessageUploadObjectWrapper.hasErrorOrAbort()) {
+                if (mSessionMessageObjectWrapper.hasErrorOrAbort()) {
                     return null;
                 }
                 return sessionTcpClient;
@@ -840,18 +862,18 @@ public class IMSessionMessageUploadManager {
             @Override
             public void run() {
                 try {
-                    if (mMessageUploadObjectWrapper.hasErrorOrAbort()) {
+                    if (mSessionMessageObjectWrapper.hasErrorOrAbort()) {
                         return;
                     }
 
-                    mMessageUploadObjectWrapper.moveSendStatus(IMConstants.SendStatus.SENDING);
-                    if (mMessageUploadObjectWrapper.hasErrorOrAbort()) {
+                    mSessionMessageObjectWrapper.moveSendStatus(IMConstants.SendStatus.SENDING);
+                    if (mSessionMessageObjectWrapper.hasErrorOrAbort()) {
                         return;
                     }
 
-                    final Message message = mMessageUploadObjectWrapper.mMessage;
+                    final Message message = mSessionMessageObjectWrapper.mMessage;
                     if (message == null) {
-                        mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_TARGET_NOT_FOUND);
+                        mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_TARGET_NOT_FOUND);
                         return;
                     }
 
@@ -863,9 +885,9 @@ public class IMSessionMessageUploadManager {
                         }
                     }
 
-                    final MessagePacket messagePacket = mMessageUploadObjectWrapper.buildMessagePacket();
+                    final MessagePacket messagePacket = mSessionMessageObjectWrapper.buildMessagePacket();
                     if (messagePacket == null) {
-                        mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL);
+                        mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL);
                         return;
                     }
 
@@ -875,13 +897,13 @@ public class IMSessionMessageUploadManager {
                         return;
                     }
 
-                    if (mMessageUploadObjectWrapper.hasErrorOrAbort()) {
+                    if (mSessionMessageObjectWrapper.hasErrorOrAbort()) {
                         return;
                     }
 
                     sessionTcpClient.sendMessagePacketQuietly(messagePacket);
                     if (messagePacket.getState() != MessagePacket.STATE_WAIT_RESULT) {
-                        mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_FAIL);
+                        mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_FAIL);
                         return;
                     }
 
@@ -901,9 +923,9 @@ public class IMSessionMessageUploadManager {
                 } catch (Throwable e) {
                     IMLog.e(e);
                     if (e instanceof LocalErrorCodeException) {
-                        mMessageUploadObjectWrapper.setError(((LocalErrorCodeException) e).mErrorCode);
-                    } else if (mMessageUploadObjectWrapper.mErrorCode == 0) {
-                        mMessageUploadObjectWrapper.setError(LocalErrorCode.ERROR_CODE_UNKNOWN);
+                        mSessionMessageObjectWrapper.setError(((LocalErrorCodeException) e).mErrorCode);
+                    } else if (mSessionMessageObjectWrapper.mErrorCode == 0) {
+                        mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_UNKNOWN);
                     }
                 }
             }

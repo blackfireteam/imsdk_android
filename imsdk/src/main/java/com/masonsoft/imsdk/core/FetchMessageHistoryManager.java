@@ -1,7 +1,6 @@
 package com.masonsoft.imsdk.core;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -162,14 +161,13 @@ public class FetchMessageHistoryManager {
         private SessionWorker(long sessionUserId) {
             mSessionUserId = sessionUserId;
 
-            if (IMLog.getLogLevel() <= Log.VERBOSE) {
-                DebugManager.getInstance().addDebugInfoProvider(this);
-            }
+            DebugManager.getInstance().addDebugInfoProvider(this);
         }
 
         @Override
         public void fetchDebugInfo(@NonNull StringBuilder builder) {
-            builder.append(Objects.defaultObjectTag(this)).append(" --:\n");
+            final String tag = Objects.defaultObjectTag(this);
+            builder.append(tag).append(" --:\n");
             builder.append("mSessionUserId:").append(this.mSessionUserId).append("\n");
             builder.append("mAllRunningTasks size:").append(this.mAllRunningTasks.size()).append("\n");
             builder.append("mActionQueue --:").append("\n");
@@ -178,7 +176,7 @@ public class FetchMessageHistoryManager {
             builder.append("mQueue --:").append("\n");
             mQueue.printDetail(builder);
             builder.append("mQueue -- end").append("\n");
-            builder.append(Objects.defaultObjectTag(this)).append(" -- end\n");
+            builder.append(tag).append(" -- end\n");
         }
 
         public void enqueueFetchMessageHistory(final long sign, final int conversationType, final long targetUserId, final long blockId, final boolean history) {

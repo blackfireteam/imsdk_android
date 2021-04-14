@@ -40,7 +40,9 @@ public class DebugManager {
     }
 
     public void addDebugInfoProvider(DebugInfoProvider debugInfoProvider) {
-        mDebugInfoProviderSet.put(debugInfoProvider);
+        if (IMLog.getLogLevel() <= Log.VERBOSE) {
+            mDebugInfoProviderSet.put(debugInfoProvider);
+        }
     }
 
     public void removeDebugInfoProvider(DebugInfoProvider debugInfoProvider) {
