@@ -298,7 +298,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
         final String text = editable.toString().trim();
         final IMMessage imMessage = IMMessageFactory.createTextMessage(text);
         mEnqueueCallback = new LocalEnqueueCallback();
-        IMMessageQueueManager.getInstance().enqueueSendMessage(
+        IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
                 imMessage,
                 mTargetUserId,
                 new IMSessionMessage.WeakEnqueueCallbackAdapter(mEnqueueCallback, true)
@@ -314,7 +314,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         for (ImageData.ImageInfo imageInfo : imageInfoList) {
             final IMMessage imMessage = IMMessageFactory.createImageMessage(imageInfo.uri);
-            IMMessageQueueManager.getInstance().enqueueSendMessage(
+            IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
                     imMessage,
                     mTargetUserId,
                     new IMSessionMessage.EnqueueCallbackAdapter() {

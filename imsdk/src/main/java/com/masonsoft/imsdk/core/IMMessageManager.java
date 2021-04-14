@@ -74,7 +74,7 @@ public class IMMessageManager {
                     IMLog.e(e);
                 } else {
                     final long localSendingMessageLocalId = localSendingMessage.localId.get();
-                    final float progress = IMMessageUploadManager.getInstance().getUploadProgress(sessionUserId, localSendingMessageLocalId);
+                    final float progress = IMSessionMessageUploadManager.getInstance().getUploadProgress(sessionUserId, localSendingMessageLocalId);
                     target = IMMessageFactory.merge(target, localSendingMessage);
                     target.sendProgress.set(progress);
                 }

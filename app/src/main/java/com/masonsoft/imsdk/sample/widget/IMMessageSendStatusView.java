@@ -73,7 +73,7 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
             if (imMessage != null
                     && !imMessage.sendState.isUnset()) {
                 if (imMessage.sendState.get() == IMConstants.SendStatus.FAIL) {
-                    IMMessageQueueManager.getInstance().enqueueResendMessage(imMessage);
+                    IMMessageQueueManager.getInstance().enqueueResendSessionMessage(imMessage);
                 }
             }
         });

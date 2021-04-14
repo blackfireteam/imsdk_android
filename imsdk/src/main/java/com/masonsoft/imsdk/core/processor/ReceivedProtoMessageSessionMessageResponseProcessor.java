@@ -3,16 +3,16 @@ package com.masonsoft.imsdk.core.processor;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.IMMessageUploadManager;
+import com.masonsoft.imsdk.core.IMSessionMessageUploadManager;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.util.Objects;
 
 /**
- * 处理发送消息的响应结果
+ * 处理发送会话消息的响应结果
  */
-public class ReceivedProtoMessageUploadResponseProcessor extends ReceivedProtoMessageNotNullProcessor {
+public class ReceivedProtoMessageSessionMessageResponseProcessor extends ReceivedProtoMessageNotNullProcessor {
 
     @Override
     protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
@@ -29,7 +29,7 @@ public class ReceivedProtoMessageUploadResponseProcessor extends ReceivedProtoMe
             return false;
         }
 
-        final boolean result = IMMessageUploadManager.getInstance().dispatchTcpResponse(
+        final boolean result = IMSessionMessageUploadManager.getInstance().dispatchTcpResponse(
                 sessionUserId,
                 sign,
                 protoByteMessageWrapper

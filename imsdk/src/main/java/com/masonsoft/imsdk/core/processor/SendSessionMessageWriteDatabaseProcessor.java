@@ -11,7 +11,7 @@ import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.IMMessageUploadManager;
+import com.masonsoft.imsdk.core.IMSessionMessageUploadManager;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.db.DatabaseHelper;
 import com.masonsoft.imsdk.core.db.DatabaseProvider;
@@ -34,7 +34,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
     protected boolean doNotNullProcess(@NonNull IMSessionMessage target) {
         final long sessionUserId = target.getSessionUserId();
         // 初始化发送队列
-        IMMessageUploadManager.getInstance().touch(sessionUserId);
+        IMSessionMessageUploadManager.getInstance().touch(sessionUserId);
 
         if (target.isResend()) {
             return resendMessage(target);
@@ -135,7 +135,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 target.getEnqueueCallback().onEnqueueSuccess(target);
 
                 // 通知上传任务队列检查新内容
-                IMMessageUploadManager.getInstance().notifySyncLocalSendingMessage(sessionUserId);
+                IMSessionMessageUploadManager.getInstance().notifySyncLocalSendingMessage(sessionUserId);
 
                 // 返回 true, 终止后续 processor
                 return true;
@@ -226,7 +226,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                         target.getEnqueueCallback().onEnqueueSuccess(target);
 
                         // 通知上传任务队列检查新内容
-                        IMMessageUploadManager.getInstance().notifySyncLocalSendingMessage(sessionUserId);
+                        IMSessionMessageUploadManager.getInstance().notifySyncLocalSendingMessage(sessionUserId);
 
                         // 更新对应会话的最后一条关联消息
                         IMConversationManager.getInstance().updateConversationLastMessage(

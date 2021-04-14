@@ -11,8 +11,8 @@ import com.masonsoft.imsdk.core.processor.InternalReceivedProtoMessageProtoTypeP
 import com.masonsoft.imsdk.core.processor.InternalSendSessionMessageTypeValidateProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageConversationListProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageResultIgnoreProcessor;
+import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageSessionMessageResponseProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageSessionProcessor;
-import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageUploadResponseProcessor;
 import com.masonsoft.imsdk.core.processor.SendSessionMessageRecoveryProcessor;
 import com.masonsoft.imsdk.core.processor.SendSessionMessageWriteDatabaseProcessor;
 import com.masonsoft.imsdk.lang.MultiProcessor;
@@ -48,9 +48,9 @@ public class IMMessageQueueManager {
     private final TaskQueue mReceivedMessageQueue = new TaskQueue(1);
     ///////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////
-    // 处理本地发送的消息, 消息入库之后交由消息上传队列处理
-    private final MultiProcessor<IMSessionMessage> mSendMessageProcessor = new MultiProcessor<>();
-    private final TaskQueue mSendMessageQueue = new TaskQueue(1);
+    // 处理本地发送的会话消息, 消息入库之后交由消息上传队列处理
+    private final MultiProcessor<IMSessionMessage> mSendSessionMessageProcessor = new MultiProcessor<>();
+    private final TaskQueue mSendSessionMessageQueue = new TaskQueue(1);
     ///////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////
 
@@ -59,11 +59,11 @@ public class IMMessageQueueManager {
         mReceivedMessageProcessor.addLastProcessor(new ReceivedProtoMessageResultIgnoreProcessor());
         mReceivedMessageProcessor.addLastProcessor(new ReceivedProtoMessageConversationListProcessor());
         mReceivedMessageProcessor.addLastProcessor(new InternalReceivedProtoMessageProtoTypeProcessor());
-        mReceivedMessageProcessor.addLastProcessor(new ReceivedProtoMessageUploadResponseProcessor());
+        mReceivedMessageProcessor.addLastProcessor(new ReceivedProtoMessageSessionMessageResponseProcessor());
 
-        mSendMessageProcessor.addFirstProcessor(new SendSessionMessageRecoveryProcessor());
-        mSendMessageProcessor.addLastProcessor(new InternalSendSessionMessageTypeValidateProcessor());
-        mSendMessageProcessor.addLastProcessor(new SendSessionMessageWriteDatabaseProcessor());
+        mSendSessionMessageProcessor.addFirstProcessor(new SendSessionMessageRecoveryProcessor());
+        mSendSessionMessageProcessor.addLastProcessor(new InternalSendSessionMessageTypeValidateProcessor());
+        mSendSessionMessageProcessor.addLastProcessor(new SendSessionMessageWriteDatabaseProcessor());
     }
 
     @NonNull
@@ -102,36 +102,36 @@ public class IMMessageQueueManager {
     }
 
     @NonNull
-    public MultiProcessor<IMSessionMessage> getSendMessageProcessor() {
-        return mSendMessageProcessor;
+    public MultiProcessor<IMSessionMessage> getSendSessionMessageProcessor() {
+        return mSendSessionMessageProcessor;
     }
 
     /**
      * 本地重发一个失败的消息
      */
-    public void enqueueResendMessage(@NonNull IMMessage imMessage) {
-        this.enqueueResendMessage(imMessage, new IMSessionMessage.EnqueueCallbackAdapter());
+    public void enqueueResendSessionMessage(@NonNull IMMessage imMessage) {
+        this.enqueueResendSessionMessage(imMessage, new IMSessionMessage.EnqueueCallbackAdapter());
     }
 
     /**
      * 本地重发一个失败的消息
      */
-    public void enqueueResendMessage(@NonNull IMMessage imMessage, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
-        this.enqueueSendMessage(imMessage, 0, true, enqueueCallback);
+    public void enqueueResendSessionMessage(@NonNull IMMessage imMessage, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
+        this.enqueueSendSessionMessage(imMessage, 0, true, enqueueCallback);
     }
 
     /**
      * 本地发送新消息
      */
-    public void enqueueSendMessage(@NonNull IMMessage imMessage, long toUserId, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
-        this.enqueueSendMessage(imMessage, toUserId, false, enqueueCallback);
+    public void enqueueSendSessionMessage(@NonNull IMMessage imMessage, long toUserId, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
+        this.enqueueSendSessionMessage(imMessage, toUserId, false, enqueueCallback);
     }
 
-    private void enqueueSendMessage(@NonNull IMMessage imMessage, long toUserId, boolean resend, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
+    private void enqueueSendSessionMessage(@NonNull IMMessage imMessage, long toUserId, boolean resend, @NonNull IMSessionMessage.EnqueueCallback enqueueCallback) {
         // sessionUserId 可能是无效值
         final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        mSendMessageQueue.enqueue(
-                new SendMessageTask(
+        mSendSessionMessageQueue.enqueue(
+                new SendSessionMessageTask(
                         new IMSessionMessage(
                                 sessionUserId,
                                 toUserId,
@@ -143,19 +143,19 @@ public class IMMessageQueueManager {
         );
     }
 
-    private class SendMessageTask implements Runnable {
+    private class SendSessionMessageTask implements Runnable {
 
         @NonNull
         private final IMSessionMessage mIMSessionMessage;
 
-        private SendMessageTask(@NonNull IMSessionMessage imSessionMessage) {
+        private SendSessionMessageTask(@NonNull IMSessionMessage imSessionMessage) {
             mIMSessionMessage = imSessionMessage;
         }
 
         @Override
         public void run() {
             try {
-                if (!mSendMessageProcessor.doProcess(mIMSessionMessage)) {
+                if (!mSendSessionMessageProcessor.doProcess(mIMSessionMessage)) {
                     Throwable e = new IllegalAccessError("SendMessageTask IMSessionMessage do process fail");
                     IMLog.v(e);
 

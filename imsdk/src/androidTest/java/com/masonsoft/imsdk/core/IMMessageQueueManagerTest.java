@@ -32,7 +32,7 @@ public class IMMessageQueueManagerTest {
         IMSessionManager.getInstance().setSessionUserId(session, 1);
 
         final IMMessage message = IMMessageFactory.createTextMessage("hello, text message");
-        IMMessageQueueManager.getInstance().enqueueSendMessage(
+        IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
                 message,
                 2,
                 new IMSessionMessage.EnqueueCallback() {

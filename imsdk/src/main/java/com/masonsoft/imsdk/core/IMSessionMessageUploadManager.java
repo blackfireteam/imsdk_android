@@ -33,28 +33,28 @@ import io.github.idonans.core.thread.TaskQueue;
 import io.github.idonans.core.thread.Threads;
 
 /**
- * 消息上传队列. 从 LocalSendingMessage 表中读取需要发送的内容依次处理, 并处理对应的消息响应。
+ * 会话消息上传队列. 从 LocalSendingMessage 表中读取需要发送的内容依次处理, 并处理对应的消息响应。
  *
  * @see LocalSendingMessage
  * @see LocalSendingMessageProvider
  * @since 1.0
  */
-public class IMMessageUploadManager {
+public class IMSessionMessageUploadManager {
 
-    private static final Singleton<IMMessageUploadManager> INSTANCE = new Singleton<IMMessageUploadManager>() {
+    private static final Singleton<IMSessionMessageUploadManager> INSTANCE = new Singleton<IMSessionMessageUploadManager>() {
         @Override
-        protected IMMessageUploadManager create() {
-            return new IMMessageUploadManager();
+        protected IMSessionMessageUploadManager create() {
+            return new IMSessionMessageUploadManager();
         }
     };
 
-    public static IMMessageUploadManager getInstance() {
+    public static IMSessionMessageUploadManager getInstance() {
         return INSTANCE.get();
     }
 
     private final Map<Long, SessionUploader> mSessionUploaderMap = new HashMap<>();
 
-    private IMMessageUploadManager() {
+    private IMSessionMessageUploadManager() {
     }
 
     @NonNull
