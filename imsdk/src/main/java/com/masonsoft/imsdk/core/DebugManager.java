@@ -65,21 +65,17 @@ public class DebugManager {
             final StringBuilder builder = new StringBuilder();
             builder.append("=========== DEBUG INFO ===========:\n");
             final List<DebugInfoProvider> debugInfoProviderList = mDebugInfoProviderSet.getAll();
-            if (debugInfoProviderList != null) {
-                final int size = debugInfoProviderList.size();
-                int index = 0;
-                for (DebugInfoProvider debugInfoProvider : debugInfoProviderList) {
-                    index++;
-                    final String indexInfo = "[" + index + "/" + size + "]";
+            final int size = debugInfoProviderList.size();
+            int index = 0;
+            for (DebugInfoProvider debugInfoProvider : debugInfoProviderList) {
+                index++;
+                final String indexInfo = "[" + index + "/" + size + "]";
 
-                    builder.append(indexInfo).append("-------------------------:\n");
-                    if (debugInfoProvider != null) {
-                        debugInfoProvider.fetchDebugInfo(builder);
-                    }
-                    builder.append(indexInfo).append("------------------------- end\n");
+                builder.append(indexInfo).append("-------------------------:\n");
+                if (debugInfoProvider != null) {
+                    debugInfoProvider.fetchDebugInfo(builder);
                 }
-            } else {
-                builder.append("[null]\n");
+                builder.append(indexInfo).append("------------------------- end\n");
             }
             builder.append("=========== DEBUG INFO =========== end\n");
             IMLog.v(builder.toString());
