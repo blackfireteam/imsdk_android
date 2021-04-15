@@ -207,9 +207,9 @@ public class TcpClientAutoReconnectionManager {
                 return true;
             }
 
-            if (target.isAbort()) {
-                // 长链接已被主动中断，不重连
-                IMLog.v("%s isAbort, fast return true.", target);
+            if (IMSessionManager.getInstance().getSessionTcpClientProxy() != target) {
+                // 已经有其它调用触发了重建长连接
+                IMLog.v("%s is changed, fast return true. target.isAbort:%s", target, target.isAbort());
                 return true;
             }
 
