@@ -194,7 +194,7 @@ public class IMSessionManager {
     /**
      * 将长连接的失败重连次数清零
      */
-    private void clearSessionTcpClientProxyConfigRetryCount() {
+    public void clearSessionTcpClientProxyConfigRetryCount() {
         final SessionTcpClientProxyConfig sessionTcpClientProxyConfig = mSessionTcpClientProxyConfig;
         if (sessionTcpClientProxyConfig != null) {
             sessionTcpClientProxyConfig.mRetryCount = 0;

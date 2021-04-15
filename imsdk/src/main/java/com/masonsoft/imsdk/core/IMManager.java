@@ -2,6 +2,8 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.util.Objects;
+
 import io.github.idonans.core.Singleton;
 
 /**
@@ -15,7 +17,6 @@ public class IMManager {
     private static final Singleton<IMManager> INSTANCE = new Singleton<IMManager>() {
         @Override
         protected IMManager create() {
-            //noinspection InstantiationOfUtilityClass
             return new IMManager();
         }
     };
@@ -30,6 +31,10 @@ public class IMManager {
     private IMManager() {
         NetworkManager.getInstance().attach();
         TcpClientAutoReconnectionManager.getInstance().attach();
+    }
+
+    public void attach() {
+        IMLog.v("%s attach", Objects.defaultObjectTag(this));
     }
 
 }

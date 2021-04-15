@@ -2,9 +2,7 @@ package com.masonsoft.imsdk.core;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.os.Build;
+import android.net.Network;
 import android.os.Bundle;
 
 import androidx.annotation.AnyThread;
@@ -14,6 +12,7 @@ import androidx.annotation.Nullable;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignInMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignOutMessagePacket;
+import com.masonsoft.imsdk.core.observable.NetworkObservable;
 import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
@@ -82,12 +81,19 @@ public class TcpClientAutoReconnectionManager {
     @SuppressWarnings("FieldCanBeLocal")
     private final DebugManager.DebugInfoProvider mDebugInfoProvider = TcpClientAutoReconnectionManager.this::fetchDebugInfo;
     private final InternalActivityLifecycleCallbacks mActivityLifecycleCallbacks = new InternalActivityLifecycleCallbacks();
-
-    private Object mNetworkCallbackHolder;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final NetworkObservable.NetworkObserver mNetworkObserver = new NetworkObservable.NetworkObserver() {
+        @Override
+        public void onNetworkAvailable(@NonNull Network network) {
+            // 一个网络可用了，清空失败重连次数，立即重连。
+            enqueueReconnect(0, true);
+        }
+    };
 
     private TcpClientAutoReconnectionManager() {
         SessionTcpClientObservable.DEFAULT.registerObserver(mSessionTcpClientObserver);
         registerActivityLifecycleCallbacks();
+        NetworkObservable.DEFAULT.registerObserver(mNetworkObserver);
 
         DebugManager.getInstance().addDebugInfoProvider(mDebugInfoProvider);
     }
@@ -99,26 +105,6 @@ public class TcpClientAutoReconnectionManager {
         try {
             final Application application = (Application) ContextUtil.getContext().getApplicationContext();
             application.registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
-        } catch (Throwable e) {
-            IMLog.e(e);
-        }
-    }
-
-    /**
-     * 监听网络变化
-     */
-    private void registerNetworkCallback() {
-        try {
-            if (mNetworkCallbackHolder != null) {
-                return;
-            }
-            final ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
-
-            };
-            ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtil.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                connectivityManager.registerDefaultNetworkCallback(networkCallback);
-            }
         } catch (Throwable e) {
             IMLog.e(e);
         }
@@ -141,9 +127,6 @@ public class TcpClientAutoReconnectionManager {
                 // 注意：如果最先创建的 Activity 被手动 finish, 这个判断逻辑不能够精确判断出是进程中的第一个 Activity.
                 // 这里需要的是一个重连触发时机而已，准确与否都可以。
                 enqueueReconnect();
-
-                // 当有 Activity 活动时，才去监听网络变化
-                registerNetworkCallback();
             }
         }
     }
@@ -168,9 +151,20 @@ public class TcpClientAutoReconnectionManager {
      */
     @AnyThread
     public void enqueueReconnect(long delayMs) {
-        IMLog.v("%s enqueueReconnect delayMs:%s", Objects.defaultObjectTag(this), delayMs);
+        this.enqueueReconnect(delayMs, false);
+    }
+
+    /**
+     * 在指定延迟之后请求重新建立长连接
+     */
+    @AnyThread
+    private void enqueueReconnect(long delayMs, boolean clearRetryCount) {
+        IMLog.v("%s enqueueReconnect delayMs:%s, clearRetryCount:%s", Objects.defaultObjectTag(this), delayMs, clearRetryCount);
         Threads.postUi(() -> {
             mActionQueue.skipQueue();
+            if (clearRetryCount) {
+                IMSessionManager.getInstance().clearSessionTcpClientProxyConfigRetryCount();
+            }
             mActionQueue.enqueue(new SafetyRunnable(new ReconnectionTask()));
         }, delayMs);
     }

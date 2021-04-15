@@ -49,6 +49,9 @@ public class IMMessageManager {
     }
 
     private IMMessageManager() {
+        Threads.postBackground(() -> {
+            IMManager.getInstance().attach();
+        });
     }
 
     @WorkerThread

@@ -23,6 +23,7 @@ import com.masonsoft.imsdk.lang.MultiProcessor;
 
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.TaskQueue;
+import io.github.idonans.core.thread.Threads;
 
 /**
  * 消息收发队列
@@ -75,6 +76,10 @@ public class IMMessageQueueManager {
         mSendSessionMessageProcessor.addLastProcessor(new SendSessionMessageWriteDatabaseProcessor());
 
         mSendActionMessageProcessor.addLastProcessor(new SendActionTypeRevokeValidateProcessor());
+
+        Threads.postBackground(() -> {
+            IMManager.getInstance().attach();
+        });
     }
 
     @NonNull
