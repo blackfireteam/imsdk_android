@@ -1,5 +1,12 @@
 package com.masonsoft.imsdk.core;
 
+import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.os.Build;
+import android.os.Bundle;
+
 import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,14 +17,18 @@ import com.masonsoft.imsdk.core.message.packet.SignOutMessagePacket;
 import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
+import com.masonsoft.imsdk.lang.ActivityLifecycleCallbacksAdapter;
 import com.masonsoft.imsdk.lang.MultiProcessor;
 import com.masonsoft.imsdk.lang.Processor;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
 import com.masonsoft.imsdk.util.Objects;
 
+import java.lang.ref.WeakReference;
+
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.TaskQueue;
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.ContextUtil;
 
 /**
  * 处理长连接的自动重连
@@ -70,14 +81,71 @@ public class TcpClientAutoReconnectionManager {
 
     @SuppressWarnings("FieldCanBeLocal")
     private final DebugManager.DebugInfoProvider mDebugInfoProvider = TcpClientAutoReconnectionManager.this::fetchDebugInfo;
+    private final InternalActivityLifecycleCallbacks mActivityLifecycleCallbacks = new InternalActivityLifecycleCallbacks();
+
+    private Object mNetworkCallbackHolder;
 
     private TcpClientAutoReconnectionManager() {
         SessionTcpClientObservable.DEFAULT.registerObserver(mSessionTcpClientObserver);
+        registerActivityLifecycleCallbacks();
+
         DebugManager.getInstance().addDebugInfoProvider(mDebugInfoProvider);
+    }
+
+    /**
+     * 监听 Activity 变化
+     */
+    private void registerActivityLifecycleCallbacks() {
+        try {
+            final Application application = (Application) ContextUtil.getContext().getApplicationContext();
+            application.registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
+        } catch (Throwable e) {
+            IMLog.e(e);
+        }
+    }
+
+    /**
+     * 监听网络变化
+     */
+    private void registerNetworkCallback() {
+        try {
+            if (mNetworkCallbackHolder != null) {
+                return;
+            }
+            final ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+
+            };
+            ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtil.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                connectivityManager.registerDefaultNetworkCallback(networkCallback);
+            }
+        } catch (Throwable e) {
+            IMLog.e(e);
+        }
     }
 
     public void attach() {
         IMLog.v("%s attach", Objects.defaultObjectTag(this));
+    }
+
+    private class InternalActivityLifecycleCallbacks extends ActivityLifecycleCallbacksAdapter {
+
+        @NonNull
+        private WeakReference<Activity> mActivityRef = new WeakReference<>(null);
+
+        @Override
+        public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+            if (mActivityRef.get() == null) {
+                mActivityRef = new WeakReference<>(activity);
+                // 有可能是进程启动或者恢复后的第一个 Activity 创建了，立即重连
+                // 注意：如果最先创建的 Activity 被手动 finish, 这个判断逻辑不能够精确判断出是进程中的第一个 Activity.
+                // 这里需要的是一个重连触发时机而已，准确与否都可以。
+                enqueueReconnect();
+
+                // 当有 Activity 活动时，才去监听网络变化
+                registerNetworkCallback();
+            }
+        }
     }
 
     private void fetchDebugInfo(@NonNull StringBuilder builder) {
@@ -164,7 +232,13 @@ public class TcpClientAutoReconnectionManager {
                     return true;
                 }
             }
-            return doReconnect(target);
+
+            try {
+                return doReconnect(target);
+            } catch (Throwable e) {
+                IMLog.e(e);
+            }
+            return false;
         }
 
         protected abstract boolean doReconnect(@NonNull IMSessionManager.SessionTcpClientProxy target);

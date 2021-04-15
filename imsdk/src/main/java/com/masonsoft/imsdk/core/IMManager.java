@@ -28,6 +28,8 @@ public class IMManager {
     }
 
     private IMManager() {
+        NetworkManager.getInstance().attach();
+        TcpClientAutoReconnectionManager.getInstance().attach();
     }
 
 }

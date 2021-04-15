@@ -191,6 +191,16 @@ public class IMSessionManager {
         }
     }
 
+    /**
+     * 将长连接的失败重连次数清零
+     */
+    private void clearSessionTcpClientProxyConfigRetryCount() {
+        final SessionTcpClientProxyConfig sessionTcpClientProxyConfig = mSessionTcpClientProxyConfig;
+        if (sessionTcpClientProxyConfig != null) {
+            sessionTcpClientProxyConfig.mRetryCount = 0;
+        }
+    }
+
     @Nullable
     public Session getSession() {
         return mSession;
@@ -366,6 +376,7 @@ public class IMSessionManager {
 
         private final long mFirstCreateTimeMs = System.currentTimeMillis();
         private long mLastCreateTimeMs = mFirstCreateTimeMs;
+        // 长连接失败的重连次数
         private int mRetryCount;
 
         private SessionTcpClientProxyConfig() {
@@ -420,7 +431,6 @@ public class IMSessionManager {
         private SessionTcpClientProxy(@NonNull Session session) {
             IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy init");
             SessionTcpClientObservable.DEFAULT.registerObserver(this);
-            TcpClientAutoReconnectionManager.getInstance().attach();
 
             mSessionTcpClient = new SessionTcpClient(session);
             mSessionTcpClient.getLocalMessageProcessor().addLastProcessor(target -> {
@@ -501,6 +511,9 @@ public class IMSessionManager {
             }
 
             if (sessionTcpClient.isOnline()) {
+                // 登录成功，清空长连接失败重连次数
+                clearSessionTcpClientProxyConfigRetryCount();
+
                 final Session session = sessionTcpClient.getSession();
                 final long sessionUserId = sessionTcpClient.getSessionUserId();
                 if (sessionUserId > 0) {
