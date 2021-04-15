@@ -36,12 +36,14 @@ public class TcpClientAutoReconnectionManager {
     }
 
     private final TaskQueue mActionQueue = new TaskQueue(1);
+    @SuppressWarnings("FieldCanBeLocal")
     private final SessionTcpClientObservable.SessionTcpClientObserver mSessionTcpClientObserver = new SessionTcpClientObservable.SessionTcpClientObserver() {
         @Override
         public void onConnectionStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
             final int sessionTcpClientState = sessionTcpClient.getState();
             if (sessionTcpClientState == TcpClient.STATE_CLOSED) {
                 // 链接关闭，尝试重连
+                IMLog.v("TcpClientAutoReconnectionManager onConnectionStateChanged sessionTcpClientState is TcpClient.STATE_CLOSED, call enqueueReconnect");
                 enqueueReconnect();
             }
         }
@@ -54,6 +56,7 @@ public class TcpClientAutoReconnectionManager {
                 final long messagePacketErrorCode = messagePacket.getErrorCode();
                 if (messagePacketErrorCode == 0L) {
                     // 不是由于服务器返回的错误导致的登录失败(如可能是因为登录超时引起的登陆失败)，尝试重连
+                    IMLog.v("TcpClientAutoReconnectionManager onSignInStateChanged messagePacketState is MessagePacket.STATE_FAIL, messagePacketErrorCode is 0, call enqueueReconnect");
                     enqueueReconnect();
                 }
             }
