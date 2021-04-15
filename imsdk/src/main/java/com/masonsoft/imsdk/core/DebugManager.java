@@ -8,6 +8,7 @@ import com.masonsoft.imsdk.core.observable.ClockObservable;
 import com.masonsoft.imsdk.util.ReadWriteWeakSet;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.TaskQueue;
@@ -32,9 +33,14 @@ public class DebugManager {
         void fetchDebugInfo(@NonNull StringBuilder builder);
     }
 
+    private static final long DEFAULT_INTERVAL_MS = TimeUnit.SECONDS.toMillis(60);
+
     private final ReadWriteWeakSet<DebugInfoProvider> mDebugInfoProviderSet = new ReadWriteWeakSet<>();
     private final ClockObservable.ClockObserver mClockObserver = DebugManager.this::printDebugInfo;
     private final TaskQueue mActionQueue = new TaskQueue(1);
+
+    private long mIntervalMs = DEFAULT_INTERVAL_MS;
+    private long mLastPrintTimeMs;
 
     private DebugManager() {
     }
@@ -59,9 +65,31 @@ public class DebugManager {
         ClockObservable.DEFAULT.unregisterObserver(mClockObserver);
     }
 
+    public void setIntervalMs(long intervalMs) {
+        mIntervalMs = intervalMs;
+    }
+
+    public long getIntervalMs() {
+        return mIntervalMs;
+    }
+
+    public void printDebugInfoNow() {
+        printDebugInfo(true);
+    }
+
     private void printDebugInfo() {
+        printDebugInfo(false);
+    }
+
+    private void printDebugInfo(final boolean now) {
         mActionQueue.skipQueue();
         mActionQueue.enqueue(() -> {
+            final long interval = System.currentTimeMillis() - mLastPrintTimeMs;
+            if (!now && interval < mIntervalMs) {
+                return;
+            }
+            mLastPrintTimeMs = System.currentTimeMillis();
+
             final StringBuilder builder = new StringBuilder();
             builder.append("=========== DEBUG INFO ===========:\n");
             final List<DebugInfoProvider> debugInfoProviderList = mDebugInfoProviderSet.getAll();
