@@ -472,11 +472,13 @@ public class IMSessionManager {
         @Override
         public void onConnectionStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
             if (AbortUtil.isAbort(this)) {
+                setAbort();
                 IMLog.v("ignore onConnectionStateChanged. SessionTcpClientProxy is abort.");
                 return;
             }
 
             if (sessionTcpClient != mSessionTcpClient) {
+                setAbort();
                 IMLog.v("ignore onConnectionStateChanged sessionTcpClient is another one");
                 return;
             }
@@ -487,11 +489,13 @@ public class IMSessionManager {
         @Override
         public void onSignInStateChanged(@NonNull SessionTcpClient sessionTcpClient, @NonNull SignInMessagePacket messagePacket) {
             if (AbortUtil.isAbort(this)) {
+                setAbort();
                 IMLog.v("ignore onSignInStateChanged. SessionTcpClientProxy is abort.");
                 return;
             }
 
             if (sessionTcpClient != mSessionTcpClient) {
+                setAbort();
                 IMLog.v("ignore onSignInStateChanged sessionTcpClient is another one");
                 return;
             }
@@ -512,11 +516,13 @@ public class IMSessionManager {
         @Override
         public void onSignOutStateChanged(@NonNull SessionTcpClient sessionTcpClient, @NonNull SignOutMessagePacket messagePacket) {
             if (AbortUtil.isAbort(this)) {
+                setAbort();
                 IMLog.v("ignore onSignOutStateChanged. SessionTcpClientProxy is abort.");
                 return;
             }
 
             if (sessionTcpClient != mSessionTcpClient) {
+                setAbort();
                 IMLog.v("ignore onSignOutStateChanged sessionTcpClient is another one");
                 return;
             }
