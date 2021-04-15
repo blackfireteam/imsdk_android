@@ -101,7 +101,10 @@ public class TcpClientAutoReconnectionManager {
     @AnyThread
     public void enqueueReconnect(long delayMs) {
         IMLog.v("%s enqueueReconnect delayMs:%s", Objects.defaultObjectTag(this), delayMs);
-        Threads.postUi(() -> mActionQueue.enqueue(new SafetyRunnable(new ReconnectionTask())), delayMs);
+        Threads.postUi(() -> {
+            mActionQueue.skipQueue();
+            mActionQueue.enqueue(new SafetyRunnable(new ReconnectionTask()));
+        }, delayMs);
     }
 
     private static class ReconnectionTask implements Runnable {
