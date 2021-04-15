@@ -179,25 +179,21 @@ public class TcpClientAutoReconnectionManager {
     }
 
     /**
-     * 按照一定频率重连<br>
-     * 100ms<br>
-     * 1s<br>
-     * 5s<br>
-     * 10s<br>
-     * 30s<br>
-     * 60s<br>
-     * 60s<br>
-     * 60s<br>
+     * 按照一定频率重连. 重试的次数越多，那么发起下一次重连请求的间隔就越长，但是不会超过最大值。
      */
     private static class FixedSessionTcpClientProxyReconnectProcessor extends SessionTcpClientProxyReconnectProcessor {
 
         private static final long[] RETRY_INTERVAL_MS = new long[]{
-                100L,
-                1000L,
-                5000L,
-                10 * 1000L,
-                30 * 1000L,
-                60 * 1000L,
+                100L, // 100ms
+                1000L, // 1s
+                5000L, // 5s
+                10 * 1000L, // 10s
+                30 * 1000L, // 30s
+                60 * 1000L, // 60s
+                2 * 60 * 1000L, // 2min
+                5 * 60 * 1000L, // 5min
+                10 * 60 * 1000L, // 10min
+                30 * 60 * 1000L, // 30min
         };
 
         @Override
