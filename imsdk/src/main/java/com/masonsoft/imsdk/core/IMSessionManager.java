@@ -17,6 +17,7 @@ import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.util.Objects;
+import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.concurrent.TimeUnit;
 
@@ -61,6 +62,8 @@ public class IMSessionManager {
     private Session mSession;
     private long mSessionUserId;
 
+    @Nullable
+    private SessionTcpClientProxyConfig mSessionTcpClientProxyConfig;
     @Nullable
     private SessionTcpClientProxy mSessionTcpClientProxy;
 
@@ -133,7 +136,7 @@ public class IMSessionManager {
                 // 从历史记录中恢复可能存在的 token 与 session user id 的对应关系
                 tryRestoreSessionUserIdFromDB(session);
 
-                recreateSessionTcpClient();
+                recreateSessionTcpClient(true);
             }
         }
 
@@ -159,14 +162,31 @@ public class IMSessionManager {
      * 终止旧的长连接，建立新的长连接(如果存在有效的登录信息)
      */
     public void recreateSessionTcpClient() {
+        this.recreateSessionTcpClient(false);
+    }
+
+    /**
+     * 终止旧的长连接，建立新的长连接(如果存在有效的登录信息)
+     */
+    private void recreateSessionTcpClient(boolean resetConfig) {
         IMLog.v(Objects.defaultObjectTag(this) + " recreateSessionTcpClient");
         synchronized (mSessionLock) {
+            if (resetConfig) {
+                mSessionTcpClientProxyConfig = null;
+            }
             if (mSessionTcpClientProxy != null) {
                 mSessionTcpClientProxy.setAbort();
                 mSessionTcpClientProxy = null;
             }
             if (mSession != null) {
+                if (mSessionTcpClientProxyConfig == null) {
+                    mSessionTcpClientProxyConfig = new SessionTcpClientProxyConfig();
+                } else {
+                    mSessionTcpClientProxyConfig.mLastCreateTimeMs = System.currentTimeMillis();
+                    mSessionTcpClientProxyConfig.mRetryCount++;
+                }
                 mSessionTcpClientProxy = new SessionTcpClientProxy(mSession);
+                mSessionTcpClientProxy.connect();
             }
         }
     }
@@ -174,6 +194,11 @@ public class IMSessionManager {
     @Nullable
     public Session getSession() {
         return mSession;
+    }
+
+    @Nullable
+    public SessionTcpClientProxyConfig getSessionTcpClientProxyConfig() {
+        return mSessionTcpClientProxyConfig;
     }
 
     @Nullable
@@ -337,6 +362,55 @@ public class IMSessionManager {
         });
     }
 
+    public static class SessionTcpClientProxyConfig implements DebugManager.DebugInfoProvider {
+
+        private final long mFirstCreateTimeMs = System.currentTimeMillis();
+        private long mLastCreateTimeMs = mFirstCreateTimeMs;
+        private int mRetryCount;
+
+        private SessionTcpClientProxyConfig() {
+            DebugManager.getInstance().addDebugInfoProvider(this);
+        }
+
+        public long getFirstCreateTimeMs() {
+            return mFirstCreateTimeMs;
+        }
+
+        public long getLastCreateTimeMs() {
+            return mLastCreateTimeMs;
+        }
+
+        public int getRetryCount() {
+            return mRetryCount;
+        }
+
+        @Override
+        public void fetchDebugInfo(@NonNull StringBuilder builder) {
+            final String tag = Objects.defaultObjectTag(this);
+            builder.append(tag).append("--:\n");
+            builder.append(" mFirstCreateTimeMs:").append(this.mFirstCreateTimeMs).append("\n");
+            builder.append(" mLastCreateTimeMs:").append(this.mLastCreateTimeMs).append("\n");
+            builder.append(" mRetryCount:").append(this.mRetryCount).append("\n");
+            builder.append(tag).append("-- end\n");
+        }
+
+        @NonNull
+        public String toShortString() {
+            @SuppressWarnings("StringBufferReplaceableByString") final StringBuilder builder = new StringBuilder();
+            builder.append(Objects.defaultObjectTag(this));
+            builder.append(" mFirstCreateTimeMs:").append(this.mFirstCreateTimeMs);
+            builder.append(" mLastCreateTimeMs:").append(this.mLastCreateTimeMs);
+            builder.append(" mRetryCount:").append(this.mRetryCount);
+            return builder.toString();
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return this.toShortString();
+        }
+    }
+
     public class SessionTcpClientProxy extends SimpleAbortSignal implements SessionTcpClientObservable.SessionTcpClientObserver {
 
         @Nullable
@@ -346,6 +420,7 @@ public class IMSessionManager {
         private SessionTcpClientProxy(@NonNull Session session) {
             IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy init");
             SessionTcpClientObservable.DEFAULT.registerObserver(this);
+            TcpClientAutoReconnectionManager.getInstance().attach();
 
             mSessionTcpClient = new SessionTcpClient(session);
             mSessionTcpClient.getLocalMessageProcessor().addLastProcessor(target -> {
@@ -356,10 +431,14 @@ public class IMSessionManager {
                 }
                 return false;
             });
-            IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy init before connect. SessionTcpClient state:%s",
+        }
+
+        private void connect() {
+            Preconditions.checkNotNull(mSessionTcpClient);
+            IMLog.v(Objects.defaultObjectTag(this) + " before connect. SessionTcpClient state:%s",
                     SessionTcpClient.stateToString(mSessionTcpClient.getState()));
             mSessionTcpClient.connect();
-            IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy init after connect. SessionTcpClient state:%s",
+            IMLog.v(Objects.defaultObjectTag(this) + " after connect. SessionTcpClient state:%s",
                     SessionTcpClient.stateToString(mSessionTcpClient.getState()));
         }
 

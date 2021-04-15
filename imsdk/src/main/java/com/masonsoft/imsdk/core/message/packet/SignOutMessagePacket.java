@@ -60,6 +60,20 @@ public class SignOutMessagePacket extends NotNullTimeoutMessagePacket {
         return false;
     }
 
+    /**
+     * 判断当前是否已经退出登录(数据包状态不是待发送都认为是已经退出登录).
+     */
+    public boolean isSignOut() {
+        return getState() != STATE_IDLE;
+    }
+
+    /**
+     * 判断当前是否已经成功退出登录(数据包状态为发送成功，已经接收到服务器返回的成功退出登录的结果).
+     */
+    public boolean isSignOutSuccess() {
+        return getState() == STATE_SUCCESS;
+    }
+
     public static SignOutMessagePacket create() {
         final long sign = SignGenerator.next();
         return new SignOutMessagePacket(
