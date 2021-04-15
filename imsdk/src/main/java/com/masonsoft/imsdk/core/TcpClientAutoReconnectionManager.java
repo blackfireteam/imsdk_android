@@ -208,7 +208,7 @@ public class TcpClientAutoReconnectionManager {
             final int retryCount = config.getRetryCount();
             final int fixedRetryCount = Math.min(retryCount, RETRY_INTERVAL_MS.length - 1);
             final long retryIntervalMs = RETRY_INTERVAL_MS[fixedRetryCount];
-            final long intervalMsNow = config.getLastCreateTimeMs() - System.currentTimeMillis();
+            final long intervalMsNow = System.currentTimeMillis() - config.getLastCreateTimeMs();
             final boolean requireRetry = intervalMsNow >= retryIntervalMs;
             if (requireRetry) {
                 reconnectNow(target);
