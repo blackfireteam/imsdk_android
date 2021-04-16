@@ -41,16 +41,16 @@ android.libraryVariants.all { variant ->
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'io.netty:netty-all:4.1.59.Final'
-    implementation rootProject.ext.bcfg.deps.androidx_appcompat
-    implementation rootProject.ext.bcfg.deps.idonans_appcontext
-    implementation rootProject.ext.bcfg.deps.idonans_core
-    implementation rootProject.ext.bcfg.deps.rxjava
-    implementation 'org.bouncycastle:bcprov-jdk16:1.46'
-    implementation 'com.google.protobuf:protobuf-lite:3.0.1'
-    implementation "androidx.exifinterface:exifinterface:1.3.2"
-    implementation 'top.zibin:Luban:1.1.8'
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api 'io.netty:netty-all:4.1.59.Final'
+    api rootProject.ext.bcfg.deps.androidx_appcompat
+    api rootProject.ext.bcfg.deps.idonans_appcontext
+    api rootProject.ext.bcfg.deps.idonans_core
+    api rootProject.ext.bcfg.deps.rxjava
+    api 'org.bouncycastle:bcprov-jdk16:1.46'
+    api 'com.google.protobuf:protobuf-lite:3.0.1'
+    api "androidx.exifinterface:exifinterface:1.3.2"
+    api 'top.zibin:Luban:1.1.8'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
