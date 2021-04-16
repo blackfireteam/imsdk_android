@@ -1,7 +1,7 @@
 syntax = "proto3";
 option java_package = "com.masonsoft.imsdk.core.proto";
 
-// 最近修改时间-2021-04-07 12:34:02
+// 最近修改时间-2021-04-12 10:34:02
 
 //0
 message Ping
@@ -129,7 +129,6 @@ message GetChatList
 message ChatItem
 {
   int64 uid = 1;
-  int64 msg_start = 2;
   int64 msg_end = 3;
   int64 msg_last_read = 4;
   int64 show_msg_id = 5;
@@ -207,9 +206,35 @@ message UsrOffline
 message Signup
 {
   int64 sign = 1;
+  int64 phone = 2;
+  string nick_name = 3;
+  string avatar = 4;
+  string pic = 5;//用户spark界面的封面图
+  bool gold = 6;//是否gold用户
+  bool verified = 7;//是否是认证用户
+}
+//54 for demo: 获取spark
+message FetchSpark
+{
+  int64 sign = 1;
+}
+//55 for demo: spark
+message Spark
+{
+  int64 uid = 1;
   string nick_name = 2;
   string avatar = 3;
-  string pic = 4;//用户spark界面的封面图
-  bool gold = 5;//是否gold用户
-  bool verified = 6;//是否是认证用户
+  string pic = 4; //用户spark界面的封面图
+}
+//56 for demo: sparks
+message Sparks
+{
+  int64 sign = 1;
+  repeated Spark sparks = 2;
+}
+//57 for demo: 获取用户token
+message GetImToken
+{
+  int64 sign = 1;
+  int64 phone = 2;
 }
