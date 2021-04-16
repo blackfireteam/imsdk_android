@@ -16,6 +16,7 @@ import io.github.idonans.dynamic.uniontype.loadingstatus.UnionTypeLoadingStatus;
 public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
 
     private static int sNextUnionType = 1;
+    public static final int UNION_TYPE_IMPL_IM_HOME_SPARK = sNextUnionType++; // 首页中的一条 spark
     public static final int UNION_TYPE_IMPL_IM_CONVERSATION = sNextUnionType++; // 会话列表中的一条会话
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_RECEIVED = sNextUnionType++; // 接收到已撤回的消息
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_SEND = sNextUnionType++; // 发送的已撤回的消息

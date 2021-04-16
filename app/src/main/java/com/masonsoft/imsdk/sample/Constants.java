@@ -10,6 +10,7 @@ public class Constants {
 
     public interface ExtrasKey {
         String TARGET_USER_ID = "extra:targetUserId";
+        String LONG_ANIMATE_DURATION = "extra:long_animate_duration_20210416";
     }
 
     public interface ErrorLog {

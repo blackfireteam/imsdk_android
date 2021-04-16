@@ -17,12 +17,14 @@ import io.github.idonans.core.thread.Threads;
 
 public class FetchSparkMessagePacket extends NotNullTimeoutMessagePacket {
 
+    @NonNull
     private final List<Spark> mSparkList = new ArrayList<>();
 
     public FetchSparkMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
         super(protoByteMessage, sign);
     }
 
+    @NonNull
     public List<Spark> getSparkList() {
         return mSparkList;
     }
