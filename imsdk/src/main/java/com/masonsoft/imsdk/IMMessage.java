@@ -3,6 +3,7 @@ package com.masonsoft.imsdk;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.annotation.LogicField;
+import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMConstants.MessageType;
 import com.masonsoft.imsdk.lang.StateProp;
 import com.masonsoft.imsdk.util.Objects;
@@ -236,6 +237,16 @@ public class IMMessage {
             builder.append(" type:unset");
         } else {
             builder.append(" type:").append(this.type.get());
+        }
+        if (this.sendState.isUnset()) {
+            builder.append(" sendState:unset");
+        } else {
+            builder.append(" sendState:").append(IMConstants.SendStatus.toHumanString(this.sendState.get()));
+        }
+        if (this.sendProgress.isUnset()) {
+            builder.append(" sendProgress:unset");
+        } else {
+            builder.append(" sendProgress:").append(this.sendProgress.get());
         }
         return builder.toString();
     }

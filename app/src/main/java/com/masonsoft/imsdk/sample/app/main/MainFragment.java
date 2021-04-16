@@ -16,6 +16,7 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.conversation.ConversationFragment;
 import com.masonsoft.imsdk.sample.app.discover.DiscoverFragment;
+import com.masonsoft.imsdk.sample.app.home.HomeFragment;
 import com.masonsoft.imsdk.sample.app.mine.MineFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMainFragmentBinding;
 
@@ -33,6 +34,7 @@ public class MainFragment extends SystemInsetsFragment {
     @Nullable
     private ImsdkSampleMainFragmentBinding mBinding;
     private final int[] mTitleResIds = {
+            R.string.imsdk_sample_tab_home,
             R.string.imsdk_sample_tab_discover,
             R.string.imsdk_sample_tab_conversation,
             R.string.imsdk_sample_tab_mine
@@ -95,10 +97,12 @@ public class MainFragment extends SystemInsetsFragment {
         @Override
         public Fragment createFragment(int position) {
             if (position == 0) {
-                return DiscoverFragment.newInstance();
+                return HomeFragment.newInstance();
             } else if (position == 1) {
-                return ConversationFragment.newInstance();
+                return DiscoverFragment.newInstance();
             } else if (position == 2) {
+                return ConversationFragment.newInstance();
+            } else if (position == 3) {
                 return MineFragment.newInstance();
             } else {
                 throw new IllegalArgumentException("unexpected position:" + position);
@@ -107,7 +111,7 @@ public class MainFragment extends SystemInsetsFragment {
 
         @Override
         public int getItemCount() {
-            return 3;
+            return mTitleResIds.length;
         }
     }
 
