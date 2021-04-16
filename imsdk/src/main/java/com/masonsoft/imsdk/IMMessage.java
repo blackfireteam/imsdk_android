@@ -248,6 +248,16 @@ public class IMMessage {
         } else {
             builder.append(" sendProgress:").append(this.sendProgress.get());
         }
+        if (this.errorCode.isUnset()) {
+            builder.append(" errorCode:unset");
+        } else {
+            builder.append(" errorCode:").append(this.errorCode.get());
+        }
+        if (this.errorMessage.isUnset()) {
+            builder.append(" errorMessage:unset");
+        } else {
+            builder.append(" errorMessage:").append(this.errorMessage.get());
+        }
         return builder.toString();
     }
 
