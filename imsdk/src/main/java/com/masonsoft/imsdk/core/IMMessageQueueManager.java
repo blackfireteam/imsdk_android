@@ -13,6 +13,7 @@ import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.processor.InternalReceivedProtoMessageProtoTypeProcessor;
 import com.masonsoft.imsdk.core.processor.InternalSendSessionMessageTypeValidateProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageConversationListProcessor;
+import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageOtherMessageResponseProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageResultIgnoreProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageSessionMessageResponseProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageSessionProcessor;
@@ -70,6 +71,7 @@ public class IMMessageQueueManager {
         mReceivedMessageProcessor.addLastProcessor(new ReceivedProtoMessageConversationListProcessor());
         mReceivedMessageProcessor.addLastProcessor(new InternalReceivedProtoMessageProtoTypeProcessor());
         mReceivedMessageProcessor.addLastProcessor(new ReceivedProtoMessageSessionMessageResponseProcessor());
+        mReceivedMessageProcessor.addLastProcessor(new ReceivedProtoMessageOtherMessageResponseProcessor());
 
         mSendSessionMessageProcessor.addFirstProcessor(new SendSessionMessageRecoveryProcessor());
         mSendSessionMessageProcessor.addLastProcessor(new InternalSendSessionMessageTypeValidateProcessor());

@@ -12,7 +12,7 @@ public class ActionMessageObservable extends WeakObservable<ActionMessageObserva
     public interface ActionMessageObserver {
         void onActionMessageLoading(long sign);
 
-        void onActionSuccess(long sign);
+        void onActionMessageSuccess(long sign);
 
         void onActionMessageError(long sign, long errorCode, String errorMessage);
     }
@@ -22,7 +22,7 @@ public class ActionMessageObservable extends WeakObservable<ActionMessageObserva
     }
 
     public void notifyActionMessageSuccess(long sign) {
-        forEach(actionMessageObserver -> actionMessageObserver.onActionSuccess(sign));
+        forEach(actionMessageObserver -> actionMessageObserver.onActionMessageSuccess(sign));
     }
 
     public void notifyActionMessageError(long sign, long errorCode, String errorMessage) {
