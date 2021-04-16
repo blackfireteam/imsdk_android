@@ -55,22 +55,22 @@ public class MainBottomBar extends FrameLayout {
                 true);
         syncCurrentItem();
 
-        ViewUtil.onClick(mBinding.tabHomeText, v -> {
+        ViewUtil.onClick(mBinding.tabHome, v -> {
             if (mOnTabClickListener != null) {
                 mOnTabClickListener.onTabClick(TAB_HOME);
             }
         });
-        ViewUtil.onClick(mBinding.tabDiscoverText, v -> {
+        ViewUtil.onClick(mBinding.tabDiscover, v -> {
             if (mOnTabClickListener != null) {
                 mOnTabClickListener.onTabClick(TAB_DISCOVER);
             }
         });
-        ViewUtil.onClick(mBinding.tabConversationText, v -> {
+        ViewUtil.onClick(mBinding.tabConversation, v -> {
             if (mOnTabClickListener != null) {
                 mOnTabClickListener.onTabClick(TAB_CONVERSATION);
             }
         });
-        ViewUtil.onClick(mBinding.tabMineText, v -> {
+        ViewUtil.onClick(mBinding.tabMine, v -> {
             if (mOnTabClickListener != null) {
                 mOnTabClickListener.onTabClick(TAB_MINE);
             }
@@ -90,10 +90,10 @@ public class MainBottomBar extends FrameLayout {
     }
 
     private void syncCurrentItem() {
-        mBinding.tabHomeText.setSelected(mCurrentItem == TAB_HOME);
-        mBinding.tabDiscoverText.setSelected(mCurrentItem == TAB_DISCOVER);
-        mBinding.tabConversationText.setSelected(mCurrentItem == TAB_CONVERSATION);
-        mBinding.tabMineText.setSelected(mCurrentItem == TAB_MINE);
+        mBinding.tabHome.setSelected(mCurrentItem == TAB_HOME);
+        mBinding.tabDiscover.setSelected(mCurrentItem == TAB_DISCOVER);
+        mBinding.tabConversation.setSelected(mCurrentItem == TAB_CONVERSATION);
+        mBinding.tabMine.setSelected(mCurrentItem == TAB_MINE);
     }
 
     public void setOnTabClickListener(OnTabClickListener onTabClickListener) {
