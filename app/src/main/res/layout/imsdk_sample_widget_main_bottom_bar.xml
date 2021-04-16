@@ -8,6 +8,18 @@
     tools:layout_height="@dimen/imsdk_sample_main_bottom_bar_height">
 
     <TextView
+        android:id="@+id/tab_home_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/imsdk_sample_tab_home"
+        app:drawableTopCompat="@drawable/imsdk_sample_ic_contact_selector"
+        app:layout_constraintEnd_toStartOf="@id/tab_discover_text"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
         android:id="@+id/tab_discover_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -17,7 +29,7 @@
         app:drawableTopCompat="@drawable/imsdk_sample_ic_contact_selector"
         app:layout_constraintEnd_toStartOf="@id/tab_conversation_text"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/tab_home_text" />
 
     <TextView
         android:id="@+id/tab_conversation_text"
