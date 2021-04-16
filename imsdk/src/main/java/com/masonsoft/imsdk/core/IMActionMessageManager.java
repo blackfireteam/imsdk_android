@@ -146,7 +146,7 @@ public class IMActionMessageManager {
     private static class SessionWorker implements DebugManager.DebugInfoProvider {
 
         private final long mSessionUserId;
-        private final List<FetchMessageObjectWrapperTask> mAllRunningTasks = new ArrayList<>();
+        private final List<ActionMessageObjectWrapperTask> mAllRunningTasks = new ArrayList<>();
         private final TaskQueue mActionQueue = new TaskQueue(1);
         private final TaskQueue mQueue = new TaskQueue(1);
 
@@ -182,7 +182,7 @@ public class IMActionMessageManager {
                         sign,
                         actionMessage
                 );
-                final FetchMessageObjectWrapperTask task = new FetchMessageObjectWrapperTask(actionMessageObjectWrapper) {
+                final ActionMessageObjectWrapperTask task = new ActionMessageObjectWrapperTask(actionMessageObjectWrapper) {
                     @Override
                     public void run() {
                         try {
@@ -192,7 +192,7 @@ public class IMActionMessageManager {
                         }
                         actionMessageObjectWrapper.onTaskEnd();
                         synchronized (mAllRunningTasks) {
-                            final FetchMessageObjectWrapperTask existsTask = removeTask(sign);
+                            final ActionMessageObjectWrapperTask existsTask = removeTask(sign);
                             if (existsTask == null) {
                                 IMLog.e("unexpected removeTask return null sign:%s", sign);
                             } else if (existsTask != this) {
@@ -213,11 +213,11 @@ public class IMActionMessageManager {
 
         private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
             synchronized (mAllRunningTasks) {
-                final FetchMessageObjectWrapperTask task = getTask(sign);
+                final ActionMessageObjectWrapperTask task = getTask(sign);
                 if (task == null) {
                     return false;
                 }
-                if (task.mFetchMessageObjectWrapper.dispatchTcpResponse(sign, wrapper)) {
+                if (task.mActionMessageObjectWrapper.dispatchTcpResponse(sign, wrapper)) {
                     return true;
                 }
             }
@@ -225,10 +225,10 @@ public class IMActionMessageManager {
         }
 
         @Nullable
-        private FetchMessageObjectWrapperTask getTask(final long sign) {
+        private ActionMessageObjectWrapperTask getTask(final long sign) {
             synchronized (mAllRunningTasks) {
-                for (FetchMessageObjectWrapperTask task : mAllRunningTasks) {
-                    if (task.mFetchMessageObjectWrapper.mSign == sign) {
+                for (ActionMessageObjectWrapperTask task : mAllRunningTasks) {
+                    if (task.mActionMessageObjectWrapper.mSign == sign) {
                         return task;
                     }
                 }
@@ -237,11 +237,11 @@ public class IMActionMessageManager {
         }
 
         @Nullable
-        private FetchMessageObjectWrapperTask removeTask(final long sign) {
+        private ActionMessageObjectWrapperTask removeTask(final long sign) {
             synchronized (mAllRunningTasks) {
                 for (int i = 0; i < mAllRunningTasks.size(); i++) {
-                    final FetchMessageObjectWrapperTask task = mAllRunningTasks.get(i);
-                    if (sign == task.mFetchMessageObjectWrapper.mSign) {
+                    final ActionMessageObjectWrapperTask task = mAllRunningTasks.get(i);
+                    if (sign == task.mActionMessageObjectWrapper.mSign) {
                         return mAllRunningTasks.remove(i);
                     }
                 }
@@ -296,7 +296,7 @@ public class IMActionMessageManager {
                     }
 
                     if (notify) {
-                        // @see FetchMessageObjectWrapperTask#run -> "// wait message packet result"
+                        // @see ActionMessageObjectWrapperTask#run -> "// wait message packet result"
                         //noinspection SynchronizationOnLocalVariableOrMethodParameter
                         synchronized (actionMessagePacket) {
                             actionMessagePacket.notify();
@@ -498,44 +498,44 @@ public class IMActionMessageManager {
             }
         }
 
-        private class FetchMessageObjectWrapperTask implements Runnable {
+        private class ActionMessageObjectWrapperTask implements Runnable {
 
             @NonNull
-            private final ActionMessageObjectWrapper mFetchMessageObjectWrapper;
+            private final ActionMessageObjectWrapper mActionMessageObjectWrapper;
 
-            private FetchMessageObjectWrapperTask(@NonNull ActionMessageObjectWrapper fetchMessageObjectWrapper) {
-                mFetchMessageObjectWrapper = fetchMessageObjectWrapper;
+            private ActionMessageObjectWrapperTask(@NonNull ActionMessageObjectWrapper actionMessageObjectWrapper) {
+                mActionMessageObjectWrapper = actionMessageObjectWrapper;
             }
 
             @Nullable
             private SessionTcpClient waitTcpClientConnected() {
                 final IMSessionManager.SessionTcpClientProxy proxy = IMSessionManager.getInstance().getSessionTcpClientProxyWithBlockOrTimeout();
-                if (mFetchMessageObjectWrapper.hasError()) {
+                if (mActionMessageObjectWrapper.hasError()) {
                     return null;
                 }
 
                 if (proxy == null) {
-                    mFetchMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL);
+                    mActionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL);
                     return null;
                 }
 
                 if (IMSessionManager.getInstance().getSessionUserId() != mSessionUserId) {
-                    mFetchMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID);
+                    mActionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID);
                     return null;
                 }
 
                 if (!proxy.isOnline()) {
-                    mFetchMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR);
+                    mActionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR);
                     return null;
                 }
 
                 final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
                 if (sessionTcpClient == null) {
-                    mFetchMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN);
+                    mActionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN);
                     return null;
                 }
 
-                if (mFetchMessageObjectWrapper.hasError()) {
+                if (mActionMessageObjectWrapper.hasError()) {
                     return null;
                 }
                 return sessionTcpClient;
@@ -544,11 +544,11 @@ public class IMActionMessageManager {
             @Override
             public void run() {
                 try {
-                    if (mFetchMessageObjectWrapper.hasError()) {
+                    if (mActionMessageObjectWrapper.hasError()) {
                         return;
                     }
 
-                    mFetchMessageObjectWrapper.notifySendStatus(IMConstants.SendStatus.SENDING);
+                    mActionMessageObjectWrapper.notifySendStatus(IMConstants.SendStatus.SENDING);
 
                     {
                         // wait tcp client connected
@@ -558,9 +558,9 @@ public class IMActionMessageManager {
                         }
                     }
 
-                    final MessagePacket messagePacket = mFetchMessageObjectWrapper.buildMessagePacket();
+                    final MessagePacket messagePacket = mActionMessageObjectWrapper.buildMessagePacket();
                     if (messagePacket == null) {
-                        mFetchMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL);
+                        mActionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL);
                         return;
                     }
 
@@ -572,7 +572,7 @@ public class IMActionMessageManager {
 
                     sessionTcpClient.sendMessagePacketQuietly(messagePacket);
                     if (messagePacket.getState() != MessagePacket.STATE_WAIT_RESULT) {
-                        mFetchMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_FAIL);
+                        mActionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_FAIL);
                         return;
                     }
 
@@ -592,9 +592,9 @@ public class IMActionMessageManager {
                 } catch (Throwable e) {
                     IMLog.e(e);
                     if (e instanceof LocalErrorCodeException) {
-                        mFetchMessageObjectWrapper.setError(((LocalErrorCodeException) e).mErrorCode);
-                    } else if (mFetchMessageObjectWrapper.mErrorCode == 0) {
-                        mFetchMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_UNKNOWN);
+                        mActionMessageObjectWrapper.setError(((LocalErrorCodeException) e).mErrorCode);
+                    } else if (mActionMessageObjectWrapper.mErrorCode == 0) {
+                        mActionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_UNKNOWN);
                     }
                 }
             }
