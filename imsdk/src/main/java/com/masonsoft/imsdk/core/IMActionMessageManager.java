@@ -411,7 +411,7 @@ public class IMActionMessageManager {
                 return result;
             }
 
-            private abstract class ActionMessagePacket extends NotNullTimeoutMessagePacket {
+            private static abstract class ActionMessagePacket extends NotNullTimeoutMessagePacket {
                 public ActionMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
                     super(protoByteMessage, sign);
                 }
