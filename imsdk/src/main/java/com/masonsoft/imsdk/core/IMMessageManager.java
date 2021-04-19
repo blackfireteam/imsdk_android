@@ -21,7 +21,6 @@ import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.Threads;
@@ -273,7 +272,9 @@ public class IMMessageManager {
                     IMLog.v(Objects.defaultObjectTag(this) + " requireLoadMoreFromRemote start fetchWithBlockOrTimeout." +
                                     " targetBlockId:%s with sessionUserId:%s, seq:%s, limit:%s, conversationType:%s, targetUserId:%s, queryHistory:%s, sign:%s",
                             targetBlockId, sessionUserId, seq, limit, conversationType, targetUserId, queryHistory, sign);
-                    final GeneralResult generalResult = fetchWithBlockOrTimeout(sign, sessionUserId,
+                    final GeneralResult generalResult = fetchWithBlockOrTimeout(
+                            sign,
+                            sessionUserId,
                             conversationType,
                             targetUserId,
                             targetBlockId,
@@ -337,13 +338,11 @@ public class IMMessageManager {
         };
         final ClockObservable.ClockObserver clockObserver = new ClockObservable.ClockObserver() {
 
-            // 超时时间
-            private final long TIME_OUT = TimeUnit.SECONDS.toMillis(60);
-            private final long mTimeStart = System.currentTimeMillis();
+            private final long mTimeStartMs = System.currentTimeMillis();
 
             @Override
             public void onClock() {
-                if (System.currentTimeMillis() - mTimeStart > TIME_OUT) {
+                if (System.currentTimeMillis() - mTimeStartMs > TIMEOUT_MS) {
                     // 超时
                     IMLog.v(Objects.defaultObjectTag(this) + " fetchWithBlockOrTimeout onClock timeout sign:%s", originSign);
                     subject.onSuccess(GeneralResult.valueOf(GeneralResult.CODE_ERROR_TIMEOUT, GeneralResult.defaultMessage(GeneralResult.CODE_ERROR_TIMEOUT)));
@@ -360,7 +359,7 @@ public class IMMessageManager {
                 blockId,
                 history);
 
-        return subject.timeout(TIMEOUT_MS, TimeUnit.MILLISECONDS).blockingGet();
+        return subject.blockingGet();
     }
 
 }
