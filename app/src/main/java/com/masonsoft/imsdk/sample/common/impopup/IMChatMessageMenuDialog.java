@@ -23,7 +23,7 @@ public class IMChatMessageMenuDialog {
                                    int coverDrawableResId,
                                    String[] menus) {
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.common_im_chat_message_menu_dialog)
+                .setContentView(R.layout.imsdk_sample_common_im_chat_message_menu_dialog)
                 .setParentView(parentView)
                 .setOnShowListener(() -> {
                     if (mPopupView != null) {

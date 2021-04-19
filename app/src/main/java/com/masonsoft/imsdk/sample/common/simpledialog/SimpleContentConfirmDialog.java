@@ -53,7 +53,7 @@ public class SimpleContentConfirmDialog {
                                       String btnRightText,
                                       boolean dimBackground) {
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.common_simple_content_confirm_dialog)
+                .setContentView(R.layout.imsdk_sample_common_simple_content_confirm_dialog)
                 .setParentView(parentView)
                 .dimBackground(dimBackground)
                 .setCancelable(true)

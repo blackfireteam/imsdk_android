@@ -55,7 +55,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
         mActivity = activity;
         mInflater = activity.getLayoutInflater();
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.common_image_picker_dialog)
+                .setContentView(R.layout.imsdk_sample_common_image_picker_dialog)
                 .defaultAnimation()
                 .setOnBackPressedListener(this)
                 .setParentView(parentView)
@@ -237,7 +237,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
             final ViewGroup parentView = parentBinding.bucketOverlayContainer;
             mBucketViewDialog = new ViewDialog.Builder(mActivity)
                     .setParentView(parentView)
-                    .setContentView(R.layout.common_image_picker_dialog_bucket_view)
+                    .setContentView(R.layout.imsdk_sample_common_image_picker_dialog_bucket_view)
                     .setContentViewShowAnimation(R.anim.backstack_slide_in_from_top)
                     .setContentViewHideAnimation(R.anim.backstack_slide_out_to_top)
                     .dimBackground(true)
@@ -309,7 +309,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
             final ViewGroup parentView = parentBinding.pagerOverlayContainer;
             mPagerViewDialog = new ViewDialog.Builder(mActivity)
                     .setParentView(parentView)
-                    .setContentView(R.layout.common_image_picker_dialog_pager_view)
+                    .setContentView(R.layout.imsdk_sample_common_image_picker_dialog_pager_view)
                     .create();
             //noinspection ConstantConditions
             mBinding = CommonImagePickerDialogPagerViewBinding.bind(mPagerViewDialog.getContentView());

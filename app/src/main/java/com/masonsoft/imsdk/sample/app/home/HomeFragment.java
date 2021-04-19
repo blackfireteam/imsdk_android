@@ -19,6 +19,7 @@ import com.masonsoft.imsdk.sample.databinding.ImsdkSampleHomeFragmentBinding;
 import com.masonsoft.imsdk.sample.entity.Spark;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.HomeSparkLoadFailLargeViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.HomeSparkLoadingLargeViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.HomeSparkViewHolder;
 import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardLayoutItemTouchHelper;
@@ -105,9 +106,9 @@ public class HomeFragment extends SystemInsetsFragment {
             {
 
                 put(UNION_TYPE_LOADING_STATUS_LOADING_LARGE, HomeSparkLoadingLargeViewHolder::new);
+                put(UNION_TYPE_LOADING_STATUS_LOAD_FAIL_LARGE, HomeSparkLoadFailLargeViewHolder::new);
+                put(UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL, HomeSparkLoadFailLargeViewHolder::new);
                 /*
-                put(UNION_TYPE_LOADING_STATUS_LOAD_FAIL_LARGE, UgcLoadFailLargeViewHolder::new);
-                put(UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL, UgcLoadFailLargeViewHolder::new);
                 put(UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, LocalUgcNoMoreDataLargeViewHolder::new);
                 put(UNION_TYPE_LOADING_STATUS_EMPTY_DATA, LocalUgcNoMoreDataLargeViewHolder::new);
                 */

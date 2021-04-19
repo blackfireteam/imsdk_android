@@ -29,4 +29,7 @@
     <string name="imsdk_sample_menu_recall">撤回</string>
     <string name="imsdk_sample_recall_send_message">你撤回了一条消息</string>
     <string name="imsdk_sample_recall_received_message">%1$s撤回了一条消息</string>
+    <string name="imsdk_sample_hint_network_error_retry">请检查网络连接后重试</string>
+    <string name="imsdk_sample_hint_network_error">网络错误</string>
+    <string name="imsdk_sample_hint_refresh_retry">点击刷新试试</string>
 </resources>
