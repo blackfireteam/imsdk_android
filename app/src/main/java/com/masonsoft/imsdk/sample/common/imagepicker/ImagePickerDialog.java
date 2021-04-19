@@ -300,10 +300,10 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
     private class PagerView {
 
         private final ViewDialog mPagerViewDialog;
+        @SuppressWarnings("FieldCanBeLocal")
         private final ImsdkSampleCommonImagePickerDialogPagerViewBinding mBinding;
         private final RecyclerView mRecyclerView;
-
-        private ItemClickUnionTypeAdapter mDataAdapter;
+        private final ItemClickUnionTypeAdapter mDataAdapter;
 
         private PagerView(ImsdkSampleCommonImagePickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.pagerOverlayContainer;
