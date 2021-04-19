@@ -325,13 +325,13 @@ public class OtherMessageManager {
                 switch (sendStatus) {
                     case IMConstants.SendStatus.IDLE:
                     case IMConstants.SendStatus.SENDING:
-                        OtherMessageObservable.DEFAULT.notifyOtherMessageLoading(mOtherMessage);
+                        OtherMessageObservable.DEFAULT.notifyOtherMessageLoading(mSign, mOtherMessage);
                         break;
                     case IMConstants.SendStatus.SUCCESS:
-                        OtherMessageObservable.DEFAULT.notifyOtherMessageSuccess(mOtherMessage);
+                        OtherMessageObservable.DEFAULT.notifyOtherMessageSuccess(mSign, mOtherMessage);
                         break;
                     case IMConstants.SendStatus.FAIL:
-                        OtherMessageObservable.DEFAULT.notifyOtherMessageError(mOtherMessage, mErrorCode, mErrorMessage);
+                        OtherMessageObservable.DEFAULT.notifyOtherMessageError(mSign, mOtherMessage, mErrorCode, mErrorMessage);
                         break;
                     default:
                         final Throwable e = new IllegalStateException("unexpected send status:" + sendStatus);

@@ -3,7 +3,6 @@ package com.masonsoft.imsdk;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.util.Objects;
@@ -14,7 +13,6 @@ import com.masonsoft.imsdk.util.Objects;
 public class OtherMessage implements EnqueueMessage {
 
     private final long mSessionUserId;
-    private final long mSign = SignGenerator.next();
     private final MessagePacket mMessagePacket;
 
     @NonNull
@@ -47,10 +45,6 @@ public class OtherMessage implements EnqueueMessage {
         return mSessionUserId;
     }
 
-    public long getSign() {
-        return mSign;
-    }
-
     public MessagePacket getMessagePacket() {
         return mMessagePacket;
     }
@@ -66,7 +60,6 @@ public class OtherMessage implements EnqueueMessage {
         final StringBuilder builder = new StringBuilder();
         builder.append(Objects.defaultObjectTag(this));
         builder.append(" sessionUserId:").append(mSessionUserId);
-        builder.append(" sign:").append(mSign);
         builder.append(" messagePacket:").append(mMessagePacket);
         return builder.toString();
     }

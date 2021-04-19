@@ -10,6 +10,7 @@ import com.masonsoft.imsdk.core.observable.UserInfoObservable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.github.idonans.core.Singleton;
 
@@ -159,6 +160,44 @@ public class UserInfoManager {
 
     public boolean exists(long userId) {
         return getByUserId(userId) != null;
+    }
+
+    /**
+     * 如果头像与昵称发生了变化，则更新
+     */
+    public void updateAvatarAndNickname(final long userId, final String avatar, final String nickname) {
+        boolean update = false;
+        final UserInfo userInfo = getByUserId(userId);
+        if (userInfo != null) {
+            String oldAvatar = userInfo.avatar.getOrDefault(null);
+            if (!Objects.equals(oldAvatar, avatar)) {
+                update = true;
+            }
+
+            if (!update) {
+                String oldNickname = userInfo.nickname.getOrDefault(null);
+                if (!Objects.equals(oldNickname, nickname)) {
+                    update = true;
+                }
+            }
+        } else {
+            update = true;
+        }
+        if (!update) {
+            return;
+        }
+
+        final UserInfo updateUserInfo;
+        if (userInfo == null) {
+            updateUserInfo = UserInfoFactory.create(userId);
+        } else {
+            updateUserInfo = UserInfoFactory.copy(userInfo);
+        }
+
+        updateUserInfo.avatar.set(avatar);
+        updateUserInfo.nickname.set(nickname);
+        updateUserInfo.updateTimeMs.set(System.currentTimeMillis());
+        insertOrUpdateUser(updateUserInfo);
     }
 
 }

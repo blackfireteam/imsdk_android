@@ -28,4 +28,22 @@ public class UserInfoFactory {
         return target;
     }
 
+    @NonNull
+    public static UserInfo create(final long userId) {
+        final UserInfo target = new UserInfo();
+        target.uid.set(userId);
+
+        // 以当前时间作为更新时间
+        target.updateTimeMs.set(System.currentTimeMillis());
+
+        return target;
+    }
+
+    @NonNull
+    public static UserInfo copy(@NonNull UserInfo input) {
+        final UserInfo target = new UserInfo();
+        target.apply(input);
+        return target;
+    }
+
 }
