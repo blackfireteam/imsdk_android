@@ -11,6 +11,7 @@ import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.dynamic.page.PagePresenter;
@@ -36,7 +37,7 @@ public class HomeFragmentPresenter extends PagePresenter<UnionTypeItemObject, Un
     @Override
     protected SingleSource<Collection<UnionTypeItemObject>> createInitRequest() throws Exception {
         final List<Spark> sparkList = DefaultApi.getSparks();
-        return Single.just(create(sparkList));
+        return Single.just(create(sparkList)).delay(2, TimeUnit.SECONDS);
     }
 
     @Override

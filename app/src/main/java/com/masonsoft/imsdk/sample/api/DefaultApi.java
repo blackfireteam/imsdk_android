@@ -52,9 +52,7 @@ public class DefaultApi {
             }
         };
         OtherMessageObservable.DEFAULT.registerObserver(otherMessageObserver);
-
         OtherMessageManager.getInstance().enqueueOtherMessage(sessionUserId, sign, otherMessage);
-
         return subject.timeout(TIMEOUT_MS, TimeUnit.MILLISECONDS).blockingGet();
     }
 
