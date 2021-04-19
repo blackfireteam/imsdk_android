@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import com.masonsoft.imsdk.OtherMessage;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
-import com.masonsoft.imsdk.core.message.packet.NotNullTimeoutMessagePacket;
+import com.masonsoft.imsdk.core.message.packet.TimeoutMessagePacket;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.observable.OtherMessageObservable;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
@@ -269,7 +269,7 @@ public class OtherMessageManager {
                     }
 
                     boolean notify = false;
-                    final OtherMessagePacket otherMessagePacket = (OtherMessagePacket) packet;
+                    final TimeoutMessagePacket otherMessagePacket = (TimeoutMessagePacket) packet;
                     if (newState == MessagePacket.STATE_FAIL) {
                         // 消息发送失败
                         notify = true;
@@ -377,12 +377,6 @@ public class OtherMessageManager {
                 final boolean result = otherMessagePacket.doProcess(wrapper);
                 IMLog.v(Objects.defaultObjectTag(this) + " dispatchTcpResponse otherMessagePacket.doProcess result:%s", result);
                 return result;
-            }
-
-            private static abstract class OtherMessagePacket extends NotNullTimeoutMessagePacket {
-                public OtherMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
-                    super(protoByteMessage, sign);
-                }
             }
         }
 
