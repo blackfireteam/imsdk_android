@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.sample.Constants;
+import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManager;
@@ -20,6 +21,7 @@ import com.masonsoft.imsdk.sample.entity.Spark;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.HomeSparkLoadFailLargeViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.HomeSparkLoadNoMoreDataLargeViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.HomeSparkLoadingLargeViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.HomeSparkViewHolder;
 import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardLayoutItemTouchHelper;
@@ -29,6 +31,7 @@ import com.masonsoft.imsdk.util.Preconditions;
 
 import io.github.idonans.core.util.IOUtil;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
+import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.systeminsets.SystemInsetsLayout;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
@@ -104,14 +107,11 @@ public class HomeFragment extends SystemInsetsFragment {
         adapter.setHost(Host.Factory.create(this, recyclerView, adapter));
         adapter.setUnionTypeMapper(new UnionTypeMapperImpl() {
             {
-
                 put(UNION_TYPE_LOADING_STATUS_LOADING_LARGE, HomeSparkLoadingLargeViewHolder::new);
                 put(UNION_TYPE_LOADING_STATUS_LOAD_FAIL_LARGE, HomeSparkLoadFailLargeViewHolder::new);
                 put(UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL, HomeSparkLoadFailLargeViewHolder::new);
-                /*
-                put(UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, LocalUgcNoMoreDataLargeViewHolder::new);
-                put(UNION_TYPE_LOADING_STATUS_EMPTY_DATA, LocalUgcNoMoreDataLargeViewHolder::new);
-                */
+                put(UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, LocalHomeSparkLoadNoMoreDataLargeViewHolder::new);
+                put(UNION_TYPE_LOADING_STATUS_EMPTY_DATA, LocalHomeSparkLoadNoMoreDataLargeViewHolder::new);
             }
         });
 
@@ -174,6 +174,31 @@ public class HomeFragment extends SystemInsetsFragment {
         mCardLayoutItemTouchHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(adapter);
         mPresenter.requestInit();
+    }
+
+    private class LocalHomeSparkLoadNoMoreDataLargeViewHolder extends HomeSparkLoadNoMoreDataLargeViewHolder {
+
+        public LocalHomeSparkLoadNoMoreDataLargeViewHolder(@NonNull Host host) {
+            super(host);
+        }
+
+        @Override
+        public void onBind(int position, @NonNull Object itemObject) {
+            View retry = itemView.findViewById(R.id.retry);
+            if (retry != null) {
+                ViewUtil.onClick(retry, v -> {
+                    // 总是加载第一页
+                    refresh();
+                });
+            }
+        }
+
+    }
+
+    public void refresh() {
+        if (mPresenter != null) {
+            mPresenter.requestInit(true);
+        }
     }
 
     private class UnionTypeAdapterImpl extends UnionTypeAdapter implements MicroLifecycleComponentManagerHost {
