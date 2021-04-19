@@ -117,7 +117,7 @@ public class IMConversationManager {
             final Throwable e = new IllegalAccessError("unexpected. targetConversation is null.");
             IMLog.e(e, "sessionUserId:%s, conversationType:%s, targetUserId:%s",
                     sessionUserId, conversationType, targetUserId);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             // fallback
             return IMConversationFactory.create(insertConversation);
         }
@@ -140,13 +140,13 @@ public class IMConversationManager {
         if (imConversation.id.isUnset()) {
             final Throwable e = new IllegalAccessError("unexpected. conversation's id is unset");
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return;
         }
         if (imConversation.id.get() <= 0) {
             final Throwable e = new IllegalAccessError("unexpected. conversation's id is invalid " + imConversation.id.get());
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return;
         }
 
@@ -189,7 +189,7 @@ public class IMConversationManager {
                             conversationType,
                             targetUserId,
                             localMessageId);
-                    RuntimeMode.throwIfDebug(e);
+                    RuntimeMode.fixme(e);
                 }
                 return;
             }

@@ -114,7 +114,7 @@ public class IMMessageQueueManager {
                 }
             } catch (Throwable e) {
                 IMLog.e(e, "SessionProtoByteMessageWrapper:%s", mSessionProtoByteMessageWrapper.toShortString());
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
             }
         }
     }
@@ -185,7 +185,7 @@ public class IMMessageQueueManager {
                 }
             } catch (Throwable e) {
                 IMLog.e(e, "IMSessionMessage:%s", mIMSessionMessage.toShortString());
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
 
                 mIMSessionMessage.getEnqueueCallback().onEnqueueFail(
                         mIMSessionMessage,
@@ -253,7 +253,7 @@ public class IMMessageQueueManager {
                 }
             } catch (Throwable e) {
                 IMLog.e(e, "mActionMessage:%s", mActionMessage.toShortString());
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
 
                 mActionMessage.getEnqueueCallback().onEnqueueFail(
                         mActionMessage,

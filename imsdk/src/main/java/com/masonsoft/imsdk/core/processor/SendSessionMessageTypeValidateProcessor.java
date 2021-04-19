@@ -34,7 +34,7 @@ public abstract class SendSessionMessageTypeValidateProcessor extends SendSessio
             // unexpected
             final Throwable e = new IllegalArgumentException("SendMessageTypeValidateProcessor doNotNullProcess target type is unset");
             IMLog.e(e, "target:%s", target);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 

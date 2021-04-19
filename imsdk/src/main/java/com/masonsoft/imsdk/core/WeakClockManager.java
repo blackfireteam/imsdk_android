@@ -135,7 +135,7 @@ public class WeakClockManager {
                 }
             } catch (Throwable e) {
                 IMLog.e(e);
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
             }
         }
     }

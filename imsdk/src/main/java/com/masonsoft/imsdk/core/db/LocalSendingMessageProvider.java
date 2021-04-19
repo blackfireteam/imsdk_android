@@ -73,7 +73,7 @@ public class LocalSendingMessageProvider {
                 }
             } catch (Throwable e) {
                 IMLog.e(e);
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
             }
         }
 
@@ -109,7 +109,7 @@ public class LocalSendingMessageProvider {
                 }
             } catch (Throwable e) {
                 IMLog.e(e);
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
             }
         }
 
@@ -171,7 +171,7 @@ public class LocalSendingMessageProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -235,7 +235,7 @@ public class LocalSendingMessageProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -317,7 +317,7 @@ public class LocalSendingMessageProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -412,7 +412,7 @@ public class LocalSendingMessageProvider {
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }
@@ -450,7 +450,7 @@ public class LocalSendingMessageProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }
@@ -496,7 +496,7 @@ public class LocalSendingMessageProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }
@@ -571,7 +571,7 @@ public class LocalSendingMessageProvider {
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }
@@ -630,7 +630,7 @@ public class LocalSendingMessageProvider {
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }

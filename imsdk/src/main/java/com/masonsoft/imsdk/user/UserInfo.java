@@ -122,7 +122,7 @@ public class UserInfo {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         target.put(UserInfoDatabaseHelper.ColumnsUserInfo.C_USER_JSON, jsonObject.toString());
         return target;
@@ -161,7 +161,7 @@ public class UserInfo {
                     target.verified.set(jsonObject.optInt("verified"));
                 } catch (Throwable e) {
                     IMLog.e(e);
-                    RuntimeMode.throwIfDebug(e);
+                    RuntimeMode.fixme(e);
                 }
             }
             return target;

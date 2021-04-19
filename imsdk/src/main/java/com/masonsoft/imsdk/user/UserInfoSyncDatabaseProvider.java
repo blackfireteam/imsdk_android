@@ -66,7 +66,7 @@ public class UserInfoSyncDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -83,21 +83,21 @@ public class UserInfoSyncDatabaseProvider {
         if (userInfoSync == null) {
             Throwable e = new IllegalArgumentException("insertUserInfoSync userInfoSync is null");
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
         if (userInfoSync.uid.isUnset()) {
             final Throwable e = new IllegalArgumentException("insertUserInfoSync invalid user id, unset");
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
         if (userInfoSync.uid.get() == null || userInfoSync.uid.get() <= 0) {
             final Throwable e = new IllegalArgumentException("insertUserInfoSync invalid user userId " + userInfoSync.uid);
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
@@ -113,14 +113,14 @@ public class UserInfoSyncDatabaseProvider {
             if (rowId <= 0) {
                 Throwable e = new IllegalAccessException("insertUserInfoSync for user id:" + userInfoSync.uid.get() + " return rowId " + rowId);
                 IMLog.e(e);
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
             } else {
                 IMLog.v("insertUserInfoSync for user id:%s return rowId:%s", userInfoSync.uid.get(), rowId);
             }
             return rowId > 0;
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }
@@ -135,7 +135,7 @@ public class UserInfoSyncDatabaseProvider {
         if (userId <= 0) {
             final Throwable e = new IllegalArgumentException("invalid user id " + userId);
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
@@ -157,7 +157,7 @@ public class UserInfoSyncDatabaseProvider {
             return rowId > 0;
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }
@@ -169,21 +169,21 @@ public class UserInfoSyncDatabaseProvider {
         if (userInfoSync == null) {
             Throwable e = new IllegalArgumentException("updateUserInfoSync userInfoSync is null");
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
         if (userInfoSync.uid.isUnset()) {
             final Throwable e = new IllegalArgumentException("updateUserInfoSync invalid user id, unset");
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
         if (userInfoSync.uid.get() == null || userInfoSync.uid.get() <= 0) {
             final Throwable e = new IllegalArgumentException("updateUserInfoSync invalid user userId " + userInfoSync.uid);
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
@@ -200,7 +200,7 @@ public class UserInfoSyncDatabaseProvider {
             if (rowsAffected != 1) {
                 Throwable e = new IllegalAccessException("updateUserInfoSync for user id:" + userInfoSync.uid.get() + " rowsAffected " + rowsAffected);
                 IMLog.e(e);
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
                 return false;
             }
 
@@ -208,7 +208,7 @@ public class UserInfoSyncDatabaseProvider {
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }

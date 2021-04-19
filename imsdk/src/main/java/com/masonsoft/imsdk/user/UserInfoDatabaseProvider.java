@@ -79,7 +79,7 @@ public class UserInfoDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -115,7 +115,7 @@ public class UserInfoDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -132,21 +132,21 @@ public class UserInfoDatabaseProvider {
         if (user == null) {
             Throwable e = new IllegalArgumentException("insertUserInfo user is null");
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
         if (user.uid.isUnset()) {
             final Throwable e = new IllegalArgumentException("insertUserInfo invalid user id, unset");
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
         if (user.uid.get() == null || user.uid.get() <= 0) {
             final Throwable e = new IllegalArgumentException("insertUserInfo invalid user userId " + user.uid);
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
@@ -165,14 +165,14 @@ public class UserInfoDatabaseProvider {
             if (rowId <= 0) {
                 Throwable e = new IllegalAccessException("insertUserInfo for user id:" + user.uid.get() + " return rowId " + rowId);
                 IMLog.e(e);
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
             } else {
                 IMLog.v("insertUserInfo for user id:%s return rowId:%s", user.uid.get(), rowId);
             }
             return rowId > 0;
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }
@@ -187,7 +187,7 @@ public class UserInfoDatabaseProvider {
         if (userId <= 0) {
             final Throwable e = new IllegalArgumentException("touchUserInfo invalid user id " + userId);
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
@@ -209,7 +209,7 @@ public class UserInfoDatabaseProvider {
             return rowId > 0;
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }
@@ -221,21 +221,21 @@ public class UserInfoDatabaseProvider {
         if (user == null) {
             Throwable e = new IllegalArgumentException("updateUserInfo user is null");
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
         if (user.uid.isUnset()) {
             final Throwable e = new IllegalArgumentException("updateUserInfo invalid user id, unset");
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
         if (user.uid.get() == null || user.uid.get() <= 0) {
             final Throwable e = new IllegalArgumentException("updateUserInfo invalid user userId " + user.uid);
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
@@ -255,7 +255,7 @@ public class UserInfoDatabaseProvider {
             if (rowsAffected != 1) {
                 Throwable e = new IllegalAccessException("updateUserInfo for user id:" + user.uid.get() + " rowsAffected " + rowsAffected);
                 IMLog.e(e);
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
                 return false;
             }
 
@@ -263,7 +263,7 @@ public class UserInfoDatabaseProvider {
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }

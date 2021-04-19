@@ -69,7 +69,7 @@ public class MessageDatabaseProvider {
                 }
             } catch (Throwable e) {
                 IMLog.e(e);
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
             }
         }
 
@@ -101,7 +101,7 @@ public class MessageDatabaseProvider {
                 }
             } catch (Throwable e) {
                 IMLog.e(e);
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
             }
         }
 
@@ -252,7 +252,7 @@ public class MessageDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -361,7 +361,7 @@ public class MessageDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -437,7 +437,7 @@ public class MessageDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -514,7 +514,7 @@ public class MessageDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -600,7 +600,7 @@ public class MessageDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -680,7 +680,7 @@ public class MessageDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -749,7 +749,7 @@ public class MessageDatabaseProvider {
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }
@@ -815,7 +815,7 @@ public class MessageDatabaseProvider {
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }
@@ -833,14 +833,14 @@ public class MessageDatabaseProvider {
         if (fromBlockId <= 0) {
             Throwable e = new IllegalArgumentException("invalid fromBlockId " + fromBlockId);
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
         if (toBlockId <= 0) {
             Throwable e = new IllegalArgumentException("invalid toBlockId " + toBlockId);
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
             return false;
         }
 
@@ -885,7 +885,7 @@ public class MessageDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }

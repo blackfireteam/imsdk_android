@@ -29,7 +29,7 @@ public class ClockObservable extends WeakObservable<ClockObservable.ClockObserve
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
     }
 

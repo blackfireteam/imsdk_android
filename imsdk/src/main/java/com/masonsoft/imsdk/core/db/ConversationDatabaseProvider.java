@@ -68,7 +68,7 @@ public class ConversationDatabaseProvider {
                 }
             } catch (Throwable e) {
                 IMLog.e(e);
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
             }
         }
 
@@ -93,7 +93,7 @@ public class ConversationDatabaseProvider {
                 }
             } catch (Throwable e) {
                 IMLog.e(e);
-                RuntimeMode.throwIfDebug(e);
+                RuntimeMode.fixme(e);
             }
         }
 
@@ -172,7 +172,7 @@ public class ConversationDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -246,7 +246,7 @@ public class ConversationDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -320,7 +320,7 @@ public class ConversationDatabaseProvider {
             }
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         } finally {
             IOUtil.closeQuietly(cursor);
         }
@@ -399,7 +399,7 @@ public class ConversationDatabaseProvider {
             return true;
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }
@@ -471,7 +471,7 @@ public class ConversationDatabaseProvider {
             return rowsAffected > 0;
         } catch (Throwable e) {
             IMLog.e(e);
-            RuntimeMode.throwIfDebug(e);
+            RuntimeMode.fixme(e);
         }
         return false;
     }
