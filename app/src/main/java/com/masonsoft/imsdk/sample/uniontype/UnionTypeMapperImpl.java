@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.sample.uniontype;
 
+import com.masonsoft.imsdk.sample.uniontype.viewholder.HomeSparkViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMConversationViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageImageReceivedViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageImageSendViewHolder;
@@ -29,6 +30,7 @@ public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND = sNextUnionType++; // 聊天消息-发送的图片
 
     public UnionTypeMapperImpl() {
+        put(UNION_TYPE_IMPL_IM_HOME_SPARK, HomeSparkViewHolder::new);
         put(UNION_TYPE_IMPL_IM_CONVERSATION, IMConversationViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_RECEIVED, IMMessageRevokeReceivedViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_SEND, IMMessageRevokeSendViewHolder::new);

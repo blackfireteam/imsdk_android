@@ -24,6 +24,7 @@ public class Constants {
         String SOFT_KEYBOARD_HELPER_IS_NULL = "soft keyboard helper is null";
         String ACTIVITY_IS_NOT_APP_COMPAT_ACTIVITY = "activity is not AppCompatActivity";
         String PERMISSION_REQUIRED = "permission required";
+        String INVALID_USER_ID = "user id is invalid";
     }
 
     ///////////////////////////////////////////////////////////////////////

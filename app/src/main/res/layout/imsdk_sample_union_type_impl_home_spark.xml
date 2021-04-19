@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ff999999"
+        tools:layout_margin="15dp">
+
+        <com.masonsoft.imsdk.sample.widget.ImageLayout
+            android:id="@+id/image_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:borderColor="#ff666666"
+            app:borderSize="1dp"
+            app:roundSize="12dp" />
+
+        <com.masonsoft.imsdk.sample.widget.UserCacheName
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:padding="20dp"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/action_wink"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="home spark" />
+
+        <ImageView
+            android:id="@+id/action_wink"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="20dp"
+            android:contentDescription="@string/imsdk_sample_empty_text_hint"
+            android:scaleType="centerInside"
+            android:src="@drawable/imsdk_sample_ic_wink_selector"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/action_message"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="20dp"
+            android:contentDescription="@string/imsdk_sample_empty_text_hint"
+            android:scaleType="centerInside"
+            android:src="@drawable/imsdk_sample_ic_wink_selector"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/action_wink" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
