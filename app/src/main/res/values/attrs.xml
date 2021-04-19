@@ -29,4 +29,7 @@
     <declare-styleable name="IMMessageRevokeTextView">
         <attr name="received" format="boolean" />
     </declare-styleable>
+    <declare-styleable name="AspectRatioFrameLayout">
+        <attr name="aspectRatio" format="float" />
+    </declare-styleable>
 </resources>
