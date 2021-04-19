@@ -85,15 +85,6 @@ public final class DatabaseHelper {
         String C_TARGET_USER_ID = "c_target_user_id";
 
         /**
-         * 会话中的第一条消息 id(这条消息可能并没有存储在本地)。
-         * 服务器端的逻辑消息 id
-         *
-         * @since db version 1
-         */
-        @Remote("msg_start")
-        String C_REMOTE_MSG_START = "c_remote_msg_start";
-
-        /**
          * 会话中的最后一条消息 id(这条消息可能并没有存储在本地)。
          * 服务器端的逻辑消息 id
          *
@@ -582,7 +573,6 @@ public final class DatabaseHelper {
                 ColumnsConversation.C_LOCAL_SEQ + " integer not null," +
                 ColumnsConversation.C_LOCAL_CONVERSATION_TYPE + " integer not null," +
                 ColumnsConversation.C_TARGET_USER_ID + " integer not null," +
-                ColumnsConversation.C_REMOTE_MSG_START + " integer not null default 0," +
                 ColumnsConversation.C_REMOTE_MSG_END + " integer not null default 0," +
                 ColumnsConversation.C_REMOTE_MSG_LAST_READ + " integer not null default 0," +
                 ColumnsConversation.C_REMOTE_SHOW_MSG_ID + " integer not null default 0," +

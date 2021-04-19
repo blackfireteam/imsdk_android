@@ -15,7 +15,6 @@ public class ConversationFactory {
     public static Conversation create(@NonNull ProtoMessage.ChatItem input) {
         final Conversation target = new Conversation();
         target.targetUserId.set(input.getUid());
-        target.remoteMessageStart.set(input.getMsgStart());
         target.remoteMessageEnd.set(input.getMsgEnd());
         target.remoteMessageLastRead.set(input.getMsgLastRead());
         target.remoteShowMessageId.set(input.getShowMsgId());

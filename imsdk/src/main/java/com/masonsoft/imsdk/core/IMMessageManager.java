@@ -186,8 +186,7 @@ public class IMMessageManager {
                         );
                         if (blockStartMessage != null) {
                             final long blockStartRemoteMessageId = blockStartMessage.remoteMessageId.get();
-                            final long conversationRemoteMessageStart = conversation.remoteMessageStart.get();
-                            if (blockStartRemoteMessageId > conversationRemoteMessageStart + 1) {
+                            if (blockStartRemoteMessageId > 1) {
                                 // 还有更多历史消息没有加载
                                 requireLoadMoreFromRemote = true;
                             }
@@ -200,7 +199,6 @@ public class IMMessageManager {
                         }
                     } else {
                         // 检查整体 message start 是否到达了 conversation message start
-                        final long conversationRemoteMessageStart = conversation.remoteMessageStart.get();
                         final long conversationRemoteMessageEnd = conversation.remoteMessageEnd.get();
                         final Message globalStartMessage = MessageDatabaseProvider.getInstance().getMinRemoteMessageId(
                                 sessionUserId,
@@ -208,13 +206,13 @@ public class IMMessageManager {
                                 targetUserId
                         );
                         if (globalStartMessage == null) {
-                            if (conversationRemoteMessageEnd > conversationRemoteMessageStart) {
+                            if (conversationRemoteMessageEnd > 0) {
                                 // 本地没有消息，但是服务器有消息没有加载
                                 requireLoadMoreFromRemote = true;
                             }
                         } else {
                             final long globalStartRemoteMessageId = globalStartMessage.remoteMessageId.get();
-                            if (globalStartRemoteMessageId > conversationRemoteMessageStart + 1) {
+                            if (globalStartRemoteMessageId > 1) {
                                 // 还有更多历史消息没有加载
                                 requireLoadMoreFromRemote = true;
                             }
@@ -245,7 +243,6 @@ public class IMMessageManager {
                         }
                     } else {
                         // 检查整体 message end 是否到达了 conversation message end
-                        final long conversationRemoteMessageStart = conversation.remoteMessageStart.get();
                         final long conversationRemoteMessageEnd = conversation.remoteMessageEnd.get();
                         final Message globalEndMessage = MessageDatabaseProvider.getInstance().getMaxRemoteMessageId(
                                 sessionUserId,
@@ -253,7 +250,7 @@ public class IMMessageManager {
                                 targetUserId
                         );
                         if (globalEndMessage == null) {
-                            if (conversationRemoteMessageEnd > conversationRemoteMessageStart) {
+                            if (conversationRemoteMessageEnd > 0) {
                                 // 本地没有消息，但是服务器有消息没有加载
                                 requireLoadMoreFromRemote = true;
                             }

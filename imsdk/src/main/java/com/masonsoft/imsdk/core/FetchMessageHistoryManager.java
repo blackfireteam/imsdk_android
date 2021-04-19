@@ -442,8 +442,7 @@ public class FetchMessageHistoryManager {
                         Preconditions.checkNotNull(minMessage);
                         mRemoteMessageEnd = minMessage.remoteMessageId.get();
 
-                        final long remoteMessageStart = conversation.remoteMessageStart.get();
-                        if (mRemoteMessageEnd <= remoteMessageStart + 1) {
+                        if (mRemoteMessageEnd <= 1) {
                             // 所有消息已经获取完整
                             IMLog.v("ignore. all message are loaded. sessionUserId:%s, conversationType:%s, targetUserId:%s",
                                     mSessionUserId, mConversationType, mTargetUserId);
@@ -518,8 +517,7 @@ public class FetchMessageHistoryManager {
                     if (mHistory) {
                         if (mLocalMinRemoteMessageIdWithSameBlockId > 0) {
                             mRemoteMessageEnd = mLocalMinRemoteMessageIdWithSameBlockId;
-                            final long remoteMessageStart = conversation.remoteMessageStart.get();
-                            if (mRemoteMessageEnd <= remoteMessageStart + 1) {
+                            if (mRemoteMessageEnd <= 1) {
                                 // 所有消息已经获取完整
                                 //noinspection ConstantConditions
                                 IMLog.v("ignore. all message are loaded. sessionUserId:%s, conversationType:%s, targetUserId:%s, history:%s",
