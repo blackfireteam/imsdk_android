@@ -3,6 +3,7 @@ package com.masonsoft.imsdk.core;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.annotation.DemoOnly;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.util.Objects;
 
@@ -155,11 +156,38 @@ public class ProtoByteMessage {
         /**
          * 通知客户端用户上线事件
          */
+        @DemoOnly
         public static final int PROFILE_ONLINE = 50;
         /**
          * 通知客户端用户下线事件
          */
+        @DemoOnly
         public static final int USR_OFFLINE = 52;
+        /**
+         * 注册新用户
+         */
+        @DemoOnly
+        public static final int SIGN_UP = 53;
+        /**
+         * 获取 spark
+         */
+        @DemoOnly
+        public static final int FETCH_SPARK = 54;
+        /**
+         * spark
+         */
+        @DemoOnly
+        public static final int SPARK = 55;
+        /**
+         * 多个 spark
+         */
+        @DemoOnly
+        public static final int SPARKS = 56;
+        /**
+         * 获取用户 token
+         */
+        @DemoOnly
+        public static final int GET_IM_TOKEN = 57;
 
         /**
          * 将 ProtoByteMessage 解码为 ProtoMessage 内定义的实体对象。如果解码失败，返回 null.
@@ -218,6 +246,16 @@ public class ProtoByteMessage {
                         return ProtoMessage.ProfileOnline.parseFrom(data);
                     case USR_OFFLINE:
                         return ProtoMessage.UsrOffline.parseFrom(data);
+                    case SIGN_UP:
+                        return ProtoMessage.Signup.parseFrom(data);
+                    case FETCH_SPARK:
+                        return ProtoMessage.FetchSpark.parseFrom(data);
+                    case SPARK:
+                        return ProtoMessage.Spark.parseFrom(data);
+                    case SPARKS:
+                        return ProtoMessage.Sparks.parseFrom(data);
+                    case GET_IM_TOKEN:
+                        return ProtoMessage.GetImToken.parseFrom(data);
                     default:
                         throw new IllegalAccessError("unknown type:" + type);
                 }
@@ -327,6 +365,26 @@ public class ProtoByteMessage {
 
             if (protoMessageObject instanceof ProtoMessage.UsrOffline) {
                 return new ProtoByteMessage(USR_OFFLINE, ((ProtoMessage.UsrOffline) protoMessageObject).toByteArray());
+            }
+
+            if (protoMessageObject instanceof ProtoMessage.Signup) {
+                return new ProtoByteMessage(SIGN_UP, ((ProtoMessage.Signup) protoMessageObject).toByteArray());
+            }
+
+            if (protoMessageObject instanceof ProtoMessage.FetchSpark) {
+                return new ProtoByteMessage(FETCH_SPARK, ((ProtoMessage.FetchSpark) protoMessageObject).toByteArray());
+            }
+
+            if (protoMessageObject instanceof ProtoMessage.Spark) {
+                return new ProtoByteMessage(SPARK, ((ProtoMessage.Spark) protoMessageObject).toByteArray());
+            }
+
+            if (protoMessageObject instanceof ProtoMessage.Sparks) {
+                return new ProtoByteMessage(SPARKS, ((ProtoMessage.Sparks) protoMessageObject).toByteArray());
+            }
+
+            if (protoMessageObject instanceof ProtoMessage.GetImToken) {
+                return new ProtoByteMessage(GET_IM_TOKEN, ((ProtoMessage.GetImToken) protoMessageObject).toByteArray());
             }
 
             final Throwable e = new IllegalArgumentException("unknown proto message object: " + protoMessageObject);
