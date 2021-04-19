@@ -9,16 +9,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ff999999"
-        tools:layout_margin="15dp">
+        tools:background="#ff999999"
+        tools:layout_margin="20dp">
 
         <com.masonsoft.imsdk.sample.widget.ImageLayout
             android:id="@+id/image_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:borderColor="#ff666666"
-            app:borderSize="1dp"
-            app:roundSize="12dp" />
+            app:borderSize="2dp"
+            app:roundSize="20dp" />
 
         <com.masonsoft.imsdk.sample.widget.UserCacheName
             android:id="@+id/username"

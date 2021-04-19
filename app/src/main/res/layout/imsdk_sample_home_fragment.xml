@@ -22,7 +22,10 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:overScrollMode="never"
+        android:padding="20dp"
         android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@id/bottom_system_insets"
         app:layout_constraintTop_toBottomOf="@id/top_system_insets" />

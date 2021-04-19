@@ -49,6 +49,7 @@ public class HomeFragment extends SystemInsetsFragment {
     private MicroLifecycleComponentManager mMicroLifecycleComponentManager;
     private ViewImpl mView;
     private HomeFragmentPresenter mPresenter;
+    @SuppressWarnings("FieldCanBeLocal")
     private CardLayoutItemTouchHelper mCardLayoutItemTouchHelper;
 
     @Nullable
@@ -199,6 +200,7 @@ public class HomeFragment extends SystemInsetsFragment {
         mMicroLifecycleComponentManager = null;
     }
 
+    @SuppressWarnings("InnerClassMayBeStatic")
     class ViewImpl extends UnionTypeStatusPageView {
 
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
