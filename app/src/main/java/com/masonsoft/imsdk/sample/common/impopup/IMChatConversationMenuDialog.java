@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.masonsoft.imsdk.sample.R;
-import com.masonsoft.imsdk.sample.databinding.CommonImChatConversationMenuDialogBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonImChatConversationMenuDialogBinding;
 
 import io.github.idonans.backstack.dialog.ViewDialog;
 
@@ -40,7 +40,8 @@ public class IMChatConversationMenuDialog {
                 .dimBackground(false)
                 .setCancelable(true)
                 .create();
-        final CommonImChatConversationMenuDialogBinding binding = CommonImChatConversationMenuDialogBinding.bind(mViewDialog.getContentView());
+        //noinspection ConstantConditions
+        final ImsdkSampleCommonImChatConversationMenuDialogBinding binding = ImsdkSampleCommonImChatConversationMenuDialogBinding.bind(mViewDialog.getContentView());
         mPopupView = binding.popupView;
         mPopupView.showForAnchorView(anchorView, coverDrawableResId, menus);
         mPopupView.setOnIMMenuClickListener((menuText, menuIndex) -> {

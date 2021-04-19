@@ -6,7 +6,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.masonsoft.imsdk.sample.R;
-import com.masonsoft.imsdk.sample.databinding.CommonSimpleContentConfirmDialogBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonSimpleContentConfirmDialogBinding;
 
 import io.github.idonans.backstack.dialog.ViewDialog;
 import io.github.idonans.lang.util.ViewUtil;
@@ -58,7 +58,8 @@ public class SimpleContentConfirmDialog {
                 .dimBackground(dimBackground)
                 .setCancelable(true)
                 .create();
-        final CommonSimpleContentConfirmDialogBinding binding = CommonSimpleContentConfirmDialogBinding.bind(mViewDialog.getContentView());
+        //noinspection ConstantConditions
+        final ImsdkSampleCommonSimpleContentConfirmDialogBinding binding = ImsdkSampleCommonSimpleContentConfirmDialogBinding.bind(mViewDialog.getContentView());
         mContent = binding.content;
         mBtnLeft = binding.btnLeft;
         mBtnRight = binding.btnRight;

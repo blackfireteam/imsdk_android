@@ -18,9 +18,9 @@ import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
-import com.masonsoft.imsdk.sample.databinding.CommonImagePickerDialogBinding;
-import com.masonsoft.imsdk.sample.databinding.CommonImagePickerDialogBucketViewBinding;
-import com.masonsoft.imsdk.sample.databinding.CommonImagePickerDialogPagerViewBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonImagePickerDialogBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonImagePickerDialogBucketViewBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonImagePickerDialogPagerViewBinding;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.widget.GridItemDecoration;
 import com.masonsoft.imsdk.util.Preconditions;
@@ -41,7 +41,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
 
     private final Activity mActivity;
     private final LayoutInflater mInflater;
-    private final CommonImagePickerDialogBinding mBinding;
+    private final ImsdkSampleCommonImagePickerDialogBinding mBinding;
     private ViewDialog mViewDialog;
     public GridView mGridView;
     private BucketView mBucketView;
@@ -62,7 +62,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
                 .dimBackground(true)
                 .create();
         //noinspection ConstantConditions,ConstantConditions
-        mBinding = CommonImagePickerDialogBinding.bind(mViewDialog.getContentView());
+        mBinding = ImsdkSampleCommonImagePickerDialogBinding.bind(mViewDialog.getContentView());
 
         mGridView = new GridView(mBinding);
         mBucketView = new BucketView(mBinding);
@@ -154,7 +154,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
 
         private final ItemClickUnionTypeAdapter mDataAdapter;
 
-        private GridView(CommonImagePickerDialogBinding parentBinding) {
+        private GridView(ImsdkSampleCommonImagePickerDialogBinding parentBinding) {
             mGridTopBarClose = parentBinding.gridTopBarClose;
             mGridTopBarTitle = parentBinding.gridTopBarTitle;
             mRecyclerView = parentBinding.gridRecyclerView;
@@ -233,7 +233,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
         private final RecyclerView mRecyclerView;
         private final ItemClickUnionTypeAdapter mDataAdapter;
 
-        private BucketView(CommonImagePickerDialogBinding parentBinding) {
+        private BucketView(ImsdkSampleCommonImagePickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.bucketOverlayContainer;
             mBucketViewDialog = new ViewDialog.Builder(mActivity)
                     .setParentView(parentView)
@@ -243,8 +243,8 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
                     .dimBackground(true)
                     .create();
             //noinspection ConstantConditions
-            final CommonImagePickerDialogBucketViewBinding binding =
-                    CommonImagePickerDialogBucketViewBinding.bind(mBucketViewDialog.getContentView());
+            final ImsdkSampleCommonImagePickerDialogBucketViewBinding binding =
+                    ImsdkSampleCommonImagePickerDialogBucketViewBinding.bind(mBucketViewDialog.getContentView());
             mRecyclerView = binding.recyclerView;
 
             mRecyclerView.setLayoutManager(
@@ -300,19 +300,19 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
     private class PagerView {
 
         private final ViewDialog mPagerViewDialog;
-        private final CommonImagePickerDialogPagerViewBinding mBinding;
+        private final ImsdkSampleCommonImagePickerDialogPagerViewBinding mBinding;
         private final RecyclerView mRecyclerView;
 
         private ItemClickUnionTypeAdapter mDataAdapter;
 
-        private PagerView(CommonImagePickerDialogBinding parentBinding) {
+        private PagerView(ImsdkSampleCommonImagePickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.pagerOverlayContainer;
             mPagerViewDialog = new ViewDialog.Builder(mActivity)
                     .setParentView(parentView)
                     .setContentView(R.layout.imsdk_sample_common_image_picker_dialog_pager_view)
                     .create();
             //noinspection ConstantConditions
-            mBinding = CommonImagePickerDialogPagerViewBinding.bind(mPagerViewDialog.getContentView());
+            mBinding = ImsdkSampleCommonImagePickerDialogPagerViewBinding.bind(mPagerViewDialog.getContentView());
             mRecyclerView = mBinding.recyclerView;
             mRecyclerView.setLayoutManager(
                     new LinearLayoutManager(mRecyclerView.getContext(), RecyclerView.HORIZONTAL, false));
