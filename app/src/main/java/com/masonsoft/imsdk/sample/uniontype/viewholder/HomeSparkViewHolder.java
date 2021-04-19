@@ -56,7 +56,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
             // TODO FIXME
             // send wink message ?
         });
-        ViewUtil.onClick(mBinding.actionMessage, v -> {
+        ViewUtil.onClick(mBinding.actionChat, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
                 SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);

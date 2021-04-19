@@ -46,14 +46,14 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
-            android:id="@+id/action_message"
+            android:id="@+id/action_chat"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="20dp"
             android:contentDescription="@string/imsdk_sample_empty_text_hint"
             android:scaleType="centerInside"
-            android:src="@drawable/imsdk_sample_ic_wink_selector"
+            android:src="@drawable/imsdk_sample_ic_chat"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/action_wink" />
     </androidx.constraintlayout.widget.ConstraintLayout>
