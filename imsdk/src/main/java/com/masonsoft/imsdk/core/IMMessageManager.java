@@ -48,6 +48,8 @@ public class IMMessageManager {
         return INSTANCE.get();
     }
 
+    private static final long TIMEOUT_MS = 20 * 1000L;
+
     private IMMessageManager() {
         Threads.postBackground(() -> {
             IMManager.getInstance().attach();
@@ -358,7 +360,7 @@ public class IMMessageManager {
                 blockId,
                 history);
 
-        return subject.blockingGet();
+        return subject.timeout(TIMEOUT_MS, TimeUnit.MILLISECONDS).blockingGet();
     }
 
 }
