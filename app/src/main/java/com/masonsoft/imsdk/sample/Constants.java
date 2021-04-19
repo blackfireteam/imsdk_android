@@ -9,7 +9,9 @@ public class Constants {
     public static final boolean DEBUG_WIDGET = true;
 
     public interface ExtrasKey {
-        String TARGET_USER_ID = "extra:targetUserId";
+        String KEY_BOOLEAN = "extra:boolean_20210419";
+        String KEY_INTEGER = "extra:integer_20210419";
+        String TARGET_USER_ID = "extra:targetUserId_20210419";
         String LONG_ANIMATE_DURATION = "extra:long_animate_duration_20210416";
     }
 
@@ -25,6 +27,8 @@ public class Constants {
         String ACTIVITY_IS_NOT_APP_COMPAT_ACTIVITY = "activity is not AppCompatActivity";
         String PERMISSION_REQUIRED = "permission required";
         String INVALID_USER_ID = "user id is invalid";
+        String INVALID_POSITION = "position is invalid";
+        String INVALID_TARGET = "target is invalid";
     }
 
     ///////////////////////////////////////////////////////////////////////

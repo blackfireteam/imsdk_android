@@ -9,13 +9,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManager;
+import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManagerHost;
+import com.masonsoft.imsdk.sample.common.microlifecycle.TopVisibleRecyclerViewMicroLifecycleComponentManager;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleHomeFragmentBinding;
+import com.masonsoft.imsdk.sample.entity.Spark;
+import com.masonsoft.imsdk.sample.uniontype.DataObject;
+import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
+import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardLayoutItemTouchHelper;
+import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardLayoutManager;
+import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardTouchCallbackImpl;
+import com.masonsoft.imsdk.util.Preconditions;
 
+import io.github.idonans.core.util.IOUtil;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.systeminsets.SystemInsetsLayout;
+import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
+import io.github.idonans.uniontype.UnionTypeItemObject;
 
 /**
  * 首页
@@ -31,6 +45,11 @@ public class HomeFragment extends SystemInsetsFragment {
 
     @Nullable
     private ImsdkSampleHomeFragmentBinding mBinding;
+
+    private MicroLifecycleComponentManager mMicroLifecycleComponentManager;
+    private ViewImpl mView;
+    private HomeFragmentPresenter mPresenter;
+    private CardLayoutItemTouchHelper mCardLayoutItemTouchHelper;
 
     @Nullable
     @Override
@@ -58,8 +77,126 @@ public class HomeFragment extends SystemInsetsFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Preconditions.checkNotNull(mBinding);
         final RecyclerView recyclerView = mBinding.recyclerView;
 
+        recyclerView.setItemAnimator(null);
+        CardLayoutManager cardLayoutManager = new CardLayoutManager();
+        recyclerView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
+            @Override
+            public void onChildViewAttachedToWindow(@NonNull View view) {
+                // TODO FIXME showLikeAndDislikeButton();
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(@NonNull View view) {
+                // TODO FIXME showLikeAndDislikeButton();
+            }
+        });
+        recyclerView.setLayoutManager(cardLayoutManager);
+        recyclerView.setHasFixedSize(true);
+        mMicroLifecycleComponentManager = new TopVisibleRecyclerViewMicroLifecycleComponentManager(recyclerView, getLifecycle());
+        final UnionTypeAdapter adapter = new UnionTypeAdapterImpl();
+        adapter.setHost(Host.Factory.create(this, recyclerView, adapter));
+        adapter.setUnionTypeMapper(new UnionTypeMapperImpl() {
+            {
+                /*
+                put(UNION_TYPE_LOADING_STATUS_LOADING_LARGE, MeetLoadingLargeViewHolder::new);
+                put(UNION_TYPE_LOADING_STATUS_LOAD_FAIL_LARGE, UgcLoadFailLargeViewHolder::new);
+                put(UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL, UgcLoadFailLargeViewHolder::new);
+                put(UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, LocalUgcNoMoreDataLargeViewHolder::new);
+                put(UNION_TYPE_LOADING_STATUS_EMPTY_DATA, LocalUgcNoMoreDataLargeViewHolder::new);
+                */
+            }
+        });
+
+        mView = new ViewImpl(adapter);
+        clearPresenter();
+        mPresenter = new HomeFragmentPresenter(mView);
+        mView.setPresenter(mPresenter);
+        final CardTouchCallbackImpl cardTouchCallback = new CardTouchCallbackImpl() {
+            @Override
+            public void onSwiping(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, float dXProgress) {
+                /*
+                TODO FIXME
+                if (viewHolder instanceof SimpleUgcViewHolder) {
+                    ((SimpleUgcViewHolder) viewHolder).getSimpleUgcView().startLikeAnimation(dXProgress);
+                }
+                */
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int swipeDir, Object payload) {
+                final int position = viewHolder.getAdapterPosition();
+                if (position < 0) {
+                    SampleLog.e(Constants.ErrorLog.INVALID_POSITION);
+                    return;
+                }
+                final UnionTypeItemObject originObject = adapter.getItem(position);
+                if (originObject == null) {
+                    SampleLog.e(Constants.ErrorLog.INVALID_TARGET);
+                    return;
+                }
+                //noinspection unchecked
+                final DataObject<Spark> itemObject = (DataObject<Spark>) originObject.itemObject;
+                final Spark spark = itemObject.object;
+
+                adapter.removeItem(position);
+
+                if (payload instanceof Bundle) {
+                    Bundle args = (Bundle) payload;
+                    boolean swipeOnly = args.getBoolean(Constants.ExtrasKey.KEY_BOOLEAN, false);
+                    if (swipeOnly) {
+                        // swipe only, this is invoked by #swipeTopVisibleViewHolderOnly
+                        SampleLog.v("ignore. onSwiped is swipe only");
+                        return;
+                    }
+                }
+
+                if (spark == null || spark.userId <= 0) {
+                    SampleLog.e(Constants.ErrorLog.INVALID_TARGET);
+                    return;
+                }
+
+                if (swipeDir == CardLayoutItemTouchHelper.LEFT) {
+                    // TODO FIXME dislikeSubmit(userInfo);
+                } else if (swipeDir == CardLayoutItemTouchHelper.RIGHT) {
+                    // TODO FIXME likeSubmit(userInfo);
+                } else {
+                    SampleLog.e("unexpected swipeDir:%s", swipeDir);
+                }
+            }
+        };
+        mCardLayoutItemTouchHelper = new CardLayoutItemTouchHelper(cardTouchCallback);
+        mCardLayoutItemTouchHelper.attachToRecyclerView(recyclerView);
+        recyclerView.setAdapter(adapter);
+        mPresenter.requestInit();
+    }
+
+    private class UnionTypeAdapterImpl extends UnionTypeAdapter implements MicroLifecycleComponentManagerHost {
+
+        @Override
+        public MicroLifecycleComponentManager getMicroLifecycleComponentManager() {
+            return mMicroLifecycleComponentManager;
+        }
+
+    }
+
+    private void clearPresenter() {
+        if (mPresenter != null) {
+            mPresenter.setAbort();
+            mPresenter = null;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        clearPresenter();
+        mBinding = null;
+        mView = null;
+        IOUtil.closeQuietly(mMicroLifecycleComponentManager);
+        mMicroLifecycleComponentManager = null;
     }
 
     class ViewImpl extends UnionTypeStatusPageView {
@@ -68,12 +205,6 @@ public class HomeFragment extends SystemInsetsFragment {
             super(adapter, true);
         }
 
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mBinding = null;
     }
 
 }
