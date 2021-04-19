@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class CardLayoutManager extends RecyclerView.LayoutManager {
 
-    private static final int LAYOUT_MAX_COUNT = 3;
+    private static final int LAYOUT_MAX_COUNT = 4;
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {

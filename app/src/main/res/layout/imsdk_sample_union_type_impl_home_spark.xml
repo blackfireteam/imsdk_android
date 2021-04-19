@@ -20,6 +20,32 @@
             app:borderSize="2dp"
             app:roundSize="20dp" />
 
+        <ImageView
+            android:id="@+id/indicator_dislike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:alpha="0"
+            android:contentDescription="@string/imsdk_sample_empty_text_hint"
+            android:scaleType="centerInside"
+            android:src="@drawable/imsdk_sample_ic_spark_dislike"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:alpha="0.5" />
+
+        <ImageView
+            android:id="@+id/indicator_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:alpha="0"
+            android:contentDescription="@string/imsdk_sample_empty_text_hint"
+            android:scaleType="centerInside"
+            android:src="@drawable/imsdk_sample_ic_spark_like"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:alpha="0.5" />
+
         <com.masonsoft.imsdk.sample.widget.UserCacheName
             android:id="@+id/username"
             android:layout_width="match_parent"
@@ -35,8 +61,8 @@
 
         <ImageView
             android:id="@+id/action_wink"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="20dp"
             android:contentDescription="@string/imsdk_sample_empty_text_hint"
@@ -47,8 +73,8 @@
 
         <ImageView
             android:id="@+id/action_chat"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="20dp"
             android:contentDescription="@string/imsdk_sample_empty_text_hint"

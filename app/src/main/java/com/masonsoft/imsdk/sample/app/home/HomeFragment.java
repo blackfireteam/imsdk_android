@@ -19,6 +19,7 @@ import com.masonsoft.imsdk.sample.databinding.ImsdkSampleHomeFragmentBinding;
 import com.masonsoft.imsdk.sample.entity.Spark;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.HomeSparkViewHolder;
 import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardLayoutItemTouchHelper;
 import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardLayoutManager;
 import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardTouchCallbackImpl;
@@ -118,12 +119,10 @@ public class HomeFragment extends SystemInsetsFragment {
         final CardTouchCallbackImpl cardTouchCallback = new CardTouchCallbackImpl() {
             @Override
             public void onSwiping(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, float dXProgress) {
-                /*
-                TODO FIXME
-                if (viewHolder instanceof SimpleUgcViewHolder) {
-                    ((SimpleUgcViewHolder) viewHolder).getSimpleUgcView().startLikeAnimation(dXProgress);
+                if (viewHolder instanceof HomeSparkViewHolder) {
+                    final HomeSparkViewHolder homeSparkViewHolder = (HomeSparkViewHolder) viewHolder;
+                    homeSparkViewHolder.updateLikeAndDislike(dXProgress);
                 }
-                */
             }
 
             @Override
