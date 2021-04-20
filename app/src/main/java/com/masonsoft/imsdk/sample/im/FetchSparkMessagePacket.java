@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.api;
+package com.masonsoft.imsdk.sample.im;
 
 import androidx.annotation.NonNull;
 

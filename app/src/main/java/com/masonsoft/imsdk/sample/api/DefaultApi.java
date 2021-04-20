@@ -9,6 +9,7 @@ import com.masonsoft.imsdk.core.OtherMessageManager;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.observable.OtherMessageObservable;
 import com.masonsoft.imsdk.sample.entity.Spark;
+import com.masonsoft.imsdk.sample.im.FetchSparkMessagePacket;
 import com.masonsoft.imsdk.user.UserInfoManager;
 
 import java.util.ArrayList;
