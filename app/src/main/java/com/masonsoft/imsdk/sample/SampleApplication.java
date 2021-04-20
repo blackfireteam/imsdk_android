@@ -18,6 +18,7 @@ import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMManager;
 import com.masonsoft.imsdk.sample.common.TopActivity;
+import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
 
 import io.github.idonans.core.manager.ProcessManager;
@@ -30,6 +31,7 @@ public class SampleApplication extends Application {
         super.onCreate();
 
         IMLog.setLogLevel(Log.VERBOSE);
+        DiscoverUserManager.getInstance().attach();
         IMManager.getInstance().attach();
         DebugManager.getInstance().start();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
