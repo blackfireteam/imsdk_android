@@ -72,8 +72,43 @@ public class DiscoverFragment extends SystemInsetsFragment {
 
         Preconditions.checkNotNull(mBinding);
         final RecyclerView recyclerView = mBinding.recyclerView;
-        recyclerView.setLayoutManager(new GridLayoutManager(recyclerView.getContext(), 3));
-        recyclerView.addItemDecoration(new GridItemDecoration(3, DimenUtil.dp2px(5), true));
+
+        final int spanCount = 3;
+        final GridLayoutManager layoutManager = new GridLayoutManager(recyclerView.getContext(), spanCount);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                final UnionTypeAdapter adapter = (UnionTypeAdapter) recyclerView.getAdapter();
+                if (adapter != null) {
+                    final int[] groupAndPosition = adapter.getGroupAndPosition(position);
+                    if (groupAndPosition != null) {
+                        if (groupAndPosition[0] == ViewImpl.GROUP_DEFAULT) {
+                            return 1;
+                        }
+                    }
+                }
+
+                return spanCount;
+            }
+
+            @Override
+            public int getSpanIndex(int position, int spanCount) {
+                final UnionTypeAdapter adapter = (UnionTypeAdapter) recyclerView.getAdapter();
+                if (adapter != null) {
+                    final int[] groupAndPosition = adapter.getGroupAndPosition(position);
+                    if (groupAndPosition != null) {
+                        if (groupAndPosition[0] == ViewImpl.GROUP_DEFAULT) {
+                            return groupAndPosition[1] % spanCount;
+                        }
+                    }
+                }
+
+                return 0;
+            }
+        });
+
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new GridItemDecoration(spanCount, DimenUtil.dp2px(5), true));
         recyclerView.setHasFixedSize(true);
         final UnionTypeAdapter adapter = new UnionTypeAdapter();
         adapter.setHost(Host.Factory.create(this, recyclerView, adapter));
