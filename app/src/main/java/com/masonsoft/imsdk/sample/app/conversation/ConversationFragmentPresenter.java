@@ -135,7 +135,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         if (imConversation == null) {
             return null;
         }
-        final DataObject<IMConversation> dataObject = new DeepDiffDataObject<>(imConversation);
+        final DataObject<IMConversation> dataObject = new DeepDiffDataObject(imConversation);
         return new UnionTypeItemObject(
                 UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_CONVERSATION,
                 dataObject
@@ -267,22 +267,17 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         mDefaultRequestHolder.clear();
     }
 
-    private static class DeepDiffDataObject<T> extends DataObject<T> implements DeepDiff {
+    private static class DeepDiffDataObject extends DataObject<IMConversation> implements DeepDiff {
 
-        public DeepDiffDataObject(T object) {
+        public DeepDiffDataObject(IMConversation object) {
             super(object);
         }
 
         @Override
         public boolean isSameItem(@Nullable Object other) {
             if (other instanceof DeepDiffDataObject) {
-                final DeepDiffDataObject<?> otherDataObject = (DeepDiffDataObject<?>) other;
-                if (this.object instanceof IMConversation && otherDataObject.object instanceof IMConversation) {
-                    final IMConversation thisImConversation = (IMConversation) this.object;
-                    final IMConversation otherImConversation = (IMConversation) otherDataObject.object;
-                    final long thisImConversationId = thisImConversation.id.get();
-                    return thisImConversationId == otherImConversation.id.get();
-                }
+                final DeepDiffDataObject otherDataObject = (DeepDiffDataObject) other;
+                return java.util.Objects.equals(this.object.id.get(), otherDataObject.object.id.get());
             }
             return false;
         }
@@ -290,13 +285,8 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         @Override
         public boolean isSameContent(@Nullable Object other) {
             if (other instanceof DeepDiffDataObject) {
-                final DeepDiffDataObject<?> otherDataObject = (DeepDiffDataObject<?>) other;
-                if (this.object instanceof IMConversation && otherDataObject.object instanceof IMConversation) {
-                    final IMConversation thisImConversation = (IMConversation) this.object;
-                    final IMConversation otherImConversation = (IMConversation) otherDataObject.object;
-                    final long thisImConversationId = thisImConversation.id.get();
-                    return thisImConversationId == otherImConversation.id.get();
-                }
+                final DeepDiffDataObject otherDataObject = (DeepDiffDataObject) other;
+                return java.util.Objects.equals(this.object.id.get(), otherDataObject.object.id.get());
             }
             return false;
         }
