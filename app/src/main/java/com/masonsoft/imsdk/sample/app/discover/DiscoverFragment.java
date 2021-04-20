@@ -73,7 +73,7 @@ public class DiscoverFragment extends SystemInsetsFragment {
         Preconditions.checkNotNull(mBinding);
         final RecyclerView recyclerView = mBinding.recyclerView;
         recyclerView.setLayoutManager(new GridLayoutManager(recyclerView.getContext(), 3));
-        recyclerView.addItemDecoration(new GridItemDecoration(3, DimenUtil.dp2px(10), true));
+        recyclerView.addItemDecoration(new GridItemDecoration(3, DimenUtil.dp2px(5), true));
         recyclerView.setHasFixedSize(true);
         final UnionTypeAdapter adapter = new UnionTypeAdapter();
         adapter.setHost(Host.Factory.create(this, recyclerView, adapter));
