@@ -1,7 +1,5 @@
 package com.masonsoft.imsdk.sample.app.discover;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,16 +7,19 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
-import com.masonsoft.imsdk.sample.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleDiscoverFragmentBinding;
+import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
+import com.masonsoft.imsdk.util.Preconditions;
 
-import io.github.idonans.lang.util.ViewUtil;
+import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.systeminsets.SystemInsetsLayout;
+import io.github.idonans.uniontype.Host;
+import io.github.idonans.uniontype.UnionTypeAdapter;
 
 /**
  * 发现
@@ -34,6 +35,8 @@ public class DiscoverFragment extends SystemInsetsFragment {
 
     @Nullable
     private ImsdkSampleDiscoverFragmentBinding mBinding;
+    private ViewImpl mView;
+    private DiscoverFragmentPresenter mPresenter;
 
     @Nullable
     @Override
@@ -47,44 +50,58 @@ public class DiscoverFragment extends SystemInsetsFragment {
                 SampleLog.v("DiscoverFragment topSystemInsets onSystemInsets left:%s, top:%s, right:%s, bottom:%s", left, top, right, bottom);
             }
         });
-        testInflateTargetUsers(mBinding.scrollContent);
-
+        mBinding.bottomSystemInsets.setOnSystemInsetsListener(new SystemInsetsLayout.OnSystemInsetsListener() {
+            @Override
+            public void onSystemInsets(int left, int top, int right, int bottom) {
+                SampleLog.v("DiscoverFragment bottomSystemInsets onSystemInsets left:%s, top:%s, right:%s, bottom:%s", left, top, right, bottom);
+            }
+        });
         return mBinding.getRoot();
     }
 
-    private void testInflateTargetUsers(ViewGroup parent) {
-        for (int i = 1; i < 101; i++) {
-            testInflateTargetUsers(parent, i);
-        }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Preconditions.checkNotNull(mBinding);
+        final RecyclerView recyclerView = mBinding.recyclerView;
+        final GridLayoutManager layoutManager = new GridLayoutManager(recyclerView.getContext(), 2);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        final UnionTypeAdapter adapter = new UnionTypeAdapter();
+        adapter.setHost(Host.Factory.create(this, recyclerView, adapter));
+        adapter.setUnionTypeMapper(new UnionTypeMapperImpl());
+
+        mView = new ViewImpl(adapter);
+        clearPresenter();
+        mPresenter = new DiscoverFragmentPresenter(mView);
+        mView.setPresenter(mPresenter);
+        recyclerView.setAdapter(adapter);
+        mPresenter.requestInit();
     }
 
-    @SuppressLint("SetTextI18n")
-    private void testInflateTargetUsers(ViewGroup parent, long userId) {
-        final AppCompatButton button = new AppCompatButton(parent.getContext());
-        button.setText("user:" + userId);
-        parent.addView(button);
-        ViewUtil.onClick(button, v -> startSingleChat(userId));
+    @SuppressWarnings("InnerClassMayBeStatic")
+    class ViewImpl extends UnionTypeStatusPageView {
+
+        public ViewImpl(@NonNull UnionTypeAdapter adapter) {
+            super(adapter, true);
+        }
+
     }
 
-    private void startSingleChat(long targetUserId) {
-        final Activity activity = getActivity();
-        if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
-            return;
+    private void clearPresenter() {
+        if (mPresenter != null) {
+            mPresenter.setAbort();
+            mPresenter = null;
         }
-
-        if (mBinding == null) {
-            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
-            return;
-        }
-
-        SingleChatActivity.start(activity, targetUserId);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        clearPresenter();
         mBinding = null;
+        mView = null;
     }
 
 }
