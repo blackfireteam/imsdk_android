@@ -16,8 +16,6 @@
             android:id="@+id/image_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:borderColor="#ff666666"
-            app:borderSize="2dp"
             app:roundSize="20dp" />
 
         <ImageView
