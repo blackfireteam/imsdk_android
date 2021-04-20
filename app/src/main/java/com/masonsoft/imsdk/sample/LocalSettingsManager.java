@@ -6,10 +6,10 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.masonsoft.imsdk.core.KeyValueStorage;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.Singleton;
+import io.github.idonans.core.manager.StorageManager;
 import io.github.idonans.core.thread.Threads;
 
 public class LocalSettingsManager {
@@ -40,7 +40,7 @@ public class LocalSettingsManager {
 
     private void restore() {
         try {
-            final String json = KeyValueStorage.get(KEY_SETTINGS);
+            final String json = StorageManager.getInstance().get(Constants.SAMPLE_STORAGE_NAMESPACE, KEY_SETTINGS);
             if (!TextUtils.isEmpty(json)) {
                 final Settings settings = new Gson().fromJson(json, new TypeToken<Settings>() {
                 }.getType());
@@ -63,7 +63,7 @@ public class LocalSettingsManager {
             try {
                 final Settings settings = mSettings.copy();
                 final String json = new Gson().toJson(settings);
-                KeyValueStorage.set(KEY_SETTINGS, json);
+                StorageManager.getInstance().set(Constants.SAMPLE_STORAGE_NAMESPACE, KEY_SETTINGS, json);
             } catch (Throwable e) {
                 SampleLog.e(e);
             }

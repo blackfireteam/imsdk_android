@@ -8,6 +8,8 @@ public class Constants {
 
     public static final boolean DEBUG_WIDGET = true;
 
+    public static final String SAMPLE_STORAGE_NAMESPACE = "imsdk_sample_storage_20210420";
+
     public interface ExtrasKey {
         String KEY_BOOLEAN = "extra:boolean_20210419";
         String KEY_INTEGER = "extra:integer_20210419";
