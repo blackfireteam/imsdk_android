@@ -11,10 +11,12 @@ import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
+import io.github.idonans.uniontype.DeepDiff;
 import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
@@ -95,7 +97,32 @@ public class DiscoverFragmentPresenter extends PagePresenter<UnionTypeItemObject
 
     @NonNull
     private UnionTypeItemObject create(@NonNull Long userId) {
-        return UnionTypeItemObject.valueOf(UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_DISCOVER_USER, new DataObject<>(userId));
+        return UnionTypeItemObject.valueOf(UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_DISCOVER_USER, new DeepDiffDataObject(userId));
+    }
+
+    private static class DeepDiffDataObject extends DataObject<Long> implements DeepDiff {
+
+        public DeepDiffDataObject(java.lang.Long object) {
+            super(object);
+        }
+
+        @Override
+        public boolean isSameItem(@Nullable Object other) {
+            if (other instanceof DiscoverFragmentPresenter.DeepDiffDataObject) {
+                final DiscoverFragmentPresenter.DeepDiffDataObject otherDataObject = (DiscoverFragmentPresenter.DeepDiffDataObject) other;
+                return Objects.equals(this.object, otherDataObject.object);
+            }
+            return false;
+        }
+
+        @Override
+        public boolean isSameContent(@Nullable Object other) {
+            if (other instanceof DiscoverFragmentPresenter.DeepDiffDataObject) {
+                final DiscoverFragmentPresenter.DeepDiffDataObject otherDataObject = (DiscoverFragmentPresenter.DeepDiffDataObject) other;
+                return Objects.equals(this.object, otherDataObject.object);
+            }
+            return false;
+        }
     }
 
 }

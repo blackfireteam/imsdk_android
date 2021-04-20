@@ -15,11 +15,13 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleDiscoverFragmentBinding;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
+import com.masonsoft.imsdk.sample.widget.GridItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.List;
 
+import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.systeminsets.SystemInsetsLayout;
 import io.github.idonans.uniontype.Host;
@@ -70,8 +72,8 @@ public class DiscoverFragment extends SystemInsetsFragment {
 
         Preconditions.checkNotNull(mBinding);
         final RecyclerView recyclerView = mBinding.recyclerView;
-        final GridLayoutManager layoutManager = new GridLayoutManager(recyclerView.getContext(), 2);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new GridLayoutManager(recyclerView.getContext(), 3));
+        recyclerView.addItemDecoration(new GridItemDecoration(3, DimenUtil.dp2px(10), true));
         recyclerView.setHasFixedSize(true);
         final UnionTypeAdapter adapter = new UnionTypeAdapter();
         adapter.setHost(Host.Factory.create(this, recyclerView, adapter));

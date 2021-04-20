@@ -267,7 +267,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         mDefaultRequestHolder.clear();
     }
 
-    private class DeepDiffDataObject<T> extends DataObject<T> implements DeepDiff {
+    private static class DeepDiffDataObject<T> extends DataObject<T> implements DeepDiff {
 
         public DeepDiffDataObject(T object) {
             super(object);
