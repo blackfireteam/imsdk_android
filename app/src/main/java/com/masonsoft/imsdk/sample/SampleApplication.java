@@ -31,12 +31,14 @@ public class SampleApplication extends Application {
         super.onCreate();
 
         IMLog.setLogLevel(Log.VERBOSE);
+        LocalSettingsManager.getInstance().attach();
         DiscoverUserManager.getInstance().attach();
         IMManager.getInstance().attach();
         DebugManager.getInstance().start();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             WebView.setDataDirectorySuffix(ProcessManager.getInstance().getProcessTag());
         }
+
         // 设置文件上服务
         FileUploadManager.getInstance().setFileUploadProvider(new TencentOSSFileUploadProvider());
 
