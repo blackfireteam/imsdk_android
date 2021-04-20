@@ -115,6 +115,22 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
         return mState;
     }
 
+    /**
+     * 判断当前数据包是否已经结束(数据包状态为成功或者失败)
+     */
+    public boolean isEnd() {
+        final int state = getState();
+        return state == STATE_SUCCESS || state == STATE_FAIL;
+    }
+
+    /**
+     * 判断当前数据包是否尚未发送(数据包状态为待发送)
+     */
+    public boolean isIdle() {
+        final int state = getState();
+        return state == STATE_IDLE;
+    }
+
     public long getSign() {
         return mSign;
     }

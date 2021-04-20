@@ -171,6 +171,31 @@ public class IMSessionManager {
     private void recreateSessionTcpClient(boolean resetConfig) {
         IMLog.v(Objects.defaultObjectTag(this) + " recreateSessionTcpClient");
         synchronized (mSessionLock) {
+
+            if (mSessionTcpClientProxy != null) {
+                if (!mSessionTcpClientProxy.isAbort()) {
+                    final SessionTcpClient sessionTcpClient = mSessionTcpClientProxy.getSessionTcpClient();
+                    if (sessionTcpClient != null) {
+                        final int sessionTcpClientState = sessionTcpClient.getState();
+                        if (sessionTcpClientState == TcpClient.STATE_IDLE
+                                || sessionTcpClientState == TcpClient.STATE_CONNECTING) {
+                            // 正在请求建立长连接
+                            IMLog.v(Objects.defaultObjectTag(this) + " recreateSessionTcpClient fast return. current tcp client is in connecting.");
+                            return;
+                        }
+
+                        if (sessionTcpClientState == TcpClient.STATE_CONNECTED) {
+                            if (!sessionTcpClient.getSignInMessagePacket().isEnd()
+                                    && sessionTcpClient.getSignOutMessagePacket().isIdle()) {
+                                // 正在登陆中
+                                IMLog.v(Objects.defaultObjectTag(this) + " recreateSessionTcpClient fast return. current tcp client is in sign in ing.");
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
             if (resetConfig) {
                 mSessionTcpClientProxyConfig = null;
             }
