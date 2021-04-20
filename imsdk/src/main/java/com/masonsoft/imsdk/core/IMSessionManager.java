@@ -238,10 +238,7 @@ public class IMSessionManager {
             }
         };
         final Runnable subjectTimeout = () ->
-                subject.onSuccess(GeneralResult.valueOf(
-                        GeneralResult.CODE_ERROR_TIMEOUT,
-                        GeneralResult.defaultMessage(GeneralResult.CODE_ERROR_TIMEOUT)
-                ));
+                subject.onSuccess(GeneralResult.valueOf(GeneralResult.CODE_ERROR_TIMEOUT));
         final SessionTcpClientObservable.SessionTcpClientObserver sessionTcpClientObserver = new SessionTcpClientObservable.SessionTcpClientObserver() {
             @Override
             public void onConnectionStateChanged(@NonNull SessionTcpClient sessionTcpClient) {

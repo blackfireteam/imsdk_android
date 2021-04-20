@@ -26,7 +26,10 @@ public class GeneralResult {
      * 0 表示成功，非 0 表示失败
      */
     public int code;
+
+    @Nullable
     public String message;
+
     @Nullable
     public GeneralResult subResult;
 
@@ -55,9 +58,11 @@ public class GeneralResult {
     }
 
     public static GeneralResult success() {
-        final GeneralResult result = new GeneralResult();
-        result.code = CODE_SUCCESS;
-        return result;
+        return valueOf(CODE_SUCCESS);
+    }
+
+    public static GeneralResult valueOf(int code) {
+        return valueOf(code, defaultMessage(code));
     }
 
     public static GeneralResult valueOf(int code, String message) {
@@ -68,9 +73,7 @@ public class GeneralResult {
     }
 
     public static GeneralResult valueOfSubResult(GeneralResult subResult) {
-        final GeneralResult result = new GeneralResult();
-        result.code = CODE_ERROR_SUB_RESULT;
-        result.message = defaultMessage(result.code);
+        final GeneralResult result = valueOf(CODE_ERROR_SUB_RESULT);
         result.subResult = subResult;
         return result;
     }

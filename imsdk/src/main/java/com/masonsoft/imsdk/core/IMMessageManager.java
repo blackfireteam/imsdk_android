@@ -345,7 +345,7 @@ public class IMMessageManager {
                 if (System.currentTimeMillis() - mTimeStartMs > TIMEOUT_MS) {
                     // 超时
                     IMLog.v(Objects.defaultObjectTag(this) + " fetchWithBlockOrTimeout onClock timeout sign:%s", originSign);
-                    subject.onSuccess(GeneralResult.valueOf(GeneralResult.CODE_ERROR_TIMEOUT, GeneralResult.defaultMessage(GeneralResult.CODE_ERROR_TIMEOUT)));
+                    subject.onSuccess(GeneralResult.valueOf(GeneralResult.CODE_ERROR_TIMEOUT));
                 }
             }
         };
