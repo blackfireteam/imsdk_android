@@ -52,6 +52,7 @@ public class DiscoverUserManager {
     }
 
     private void addOnline(Long userId) {
+        SampleLog.v(Objects.defaultObjectTag(this) + " addOnline userId:%s", userId);
         synchronized (mOnlineUserList) {
             if (!mOnlineUserList.contains(userId)) {
                 mOnlineUserList.add(userId);
@@ -62,6 +63,7 @@ public class DiscoverUserManager {
     }
 
     private void removeOnline(Long userId) {
+        SampleLog.v(Objects.defaultObjectTag(this) + " removeOnline userId:%s", userId);
         synchronized (mOnlineUserList) {
             mOnlineUserList.remove(userId);
         }
