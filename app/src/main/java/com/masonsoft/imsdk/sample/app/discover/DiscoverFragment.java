@@ -10,16 +10,21 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.common.collect.Lists;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleDiscoverFragmentBinding;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
+import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.Preconditions;
+
+import java.util.List;
 
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.systeminsets.SystemInsetsLayout;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
+import io.github.idonans.uniontype.UnionTypeItemObject;
 
 /**
  * 发现
@@ -80,11 +85,39 @@ public class DiscoverFragment extends SystemInsetsFragment {
         mPresenter.requestInit();
     }
 
-    @SuppressWarnings("InnerClassMayBeStatic")
     class ViewImpl extends UnionTypeStatusPageView {
 
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
             super(adapter, true);
+        }
+
+        public void removeUser(@NonNull final UnionTypeItemObject unionTypeItemObject) {
+            final List<UnionTypeItemObject> groupDefaultList = getAdapter().getData().getGroupItems(GROUP_DEFAULT);
+            int removedPosition = -1;
+            if (groupDefaultList != null) {
+                final int size = groupDefaultList.size();
+                for (int i = 0; i < size; i++) {
+                    final UnionTypeItemObject existsOne = groupDefaultList.get(i);
+                    if (existsOne.isSameItem(unionTypeItemObject)) {
+                        removedPosition = i;
+                        break;
+                    }
+                }
+            }
+            if (removedPosition >= 0) {
+                getAdapter().removeGroupItem(GROUP_DEFAULT, removedPosition);
+            }
+        }
+
+        public void replaceUser(@NonNull final UnionTypeItemObject unionTypeItemObject) {
+            if (!hasPageContent()) {
+                SampleLog.v(Objects.defaultObjectTag(this) + " page content is empty, use requestInit instead of replace");
+                mPresenter.requestInit(true);
+                return;
+            }
+
+            removeUser(unionTypeItemObject);
+            getAdapter().appendGroupItems(GROUP_DEFAULT, Lists.newArrayList(unionTypeItemObject));
         }
 
     }
