@@ -67,6 +67,7 @@ public class DefaultApi {
 
         final Map<String, Object> requestArgs = new HashMap<>();
         requestArgs.put("uid", phone);
+        requestArgs.put("ctype", 0);
         final String requestArgsAsJson = new Gson().toJson(requestArgs);
         final RequestBody requestBody = RequestBody.create(requestArgsAsJson, MediaType.parse("application/json;charset=utf-8"));
 
