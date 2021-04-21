@@ -383,7 +383,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
         /**
          * 关闭 ImagePicker，返回 true.
          */
-        boolean onImagePick(@NonNull List<ImageData.ImageInfo> imageInfos);
+        boolean onImagePick(@NonNull List<ImageData.ImageInfo> imageInfoList);
     }
 
     private OnImagePickListener mOnImagePickListener;

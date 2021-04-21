@@ -12,7 +12,7 @@ public class SignUpArgument implements Parcelable {
 
     private static final String KEY_SIGN_UP_ARG = "key:sign_up_arg_20210421";
 
-    public long targetUserId;
+    public long userId;
     public String nickname;
     public String avatar;
 
@@ -73,14 +73,14 @@ public class SignUpArgument implements Parcelable {
     }
 
     protected SignUpArgument(Parcel in) {
-        this.targetUserId = in.readLong();
+        this.userId = in.readLong();
         this.nickname = in.readString();
         this.avatar = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.targetUserId);
+        dest.writeLong(this.userId);
         dest.writeString(this.nickname);
         dest.writeString(this.avatar);
     }

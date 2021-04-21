@@ -72,7 +72,7 @@ public class FileUploadManager {
     }
 
     @NonNull
-    protected FileUploadProvider getFileUploadProvider() {
+    public FileUploadProvider getFileUploadProvider() {
         return mProviderProxy;
     }
 

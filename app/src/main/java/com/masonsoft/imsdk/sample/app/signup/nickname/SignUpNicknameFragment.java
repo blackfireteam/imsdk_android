@@ -15,15 +15,16 @@ import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.signup.SignUpArgument;
+import com.masonsoft.imsdk.sample.app.signup.SignUpFragment;
+import com.masonsoft.imsdk.sample.app.signup.avatar.SignUpAvatarActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignUpNicknameFragmentBinding;
 
 import io.github.idonans.core.FormValidator;
 import io.github.idonans.core.util.ToastUtil;
 import io.github.idonans.lang.util.ViewUtil;
 
-public class SignUpNicknameFragment extends SystemInsetsFragment {
+public class SignUpNicknameFragment extends SignUpFragment {
 
     public static SignUpNicknameFragment newInstance(@Nullable SignUpArgument signUpArgument) {
         Bundle args = new Bundle();
@@ -36,33 +37,7 @@ public class SignUpNicknameFragment extends SystemInsetsFragment {
     }
 
     @Nullable
-    private SignUpArgument mSignUpArgument;
-
-    @Nullable
     private ImsdkSampleSignUpNicknameFragmentBinding mBinding;
-
-    private void saveSignUpArgument() {
-        if (isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
-            return;
-        }
-
-        Bundle args = getArguments();
-        if (args == null) {
-            args = new Bundle();
-        }
-        if (mSignUpArgument != null) {
-            mSignUpArgument.writeTo(args);
-        }
-        setArguments(args);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mSignUpArgument = SignUpArgument.valueOf(getArguments());
-    }
 
     @Nullable
     @Override
@@ -85,9 +60,8 @@ public class SignUpNicknameFragment extends SystemInsetsFragment {
             return false;
         });
 
-        if (mSignUpArgument != null) {
-            mBinding.editText.setText(mSignUpArgument.nickname);
-        }
+        mBinding.editText.setText(getSignUpArgument().nickname);
+
         ViewUtil.onClick(mBinding.submit, v -> onSubmit());
 
         return mBinding.getRoot();
@@ -117,13 +91,10 @@ public class SignUpNicknameFragment extends SystemInsetsFragment {
             return;
         }
 
-        if (mSignUpArgument == null) {
-            mSignUpArgument = new SignUpArgument();
-        }
-        mSignUpArgument.nickname = nickname;
+        getSignUpArgument().nickname = nickname;
         saveSignUpArgument();
 
-        // TODO
+        SignUpAvatarActivity.start(activity, getSignUpArgument());
     }
 
     @Override

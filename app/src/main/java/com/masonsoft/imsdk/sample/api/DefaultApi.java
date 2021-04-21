@@ -60,14 +60,14 @@ public class DefaultApi {
                 .build();
     }
 
-    public static Init getImToken(String phone) {
+    public static Init getImToken(long userId) {
         final String appSecret = Constants.APP_SECRET;
         final int nonce = (int) (Math.random() * 1000000000);
         final long timestamp = System.currentTimeMillis() / 1000;
         final String sign = RequestSignUtil.calSign(appSecret, nonce, timestamp);
 
         final Map<String, Object> requestArgs = new HashMap<>();
-        requestArgs.put("uid", phone);
+        requestArgs.put("uid", userId);
         requestArgs.put("ctype", 0);
         final String requestArgsAsJson = new Gson().toJson(requestArgs);
         final RequestBody requestBody = RequestBody.create(requestArgsAsJson, MediaType.parse("application/json;charset=utf-8"));

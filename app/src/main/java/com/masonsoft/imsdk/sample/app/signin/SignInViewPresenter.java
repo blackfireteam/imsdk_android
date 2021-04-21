@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.app.signup;
+package com.masonsoft.imsdk.sample.app.signin;
 
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
@@ -12,28 +12,28 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class SignUpFragmentPresenter extends DynamicPresenter<SignUpFragment.ViewImpl> {
+public abstract class SignInViewPresenter<T extends SignInView> extends DynamicPresenter<T> {
 
-    private final DisposableHolder mRequestHolder = new DisposableHolder();
+    protected final DisposableHolder mRequestHolder = new DisposableHolder();
 
-    public SignUpFragmentPresenter(SignUpFragment.ViewImpl view) {
+    public SignInViewPresenter(T view) {
         super(view);
     }
 
-    public void requestToken(String phone) {
+    public void requestToken(long userId) {
         mRequestHolder.set(Single.just("")
-                .map(input -> DefaultApi.getImToken(phone))
+                .map(input -> DefaultApi.getImToken(userId))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(init -> {
-                    final SignUpFragment.ViewImpl view = getView();
+                    final SignInView view = getView();
                     if (view == null) {
                         return;
                     }
                     view.onFetchTokenSuccess(init.token);
                 }, e -> {
                     SampleLog.e(e);
-                    final SignUpFragment.ViewImpl view = getView();
+                    final SignInView view = getView();
                     if (view == null) {
                         return;
                     }
@@ -41,13 +41,12 @@ public class SignUpFragmentPresenter extends DynamicPresenter<SignUpFragment.Vie
                     if (e instanceof ApiResponseException) {
                         final int errorCode = ((ApiResponseException) e).code;
                         final String errorMessage = ((ApiResponseException) e).message;
-                        view.onFetchTokenFail(phone, errorCode, errorMessage);
+                        view.onFetchTokenFail(userId, errorCode, errorMessage);
                         return;
                     }
 
-                    view.onFetchTokenFail(e, phone);
+                    view.onFetchTokenFail(e, userId);
                 }));
-
     }
 
 
@@ -64,7 +63,7 @@ public class SignUpFragmentPresenter extends DynamicPresenter<SignUpFragment.Vie
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    final SignUpFragment.ViewImpl view = getView();
+                    final SignInView view = getView();
                     if (view == null) {
                         return;
                     }
@@ -76,14 +75,13 @@ public class SignUpFragmentPresenter extends DynamicPresenter<SignUpFragment.Vie
                     }
                 }, e -> {
                     SampleLog.e(e);
-                    final SignUpFragment.ViewImpl view = getView();
+                    final SignInView view = getView();
                     if (view == null) {
                         return;
                     }
 
                     view.onTcpSignInFail(e);
                 }));
-
     }
 
 }
