@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.app.signin;
+package com.masonsoft.imsdk.sample.app.signup;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,35 +6,28 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMSessionManager;
+import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
-import com.masonsoft.imsdk.sample.app.main.MainActivity;
 
 import io.github.idonans.systeminsets.SystemUiHelper;
 
 /**
- * 登录
+ * 注册
  */
-public class SignInActivity extends FragmentDelegateActivity {
+public class SignUpActivity extends FragmentDelegateActivity {
 
-    public static void start(Context context) {
-        Intent starter = new Intent(context, SignInActivity.class);
+    public static void start(Context context, long targetUserId) {
+        Intent starter = new Intent(context, SignUpActivity.class);
+        starter.putExtra(Constants.ExtrasKey.TARGET_USER_ID, targetUserId);
         starter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(starter);
     }
 
-    private static final String FRAGMENT_TAG_SIGN_IN = "fragment_sign_in_20210322";
+    private static final String FRAGMENT_TAG_SIGN_UP = "fragment_sign_up_20210421";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (IMSessionManager.getInstance().getSessionUserId() > 0) {
-            // 已经登录
-            MainActivity.start(this);
-            finish();
-            return;
-        }
 
         SystemUiHelper.from(getWindow())
                 .layoutStatusBar()
@@ -44,7 +37,8 @@ public class SignInActivity extends FragmentDelegateActivity {
                 .setLightNavigationBar()
                 .apply();
 
-        setFragmentDelegate(FRAGMENT_TAG_SIGN_IN, SignInFragment::newInstance);
+        final long targetUserId = getIntent().getLongExtra(Constants.ExtrasKey.TARGET_USER_ID, 0);
+        setFragmentDelegate(FRAGMENT_TAG_SIGN_UP, () -> SignUpFragment.newInstance(targetUserId));
     }
 
 }

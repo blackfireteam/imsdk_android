@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.app.signin;
+package com.masonsoft.imsdk.sample.app.signup;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -19,7 +19,6 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
-import com.masonsoft.imsdk.sample.app.signup.SignUpActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
 import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
@@ -30,19 +29,32 @@ import io.github.idonans.core.util.ToastUtil;
 import io.github.idonans.dynamic.DynamicView;
 import io.github.idonans.lang.util.ViewUtil;
 
-public class SignInFragment extends SystemInsetsFragment {
+public class SignUpFragment extends SystemInsetsFragment {
 
-    public static SignInFragment newInstance() {
+    public static SignUpFragment newInstance(long targetUserId) {
         Bundle args = new Bundle();
-        SignInFragment fragment = new SignInFragment();
+        args.putLong(Constants.ExtrasKey.TARGET_USER_ID, targetUserId);
+        SignUpFragment fragment = new SignUpFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
+    private long mTargetUserId;
+
     @Nullable
     private ImsdkSampleSignInFragmentBinding mBinding;
     private ViewImpl mView;
-    private SignInFragmentPresenter mPresenter;
+    private SignUpFragmentPresenter mPresenter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        final Bundle args = getArguments();
+        if (args != null) {
+            mTargetUserId = args.getLong(Constants.ExtrasKey.TARGET_USER_ID);
+        }
+    }
 
     @Nullable
     @Override
@@ -91,7 +103,7 @@ public class SignInFragment extends SystemInsetsFragment {
         Preconditions.checkNotNull(mBinding);
         mView = new ViewImpl();
         clearPresenter();
-        mPresenter = new SignInFragmentPresenter(mView);
+        mPresenter = new SignUpFragmentPresenter(mView);
     }
 
     private void onSubmit() {
@@ -157,8 +169,7 @@ public class SignInFragment extends SystemInsetsFragment {
                 return;
             }
 
-            final long targetUserId = Long.parseLong(phone);
-            SignUpActivity.start(activity, targetUserId);
+            // TODO
         }
 
         public void onFetchTokenSuccess(String token) {
