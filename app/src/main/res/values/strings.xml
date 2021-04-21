@@ -8,12 +8,15 @@
     <string name="imsdk_sample_tab_conversation">消息</string>
     <string name="imsdk_sample_tab_mine">我的</string>
     <string name="imsdk_sample_sign_in_submit_text">登录</string>
+    <string name="imsdk_sample_submit_action_next">下一步</string>
     <string name="imsdk_sample_edit_hint_phone">手机号码</string>
     <string name="imsdk_sample_edit_hint_api_server">API 服务器地址 https://xxx:8888</string>
     <string name="imsdk_sample_edit_hint_im_server">消息服务器地址 x.x.x.x:8888</string>
+    <string name="imsdk_sample_edit_hint_nickname">昵称</string>
     <string name="imsdk_sample_input_error_empty_phone">手机号码不能为空</string>
     <string name="imsdk_sample_input_error_api_server_error">API 服务器地址错误</string>
     <string name="imsdk_sample_input_error_im_server_error">消息服务器地址错误</string>
+    <string name="imsdk_sample_input_error_nickname_error">昵称在 3 – 20 字符</string>
     <string name="imsdk_sample_chat_input_hint">发送聊天内容</string>
     <string name="imsdk_sample_chat_input_submit">发送</string>
     <string name="imsdk_sample_tip_text_network_error">网络不给力</string>
