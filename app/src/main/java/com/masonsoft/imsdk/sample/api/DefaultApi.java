@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.masonsoft.imsdk.EnqueueCallbackAdapter;
 import com.masonsoft.imsdk.OtherMessage;
@@ -85,13 +86,17 @@ public class DefaultApi {
         try {
             final Response response = okHttpClient.newCall(request).execute();
             final String json = response.body().string();
-            final ApiResponse<Init> apiResponse = new Gson().fromJson(json, new TypeToken<ApiResponse<Init>>() {
-            }.getType());
 
-            if (apiResponse.code != 0) {
-                throw new ApiResponseException(apiResponse.code, apiResponse.message);
+            final JsonObject jsonObject = new Gson().fromJson(json, new TypeToken<JsonObject>() {
+            }.getType());
+            final int code = jsonObject.get("code").getAsInt();
+            final String message = jsonObject.get("message").getAsString();
+            if (code != 0) {
+                throw new ApiResponseException(code, message);
             }
 
+            final ApiResponse<Init> apiResponse = new Gson().fromJson(json, new TypeToken<ApiResponse<Init>>() {
+            }.getType());
             return apiResponse.data;
         } catch (Throwable e) {
             if (e instanceof ApiResponseException) {
