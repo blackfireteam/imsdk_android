@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk.sample.api;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
@@ -12,6 +14,7 @@ import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.observable.OtherMessageObservable;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
+import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.entity.ApiResponse;
 import com.masonsoft.imsdk.sample.entity.Init;
 import com.masonsoft.imsdk.sample.entity.Spark;
@@ -43,7 +46,13 @@ public class DefaultApi {
 
     private static OkHttpClient createDefaultApiOkHttpClient() {
         final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        if (SampleLog.getLogLevel() <= Log.VERBOSE) {
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        } else if (SampleLog.getLogLevel() <= Log.DEBUG) {
+            logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        } else {
+            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
+        }
         return OkHttpClientUtil.createDefaultOkHttpClient()
                 .newBuilder()
                 .addInterceptor(logging)
