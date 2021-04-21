@@ -25,6 +25,7 @@
         <activity android:name=".app.signin.SignInActivity" />
         <activity android:name=".app.signup.SignUpActivity" />
         <activity android:name=".app.signup.nickname.SignUpNicknameActivity" />
+        <activity android:name=".app.signup.avatar.SignUpAvatarActivity" />
         <activity android:name=".app.chat.SingleChatActivity" />
     </application>
 
