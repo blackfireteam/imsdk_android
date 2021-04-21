@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.I18nResources;
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.R;
@@ -19,6 +20,7 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
+import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.Preconditions;
 
@@ -142,11 +144,60 @@ public class SignInFragment extends SystemInsetsFragment {
                 settings.apiServer,
                 settings.imServer);
 
-        mPresenter.requestSignIn(phone);
+        mPresenter.requestToken(phone);
     }
 
     class ViewImpl implements DynamicView {
-        public void onSignInSuccess() {
+        private void onRequestSignUp(final String phone) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onRequestSignUp phone:%s", phone);
+            final Activity activity = getActivity();
+            if (activity == null) {
+                SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+                return;
+            }
+
+            // TODO
+        }
+
+        public void onFetchTokenSuccess(String token) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onFetchTokenSuccess token:%s", token);
+
+            mPresenter.requestTcpSignIn(token);
+        }
+
+        public void onFetchTokenFail(String phone, int code, String message) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onFetchTokenFail phone:%s, code:%s, message:%s", phone, code, message);
+
+            final Activity activity = getActivity();
+            if (activity == null) {
+                SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+                return;
+            }
+
+            if (code == 9) {
+                // 用户未注册
+                onRequestSignUp(phone);
+                return;
+            }
+
+            TipUtil.showOrDefault(message);
+        }
+
+        public void onFetchTokenFail(Throwable e, String phone) {
+            SampleLog.v(e, Objects.defaultObjectTag(this) + " onFetchTokenFail phone:%s", phone);
+
+            final Activity activity = getActivity();
+            if (activity == null) {
+                SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+                return;
+            }
+
+            TipUtil.show(R.string.imsdk_sample_tip_text_error_unknown);
+        }
+
+        public void onTcpSignInSuccess() {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onTcpSignInSuccess");
+
             final Activity activity = getActivity();
             if (activity == null) {
                 SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
@@ -157,14 +208,32 @@ public class SignInFragment extends SystemInsetsFragment {
             activity.finish();
         }
 
-        public void onSignInFail(int code, String message) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onSignInFail code:%s, message:%s", code, message);
-            // TODO
+        public void onTcpSignInFail(GeneralResult result) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onTcpSignInFail GeneralResult:%s", result);
+
+            final Activity activity = getActivity();
+            if (activity == null) {
+                SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+                return;
+            }
+
+            if (result.subResult != null) {
+                TipUtil.showOrDefault(result.subResult.message);
+            } else {
+                TipUtil.showOrDefault(result.message);
+            }
         }
 
-        public void onConnectionFail() {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onConnectionFail");
-            // TODO
+        public void onTcpSignInFail(Throwable e) {
+            SampleLog.v(e, Objects.defaultObjectTag(this) + " onTcpSignInFail");
+
+            final Activity activity = getActivity();
+            if (activity == null) {
+                SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+                return;
+            }
+
+            TipUtil.show(R.string.imsdk_sample_tip_text_error_unknown);
         }
     }
 

@@ -17,6 +17,7 @@
     <string name="imsdk_sample_chat_input_hint">发送聊天内容</string>
     <string name="imsdk_sample_chat_input_submit">发送</string>
     <string name="imsdk_sample_tip_text_network_error">网络不给力</string>
+    <string name="imsdk_sample_tip_text_error_unknown">操作失败</string>
     <string name="imsdk_sample_tip_require_permission_storage">缺少存储权限</string>
     <string name="imsdk_sample_tip_success_add_to_media_store">已添加到相册</string>
     <string name="imsdk_sample_tip_download_success">下载成功</string>

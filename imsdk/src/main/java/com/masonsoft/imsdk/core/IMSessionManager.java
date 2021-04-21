@@ -149,10 +149,10 @@ public class IMSessionManager {
      * 尽可能获取一个可用的登录用户 id，如果长连接上的登录用户信息暂时暂时无效，则会先 block, 直到登录成功或者超时.
      */
     @WorkerThread
-    public long getSessionUserIdWithBlockOrTimeout() {
+    public GeneralResult getSessionUserIdWithBlockOrTimeout() {
         final long sessionUserId = mSessionUserId;
         if (sessionUserId > 0) {
-            return sessionUserId;
+            return GeneralResult.success();
         }
 
         final SingleSubject<GeneralResult> subject = SingleSubject.create();
@@ -198,7 +198,7 @@ public class IMSessionManager {
 
         final GeneralResult result = subject.blockingGet();
         IMLog.v("getSessionUserIdWithBlockOrTimeout GeneralResult:%s", result.toShortString());
-        return mSessionUserId;
+        return result;
     }
 
     /**
