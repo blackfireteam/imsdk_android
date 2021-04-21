@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.app.sign;
+package com.masonsoft.imsdk.sample.app.signin;
 
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;

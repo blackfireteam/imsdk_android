@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".app.main.MainActivity" />
-        <activity android:name=".app.sign.SignInActivity" />
+        <activity android:name=".app.signin.SignInActivity" />
         <activity android:name=".app.chat.SingleChatActivity" />
     </application>
 

@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
-import com.masonsoft.imsdk.sample.app.sign.SignInActivity;
+import com.masonsoft.imsdk.sample.app.signin.SignInActivity;
 
 import io.github.idonans.core.WeakAbortSignal;
 import io.github.idonans.core.thread.Threads;

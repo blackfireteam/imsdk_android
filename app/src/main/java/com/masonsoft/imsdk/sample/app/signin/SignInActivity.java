@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.app.sign;
+package com.masonsoft.imsdk.sample.app.signin;
 
 import android.content.Context;
 import android.content.Intent;
