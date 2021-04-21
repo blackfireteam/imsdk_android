@@ -20,6 +20,7 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.app.signup.SignUpActivity;
+import com.masonsoft.imsdk.sample.app.signup.SignUpArgument;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
 import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
@@ -158,7 +159,9 @@ public class SignInFragment extends SystemInsetsFragment {
             }
 
             final long targetUserId = Long.parseLong(phone);
-            SignUpActivity.start(activity, targetUserId);
+            final SignUpArgument signUpArgument = new SignUpArgument();
+            signUpArgument.targetUserId = targetUserId;
+            SignUpActivity.start(activity, signUpArgument);
         }
 
         public void onFetchTokenSuccess(String token) {
