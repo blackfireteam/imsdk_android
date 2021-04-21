@@ -90,7 +90,7 @@ public class DefaultApi {
             final JsonObject jsonObject = new Gson().fromJson(json, new TypeToken<JsonObject>() {
             }.getType());
             final int code = jsonObject.get("code").getAsInt();
-            final String message = jsonObject.get("message").getAsString();
+            final String message = jsonObject.get("msg").getAsString();
             if (code != 0) {
                 throw new ApiResponseException(code, message);
             }
