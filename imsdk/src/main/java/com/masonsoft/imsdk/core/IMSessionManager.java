@@ -146,6 +146,62 @@ public class IMSessionManager {
     }
 
     /**
+     * 尽可能获取一个可用的登录用户 id，如果长连接上的登录用户信息暂时暂时无效，则会先 block, 直到登录成功或者超时.
+     */
+    @WorkerThread
+    public long getSessionUserIdWithBlockOrTimeout() {
+        final long sessionUserId = mSessionUserId;
+        if (sessionUserId > 0) {
+            return sessionUserId;
+        }
+
+        final SingleSubject<GeneralResult> subject = SingleSubject.create();
+        final Runnable validateSubjectState = () -> {
+            // 检查当前 sessionUserId 是否已经正常了
+            final long innerSessionUserId = mSessionUserId;
+            if (innerSessionUserId > 0) {
+                subject.onSuccess(GeneralResult.success());
+            }
+        };
+        final Runnable subjectTimeout = () ->
+                subject.onSuccess(GeneralResult.valueOf(GeneralResult.CODE_ERROR_TIMEOUT));
+        final SessionObservable.SessionObserver sessionObserver = new SessionObservable.SessionObserver() {
+            @Override
+            public void onSessionChanged() {
+                validateSubjectState.run();
+            }
+
+            @Override
+            public void onSessionUserIdChanged() {
+                validateSubjectState.run();
+            }
+        };
+        final ClockObservable.ClockObserver clockObserver = new ClockObservable.ClockObserver() {
+
+            // 超时时间
+            private final long TIME_OUT = TimeUnit.SECONDS.toMillis(60);
+            private final long mTimeStart = System.currentTimeMillis();
+
+            @Override
+            public void onClock() {
+                if (System.currentTimeMillis() - mTimeStart > TIME_OUT) {
+                    // 超时
+                    IMLog.v(Objects.defaultObjectTag(this) + " getSessionUserIdWithBlockOrTimeout onClock timeout");
+                    subjectTimeout.run();
+                } else {
+                    validateSubjectState.run();
+                }
+            }
+        };
+        SessionObservable.DEFAULT.registerObserver(sessionObserver);
+        ClockObservable.DEFAULT.registerObserver(clockObserver);
+
+        final GeneralResult result = subject.blockingGet();
+        IMLog.v("getSessionUserIdWithBlockOrTimeout GeneralResult:%s", result.toShortString());
+        return mSessionUserId;
+    }
+
+    /**
      * 销毁长连接
      */
     public void destroySessionTcpClient() {

@@ -2,27 +2,83 @@ package com.masonsoft.imsdk.sample.api;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.masonsoft.imsdk.EnqueueCallbackAdapter;
 import com.masonsoft.imsdk.OtherMessage;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.OtherMessageManager;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.observable.OtherMessageObservable;
+import com.masonsoft.imsdk.sample.Constants;
+import com.masonsoft.imsdk.sample.LocalSettingsManager;
+import com.masonsoft.imsdk.sample.entity.ApiResponse;
+import com.masonsoft.imsdk.sample.entity.Init;
 import com.masonsoft.imsdk.sample.entity.Spark;
 import com.masonsoft.imsdk.sample.im.FetchSparkMessagePacket;
+import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
+import com.masonsoft.imsdk.sample.util.RequestSignUtil;
 import com.masonsoft.imsdk.user.UserInfoManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.subjects.SingleSubject;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class DefaultApi {
 
     private static final long TIMEOUT_MS = 20 * 1000L;
 
     private DefaultApi() {
+    }
+
+    public static Init getImToken(String phone) {
+        final String appSecret = Constants.APP_SECRET;
+        final int nonce = (int) (Math.random() * 1000000000);
+        final long timestamp = System.currentTimeMillis() / 1000;
+        final String sign = RequestSignUtil.calSign(appSecret, nonce, timestamp);
+
+        final Map<String, Object> requestArgs = new HashMap<>();
+        requestArgs.put("uid", phone);
+        final String requestArgsAsJson = new Gson().toJson(requestArgs);
+        final RequestBody requestBody = RequestBody.create(requestArgsAsJson, MediaType.parse("application/json;charset=utf-8"));
+
+        final LocalSettingsManager.Settings settings = LocalSettingsManager.getInstance().getSettings();
+        final String url = settings.apiServer + "/user/iminit";
+        final Request request = new Request.Builder()
+                .addHeader("nonce", String.valueOf(nonce))
+                .addHeader("timestamp", String.valueOf(timestamp))
+                .addHeader("sig", sign)
+                .url(url)
+                .post(requestBody)
+                .build();
+
+        final OkHttpClient okHttpClient = OkHttpClientUtil.createDefaultOkHttpClient();
+        try {
+            final Response response = okHttpClient.newCall(request).execute();
+            final String json = response.body().string();
+            final ApiResponse<Init> apiResponse = new Gson().fromJson(json, new TypeToken<ApiResponse<Init>>() {
+            }.getType());
+
+            if (apiResponse.code != 0) {
+                throw new ApiResponseException(apiResponse.code, apiResponse.message);
+            }
+
+            return apiResponse.data;
+        } catch (Throwable e) {
+            if (e instanceof ApiResponseException) {
+                throw (ApiResponseException) e;
+            }
+            throw new RuntimeException(e);
+        }
     }
 
     public static List<Spark> getSparks() {

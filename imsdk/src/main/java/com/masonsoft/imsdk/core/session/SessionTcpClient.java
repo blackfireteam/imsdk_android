@@ -202,6 +202,18 @@ public class SessionTcpClient extends NettyTcpClient {
                 && mSignInMessagePacket.isSignIn();
     }
 
+    /**
+     * 判断当前长连接是否已经链接失败
+     *
+     * @return
+     */
+    public boolean isConnectFail() {
+        if (!SessionValidator.isValid(mSession)) {
+            return true;
+        }
+        return getState() == STATE_CLOSED;
+    }
+
     @NonNull
     public Session getSession() {
         return mSession;

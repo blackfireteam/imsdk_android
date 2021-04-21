@@ -63,11 +63,15 @@ public class LocalSettingsManager {
         return mSettings.copy();
     }
 
-    public void save() {
+    public void setSettings(@Nullable Settings settings) {
+        if (settings == null) {
+            mSettings = new Settings();
+        } else {
+            mSettings = settings.copy();
+        }
         Threads.postBackground(() -> {
             try {
-                final Settings settings = mSettings.copy();
-                final String json = new Gson().toJson(settings);
+                final String json = new Gson().toJson(mSettings.copy());
                 StorageManager.getInstance().set(Constants.SAMPLE_STORAGE_NAMESPACE, KEY_SETTINGS, json);
             } catch (Throwable e) {
                 SampleLog.e(e);
@@ -77,29 +81,30 @@ public class LocalSettingsManager {
 
     public static class Settings {
 
-        public String imHost;
-        public int imPort;
+        // im.ekfree.com
+        // 192.168.50.254
+        public String apiServer = "https://im.ekfree.com:18788";
         public String imToken;
+        public String imServer = "im.ekfree.com:18888";
 
         public boolean hasValidSession() {
-            return !TextUtils.isEmpty(this.imHost)
-                    && this.imPort > 0
+            return !TextUtils.isEmpty(this.imServer)
                     && !TextUtils.isEmpty(this.imToken);
         }
 
         @Nullable
         public Session createSession() {
             if (hasValidSession()) {
-                return new Session(this.imToken, this.imHost, this.imPort);
+                return Session.create(this.imToken, this.imServer);
             }
             return null;
         }
 
         private Settings copy() {
             final Settings target = new Settings();
-            target.imHost = this.imHost;
-            target.imPort = this.imPort;
+            target.apiServer = this.apiServer;
             target.imToken = this.imToken;
+            target.imServer = this.imServer;
             return target;
         }
     }

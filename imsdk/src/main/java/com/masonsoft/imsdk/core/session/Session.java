@@ -19,19 +19,30 @@ public final class Session {
     private final String mTcpHost;
     private final int mTcpPort;
 
-    public Session(String token, String tcpHost, int tcpPort) {
-        this(token, null, tcpHost, tcpPort);
+    public static Session create(String token, String tcpServerAndPort) {
+        return create(token, tcpServerAndPort, null);
     }
 
-    public Session(String token, String aesKey, String tcpHost, int tcpPort) {
+    public static Session create(String token, String tcpServerAndPort, String aesKey) {
+        final String[] array = tcpServerAndPort.split(":");
+        final String tcpHost = array[0];
+        final int tcpPort = Integer.parseInt(array[1]);
+        return new Session(token, tcpHost, tcpPort, aesKey);
+    }
+
+    public Session(String token, String tcpHost, int tcpPort) {
+        this(token, tcpHost, tcpPort, null);
+    }
+
+    public Session(String token, String tcpHost, int tcpPort, String aesKey) {
         this.mToken = token;
-        this.mAesKey = aesKey;
         this.mTcpHost = tcpHost;
         this.mTcpPort = tcpPort;
+        this.mAesKey = aesKey;
 
         TextUtil.checkStringNotEmpty(token, "invalid token");
         TextUtil.checkStringNotEmpty(tcpHost, "invalid tcp host");
-        if (tcpPort < 0 || tcpPort > 65535) {
+        if (tcpPort <= 0 || tcpPort > 65535) {
             throw new IllegalArgumentException("invalid tcp port");
         }
     }

@@ -7,28 +7,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.SimpleAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.core.IMSessionManager;
-import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.sample.Constants;
+import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.masonsoft.imsdk.util.Objects;
+import com.masonsoft.imsdk.util.Preconditions;
 
 import io.github.idonans.core.FormValidator;
 import io.github.idonans.core.util.ToastUtil;
+import io.github.idonans.dynamic.DynamicView;
 import io.github.idonans.lang.util.ViewUtil;
 
 public class SignInFragment extends SystemInsetsFragment {
@@ -40,62 +36,10 @@ public class SignInFragment extends SystemInsetsFragment {
         return fragment;
     }
 
-    private static final String TEST_LOCAL_HOST = "192.168.50.254";
-
-    private static final String[] TEST_TOKEN_ARRAY = new String[]{
-            "mz4ERZKaqS+Exjie4R5BsQ==",
-            "jCTYRM47p2PrZljH2tT4rw==",
-            "89g3Is+0vDBz7grDz95N4A==",
-            "knZxEr48p+kb70wIHxin9A==",
-            "lxmxSxIG9jIJWyruS08tsg==",
-            "jVUJjCbO+FyIYjv1PxWhmg==",
-            "M5nMDVU9Qe76BJQcTMP8lA==",
-            "d1rpzZ7RnvGyToVDws6cTQ==",
-            "fc2d4I046hsRSF9WpQ9NnA==",
-            "oL/jnE5vydk4a2ixCjHrTg==",
-            "CxY7P2HxAwxQc6Hue1Z3mg==",
-            "wlQeVQUdXZV0GZmzAzbi6g==",
-            "oywBohgtkR3zy4DxxH3LbA==",
-            "KMpJ5ze/J8hhrGqqGYrY6Q==",
-            "O7T63s8SwMY15f8RWAEuDQ==",
-            "VBXDOtpNJj8qp9n31RBdTg==",
-            "xJcfcPTLTYFCsabUVsDvLA==",
-            "rg3Pdti9iIWYc6NGL9VO+g==",
-            "rdb3ga+2v7fhKhztucl35A==",
-            "JmokHbYSC5b4VhyayugQ6g==",
-            "5qht/6ypb3K6xufiyxuIyQ==",
-            "kdkwm3bSpeBPjrBfDP0E0g==",
-            "T3AmDPOTp7smtGUElDRw/A==",
-            "xE07ucLL8oqSjyJp/GCihw==",
-            "9iKKSMm03UCXuzK5s1QlDw==",
-            "qZIEE8URcxOrvx9TVvfb4Q==",
-            "t/Ko8M0d5TVQwepmxJ9WlA==",
-            "AhybVVgbCrzFqvJFcQX1rQ==",
-            "agVLNAtKJr6Mbp3WkAxKCA==",
-            "DDn2LtKrC2jKRgZP6UAjXg==",
-            "QiV7xXHsLoSv4XRf+kUdhg==",
-            "HMJqyPTi17ZH5zJ5eKBPwA==",
-            "VBvAHrJxQIO49qFQg9CmbQ==",
-            "9aITYzqDL+da+hp2cY8ekA==",
-            "XKULrMkiqHUgPSx3B6mrTQ==",
-            "AK7yTvHuta4JhbCyAsjKsA==",
-            "p+u1Y/Jlh3krLrIQX9b4Hg==",
-            "p5t9wEXTfrOhNvpa6AK5IA==",
-    };
-    private static final List<Map<String, Object>> TEST_TOKEN_MAP_LIST = new ArrayList<>();
-
-    static {
-        int index = 0;
-        for (String token : TEST_TOKEN_ARRAY) {
-            final Map<String, Object> map = new HashMap<>();
-            map.put("token", token);
-            map.put("id", ++index);
-            TEST_TOKEN_MAP_LIST.add(map);
-        }
-    }
-
     @Nullable
     private ImsdkSampleSignInFragmentBinding mBinding;
+    private ViewImpl mView;
+    private SignInFragmentPresenter mPresenter;
 
     @Nullable
     @Override
@@ -104,7 +48,8 @@ public class SignInFragment extends SystemInsetsFragment {
         FormValidator.bind(
                 new FormValidator.InputView[]{
                         FormValidator.InputViewFactory.create(mBinding.editText),
-                        FormValidator.InputViewFactory.create(mBinding.localHost),
+                        FormValidator.InputViewFactory.create(mBinding.apiServer),
+                        FormValidator.InputViewFactory.create(mBinding.imServer),
                 },
                 new FormValidator.SubmitView[]{
                         FormValidator.SubmitViewFactory.create(mBinding.submit),
@@ -118,17 +63,32 @@ public class SignInFragment extends SystemInsetsFragment {
             }
             return false;
         });
-        mBinding.localHost.setText(TEST_LOCAL_HOST);
-        mBinding.tokenSpinner.setAdapter(new SimpleAdapter(
-                mBinding.tokenSpinner.getContext(),
-                TEST_TOKEN_MAP_LIST,
-                android.R.layout.simple_list_item_2,
-                new String[]{"token", "id",},
-                new int[]{android.R.id.text1, android.R.id.text2,}
-        ));
+
+        final LocalSettingsManager.Settings settings = LocalSettingsManager.getInstance().getSettings();
+        mBinding.apiServer.setText(settings.apiServer);
+        mBinding.imServer.setText(String.valueOf(settings.imServer));
+        mBinding.settingsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                ViewUtil.setVisibilityIfChanged(mBinding.apiServer, View.VISIBLE);
+                ViewUtil.setVisibilityIfChanged(mBinding.imServer, View.VISIBLE);
+            } else {
+                ViewUtil.setVisibilityIfChanged(mBinding.apiServer, View.GONE);
+                ViewUtil.setVisibilityIfChanged(mBinding.imServer, View.GONE);
+            }
+        });
         ViewUtil.onClick(mBinding.submit, v -> onSubmit());
 
         return mBinding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Preconditions.checkNotNull(mBinding);
+        mView = new ViewImpl();
+        clearPresenter();
+        mPresenter = new SignInFragmentPresenter(mView);
     }
 
     private void onSubmit() {
@@ -150,56 +110,77 @@ public class SignInFragment extends SystemInsetsFragment {
             ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_empty_phone));
             return;
         }
-        final String localHost = mBinding.localHost.getText().toString().trim();
-        if (TextUtils.isEmpty(localHost)) {
-            ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_empty_local_host));
+        final String apiServer = mBinding.apiServer.getText().toString().trim().toLowerCase();
+        if (TextUtils.isEmpty(apiServer)
+                || !apiServer.startsWith("https://")
+                || !apiServer.contains(":")) {
+            ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_api_server_error));
             return;
         }
-        final boolean internetSwitch = mBinding.internetSwitch.isChecked();
-        final String token = (String) ((Map<?, ?>) mBinding.tokenSpinner.getSelectedItem()).get("token");
+        final String imServer = mBinding.imServer.getText().toString().trim().toLowerCase();
+        if (TextUtils.isEmpty(imServer)
+                || imServer.contains("://")
+                || !imServer.contains(":")) {
+            ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_im_server_error));
+        }
+
+        final LocalSettingsManager.Settings settings = LocalSettingsManager.getInstance().getSettings();
+        try {
+            settings.apiServer = apiServer;
+            settings.imServer = imServer;
+            settings.imToken = null;
+            LocalSettingsManager.getInstance().setSettings(settings);
+        } catch (Throwable e) {
+            SampleLog.e(e);
+            ToastUtil.show(e.getMessage());
+            return;
+        }
 
         SampleLog.v(
-                "submit with phone:%s, internetSwitch:%s, token:%s",
+                "submit with phone:%s, apiServer:%s, imServer:%s",
                 phone,
-                internetSwitch,
-                token);
+                settings.apiServer,
+                settings.imServer);
 
-        //////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////
-        // TODO 临时使用固定的测试信息登录
-        //noinspection UnnecessaryLocalVariable
-        final String debugToken = token;
-        final String debugAesKey = null;
-        final String debugHost = internetSwitch ? "im.ekfree.com" : localHost;
-        final int debugPort = 18888;
-        final Session session = new Session(
-                debugToken,
-                debugAesKey,
-                debugHost,
-                debugPort
-        );
-        IMSessionManager.getInstance().setSession(session);
-
-        onSignInSuccess();
+        mPresenter.requestSignIn(phone);
     }
 
-    private void onSignInSuccess() {
-        final Activity activity = getActivity();
-        if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
-            return;
+    class ViewImpl implements DynamicView {
+        public void onSignInSuccess() {
+            final Activity activity = getActivity();
+            if (activity == null) {
+                SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+                return;
+            }
+
+            MainActivity.start(activity);
+            activity.finish();
         }
 
-        MainActivity.start(activity);
-        activity.finish();
+        public void onSignInFail(int code, String message) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onSignInFail code:%s, message:%s", code, message);
+            // TODO
+        }
+
+        public void onConnectionFail() {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onConnectionFail");
+            // TODO
+        }
+    }
+
+    private void clearPresenter() {
+        if (mPresenter != null) {
+            mPresenter.setAbort();
+            mPresenter = null;
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        clearPresenter();
         mBinding = null;
+        mView = null;
     }
 
 }

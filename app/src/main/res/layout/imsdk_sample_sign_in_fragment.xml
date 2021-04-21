@@ -18,42 +18,50 @@
         android:inputType="phone"
         android:maxLines="1"
         android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@id/local_host"
+        app:layout_constraintBottom_toTopOf="@id/settings_switch"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/settings_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:text="@string/imsdk_sample_switch_setting"
+        app:layout_constraintBottom_toTopOf="@id/api_server"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text" />
+
     <EditText
-        android:id="@+id/local_host"
+        android:id="@+id/api_server"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:hint="@string/imsdk_sample_edit_hint_local_host"
+        android:hint="@string/imsdk_sample_edit_hint_api_server"
+        android:importantForAutofill="no"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/im_server"
+        app:layout_constraintTop_toBottomOf="@id/settings_switch"
+        tools:visibility="visible" />
+
+    <EditText
+        android:id="@+id/im_server"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:hint="@string/imsdk_sample_edit_hint_im_server"
         android:importantForAutofill="no"
         android:includeFontPadding="false"
         android:inputType="number"
         android:maxLines="1"
         android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@id/internet_switch"
-        app:layout_constraintTop_toBottomOf="@id/edit_text" />
-
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/internet_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:text="链接外网"
-        app:layout_constraintBottom_toTopOf="@id/token_spinner"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/local_host"
-        tools:ignore="HardcodedText" />
-
-    <androidx.appcompat.widget.AppCompatSpinner
-        android:id="@+id/token_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/submit"
-        app:layout_constraintTop_toBottomOf="@id/internet_switch" />
+        app:layout_constraintTop_toBottomOf="@id/api_server"
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/submit"
@@ -66,7 +74,7 @@
         android:textColor="@color/imsdk_sample_button_text_selector"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/bottom_system_insets"
-        app:layout_constraintTop_toBottomOf="@id/token_spinner" />
+        app:layout_constraintTop_toBottomOf="@id/im_server" />
 
     <io.github.idonans.systeminsets.SystemInsetsFrameLayout
         android:id="@+id/bottom_system_insets"
