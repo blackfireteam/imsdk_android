@@ -62,6 +62,7 @@ dependencies {
     implementation rootProject.ext.bcfg.deps.gson
     implementation rootProject.ext.bcfg.deps.rxbinding
     implementation rootProject.ext.bcfg.deps.okhttp
+    implementation rootProject.ext.bcfg.deps.okhttp_logging_interceptor
     implementation rootProject.ext.bcfg.deps.rxjava
     implementation rootProject.ext.bcfg.deps.rxandroid
 

@@ -32,12 +32,22 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 public class DefaultApi {
 
     private static final long TIMEOUT_MS = 20 * 1000L;
 
     private DefaultApi() {
+    }
+
+    private static OkHttpClient createDefaultApiOkHttpClient() {
+        final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        return OkHttpClientUtil.createDefaultOkHttpClient()
+                .newBuilder()
+                .addInterceptor(logging)
+                .build();
     }
 
     public static Init getImToken(String phone) {
@@ -61,7 +71,7 @@ public class DefaultApi {
                 .post(requestBody)
                 .build();
 
-        final OkHttpClient okHttpClient = OkHttpClientUtil.createDefaultOkHttpClient();
+        final OkHttpClient okHttpClient = createDefaultApiOkHttpClient();
         try {
             final Response response = okHttpClient.newCall(request).execute();
             final String json = response.body().string();
