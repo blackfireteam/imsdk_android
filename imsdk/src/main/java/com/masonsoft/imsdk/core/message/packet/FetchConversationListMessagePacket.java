@@ -46,7 +46,12 @@ public class FetchConversationListMessagePacket extends NotNullTimeoutMessagePac
                         return false;
                     }
 
-                    if (result.getCode() != 0) {
+                    final long code = result.getCode();
+                    if (code == 12) {
+                        // 会话列表为空
+                        IMLog.v(Objects.defaultObjectTag(FetchConversationListMessagePacket.this) + " conversation list is empty");
+                        moveToState(STATE_SUCCESS);
+                    } else if (code != 0) {
                         setErrorCode(result.getCode());
                         setErrorMessage(result.getMsg());
                         IMLog.e(Objects.defaultObjectTag(FetchConversationListMessagePacket.this) +
