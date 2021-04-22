@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 
 import java.util.Locale;
@@ -14,7 +15,7 @@ import io.github.idonans.core.util.DimenUtil;
 
 public class IMImageView extends ImageLayout {
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = Constants.DEBUG_WIDGET;
 
     public IMImageView(Context context) {
         this(context, null);

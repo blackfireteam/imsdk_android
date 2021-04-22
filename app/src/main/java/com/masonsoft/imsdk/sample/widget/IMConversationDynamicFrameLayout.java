@@ -8,10 +8,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.IMConversation;
+import com.masonsoft.imsdk.sample.Constants;
 
 public abstract class IMConversationDynamicFrameLayout extends FrameLayout {
 
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = Constants.DEBUG_WIDGET;
 
     public IMConversationDynamicFrameLayout(Context context) {
         this(context, null);
