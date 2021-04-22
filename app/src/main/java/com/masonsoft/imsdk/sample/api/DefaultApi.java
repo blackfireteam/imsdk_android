@@ -24,6 +24,7 @@ import com.masonsoft.imsdk.sample.im.FetchSparkMessagePacket;
 import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
 import com.masonsoft.imsdk.sample.util.RequestSignUtil;
 import com.masonsoft.imsdk.user.UserInfoManager;
+import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,6 +110,7 @@ public class DefaultApi {
         }
     }
 
+    @NonNull
     public static Init getImToken(long userId) {
         final String url = "/user/iminit";
 
@@ -116,8 +118,29 @@ public class DefaultApi {
         requestArgs.put("uid", userId);
         requestArgs.put("ctype", 0);
 
-        return requestApiServer(url, requestArgs, new TypeToken<Init>() {
-        });
+        return Preconditions.checkNotNull(requestApiServer(url, requestArgs, new TypeToken<Init>() {
+        }));
+    }
+
+    @NonNull
+    public static Object reg(long userId, String nickname, String avatar) {
+        final String url = "/user/reg";
+
+        final Map<String, Object> requestArgs = new HashMap<>();
+        requestArgs.put("uid", userId);
+        requestArgs.put("nick_name", nickname);
+        requestArgs.put("avatar", avatar);
+        requestArgs.put("gold", 0);
+        requestArgs.put("gold_exp", 0);
+        requestArgs.put("approved", 1);
+        requestArgs.put("disabled", 0);
+        requestArgs.put("blocked", 0);
+        requestArgs.put("hold", 0);
+        requestArgs.put("deleted", 0);
+        requestArgs.put("verified", 0);
+
+        requestApiServer(url, requestArgs, null);
+        return new Object();
     }
 
     public static List<Spark> getSparks() {

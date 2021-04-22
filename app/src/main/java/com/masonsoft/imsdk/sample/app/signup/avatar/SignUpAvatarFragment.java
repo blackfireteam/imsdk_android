@@ -162,7 +162,11 @@ public class SignUpAvatarFragment extends SignUpFragment {
                 signUpArgument.nickname,
                 signUpArgument.avatar);
 
-        mPresenter.requestSignUp();
+        mPresenter.requestSignUp(
+                signUpArgument.userId,
+                signUpArgument.nickname,
+                signUpArgument.avatar
+        );
     }
 
     class ViewImpl extends SignUpView {
@@ -233,8 +237,8 @@ public class SignUpAvatarFragment extends SignUpFragment {
             TipUtil.show(R.string.imsdk_sample_tip_text_error_unknown);
         }
 
-        public void onSignUpSuccess() {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onSignUpSuccess");
+        public void onSignUpSuccess(long userId) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onSignUpSuccess userId:%s", userId);
 
             final Activity activity = getActivity();
             if (activity == null) {
@@ -242,7 +246,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
                 return;
             }
 
-            mPresenter.requestToken(getSignUpArgument().userId);
+            mPresenter.requestToken(userId);
         }
     }
 

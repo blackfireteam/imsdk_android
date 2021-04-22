@@ -5,6 +5,8 @@ import android.net.Uri;
 import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.FileUploadProvider;
 import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.sample.api.ApiResponseException;
+import com.masonsoft.imsdk.sample.api.DefaultApi;
 import com.masonsoft.imsdk.sample.app.signup.SignUpViewPresenter;
 
 import io.github.idonans.core.Progress;
@@ -64,8 +66,30 @@ public class SignUpAvatarFragmentPresenter extends SignUpViewPresenter<SignUpAva
                 }));
     }
 
-    public void requestSignUp() {
-        // TODO
+    public void requestSignUp(long userId, String nickname, String avatar) {
+        mRequestHolder.set(Single.just("")
+                .map(input -> DefaultApi.reg(userId, nickname, avatar))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(avatarUrl -> {
+                    final SignUpAvatarFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+                    view.onSignUpSuccess(userId);
+                }, e -> {
+                    SampleLog.e(e);
+                    final SignUpAvatarFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+
+                    if (e instanceof ApiResponseException) {
+                        view.onSignUpFail(((ApiResponseException) e).code, ((ApiResponseException) e).message);
+                        return;
+                    }
+                    view.onSignUpFail(e);
+                }));
     }
 
 }
