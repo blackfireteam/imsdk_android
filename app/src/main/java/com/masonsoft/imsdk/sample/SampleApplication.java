@@ -3,6 +3,7 @@ package com.masonsoft.imsdk.sample;
 import android.app.Application;
 import android.os.Build;
 import android.util.Log;
+import android.view.Choreographer;
 import android.webkit.WebView;
 
 import androidx.emoji.bundled.BundledEmojiCompatConfig;
@@ -20,6 +21,8 @@ import com.masonsoft.imsdk.core.IMManager;
 import com.masonsoft.imsdk.sample.common.TopActivity;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
+
+import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.manager.ProcessManager;
 import io.github.idonans.dynamic.DynamicLog;
@@ -49,6 +52,8 @@ public class SampleApplication extends Application {
 
         initFresco();
         registerActivityLifecycleCallbacks(TopActivity.getInstance().getActivityLifecycleCallbacks());
+
+        addAnrDebug();
     }
 
     private void initFresco() {
@@ -65,6 +70,27 @@ public class SampleApplication extends Application {
                         .setBaseDirectoryName(ProcessManager.getInstance().getProcessTag() + "_fresco_small")
                         .build())
                 .build());
+    }
+
+    private final long mAnrTimeout = TimeUnit.SECONDS.toNanos(2);
+    private long mLastFrameTimeNanos;
+
+    private void addAnrDebug() {
+        final Choreographer.FrameCallback callback = new Choreographer.FrameCallback() {
+            @Override
+            public void doFrame(long frameTimeNanos) {
+                Choreographer.getInstance().postFrameCallback(this);
+                final long lastFrameTimeNanos = mLastFrameTimeNanos;
+                mLastFrameTimeNanos = frameTimeNanos;
+                if (lastFrameTimeNanos > 0) {
+                    final long dur = frameTimeNanos - lastFrameTimeNanos;
+                    if (dur > mAnrTimeout) {
+                        new RuntimeException("anr found dur:" + dur).printStackTrace();
+                    }
+                }
+            }
+        };
+        Choreographer.getInstance().postFrameCallback(callback);
     }
 
 }
