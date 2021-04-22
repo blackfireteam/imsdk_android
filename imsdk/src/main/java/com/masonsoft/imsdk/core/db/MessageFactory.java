@@ -64,7 +64,9 @@ public class MessageFactory {
         target.messageType.apply(input.type);
         target.title.apply(input.title);
         target.body.apply(input.body);
+        target.localBodyOrigin.apply(input.localBodyOrigin);
         target.thumb.apply(input.thumb);
+        target.localThumbOrigin.apply(input.localThumbOrigin);
         target.width.apply(input.width);
         target.height.apply(input.height);
         target.duration.apply(input.duration);

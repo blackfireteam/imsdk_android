@@ -97,10 +97,22 @@ public class IMMessage {
     public final StateProp<String> body = new StateProp<>();
 
     /**
+     * 发送消息时，可能存储的原始 body 内容
+     */
+    @NonNull
+    public final StateProp<String> localBodyOrigin = new StateProp<>();
+
+    /**
      * 消息内容：thumb
      */
     @NonNull
     public final StateProp<String> thumb = new StateProp<>();
+
+    /**
+     * 发送消息时，可能存储的原始 thumb 内容
+     */
+    @NonNull
+    public final StateProp<String> localThumbOrigin = new StateProp<>();
 
     /**
      * 消息内容：width
@@ -186,7 +198,9 @@ public class IMMessage {
         this.type.apply(input.type);
         this.title.apply(input.title);
         this.body.apply(input.body);
+        this.localBodyOrigin.apply(input.localBodyOrigin);
         this.thumb.apply(input.thumb);
+        this.localThumbOrigin.apply(input.localThumbOrigin);
         this.width.apply(input.width);
         this.height.apply(input.height);
         this.duration.apply(input.duration);

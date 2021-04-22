@@ -1,7 +1,6 @@
 package com.masonsoft.imsdk.sample.widget;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.AttributeSet;
 
 import com.masonsoft.imsdk.IMMessage;
@@ -9,6 +8,8 @@ import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import io.github.idonans.core.util.DimenUtil;
@@ -42,27 +43,36 @@ public class IMImageView extends ImageLayout {
     private final String mLocationThumbUrl = "http://restapi.amap.com/v3/staticmap?location=%s,%s&zoom=%s&size=" + mLocationImageSize + "*" + mLocationImageSize + "&markers=mid,0xFF0000,0:%s,%s&key=7d496af79e5fabd7616131817f337541";
 
     public void setChatMessage(IMMessage message) {
-        Uri uri = null;
-
+        String thumbUrl = null;
+        final List<String> firstAvailableUrls = new ArrayList<>();
 
         if (message != null && !message.type.isUnset()) {
             final int type = message.type.get();
 
             if (type == IMConstants.MessageType.IMAGE) {
+                final String localBodyOrigin = message.localBodyOrigin.getOrDefault(null);
+                if (localBodyOrigin != null) {
+                    firstAvailableUrls.add(localBodyOrigin);
+                }
                 final String body = message.body.getOrDefault(null);
                 if (body != null) {
-                    uri = Uri.parse(body);
+                    firstAvailableUrls.add(body);
                 }
                 if (DEBUG) {
-                    SampleLog.v("image message body uri %s", uri);
+                    SampleLog.v("image message localBodyOrigin:%s, body:%s",
+                            localBodyOrigin, body);
                 }
             } else if (type == IMConstants.MessageType.VIDEO) {
+                final String localThumbOrigin = message.localThumbOrigin.getOrDefault(null);
+                if (localThumbOrigin != null) {
+                    firstAvailableUrls.add(localThumbOrigin);
+                }
                 final String thumb = message.thumb.getOrDefault(null);
                 if (thumb != null) {
-                    uri = Uri.parse(thumb);
+                    firstAvailableUrls.add(thumb);
                 }
                 if (DEBUG) {
-                    SampleLog.v("video message thumb uri %s", uri);
+                    SampleLog.v("video message localThumbOrigin:%s, thumb:%s", localThumbOrigin, thumb);
                 }
             } else if (type == IMConstants.MessageType.LOCATION) {
                 String url = String.format(Locale.CHINA, mLocationThumbUrl,
@@ -74,13 +84,14 @@ public class IMImageView extends ImageLayout {
                 if (DEBUG) {
                     SampleLog.v("location thumb url %s", url);
                 }
-                uri = Uri.parse(url);
+                firstAvailableUrls.add(url);
             } else {
                 SampleLog.e("not support type %s", type);
             }
         }
 
-        setUrl(uri == null ? null : uri.toString());
+        //noinspection ConstantConditions
+        this.setFirstAvailableUrls(thumbUrl, firstAvailableUrls.toArray(new String[]{}));
     }
 
 }

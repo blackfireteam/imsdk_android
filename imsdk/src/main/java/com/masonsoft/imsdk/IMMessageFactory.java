@@ -126,7 +126,9 @@ public class IMMessageFactory {
         target.type.apply(input.messageType);
         target.title.apply(input.title);
         target.body.apply(input.body);
+        target.localBodyOrigin.apply(input.localBodyOrigin);
         target.thumb.apply(input.thumb);
+        target.localThumbOrigin.apply(input.localThumbOrigin);
         target.width.apply(input.width);
         target.height.apply(input.height);
         target.duration.apply(input.duration);
