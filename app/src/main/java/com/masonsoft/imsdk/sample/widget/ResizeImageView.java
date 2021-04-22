@@ -52,29 +52,41 @@ public class ResizeImageView extends FrameLayout {
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
 
-        if (widthMode == MeasureSpec.AT_MOST) {
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        boolean requireMeasure = false;
+        if (widthMode != MeasureSpec.EXACTLY || heightMode != MeasureSpec.EXACTLY) {
+            if (mImageWidth > 0 && mImageHeight > 0) {
+                requireMeasure = true;
+            }
+        }
+        if (widthSize <= 0) {
+            widthSize = DimenUtil.getSmallScreenWidth();
+        }
+
+        if (requireMeasure) {
             final float minPercent = 0.25f;
             final float maxPercent = 0.50f;
-            if (mImageWidth > 0 && mImageHeight > 0 && widthSize > 0) {
-                float minSize = Math.max(getMinimumWidth(), DimenUtil.getSmallScreenWidth() * minPercent);
-                minSize = Math.min(minSize, widthSize);
-                float maxSize = Math.max(minSize, DimenUtil.getSmallScreenWidth() * maxPercent);
 
-                if (mImageWidth > mImageHeight) {
-                    // 宽度固定
-                    final float bestWidth = MathUtils.clamp(mImageWidth, minSize, maxSize);
-                    float bestHeight = bestWidth * mImageHeight / mImageWidth;
-                    bestHeight = MathUtils.clamp(bestHeight, minSize, maxSize);
-                    widthMeasureSpec = MeasureSpec.makeMeasureSpec((int) bestWidth, MeasureSpec.EXACTLY);
-                    heightMeasureSpec = MeasureSpec.makeMeasureSpec((int) bestHeight, MeasureSpec.EXACTLY);
-                } else {
-                    // 高度固定
-                    final float bestHeight = MathUtils.clamp(mImageHeight, minSize, maxSize);
-                    float bestWidth = bestHeight * mImageWidth / mImageHeight;
-                    bestWidth = MathUtils.clamp(bestWidth, minSize, maxSize);
-                    widthMeasureSpec = MeasureSpec.makeMeasureSpec((int) bestWidth, MeasureSpec.EXACTLY);
-                    heightMeasureSpec = MeasureSpec.makeMeasureSpec((int) bestHeight, MeasureSpec.EXACTLY);
-                }
+            float minSize = Math.max(getMinimumWidth(), DimenUtil.getSmallScreenWidth() * minPercent);
+            minSize = Math.min(minSize, widthSize);
+            float maxSize = Math.max(minSize, DimenUtil.getSmallScreenWidth() * maxPercent);
+
+            if (mImageWidth > mImageHeight) {
+                // 宽度固定
+                final float bestWidth = MathUtils.clamp(mImageWidth, minSize, maxSize);
+                float bestHeight = bestWidth * mImageHeight / mImageWidth;
+                bestHeight = MathUtils.clamp(bestHeight, minSize, maxSize);
+                widthMeasureSpec = MeasureSpec.makeMeasureSpec((int) bestWidth, MeasureSpec.EXACTLY);
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec((int) bestHeight, MeasureSpec.EXACTLY);
+            } else {
+                // 高度固定
+                final float bestHeight = MathUtils.clamp(mImageHeight, minSize, maxSize);
+                float bestWidth = bestHeight * mImageWidth / mImageHeight;
+                bestWidth = MathUtils.clamp(bestWidth, minSize, maxSize);
+                widthMeasureSpec = MeasureSpec.makeMeasureSpec((int) bestWidth, MeasureSpec.EXACTLY);
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec((int) bestHeight, MeasureSpec.EXACTLY);
             }
         }
 
