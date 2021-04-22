@@ -11,12 +11,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:systemInsetPaddingTop="all"
-        app:systemInsetPaddingTopNotConsume="true">
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/imsdk_sample_main_top_bar_height" />
-    </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
+        app:systemInsetPaddingTopNotConsume="true" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
