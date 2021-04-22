@@ -7,6 +7,7 @@ import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,7 @@ public class IMImageView extends ImageLayout {
                     firstAvailableUrls.add(body);
                 }
                 if (DEBUG) {
-                    SampleLog.v("image message localBodyOrigin:%s, body:%s",
+                    SampleLog.v(Objects.defaultObjectTag(this) + " image message localBodyOrigin:%s, body:%s",
                             localBodyOrigin, body);
                 }
             } else if (type == IMConstants.MessageType.VIDEO) {
@@ -72,7 +73,7 @@ public class IMImageView extends ImageLayout {
                     firstAvailableUrls.add(thumb);
                 }
                 if (DEBUG) {
-                    SampleLog.v("video message localThumbOrigin:%s, thumb:%s", localThumbOrigin, thumb);
+                    SampleLog.v(Objects.defaultObjectTag(this) + " video message localThumbOrigin:%s, thumb:%s", localThumbOrigin, thumb);
                 }
             } else if (type == IMConstants.MessageType.LOCATION) {
                 String url = String.format(Locale.CHINA, mLocationThumbUrl,
@@ -82,11 +83,11 @@ public class IMImageView extends ImageLayout {
                         message.lng.getOrDefault(0d),
                         message.lat.getOrDefault(0d));
                 if (DEBUG) {
-                    SampleLog.v("location thumb url %s", url);
+                    SampleLog.v(Objects.defaultObjectTag(this) + " location thumb url %s", url);
                 }
                 firstAvailableUrls.add(url);
             } else {
-                SampleLog.e("not support type %s", type);
+                SampleLog.e(Objects.defaultObjectTag(this) + " not support type %s", type);
             }
         }
 
