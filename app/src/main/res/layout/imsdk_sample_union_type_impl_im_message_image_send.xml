@@ -70,7 +70,13 @@
                     android:id="@+id/image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:roundSize="16dp" />
+                    app:roundSize="16dp">
+
+                    <com.masonsoft.imsdk.sample.widget.IMMessageProgressView
+                        android:id="@+id/progress_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </com.masonsoft.imsdk.sample.widget.IMImageView>
 
             </com.masonsoft.imsdk.sample.widget.ResizeImageView>
 

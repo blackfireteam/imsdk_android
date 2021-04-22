@@ -30,6 +30,7 @@ public class IMMessageImageSendViewHolder extends IMMessageImageViewHolder {
         final IMMessage message = itemObject.object;
 
         mBinding.sendStatusView.setMessage(message);
+        mBinding.progressView.setMessage(message);
 
         mBinding.avatar.setTargetUserId(message.fromUserId.getOrDefault(0L));
         mBinding.avatar.setShowBorder(false);

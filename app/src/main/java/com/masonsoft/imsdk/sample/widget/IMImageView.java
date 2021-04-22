@@ -40,15 +40,15 @@ public class IMImageView extends ImageLayout {
     private final int mLocationImageSize = DimenUtil.dp2px(200);
     private final String mLocationThumbUrl = "http://restapi.amap.com/v3/staticmap?location=%s,%s&zoom=%s&size=" + mLocationImageSize + "*" + mLocationImageSize + "&markers=mid,0xFF0000,0:%s,%s&key=7d496af79e5fabd7616131817f337541";
 
-    public void setChatMessage(IMMessage imMessage) {
+    public void setChatMessage(IMMessage message) {
         Uri uri = null;
 
 
-        if (imMessage != null && !imMessage.type.isUnset()) {
-            final int type = imMessage.type.get();
+        if (message != null && !message.type.isUnset()) {
+            final int type = message.type.get();
 
             if (type == IMConstants.MessageType.IMAGE) {
-                final String body = imMessage.body.getOrDefault(null);
+                final String body = message.body.getOrDefault(null);
                 if (body != null) {
                     uri = Uri.parse(body);
                 }
@@ -56,7 +56,7 @@ public class IMImageView extends ImageLayout {
                     SampleLog.v("image message body uri %s", uri);
                 }
             } else if (type == IMConstants.MessageType.VIDEO) {
-                final String thumb = imMessage.thumb.getOrDefault(null);
+                final String thumb = message.thumb.getOrDefault(null);
                 if (thumb != null) {
                     uri = Uri.parse(thumb);
                 }
@@ -65,11 +65,11 @@ public class IMImageView extends ImageLayout {
                 }
             } else if (type == IMConstants.MessageType.LOCATION) {
                 String url = String.format(Locale.CHINA, mLocationThumbUrl,
-                        imMessage.lng.getOrDefault(0d),
-                        imMessage.lat.getOrDefault(0d),
-                        imMessage.zoom.getOrDefault(0L),
-                        imMessage.lng.getOrDefault(0d),
-                        imMessage.lat.getOrDefault(0d));
+                        message.lng.getOrDefault(0d),
+                        message.lat.getOrDefault(0d),
+                        message.zoom.getOrDefault(0L),
+                        message.lng.getOrDefault(0d),
+                        message.lat.getOrDefault(0d));
                 if (DEBUG) {
                     SampleLog.v("location thumb url %s", url);
                 }
