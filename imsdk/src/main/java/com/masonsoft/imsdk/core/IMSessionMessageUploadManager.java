@@ -338,6 +338,21 @@ public class IMSessionMessageUploadManager {
                         message.localBodyOrigin.set(imageUrl);
                         // 设置上传成功后的网络地址
                         message.body.set(accessUrl);
+
+                        // 更新至数据库
+                        final Message messageUpdate = new Message();
+                        messageUpdate.localId.apply(message.localId);
+                        messageUpdate.body.apply(message.body);
+                        messageUpdate.localBodyOrigin.apply(message.localBodyOrigin);
+                        if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                mSessionUserId,
+                                mLocalSendingMessage.conversationType.get(),
+                                mLocalSendingMessage.targetUserId.get(),
+                                messageUpdate)) {
+                            IMLog.e(Objects.defaultObjectTag(this)
+                                    + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", mSign, messageUpdate);
+                            return null;
+                        }
                     }
 
                     final ProtoMessage.ChatS chatS = ProtoMessage.ChatS.newBuilder()
