@@ -9,4 +9,10 @@
         <item name="imagePlaceHolderLoading">@drawable/imsdk_sample_ic_default_avatar</item>
         <item name="imagePlaceHolderFail">@drawable/imsdk_sample_ic_default_avatar</item>
     </style>
+
+    <style name="ProgressView">
+        <item name="android:progressDrawable">
+            @drawable/imsdk_sample_progress_view_progress_drawable
+        </item>
+    </style>
 </resources>

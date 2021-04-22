@@ -32,4 +32,8 @@
     <declare-styleable name="AspectRatioFrameLayout">
         <attr name="aspectRatio" format="float" />
     </declare-styleable>
+    <declare-styleable name="ProgressView">
+        <attr name="android:orientation" />
+        <attr name="android:progressDrawable" />
+    </declare-styleable>
 </resources>
