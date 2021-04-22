@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonSimpleContentConfirmDialogBinding;
 
@@ -30,7 +31,13 @@ public class SimpleContentConfirmDialog {
     public SimpleContentConfirmDialog(Activity activity,
                                       ViewGroup parentView,
                                       String content) {
-        this(activity, parentView, content, "取消", "确认");
+        this(
+                activity,
+                parentView,
+                content,
+                I18nResources.getString(R.string.imsdk_sample_button_text_cancel),
+                I18nResources.getString(R.string.imsdk_sample_button_text_submit)
+        );
     }
 
     public SimpleContentConfirmDialog(Activity activity,

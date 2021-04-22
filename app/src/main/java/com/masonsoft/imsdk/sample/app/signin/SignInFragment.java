@@ -17,6 +17,7 @@ import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentConfirmDialog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
 import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
@@ -152,6 +153,25 @@ public class SignInFragment extends SystemInsetsFragment {
         mPresenter.requestToken(phoneAsLong);
     }
 
+    private void showAutoRegConfirmDialog(final long userId) {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            return;
+        }
+
+        final SimpleContentConfirmDialog dialog = new SimpleContentConfirmDialog(
+                activity,
+                I18nResources.getString(R.string.imsdk_sample_dialog_confirm_user_not_found_and_auto_reg)
+        );
+        dialog.setOnBtnRightClickListener(() -> {
+            if (mView != null) {
+                mView.onRequestSignUp(userId);
+            }
+        });
+        dialog.show();
+    }
+
     class ViewImpl extends SignInView {
 
         @Nullable
@@ -178,7 +198,7 @@ public class SignInFragment extends SystemInsetsFragment {
 
             if (code == 9) {
                 // 用户未注册
-                onRequestSignUp(userId);
+                showAutoRegConfirmDialog(userId);
                 return;
             }
 
