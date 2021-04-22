@@ -24,6 +24,7 @@ import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.Preconditions;
 
 import io.github.idonans.core.FormValidator;
+import io.github.idonans.core.util.SystemUtil;
 import io.github.idonans.core.util.ToastUtil;
 import io.github.idonans.lang.util.ViewUtil;
 
@@ -160,6 +161,12 @@ public class SignInFragment extends SystemInsetsFragment {
             return;
         }
 
+        if (mBinding == null) {
+            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        SystemUtil.hideSoftKeyboard(mBinding.editText);
         final SimpleContentConfirmDialog dialog = new SimpleContentConfirmDialog(
                 activity,
                 I18nResources.getString(R.string.imsdk_sample_dialog_confirm_user_not_found_and_auto_reg)
