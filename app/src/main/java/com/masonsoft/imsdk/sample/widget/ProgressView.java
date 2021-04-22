@@ -106,7 +106,7 @@ public class ProgressView extends View {
         int width = getWidth();
         int height = getHeight();
         if (mOrientation == HORIZONTAL) {
-            int left = Math.round(width * (1 - mCurrentProgress));
+            int left = Math.round(width * (mCurrentProgress));
             mProgressBounds.set(left, 0, width, height);
         } else {
             int bottom = Math.round(height * (1 - mCurrentProgress));
