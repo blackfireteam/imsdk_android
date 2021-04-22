@@ -14,6 +14,7 @@ import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.NotNullTimeoutMessagePacket;
+import com.masonsoft.imsdk.core.observable.MessageObservable;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
@@ -261,6 +262,22 @@ public class IMSessionMessageUploadManager {
             private void setSendProgress(float sendProgress) {
                 mSendProgress = sendProgress;
                 mUnsafeProgress.put(mLocalSendingMessage.localId.get(), sendProgress);
+
+                notifyMessageChanged();
+            }
+
+            private void notifyMessageChanged() {
+                final Message message = mMessage;
+                if (message == null) {
+                    return;
+                }
+
+                MessageObservable.DEFAULT.notifyMessageChanged(
+                        message._sessionUserId.get(),
+                        message._conversationType.get(),
+                        message._targetUserId.get(),
+                        message.localId.get()
+                );
             }
 
             private boolean hasErrorOrAbort() {
