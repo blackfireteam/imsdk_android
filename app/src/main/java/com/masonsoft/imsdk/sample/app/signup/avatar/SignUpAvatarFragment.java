@@ -191,10 +191,18 @@ public class SignUpAvatarFragment extends SignUpFragment {
 
         public void onAvatarUploadFail(Throwable e) {
             SampleLog.v(e, Objects.defaultObjectTag(this) + " onAvatarUploadFail");
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            }
+            mBinding.progressView.setProgress(0f);
         }
 
         public void onAvatarUploadProgress(@IntRange(from = 0, to = 100) int percent) {
             SampleLog.v(Objects.defaultObjectTag(this) + " onAvatarUploadProgress percent:%s", percent);
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            }
+            mBinding.progressView.setProgress(percent / 100f);
         }
 
         public void onAvatarUploadSuccess(String avatarUrl) {
