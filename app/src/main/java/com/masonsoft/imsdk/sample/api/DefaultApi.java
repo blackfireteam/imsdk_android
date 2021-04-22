@@ -3,8 +3,10 @@ package com.masonsoft.imsdk.sample.api;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.masonsoft.imsdk.EnqueueCallbackAdapter;
@@ -16,7 +18,6 @@ import com.masonsoft.imsdk.core.observable.OtherMessageObservable;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.entity.ApiResponse;
 import com.masonsoft.imsdk.sample.entity.Init;
 import com.masonsoft.imsdk.sample.entity.Spark;
 import com.masonsoft.imsdk.sample.im.FetchSparkMessagePacket;
@@ -60,20 +61,18 @@ public class DefaultApi {
                 .build();
     }
 
-    public static Init getImToken(long userId) {
+    @Nullable
+    private static <T> T requestApiServer(final String apiUrlPath, final Map<String, Object> requestArgs, @Nullable TypeToken<T> type) {
         final String appSecret = Constants.APP_SECRET;
         final int nonce = (int) (Math.random() * 1000000000);
         final long timestamp = System.currentTimeMillis() / 1000;
         final String sign = RequestSignUtil.calSign(appSecret, nonce, timestamp);
 
-        final Map<String, Object> requestArgs = new HashMap<>();
-        requestArgs.put("uid", userId);
-        requestArgs.put("ctype", 0);
         final String requestArgsAsJson = new Gson().toJson(requestArgs);
         final RequestBody requestBody = RequestBody.create(requestArgsAsJson, MediaType.parse("application/json;charset=utf-8"));
 
         final LocalSettingsManager.Settings settings = LocalSettingsManager.getInstance().getSettings();
-        final String url = settings.apiServer + "/user/iminit";
+        final String url = settings.apiServer + apiUrlPath;
         final Request request = new Request.Builder()
                 .addHeader("nonce", String.valueOf(nonce))
                 .addHeader("timestamp", String.valueOf(timestamp))
@@ -85,6 +84,7 @@ public class DefaultApi {
         final OkHttpClient okHttpClient = createDefaultApiOkHttpClient();
         try {
             final Response response = okHttpClient.newCall(request).execute();
+            //noinspection ConstantConditions
             final String json = response.body().string();
 
             final JsonObject jsonObject = new Gson().fromJson(json, new TypeToken<JsonObject>() {
@@ -95,15 +95,29 @@ public class DefaultApi {
                 throw new ApiResponseException(code, message);
             }
 
-            final ApiResponse<Init> apiResponse = new Gson().fromJson(json, new TypeToken<ApiResponse<Init>>() {
-            }.getType());
-            return apiResponse.data;
+            final JsonElement data = jsonObject.get("data");
+            if (data != null && type != null) {
+                return new Gson().fromJson(data, type.getType());
+            } else {
+                return null;
+            }
         } catch (Throwable e) {
             if (e instanceof ApiResponseException) {
                 throw (ApiResponseException) e;
             }
             throw new RuntimeException(e);
         }
+    }
+
+    public static Init getImToken(long userId) {
+        final String url = "/user/iminit";
+
+        final Map<String, Object> requestArgs = new HashMap<>();
+        requestArgs.put("uid", userId);
+        requestArgs.put("ctype", 0);
+
+        return requestApiServer(url, requestArgs, new TypeToken<Init>() {
+        });
     }
 
     public static List<Spark> getSparks() {
