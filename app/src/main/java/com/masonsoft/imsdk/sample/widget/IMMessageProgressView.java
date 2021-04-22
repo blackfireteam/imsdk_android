@@ -2,11 +2,15 @@ package com.masonsoft.imsdk.sample.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.core.IMConstants;
+
+import io.github.idonans.lang.util.ViewUtil;
 
 public class IMMessageProgressView extends ProgressView {
 
@@ -34,15 +38,38 @@ public class IMMessageProgressView extends ProgressView {
         mMessageChangedViewHelper = new IMMessageChangedViewHelper() {
             @Override
             protected void onMessageChanged(@Nullable IMMessage message) {
-                float progress = 1f;
-                if (message != null) {
-                    if (!message.sendProgress.isUnset()) {
-                        progress = message.sendProgress.get();
-                    }
-                }
-                IMMessageProgressView.this.setProgress(progress);
+                IMMessageProgressView.this.updateProgress(message);
             }
         };
+    }
+
+    private void updateProgress(@Nullable IMMessage message) {
+        boolean showProgress = false;
+        float progress = 0f;
+        if (message != null) {
+            if (!message.sendState.isUnset()) {
+                final int sendState = message.sendState.get();
+                if (sendState == IMConstants.SendStatus.IDLE
+                        || sendState == IMConstants.SendStatus.SENDING) {
+                    showProgress = true;
+                    progress = message.sendProgress.getOrDefault(0f);
+                }
+            }
+        }
+        if (showProgress) {
+            showProgress(progress);
+        } else {
+            hideProgress();
+        }
+    }
+
+    private void showProgress(float progress) {
+        ViewUtil.setVisibilityIfChanged(this, View.VISIBLE);
+        setProgress(progress);
+    }
+
+    private void hideProgress() {
+        ViewUtil.setVisibilityIfChanged(this, View.GONE);
     }
 
     public void setMessage(@NonNull IMMessage message) {
