@@ -25,6 +25,8 @@ public class WeakClockManager {
         return INSTANCE.get();
     }
 
+    private static final boolean DEBUG = false;
+
     // 用来检查当前计时器状态的 queue (关闭或者开启计时器)
     private final TaskQueue mClockStateCheckQueue = new TaskQueue(1);
 
@@ -120,9 +122,13 @@ public class WeakClockManager {
                         // 执行本轮 tick, 记录下本轮 tick 的开始时间
                         mLastClockTimeMs = timeStartMs;
 
-                        IMLog.v("WeakClockManager clock task tick [%s] ...", timeStartMs);
+                        if (DEBUG) {
+                            IMLog.v("WeakClockManager clock task tick [%s] ...", timeStartMs);
+                        }
                         ClockObservable.DEFAULT.notifyOnClock();
-                        IMLog.v("WeakClockManager clock task tick [%s] ... ok", timeStartMs);
+                        if (DEBUG) {
+                            IMLog.v("WeakClockManager clock task tick [%s] ... ok", timeStartMs);
+                        }
                     }
 
                     long diffDelayMs = mClockIntervalMs - (System.currentTimeMillis() - mLastClockTimeMs);
@@ -130,7 +136,9 @@ public class WeakClockManager {
                         diffDelayMs = 0;
                     }
 
-                    IMLog.v("WeakClockManager clock task tick [%s] ... ok post with delay:%s", timeStartMs, diffDelayMs);
+                    if (DEBUG) {
+                        IMLog.v("WeakClockManager clock task tick [%s] ... ok post with delay:%s", timeStartMs, diffDelayMs);
+                    }
                     mClockQueue.postDelayed(this, diffDelayMs);
                 }
             } catch (Throwable e) {
