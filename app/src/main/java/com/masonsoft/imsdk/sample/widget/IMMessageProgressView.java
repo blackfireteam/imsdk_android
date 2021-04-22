@@ -9,10 +9,15 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.sample.Constants;
+import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.lang.util.ViewUtil;
 
 public class IMMessageProgressView extends ProgressView {
+
+    private static final boolean DEBUG = Constants.DEBUG_WIDGET;
 
     public IMMessageProgressView(Context context) {
         this(context, null);
@@ -66,11 +71,17 @@ public class IMMessageProgressView extends ProgressView {
     }
 
     private void showProgress(float progress) {
+        if (DEBUG) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " showProgress progress:%s", progress);
+        }
         ViewUtil.setVisibilityIfChanged(this, View.VISIBLE);
         setProgress(progress);
     }
 
     private void hideProgress() {
+        if (DEBUG) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " hideProgress");
+        }
         ViewUtil.setVisibilityIfChanged(this, View.GONE);
     }
 
