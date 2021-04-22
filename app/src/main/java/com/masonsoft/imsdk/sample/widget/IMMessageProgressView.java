@@ -41,6 +41,8 @@ public class IMMessageProgressView extends ProgressView {
                 IMMessageProgressView.this.updateProgress(message);
             }
         };
+
+        hideProgress();
     }
 
     private void updateProgress(@Nullable IMMessage message) {
