@@ -131,6 +131,14 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
         return state == STATE_IDLE;
     }
 
+    /**
+     * 判断当前数据包是否正执行(数据包状态为发送中或者等待返回结果)
+     */
+    public boolean isRunning() {
+        final int state = getState();
+        return state == STATE_GOING || state == STATE_WAIT_RESULT;
+    }
+
     public long getSign() {
         return mSign;
     }
