@@ -202,6 +202,90 @@ public class IMSessionManager {
     }
 
     /**
+     * 直接断开长连接, 清空 token
+     */
+    public void signOutImmediately() {
+        setSession(null);
+    }
+
+    public boolean isSignOut() {
+        return mSession == null;
+    }
+
+    /**
+     * 尽可能从长连接上发送退出登录的消息，如果长连接暂时无效，则会先 block, 直到成功发送退出消息或者超时.
+     */
+    @WorkerThread
+    public GeneralResult signOutWithBlockOrTimeout() {
+        final Session session = mSession;
+        if (session == null) {
+            return GeneralResult.success();
+        }
+
+        final SingleSubject<GeneralResult> subject = SingleSubject.create();
+        final Runnable validateSubjectState = () -> {
+            final SessionTcpClientProxy proxy = mSessionTcpClientProxy;
+            if (proxy != null) {
+                final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
+                if (sessionTcpClient != null) {
+                    final SignOutMessagePacket messagePacket = sessionTcpClient.getSignOutMessagePacket();
+                    if (messagePacket.isSignOutSuccess()) {
+                        subject.onSuccess(GeneralResult.success());
+                    } else if (messagePacket.isEnd()) {
+                        subject.onSuccess(GeneralResult.valueOfSubResult(
+                                GeneralResult.valueOf(
+                                        (int) messagePacket.getErrorCode(),
+                                        messagePacket.getErrorMessage()
+                                )
+                        ));
+                    }
+                }
+            }
+        };
+        final Runnable subjectTimeout = () ->
+                subject.onSuccess(GeneralResult.valueOf(GeneralResult.CODE_ERROR_TIMEOUT));
+        final SessionTcpClientObservable.SessionTcpClientObserver sessionTcpClientObserver = new SessionTcpClientObservable.SessionTcpClientObserver() {
+            @Override
+            public void onConnectionStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
+            }
+
+            @Override
+            public void onSignInStateChanged(@NonNull SessionTcpClient sessionTcpClient, @NonNull SignInMessagePacket messagePacket) {
+            }
+
+            @Override
+            public void onSignOutStateChanged(@NonNull SessionTcpClient sessionTcpClient, @NonNull SignOutMessagePacket messagePacket) {
+                validateSubjectState.run();
+            }
+        };
+
+        final ClockObservable.ClockObserver clockObserver = new ClockObservable.ClockObserver() {
+
+            // 超时时间
+            private final long TIME_OUT = TimeUnit.SECONDS.toMillis(20);
+            private final long mTimeStart = System.currentTimeMillis();
+
+            @Override
+            public void onClock() {
+                if (System.currentTimeMillis() - mTimeStart > TIME_OUT) {
+                    // 超时
+                    IMLog.v(Objects.defaultObjectTag(this) + " signOutWithBlockOrTimeout onClock timeout");
+                    subjectTimeout.run();
+                } else {
+                    validateSubjectState.run();
+                }
+            }
+        };
+        SessionTcpClientObservable.DEFAULT.registerObserver(sessionTcpClientObserver);
+        ClockObservable.DEFAULT.registerObserver(clockObserver);
+
+        final GeneralResult result = subject.blockingGet();
+        IMLog.v("signOutWithBlockOrTimeout GeneralResult:%s", result.toShortString());
+        signOutImmediately();
+        return result;
+    }
+
+    /**
      * 销毁长连接
      */
     public void destroySessionTcpClient() {
