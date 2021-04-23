@@ -2,11 +2,17 @@ package com.masonsoft.imsdk.sample.app.mine;
 
 import android.net.Uri;
 
+import androidx.annotation.Nullable;
+
 import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.FileUploadProvider;
+import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.api.DefaultApi;
+import com.masonsoft.imsdk.sample.widget.SessionUserIdChangedViewHelper;
+import com.masonsoft.imsdk.sample.widget.UserCacheChangedViewHelper;
+import com.masonsoft.imsdk.user.UserInfo;
 import com.masonsoft.imsdk.user.UserInfoManager;
 import com.masonsoft.imsdk.util.Preconditions;
 
@@ -22,9 +28,57 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
 
     private final DisposableHolder mRequestHolder = new DisposableHolder();
     private Object mLastUploadAvatarTag;
+    @SuppressWarnings("unused")
+    private final SessionUserCacheChangedViewHelper mSessionUserCacheChangedViewHelper = new SessionUserCacheChangedViewHelper();
 
     public MineFragmentPresenter(MineFragment.ViewImpl view) {
         super(view);
+    }
+
+    private class SessionUserCacheChangedViewHelper extends UserCacheChangedViewHelper {
+
+        @SuppressWarnings("FieldCanBeLocal")
+        private final SessionUserIdChangedViewHelper mSessionUserIdChangedViewHelper = new SessionUserIdChangedViewHelper() {
+            @Override
+            protected void onSessionUserIdChanged(long sessionUserId) {
+                SessionUserCacheChangedViewHelper.this.setTargetUserId(sessionUserId);
+            }
+        };
+
+        private SessionUserCacheChangedViewHelper() {
+            setTargetUserId(mSessionUserIdChangedViewHelper.getSessionUserId());
+        }
+
+        @Override
+        protected void onUserCacheChanged(@Nullable UserInfo userInfo) {
+            Threads.postUi(() -> showSessionUserInfo(userInfo));
+        }
+    }
+
+    private void showSessionUserInfo(@Nullable UserInfo userInfo) {
+        final MineFragment.ViewImpl view = getView();
+        if (view != null) {
+            view.showSessionUserInfo(userInfo);
+        }
+    }
+
+    public void requestSyncSessionUserInfo() {
+        mRequestHolder.set(Single.just("")
+                .map(input -> {
+                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    Preconditions.checkArgument(sessionUserId > 0);
+                    return UserInfoManager.getInstance().getByUserId(sessionUserId);
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(sessionUserInfo -> {
+                    final MineFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+
+                    view.showSessionUserInfo(sessionUserInfo);
+                }, SampleLog::e));
     }
 
     public void uploadAvatar(Uri photoUri) {
@@ -126,6 +180,108 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                     }
 
                     view.onNicknameModifyFail(e);
+                }));
+    }
+
+    public void trySubmitGoldChanged(boolean isChecked) {
+        mRequestHolder.set(Single.just("")
+                .map(input -> {
+                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    Preconditions.checkArgument(sessionUserId > 0);
+                    final UserInfo sessionUserInfo = UserInfoManager.getInstance().getByUserId(sessionUserId);
+                    Preconditions.checkNotNull(sessionUserInfo);
+
+                    // 是否提交更改
+                    boolean submit = false;
+                    if (sessionUserInfo.gold.isUnset()) {
+                        submit = true;
+                    } else {
+                        boolean currentChecked = sessionUserInfo.gold.get() == IMConstants.TRUE;
+                        if (currentChecked != isChecked) {
+                            submit = true;
+                        }
+                    }
+                    return submit;
+                })
+                .map(submit -> {
+                    if (!submit) {
+                        return new Object();
+                    }
+
+                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    Preconditions.checkArgument(sessionUserId > 0);
+                    DefaultApi.updateGold(sessionUserId, isChecked);
+                    UserInfoManager.getInstance().updateGold(sessionUserId, isChecked);
+                    return new Object();
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ignore -> {
+                    final MineFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+
+                    view.onGoldModifySuccess();
+                }, e -> {
+                    SampleLog.e(e);
+                    final MineFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+
+                    view.onGoldModifyFail(e);
+                }));
+    }
+
+    public void trySubmitVerifiedChanged(boolean isChecked) {
+        mRequestHolder.set(Single.just("")
+                .map(input -> {
+                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    Preconditions.checkArgument(sessionUserId > 0);
+                    final UserInfo sessionUserInfo = UserInfoManager.getInstance().getByUserId(sessionUserId);
+                    Preconditions.checkNotNull(sessionUserInfo);
+
+                    // 是否提交更改
+                    boolean submit = false;
+                    if (sessionUserInfo.verified.isUnset()) {
+                        submit = true;
+                    } else {
+                        boolean currentChecked = sessionUserInfo.verified.get() == IMConstants.TRUE;
+                        if (currentChecked != isChecked) {
+                            submit = true;
+                        }
+                    }
+                    return submit;
+                })
+                .map(submit -> {
+                    if (!submit) {
+                        return new Object();
+                    }
+
+                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    Preconditions.checkArgument(sessionUserId > 0);
+                    DefaultApi.updateVerified(sessionUserId, isChecked);
+                    UserInfoManager.getInstance().updateVerified(sessionUserId, isChecked);
+                    return new Object();
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ignore -> {
+                    final MineFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+
+                    view.onVerifiedModifySuccess();
+                }, e -> {
+                    SampleLog.e(e);
+                    final MineFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+
+                    view.onVerifiedModifyFail(e);
                 }));
     }
 

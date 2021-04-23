@@ -13,6 +13,7 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -22,6 +23,7 @@ import com.masonsoft.imsdk.sample.common.imagepicker.ImagePickerDialog;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentInputDialog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMineFragmentBinding;
 import com.masonsoft.imsdk.sample.util.TipUtil;
+import com.masonsoft.imsdk.user.UserInfo;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.dynamic.DynamicView;
@@ -52,6 +54,8 @@ public class MineFragment extends SystemInsetsFragment {
         mBinding = ImsdkSampleMineFragmentBinding.inflate(inflater, container, false);
         ViewUtil.onClick(mBinding.avatar, v -> startModifyAvatar());
         ViewUtil.onClick(mBinding.modifyUsername, v -> startModifyUsername());
+        mBinding.modifyGoldSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onGoldChanged(isChecked));
+        mBinding.modifyVerifiedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onVerifiedChanged(isChecked));
 
         return mBinding.getRoot();
     }
@@ -63,6 +67,7 @@ public class MineFragment extends SystemInsetsFragment {
         clearPresenter();
         mView = new ViewImpl();
         mPresenter = new MineFragmentPresenter(mView);
+        mPresenter.requestSyncSessionUserInfo();
     }
 
     private void startModifyAvatar() {
@@ -148,12 +153,62 @@ public class MineFragment extends SystemInsetsFragment {
         dialog.show();
     }
 
+    private void onGoldChanged(boolean isChecked) {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+
+        if (mPresenter == null) {
+            SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+            return;
+        }
+        mPresenter.trySubmitGoldChanged(isChecked);
+    }
+
+    private void onVerifiedChanged(boolean isChecked) {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+
+        if (mPresenter == null) {
+            SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+            return;
+        }
+        mPresenter.trySubmitVerifiedChanged(isChecked);
+    }
+
     class ViewImpl implements DynamicView {
+
+        public void showSessionUserInfo(@Nullable UserInfo userInfo) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " showSessionUserInfo userInfo:%s", userInfo);
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            final boolean gold = userInfo != null && (userInfo.gold.getOrDefault(IMConstants.FALSE) == IMConstants.TRUE);
+            final boolean verified = userInfo != null && (userInfo.verified.getOrDefault(IMConstants.FALSE) == IMConstants.TRUE);
+            mBinding.modifyGoldSwitch.setChecked(gold);
+            mBinding.modifyVerifiedSwitch.setChecked(verified);
+        }
 
         public void onAvatarUploadFail(Throwable e) {
             SampleLog.v(e, Objects.defaultObjectTag(this) + " onAvatarUploadFail");
             if (mBinding == null) {
                 SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
             }
             mBinding.avatarProgressView.setProgress(0f);
             TipUtil.show(R.string.imsdk_sample_profile_modify_avatar_fail);
@@ -163,6 +218,7 @@ public class MineFragment extends SystemInsetsFragment {
             SampleLog.v(Objects.defaultObjectTag(this) + " onAvatarUploadProgress percent:%s", percent);
             if (mBinding == null) {
                 SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
             }
             mBinding.avatarProgressView.setProgress(percent / 100f);
         }
@@ -187,6 +243,7 @@ public class MineFragment extends SystemInsetsFragment {
             SampleLog.v(e, Objects.defaultObjectTag(this) + " onAvatarModifyFail");
             if (mBinding == null) {
                 SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
             }
             TipUtil.show(R.string.imsdk_sample_profile_modify_avatar_fail);
         }
@@ -195,6 +252,7 @@ public class MineFragment extends SystemInsetsFragment {
             SampleLog.v(Objects.defaultObjectTag(this) + " onAvatarModifySuccess");
             if (mBinding == null) {
                 SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
             }
             TipUtil.show(R.string.imsdk_sample_profile_modify_avatar_success);
         }
@@ -203,17 +261,64 @@ public class MineFragment extends SystemInsetsFragment {
             SampleLog.v(e, Objects.defaultObjectTag(this) + " onNicknameModifyFail");
             if (mBinding == null) {
                 SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
             }
             TipUtil.show(R.string.imsdk_sample_profile_modify_nickname_fail);
-
         }
 
         public void onNicknameModifySuccess() {
             SampleLog.v(Objects.defaultObjectTag(this) + " onNicknameModifySuccess");
             if (mBinding == null) {
                 SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
             }
             TipUtil.show(R.string.imsdk_sample_profile_modify_nickname_success);
+        }
+
+        public void onGoldModifySuccess() {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onGoldModifySuccess");
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+            TipUtil.show(R.string.imsdk_sample_tip_action_general_success);
+        }
+
+        public void onGoldModifyFail(Throwable e) {
+            SampleLog.v(e, Objects.defaultObjectTag(this) + " onGoldModifyFail");
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+            if (mPresenter == null) {
+                SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+                return;
+            }
+            TipUtil.show(R.string.imsdk_sample_tip_action_general_fail);
+            mPresenter.requestSyncSessionUserInfo();
+        }
+
+        public void onVerifiedModifySuccess() {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onVerifiedModifySuccess");
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+            TipUtil.show(R.string.imsdk_sample_tip_action_general_success);
+        }
+
+        public void onVerifiedModifyFail(Throwable e) {
+            SampleLog.v(e, Objects.defaultObjectTag(this) + " onVerifiedModifyFail");
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+            if (mPresenter == null) {
+                SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+                return;
+            }
+            TipUtil.show(R.string.imsdk_sample_tip_action_general_fail);
+            mPresenter.requestSyncSessionUserInfo();
         }
     }
 

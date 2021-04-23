@@ -4,10 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 
+import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.observable.UserInfoObservable;
-import com.masonsoft.imsdk.lang.StateProp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,40 +163,91 @@ public class UserInfoManager {
         return getByUserId(userId) != null;
     }
 
+    /**
+     * 如果头像发生了变更，则更新
+     */
     public void updateAvatar(final long userId, @Nullable final String avatar) {
-        this.updateAvatarAndNickname(userId, StateProp.valueOf(avatar), null);
+        final UserInfo userInfoUpdate = new UserInfo();
+        userInfoUpdate.avatar.set(avatar);
+        this.updateManual(userId, userInfoUpdate);
     }
 
+    /**
+     * 如果昵称发生了变更，则更新
+     */
     public void updateNickname(final long userId, @Nullable final String nickname) {
-        this.updateAvatarAndNickname(userId, null, StateProp.valueOf(nickname));
+        final UserInfo userInfoUpdate = new UserInfo();
+        userInfoUpdate.nickname.set(nickname);
+        this.updateManual(userId, userInfoUpdate);
     }
 
     /**
      * 如果头像与昵称发生了变化，则更新
      */
     public void updateAvatarAndNickname(final long userId, @Nullable final String avatar, @Nullable final String nickname) {
-        this.updateAvatarAndNickname(userId, StateProp.valueOf(avatar), StateProp.valueOf(nickname));
+        final UserInfo userInfoUpdate = new UserInfo();
+        userInfoUpdate.avatar.set(avatar);
+        userInfoUpdate.nickname.set(nickname);
+        this.updateManual(userId, userInfoUpdate);
     }
 
     /**
-     * 如果头像与昵称发生了变化，则更新
+     * 如果 gold 发生了变更，则更新
      */
-    public void updateAvatarAndNickname(final long userId, @Nullable final StateProp<String> avatar, @Nullable final StateProp<String> nickname) {
+    public void updateGold(final long userId, final boolean gold) {
+        final UserInfo userInfoUpdate = new UserInfo();
+        userInfoUpdate.gold.set(gold ? IMConstants.TRUE : IMConstants.FALSE);
+        this.updateManual(userId, userInfoUpdate);
+    }
+
+    /**
+     * 如果 verified 发生了变更，则更新
+     */
+    public void updateVerified(final long userId, final boolean verified) {
+        final UserInfo userInfoUpdate = new UserInfo();
+        userInfoUpdate.verified.set(verified ? IMConstants.TRUE : IMConstants.FALSE);
+        this.updateManual(userId, userInfoUpdate);
+    }
+
+    /**
+     * 如果指定条目发生了变更，则更新
+     */
+    public void updateManual(final long userId, @Nullable UserInfo userInfoUpdate) {
         boolean update = false;
         final UserInfo userInfo = getByUserId(userId);
         if (userInfo != null) {
-            if (avatar != null && !avatar.isUnset()) {
-                String oldAvatar = userInfo.avatar.getOrDefault(null);
-                if (!Objects.equals(oldAvatar, avatar.get())) {
-                    update = true;
-                }
-            }
-
-            if (!update) {
-                if (nickname != null && !nickname.isUnset()) {
-                    String oldNickname = userInfo.nickname.getOrDefault(null);
-                    if (!Objects.equals(oldNickname, nickname.get())) {
+            if (userInfoUpdate != null) {
+                if (!userInfoUpdate.avatar.isUnset()) {
+                    final String oldAvatar = userInfo.avatar.getOrDefault(null);
+                    if (!Objects.equals(oldAvatar, userInfoUpdate.avatar.get())) {
                         update = true;
+                    }
+                }
+
+                if (!update) {
+                    if (!userInfoUpdate.nickname.isUnset()) {
+                        final String oldNickname = userInfo.nickname.getOrDefault(null);
+                        if (!Objects.equals(oldNickname, userInfoUpdate.nickname.get())) {
+                            update = true;
+                        }
+                    }
+                }
+
+                if (!update) {
+                    if (!userInfoUpdate.gold.isUnset()) {
+                        final Integer oldGold = userInfo.gold.getOrDefault(null);
+                        if (!Objects.equals(oldGold, userInfoUpdate.gold.get())) {
+                            update = true;
+                        }
+                    }
+                }
+
+                if (!update) {
+                    if (!userInfoUpdate.verified.isUnset()) {
+                        final Integer oldVerified = userInfo.verified.getOrDefault(null);
+                        if (!Objects.equals(oldVerified, userInfoUpdate.verified.get())) {
+                            update = true;
+                        }
                     }
                 }
             }
@@ -207,21 +258,29 @@ public class UserInfoManager {
             return;
         }
 
-        final UserInfo updateUserInfo;
+        final UserInfo mergeUserInfo;
         if (userInfo == null) {
-            updateUserInfo = UserInfoFactory.create(userId);
+            mergeUserInfo = UserInfoFactory.create(userId);
         } else {
-            updateUserInfo = UserInfoFactory.copy(userInfo);
+            mergeUserInfo = UserInfoFactory.copy(userInfo);
         }
 
-        if (avatar != null && !avatar.isUnset()) {
-            updateUserInfo.avatar.apply(avatar);
+        if (!userInfoUpdate.avatar.isUnset()) {
+            mergeUserInfo.avatar.apply(userInfoUpdate.avatar);
         }
-        if (nickname != null && !nickname.isUnset()) {
-            updateUserInfo.nickname.apply(nickname);
+        if (!userInfoUpdate.nickname.isUnset()) {
+            mergeUserInfo.nickname.apply(userInfoUpdate.nickname);
         }
-        updateUserInfo.updateTimeMs.set(System.currentTimeMillis());
-        insertOrUpdateUser(updateUserInfo);
+        if (!userInfoUpdate.gold.isUnset()) {
+            mergeUserInfo.gold.apply(userInfoUpdate.gold);
+        }
+        if (!userInfoUpdate.verified.isUnset()) {
+            mergeUserInfo.verified.apply(userInfoUpdate.verified);
+        }
+
+        mergeUserInfo.updateTimeMs.set(System.currentTimeMillis());
+
+        insertOrUpdateUser(mergeUserInfo);
     }
 
 }

@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.masonsoft.imsdk.EnqueueCallbackAdapter;
 import com.masonsoft.imsdk.OtherMessage;
+import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.OtherMessageManager;
 import com.masonsoft.imsdk.core.SignGenerator;
@@ -162,6 +163,33 @@ public class DefaultApi {
         final Map<String, Object> requestArgs = new HashMap<>();
         requestArgs.put("uid", userId);
         requestArgs.put("nick_name", nickname);
+
+        requestApiServer(url, requestArgs, null);
+        return new Object();
+    }
+
+    @NonNull
+    public static Object updateGold(long userId, boolean gold) {
+        final String url = "/user/update";
+
+        final Map<String, Object> requestArgs = new HashMap<>();
+        requestArgs.put("uid", userId);
+        requestArgs.put("gold", gold ? IMConstants.TRUE : IMConstants.FALSE);
+        if (gold) {
+            requestArgs.put("gold_exp", (System.currentTimeMillis() / 1000) + TimeUnit.DAYS.toSeconds(7));
+        }
+
+        requestApiServer(url, requestArgs, null);
+        return new Object();
+    }
+
+    @NonNull
+    public static Object updateVerified(long userId, boolean verified) {
+        final String url = "/user/update";
+
+        final Map<String, Object> requestArgs = new HashMap<>();
+        requestArgs.put("uid", userId);
+        requestArgs.put("verified", verified ? IMConstants.TRUE : IMConstants.FALSE);
 
         requestApiServer(url, requestArgs, null);
         return new Object();
