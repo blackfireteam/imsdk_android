@@ -221,6 +221,7 @@ public class IMSessionManager {
         if (session == null) {
             return GeneralResult.success();
         }
+        session.setPendingSignOut();
 
         final SingleSubject<GeneralResult> subject = SingleSubject.create();
         final Runnable validateSubjectState = () -> {
@@ -230,6 +231,7 @@ public class IMSessionManager {
                 if (sessionTcpClient != null) {
                     final SignOutMessagePacket messagePacket = sessionTcpClient.getSignOutMessagePacket();
                     if (messagePacket.isSignOutSuccess()) {
+                        signOutImmediately();
                         subject.onSuccess(GeneralResult.success());
                     } else if (messagePacket.isEnd()) {
                         subject.onSuccess(GeneralResult.valueOfSubResult(
@@ -278,12 +280,23 @@ public class IMSessionManager {
         };
         SessionTcpClientObservable.DEFAULT.registerObserver(sessionTcpClientObserver);
         ClockObservable.DEFAULT.registerObserver(clockObserver);
+        Threads.postBackground(() -> {
+            final SessionTcpClientProxy proxy = getSessionTcpClientProxyWithBlockOrTimeout();
+            if (proxy != null) {
+                final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
+                if (sessionTcpClient != null) {
+                    if (sessionTcpClient.getSession() == session) {
+                        if (sessionTcpClient.getSignOutMessagePacket().isIdle()) {
+                            sessionTcpClient.signOut();
+                        }
+                    }
+                }
+            }
+        });
+        validateSubjectState.run();
 
         final GeneralResult result = subject.blockingGet();
         IMLog.v("signOutWithBlockOrTimeout GeneralResult:%s", result.toShortString());
-        if (result.isSuccess()) {
-            signOutImmediately();
-        }
         return result;
     }
 

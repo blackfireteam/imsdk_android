@@ -18,6 +18,7 @@ public final class Session {
     private final String mAesKey;
     private final String mTcpHost;
     private final int mTcpPort;
+    private boolean mPendingSignOut;
 
     public static Session create(String token, String tcpServerAndPort) {
         return create(token, tcpServerAndPort, null);
@@ -65,6 +66,14 @@ public final class Session {
     @IntRange(from = 0, to = 65535)
     public int getTcpPort() {
         return mTcpPort;
+    }
+
+    public void setPendingSignOut() {
+        mPendingSignOut = true;
+    }
+
+    public boolean isPendingSignOut() {
+        return mPendingSignOut;
     }
 
 }
