@@ -3,37 +3,38 @@ package com.masonsoft.imsdk.sample.common.simpledialog;
 import android.app.Activity;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.sample.R;
-import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonSimpleContentConfirmDialogBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonSimpleContentInputDialogBinding;
 
 import io.github.idonans.backstack.dialog.ViewDialog;
 import io.github.idonans.lang.util.ViewUtil;
 
 /**
- * 内容 确认弹窗
+ * 简单内容输入弹窗
  */
-public class SimpleContentConfirmDialog {
+public class SimpleContentInputDialog {
 
     private final ViewDialog mViewDialog;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final TextView mContent;
+    private final EditText mEditText;
     @SuppressWarnings("FieldCanBeLocal")
     private final TextView mBtnLeft;
     @SuppressWarnings("FieldCanBeLocal")
     private final TextView mBtnRight;
 
-    public SimpleContentConfirmDialog(Activity activity,
-                                      String content) {
+    public SimpleContentInputDialog(Activity activity,
+                                    String content) {
         this(activity, activity.findViewById(Window.ID_ANDROID_CONTENT), content);
     }
 
-    public SimpleContentConfirmDialog(Activity activity,
-                                      ViewGroup parentView,
-                                      String content) {
+    public SimpleContentInputDialog(Activity activity,
+                                    ViewGroup parentView,
+                                    String content) {
         this(
                 activity,
                 parentView,
@@ -43,11 +44,11 @@ public class SimpleContentConfirmDialog {
         );
     }
 
-    public SimpleContentConfirmDialog(Activity activity,
-                                      ViewGroup parentView,
-                                      String content,
-                                      String btnLeftText,
-                                      String btnRightText) {
+    public SimpleContentInputDialog(Activity activity,
+                                    ViewGroup parentView,
+                                    String content,
+                                    String btnLeftText,
+                                    String btnRightText) {
         this(activity,
                 parentView,
                 content,
@@ -56,23 +57,23 @@ public class SimpleContentConfirmDialog {
                 true);
     }
 
-    public SimpleContentConfirmDialog(Activity activity,
-                                      ViewGroup parentView,
-                                      String content,
-                                      String btnLeftText,
-                                      String btnRightText,
-                                      boolean dimBackground) {
+    public SimpleContentInputDialog(Activity activity,
+                                    ViewGroup parentView,
+                                    String content,
+                                    String btnLeftText,
+                                    String btnRightText,
+                                    boolean dimBackground) {
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.imsdk_sample_common_simple_content_confirm_dialog)
+                .setContentView(R.layout.imsdk_sample_common_simple_content_input_dialog)
                 .setParentView(parentView)
                 .dimBackground(dimBackground)
                 .setCancelable(true)
                 .create();
-        final ImsdkSampleCommonSimpleContentConfirmDialogBinding binding = ImsdkSampleCommonSimpleContentConfirmDialogBinding.bind(mViewDialog.getContentView());
-        mContent = binding.content;
+        final ImsdkSampleCommonSimpleContentInputDialogBinding binding = ImsdkSampleCommonSimpleContentInputDialogBinding.bind(mViewDialog.getContentView());
+        mEditText = binding.editText;
         mBtnLeft = binding.btnLeft;
         mBtnRight = binding.btnRight;
-        mContent.setText(content);
+        mEditText.setText(content);
         mBtnLeft.setText(btnLeftText);
         mBtnRight.setText(btnRightText);
 
@@ -83,14 +84,15 @@ public class SimpleContentConfirmDialog {
             hide();
         });
         ViewUtil.onClick(mBtnRight, v -> {
+            final String input = mEditText.getText().toString();
             if (mOnBtnRightClickListener != null) {
-                mOnBtnRightClickListener.onBtnRightClick();
+                mOnBtnRightClickListener.onBtnRightClick(input);
             }
             hide();
         });
     }
 
-    public SimpleContentConfirmDialog setCancelable(boolean cancelable) {
+    public SimpleContentInputDialog setCancelable(boolean cancelable) {
         mViewDialog.setCancelable(cancelable);
         return this;
     }
@@ -109,18 +111,18 @@ public class SimpleContentConfirmDialog {
 
     private OnBtnLeftClickListener mOnBtnLeftClickListener;
 
-    public SimpleContentConfirmDialog setOnBtnLeftClickListener(OnBtnLeftClickListener listener) {
+    public SimpleContentInputDialog setOnBtnLeftClickListener(OnBtnLeftClickListener listener) {
         mOnBtnLeftClickListener = listener;
         return this;
     }
 
     public interface OnBtnRightClickListener {
-        void onBtnRightClick();
+        void onBtnRightClick(String input);
     }
 
     private OnBtnRightClickListener mOnBtnRightClickListener;
 
-    public SimpleContentConfirmDialog setOnBtnRightClickListener(OnBtnRightClickListener listener) {
+    public SimpleContentInputDialog setOnBtnRightClickListener(OnBtnRightClickListener listener) {
         mOnBtnRightClickListener = listener;
         return this;
     }

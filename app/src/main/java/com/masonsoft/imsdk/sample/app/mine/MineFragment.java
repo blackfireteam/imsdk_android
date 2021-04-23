@@ -171,8 +171,28 @@ public class MineFragment extends SystemInsetsFragment {
 
         public void onAvatarModifySuccess() {
             SampleLog.v(Objects.defaultObjectTag(this) + " onAvatarModifySuccess");
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            }
+            TipUtil.show(R.string.imsdk_sample_profile_modify_avatar_success);
         }
 
+        public void onNicknameModifyFail(Throwable e) {
+            SampleLog.v(e, Objects.defaultObjectTag(this) + " onNicknameModifyFail");
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            }
+            TipUtil.show(R.string.imsdk_sample_profile_modify_nickname_fail);
+
+        }
+
+        public void onNicknameModifySuccess() {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onNicknameModifySuccess");
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            }
+            TipUtil.show(R.string.imsdk_sample_profile_modify_nickname_success);
+        }
     }
 
     private void clearPresenter() {
