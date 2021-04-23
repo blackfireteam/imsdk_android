@@ -3,6 +3,7 @@ package com.masonsoft.imsdk.sample.app.mine;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImagePickerDialog;
+import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentInputDialog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMineFragmentBinding;
 import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
@@ -123,7 +125,27 @@ public class MineFragment extends SystemInsetsFragment {
             return;
         }
 
-        // TODO
+        if (mBinding == null) {
+            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+        final String unsafeCacheUsername = mBinding.username.getText().toString();
+        final SimpleContentInputDialog dialog = new SimpleContentInputDialog(activity, unsafeCacheUsername);
+        dialog.setOnBtnRightClickListener(input -> {
+            if (mPresenter == null) {
+                SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+                return;
+            }
+
+            final String nickname = input.trim();
+            if (TextUtils.isEmpty(nickname)) {
+                TipUtil.show(R.string.imsdk_sample_profile_modify_nickname_error_empty);
+                return;
+            }
+
+            mPresenter.submitNickname(nickname);
+        });
+        dialog.show();
     }
 
     class ViewImpl implements DynamicView {

@@ -100,4 +100,33 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                 }));
     }
 
+    public void submitNickname(String nickname) {
+        mRequestHolder.set(Single.just("")
+                .map(input -> {
+                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    Preconditions.checkArgument(sessionUserId > 0);
+                    DefaultApi.updateNickname(sessionUserId, nickname);
+                    UserInfoManager.getInstance().updateNickname(sessionUserId, nickname);
+                    return input;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ignore -> {
+                    final MineFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+
+                    view.onNicknameModifySuccess();
+                }, e -> {
+                    SampleLog.e(e);
+                    final MineFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+
+                    view.onNicknameModifyFail(e);
+                }));
+    }
+
 }
