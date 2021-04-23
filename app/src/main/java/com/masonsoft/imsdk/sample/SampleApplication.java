@@ -22,9 +22,19 @@ import com.masonsoft.imsdk.sample.common.TopActivity;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.manager.ProcessManager;
+import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.FileUtil;
 import io.github.idonans.dynamic.DynamicLog;
 
 public class SampleApplication extends Application {
@@ -85,12 +95,48 @@ public class SampleApplication extends Application {
                 if (lastFrameTimeNanos > 0) {
                     final long dur = frameTimeNanos - lastFrameTimeNanos;
                     if (dur > mAnrTimeout) {
-                        new RuntimeException("anr found dur:" + dur).printStackTrace();
+                        printAnrStack(dur);
                     }
                 }
             }
         };
         Choreographer.getInstance().postFrameCallback(callback);
+    }
+
+    private void printAnrStack(final long dur) {
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        final PrintStream ps = new PrintStream(os);
+        new RuntimeException("anr found dur:" + dur).printStackTrace(ps);
+        ps.flush();
+        final byte[] stack = os.toByteArray();
+        try {
+            System.err.write(stack);
+        } catch (IOException e) {
+            SampleLog.e(e);
+        }
+        printAnrStackToFileAsync(stack);
+    }
+
+    private void printAnrStackToFileAsync(final byte[] stack) {
+        Threads.postBackground(() -> {
+            final File cacheDir = FileUtil.getAppCacheDir();
+            if (cacheDir == null) {
+                SampleLog.e("printAnrStackToFileAsync cache dir is null");
+                return;
+            }
+            final String filename = new SimpleDateFormat("anr yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date());
+            final String anrFile = FileUtil.createSimilarFileQuietly(new File(cacheDir, filename).getAbsolutePath());
+            if (anrFile == null) {
+                SampleLog.e("printAnrStackToFileAsync anrFile is null");
+                return;
+            }
+            try (FileOutputStream fos = new FileOutputStream(new File(anrFile))) {
+                fos.write(stack);
+                fos.flush();
+            } catch (Throwable e) {
+                SampleLog.e(e);
+            }
+        });
     }
 
 }
