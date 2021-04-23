@@ -131,7 +131,7 @@ public class DefaultApi {
         requestArgs.put("nick_name", nickname);
         requestArgs.put("avatar", avatar);
         requestArgs.put("gold", 0);
-        requestArgs.put("gold_exp", 0);
+        requestArgs.put("gold_exp", System.currentTimeMillis() / 1000);
         requestArgs.put("approved", 1);
         requestArgs.put("disabled", 0);
         requestArgs.put("blocked", 0);
