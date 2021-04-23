@@ -143,6 +143,30 @@ public class DefaultApi {
         return new Object();
     }
 
+    @NonNull
+    public static Object updateAvatar(long userId, String avatar) {
+        final String url = "/user/update";
+
+        final Map<String, Object> requestArgs = new HashMap<>();
+        requestArgs.put("uid", userId);
+        requestArgs.put("avatar", avatar);
+
+        requestApiServer(url, requestArgs, null);
+        return new Object();
+    }
+
+    @NonNull
+    public static Object updateNickname(long userId, String nickname) {
+        final String url = "/user/update";
+
+        final Map<String, Object> requestArgs = new HashMap<>();
+        requestArgs.put("uid", userId);
+        requestArgs.put("nick_name", nickname);
+
+        requestApiServer(url, requestArgs, null);
+        return new Object();
+    }
+
     public static List<Spark> getSparks() {
         final SingleSubject<List<Spark>> subject = SingleSubject.create();
         final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();

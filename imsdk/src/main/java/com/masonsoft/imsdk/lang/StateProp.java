@@ -84,4 +84,10 @@ public class StateProp<T> {
         return toShortString();
     }
 
+    public static <T> StateProp<T> valueOf(T value) {
+        final StateProp<T> stateProp = new StateProp<>();
+        stateProp.set(value);
+        return stateProp;
+    }
+
 }

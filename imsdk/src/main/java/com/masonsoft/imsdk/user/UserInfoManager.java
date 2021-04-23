@@ -7,6 +7,7 @@ import androidx.collection.LruCache;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.observable.UserInfoObservable;
+import com.masonsoft.imsdk.lang.StateProp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,22 +163,41 @@ public class UserInfoManager {
         return getByUserId(userId) != null;
     }
 
+    public void updateAvatar(final long userId, @Nullable final String avatar) {
+        this.updateAvatarAndNickname(userId, StateProp.valueOf(avatar), null);
+    }
+
+    public void updateNickname(final long userId, @Nullable final String nickname) {
+        this.updateAvatarAndNickname(userId, null, StateProp.valueOf(nickname));
+    }
+
     /**
      * 如果头像与昵称发生了变化，则更新
      */
-    public void updateAvatarAndNickname(final long userId, final String avatar, final String nickname) {
+    public void updateAvatarAndNickname(final long userId, @Nullable final String avatar, @Nullable final String nickname) {
+        this.updateAvatarAndNickname(userId, StateProp.valueOf(avatar), StateProp.valueOf(nickname));
+    }
+
+    /**
+     * 如果头像与昵称发生了变化，则更新
+     */
+    public void updateAvatarAndNickname(final long userId, @Nullable final StateProp<String> avatar, @Nullable final StateProp<String> nickname) {
         boolean update = false;
         final UserInfo userInfo = getByUserId(userId);
         if (userInfo != null) {
-            String oldAvatar = userInfo.avatar.getOrDefault(null);
-            if (!Objects.equals(oldAvatar, avatar)) {
-                update = true;
+            if (avatar != null && !avatar.isUnset()) {
+                String oldAvatar = userInfo.avatar.getOrDefault(null);
+                if (!Objects.equals(oldAvatar, avatar.get())) {
+                    update = true;
+                }
             }
 
             if (!update) {
-                String oldNickname = userInfo.nickname.getOrDefault(null);
-                if (!Objects.equals(oldNickname, nickname)) {
-                    update = true;
+                if (nickname != null && !nickname.isUnset()) {
+                    String oldNickname = userInfo.nickname.getOrDefault(null);
+                    if (!Objects.equals(oldNickname, nickname.get())) {
+                        update = true;
+                    }
                 }
             }
         } else {
@@ -194,8 +214,12 @@ public class UserInfoManager {
             updateUserInfo = UserInfoFactory.copy(userInfo);
         }
 
-        updateUserInfo.avatar.set(avatar);
-        updateUserInfo.nickname.set(nickname);
+        if (avatar != null && !avatar.isUnset()) {
+            updateUserInfo.avatar.apply(avatar);
+        }
+        if (nickname != null && !nickname.isUnset()) {
+            updateUserInfo.nickname.apply(nickname);
+        }
         updateUserInfo.updateTimeMs.set(System.currentTimeMillis());
         insertOrUpdateUser(updateUserInfo);
     }
