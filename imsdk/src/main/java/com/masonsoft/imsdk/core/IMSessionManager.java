@@ -281,7 +281,9 @@ public class IMSessionManager {
 
         final GeneralResult result = subject.blockingGet();
         IMLog.v("signOutWithBlockOrTimeout GeneralResult:%s", result.toShortString());
-        signOutImmediately();
+        if (result.isSuccess()) {
+            signOutImmediately();
+        }
         return result;
     }
 
