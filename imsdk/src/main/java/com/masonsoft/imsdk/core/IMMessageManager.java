@@ -50,9 +50,7 @@ public class IMMessageManager {
     private static final long TIMEOUT_MS = 20 * 1000L;
 
     private IMMessageManager() {
-        Threads.postBackground(() -> {
-            IMManager.getInstance().attach();
-        });
+        Threads.postBackground(() -> IMManager.getInstance().attach());
     }
 
     @WorkerThread
@@ -96,6 +94,10 @@ public class IMMessageManager {
             final long targetUserId,
             final long localMessageId) {
         Threads.mustNotUi();
+
+        if (sessionUserId < 0 || conversationType < 0 || targetUserId < 0 || localMessageId < 0) {
+            return null;
+        }
 
         final Message message = MessageDatabaseProvider.getInstance().getMessage(
                 sessionUserId,
