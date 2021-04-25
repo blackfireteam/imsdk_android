@@ -19,6 +19,7 @@ public class ConversationFactory {
         target.remoteMessageLastRead.set(input.getMsgLastRead());
         target.remoteShowMessageId.set(input.getShowMsgId());
         target.remoteUnread.set(input.getUnread());
+        target.localUnreadCount.set(input.getUnread());
         target.matched.set(input.getMatched() ? IMConstants.TRUE : IMConstants.FALSE);
         target.newMessage.set(input.getNewMsg() ? IMConstants.TRUE : IMConstants.FALSE);
         target.myMove.set(input.getMyMove() ? IMConstants.TRUE : IMConstants.FALSE);

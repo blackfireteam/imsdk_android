@@ -126,47 +126,69 @@ public class IMConversationManager {
     /**
      * 如果是对方发送的新消息，则累加未读消息数
      */
-    public void increaseConversationUnreadCount(final long sessionUserId,
-                                                final int conversationType,
-                                                final long targetUserId,
-                                                final Message message) {
+    public boolean increaseConversationUnreadCount(final long sessionUserId,
+                                                   final int conversationType,
+                                                   final long targetUserId,
+                                                   final Message message) {
         if (message == null) {
             final Throwable e = new IllegalAccessError("unexpected. message is null");
             IMLog.e(e);
             RuntimeMode.fixme(e);
-            return;
+            return false;
         }
 
         if (message.messageType.isUnset()) {
             final Throwable e = new IllegalAccessError("unexpected. message's messageType is unset");
             IMLog.e(e);
             RuntimeMode.fixme(e);
-            return;
+            return false;
         }
 
         // 指令消息不影响未读消息数
         if (IMConstants.MessageType.isActionMessage(message.messageType.get())) {
             IMLog.v("ignore. message's messageType:%s is action message", message.messageType.get());
-            return;
+            return false;
         }
 
-        final IMConversation imConversation = getOrCreateConversationByTargetUserId(
-                sessionUserId, conversationType, targetUserId);
-        if (imConversation.id.isUnset()) {
-            final Throwable e = new IllegalAccessError("unexpected. conversation's id is unset");
-            IMLog.e(e);
-            RuntimeMode.fixme(e);
-            return;
-        }
-        if (imConversation.id.get() <= 0) {
-            final Throwable e = new IllegalAccessError("unexpected. conversation's id is invalid " + imConversation.id.get());
-            IMLog.e(e);
-            RuntimeMode.fixme(e);
-            return;
+        if (message.remoteMessageId.isUnset()) {
+            IMLog.v("ignore. message's remoteMessageId is unset");
+            return false;
         }
 
-        // TODO
-        // imConversation
+        if (message.fromUserId.isUnset()) {
+            IMLog.v("ignore. message's fromUserId is unset");
+            return false;
+        }
+
+        if (message.fromUserId.get() == sessionUserId) {
+            IMLog.v("ignore. message's fromUserId is sessionUserId");
+            return false;
+        }
+
+        final long messageRemoteMessageId = message.remoteMessageId.get();
+        final Conversation conversation = ConversationDatabaseProvider.getInstance()
+                .getConversationByTargetUserId(
+                        sessionUserId,
+                        conversationType,
+                        targetUserId);
+        if (conversation == null) {
+            final Throwable e = new IllegalAccessError("unexpected. conversation is null");
+            IMLog.e(e);
+            RuntimeMode.fixme(e);
+            return false;
+        }
+        final long remoteMessageLastRead = conversation.remoteMessageLastRead.get();
+        if (remoteMessageLastRead >= messageRemoteMessageId) {
+            IMLog.v("ignore. message's remoteMessageLastRead >= messageRemoteMessageId");
+            return false;
+        }
+
+        // 累加消息未读数
+        final Conversation conversationUpdate = new Conversation();
+        conversationUpdate.localId.set(conversation.localId.get());
+        conversationUpdate.remoteMessageLastRead.set(messageRemoteMessageId);
+        conversationUpdate.localUnreadCount.set(conversation.localUnreadCount.get() + 1);
+        return ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate);
     }
 
     /**
