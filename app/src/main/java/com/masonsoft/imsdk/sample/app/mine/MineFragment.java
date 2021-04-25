@@ -60,6 +60,26 @@ public class MineFragment extends SystemInsetsFragment {
         return mBinding.getRoot();
     }
 
+    private void clearCheckedChangeListener() {
+        if (mBinding == null) {
+            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        mBinding.modifyGoldSwitch.setOnCheckedChangeListener(null);
+        mBinding.modifyVerifiedSwitch.setOnCheckedChangeListener(null);
+    }
+
+    private void bindCheckedChangeListener() {
+        if (mBinding == null) {
+            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        mBinding.modifyGoldSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onGoldChanged(isChecked));
+        mBinding.modifyVerifiedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onVerifiedChanged(isChecked));
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -200,8 +220,11 @@ public class MineFragment extends SystemInsetsFragment {
 
             final boolean gold = userInfo != null && (userInfo.gold.getOrDefault(IMConstants.FALSE) == IMConstants.TRUE);
             final boolean verified = userInfo != null && (userInfo.verified.getOrDefault(IMConstants.FALSE) == IMConstants.TRUE);
+
+            clearCheckedChangeListener();
             mBinding.modifyGoldSwitch.setChecked(gold);
             mBinding.modifyVerifiedSwitch.setChecked(verified);
+            bindCheckedChangeListener();
         }
 
         public void onAvatarUploadFail(Throwable e) {
