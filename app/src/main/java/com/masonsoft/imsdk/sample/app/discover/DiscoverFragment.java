@@ -73,7 +73,7 @@ public class DiscoverFragment extends SystemInsetsFragment {
         Preconditions.checkNotNull(mBinding);
         final RecyclerView recyclerView = mBinding.recyclerView;
 
-        final int spanCount = 3;
+        final int spanCount = 2;
         final GridLayoutManager layoutManager = new GridLayoutManager(recyclerView.getContext(), spanCount);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -108,7 +108,7 @@ public class DiscoverFragment extends SystemInsetsFragment {
         });
 
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new GridItemDecoration(spanCount, DimenUtil.dp2px(5), true));
+        recyclerView.addItemDecoration(new GridItemDecoration(spanCount, DimenUtil.dp2px(15), true));
         recyclerView.setHasFixedSize(true);
         final UnionTypeAdapter adapter = new UnionTypeAdapter();
         adapter.setHost(Host.Factory.create(this, recyclerView, adapter));
