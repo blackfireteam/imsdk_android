@@ -131,7 +131,9 @@ public class ConversationFragment extends SystemInsetsFragment {
         public void replaceConversation(@NonNull final UnionTypeItemObject unionTypeItemObject) {
             if (!hasPageContent()) {
                 SampleLog.v(Objects.defaultObjectTag(this) + " page content is empty, use requestInit instead of replace");
-                mPresenter.requestInit();
+                if (!mPresenter.getInitRequestStatus().isLoading()) {
+                    mPresenter.requestInit(true);
+                }
                 return;
             }
 
