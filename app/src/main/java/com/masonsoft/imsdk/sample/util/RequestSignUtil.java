@@ -1,6 +1,6 @@
 package com.masonsoft.imsdk.sample.util;
 
-import org.apache.commons.codec.digest.DigestUtils;
+import io.github.idonans.core.util.Sha1Util;
 
 public class RequestSignUtil {
 
@@ -9,7 +9,7 @@ public class RequestSignUtil {
 
     public static String calSign(String appSecret, int nonce, long timestamp/*秒*/) {
         final String input = appSecret + nonce + timestamp;
-        return DigestUtils.sha1Hex(input);
+        return Sha1Util.sha1(input);
     }
 
 }

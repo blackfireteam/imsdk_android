@@ -28,9 +28,21 @@
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
         android:text="@string/imsdk_sample_switch_setting"
-        app:layout_constraintBottom_toTopOf="@id/api_server"
+        app:layout_constraintBottom_toTopOf="@id/reset_server"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_text" />
+
+    <Button
+        android:id="@+id/reset_server"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:text="@string/imsdk_sample_switch_internet_server_default"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/api_server"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settings_switch"
+        tools:visibility="visible" />
 
     <EditText
         android:id="@+id/api_server"
@@ -40,11 +52,12 @@
         android:hint="@string/imsdk_sample_edit_hint_api_server"
         android:importantForAutofill="no"
         android:includeFontPadding="false"
+        android:inputType="text"
         android:maxLines="1"
         android:singleLine="true"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/im_server"
-        app:layout_constraintTop_toBottomOf="@id/settings_switch"
+        app:layout_constraintTop_toBottomOf="@id/reset_server"
         tools:visibility="visible" />
 
     <EditText
@@ -55,7 +68,7 @@
         android:hint="@string/imsdk_sample_edit_hint_im_server"
         android:importantForAutofill="no"
         android:includeFontPadding="false"
-        android:inputType="number"
+        android:inputType="text"
         android:maxLines="1"
         android:singleLine="true"
         android:visibility="gone"

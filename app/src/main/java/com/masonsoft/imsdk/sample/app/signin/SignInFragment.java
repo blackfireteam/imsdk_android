@@ -37,6 +37,12 @@ public class SignInFragment extends SystemInsetsFragment {
         return fragment;
     }
 
+    private static final String DEFAULT_API_SERVER_INTERNET = "https://im.ekfree.com:18788";
+    private static final String DEFAULT_IM_SERVER_INTERNET = "im.ekfree.com:18888";
+    private static final String DEFAULT_API_SERVER_LOCAL = "https://192.168.50.254:18788";
+    private static final String DEFAULT_IM_SERVER_LOCAL = "192.168.50.254:18888";
+    private boolean mCurrentApiServerInternet = true;
+
     @Nullable
     private ImsdkSampleSignInFragmentBinding mBinding;
     private ViewImpl mView;
@@ -70,13 +76,27 @@ public class SignInFragment extends SystemInsetsFragment {
         mBinding.imServer.setText(String.valueOf(settings.imServer));
         mBinding.settingsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
+                ViewUtil.setVisibilityIfChanged(mBinding.resetServer, View.VISIBLE);
                 ViewUtil.setVisibilityIfChanged(mBinding.apiServer, View.VISIBLE);
                 ViewUtil.setVisibilityIfChanged(mBinding.imServer, View.VISIBLE);
             } else {
+                ViewUtil.setVisibilityIfChanged(mBinding.resetServer, View.GONE);
                 ViewUtil.setVisibilityIfChanged(mBinding.apiServer, View.GONE);
                 ViewUtil.setVisibilityIfChanged(mBinding.imServer, View.GONE);
             }
         });
+
+        ViewUtil.onClick(mBinding.resetServer, v -> {
+            mCurrentApiServerInternet = !mCurrentApiServerInternet;
+            if (mCurrentApiServerInternet) {
+                mBinding.apiServer.setText(DEFAULT_API_SERVER_INTERNET);
+                mBinding.imServer.setText(DEFAULT_IM_SERVER_INTERNET);
+            } else {
+                mBinding.apiServer.setText(DEFAULT_API_SERVER_LOCAL);
+                mBinding.imServer.setText(DEFAULT_IM_SERVER_LOCAL);
+            }
+        });
+
         ViewUtil.onClick(mBinding.submit, v -> onSubmit());
 
         return mBinding.getRoot();
