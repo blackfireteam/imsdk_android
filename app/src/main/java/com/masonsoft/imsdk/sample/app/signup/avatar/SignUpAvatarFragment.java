@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.sample.app.signup.avatar;
 
+import android.Manifest;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.Window;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
@@ -27,7 +29,9 @@ import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignUpAvatarFragmentBin
 import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.Preconditions;
+import com.tbruyelle.rxpermissions3.RxPermissions;
 
+import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.lang.util.ViewUtil;
 
 public class SignUpAvatarFragment extends SignUpFragment {
@@ -41,6 +45,11 @@ public class SignUpAvatarFragment extends SignUpFragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    private final DisposableHolder mPermissionRequest = new DisposableHolder();
+    private static final String[] IMAGE_PICKER_PERMISSION = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
     @Nullable
     private ImsdkSampleSignUpAvatarFragmentBinding mBinding;
@@ -68,7 +77,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
 
         validateSubmitState();
 
-        ViewUtil.onClick(mBinding.pickAvatar, v -> onPickAvatar());
+        ViewUtil.onClick(mBinding.pickAvatar, v -> requestPickAvatarPermission());
         ViewUtil.onClick(mBinding.submit, v -> onSubmit());
 
         return mBinding.getRoot();
@@ -84,8 +93,35 @@ public class SignUpAvatarFragment extends SignUpFragment {
         mPresenter = new SignUpAvatarFragmentPresenter(mView);
     }
 
-    private void onPickAvatar() {
-        SampleLog.v("onPickAvatar");
+    private void requestPickAvatarPermission() {
+        SampleLog.v("requestPickAvatarPermission");
+
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            return;
+        }
+
+        if (mBinding == null) {
+            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        //noinspection CastCanBeRemovedNarrowingVariableType
+        final RxPermissions rxPermissions = new RxPermissions((FragmentActivity) activity);
+        mPermissionRequest.set(
+                rxPermissions.request(IMAGE_PICKER_PERMISSION)
+                        .subscribe(granted -> {
+                            if (granted) {
+                                onPickAvatarPermissionGranted();
+                            } else {
+                                SampleLog.e(Constants.ErrorLog.PERMISSION_REQUIRED);
+                            }
+                        }));
+    }
+
+    private void onPickAvatarPermissionGranted() {
+        SampleLog.v("onPickAvatarPermissionGranted");
 
         final Activity activity = getActivity();
         if (activity == null) {
