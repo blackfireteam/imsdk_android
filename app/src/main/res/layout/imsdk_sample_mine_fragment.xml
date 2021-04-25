@@ -172,6 +172,15 @@
             android:layout_width="match_parent"
             android:layout_height="20dp" />
 
+        <Button
+            android:id="@+id/action_sign_out"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_margin="15dp"
+            android:background="@drawable/imsdk_sample_button_background_selector"
+            android:text="@string/imsdk_sample_button_text_sign_out"
+            android:textColor="@color/imsdk_sample_button_text_selector" />
+
         <io.github.idonans.systeminsets.SystemInsetsFrameLayout
             android:id="@+id/bottom_system_insets"
             android:layout_width="match_parent"

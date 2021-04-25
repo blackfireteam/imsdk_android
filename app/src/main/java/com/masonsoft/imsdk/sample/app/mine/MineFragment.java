@@ -18,6 +18,7 @@ import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.sample.app.signin.SignInActivity;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImagePickerDialog;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentInputDialog;
@@ -56,6 +57,7 @@ public class MineFragment extends SystemInsetsFragment {
         ViewUtil.onClick(mBinding.modifyUsername, v -> startModifyUsername());
         mBinding.modifyGoldSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onGoldChanged(isChecked));
         mBinding.modifyVerifiedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onVerifiedChanged(isChecked));
+        ViewUtil.onClick(mBinding.actionSignOut, v -> requestSignOut());
 
         return mBinding.getRoot();
     }
@@ -209,6 +211,24 @@ public class MineFragment extends SystemInsetsFragment {
         mPresenter.trySubmitVerifiedChanged(isChecked);
     }
 
+    private void requestSignOut() {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+
+        if (mPresenter == null) {
+            SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+            return;
+        }
+        mPresenter.requestSignOut();
+    }
+
     class ViewImpl implements DynamicView {
 
         public void showSessionUserInfo(@Nullable UserInfo userInfo) {
@@ -225,6 +245,8 @@ public class MineFragment extends SystemInsetsFragment {
             mBinding.modifyGoldSwitch.setChecked(gold);
             mBinding.modifyVerifiedSwitch.setChecked(verified);
             bindCheckedChangeListener();
+
+            mBinding.actionSignOut.setEnabled(userInfo != null);
         }
 
         public void onAvatarUploadFail(Throwable e) {
@@ -342,6 +364,55 @@ public class MineFragment extends SystemInsetsFragment {
             }
             TipUtil.show(R.string.imsdk_sample_tip_action_general_fail);
             mPresenter.requestSyncSessionUserInfo();
+        }
+
+        public void onSignOutSuccess() {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onSignOutSuccess");
+
+            final Activity activity = getActivity();
+            if (activity == null) {
+                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+                return;
+            }
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            SignInActivity.start(activity);
+            activity.finish();
+        }
+
+        public void onSignOutFail(int code, String message) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onSignOutFail code:%s, message:%s", code, message);
+
+            final Activity activity = getActivity();
+            if (activity == null) {
+                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+                return;
+            }
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            TipUtil.showOrDefault(message);
+        }
+
+        public void onSignOutFail(Throwable e) {
+            SampleLog.v(e, Objects.defaultObjectTag(this) + " onSignOutFail");
+
+            final Activity activity = getActivity();
+            if (activity == null) {
+                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+                return;
+            }
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            TipUtil.show(R.string.imsdk_sample_tip_action_general_fail);
         }
     }
 

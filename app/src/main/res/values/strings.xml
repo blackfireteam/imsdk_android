@@ -56,4 +56,5 @@
     <string name="imsdk_sample_profile_modify_verify">是否认证</string>
     <string name="imsdk_sample_tip_action_general_fail">操作失败</string>
     <string name="imsdk_sample_tip_action_general_success">操作成功</string>
+    <string name="imsdk_sample_button_text_sign_out">退出登录</string>
 </resources>

@@ -285,4 +285,35 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                 }));
     }
 
+    public void requestSignOut() {
+        mRequestHolder.set(Single.just("")
+                .map(input -> IMSessionManager.getInstance().signOutWithBlockOrTimeout())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    final MineFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+
+                    if (result.isSuccess()) {
+                        view.onSignOutSuccess();
+                    } else {
+                        if (result.subResult != null) {
+                            view.onSignOutFail(result.subResult.code, result.subResult.message);
+                        } else {
+                            view.onSignOutFail(result.code, result.message);
+                        }
+                    }
+                }, e -> {
+                    SampleLog.e(e);
+                    final MineFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+
+                    view.onSignOutFail(e);
+                }));
+    }
+
 }
