@@ -153,11 +153,12 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
                     mPageSize);
         }
 
-        return Single.fromCallable(() -> IMConversationManager.getInstance().pageQueryConversation(
-                mSessionUserId,
-                0,
-                mPageSize,
-                mConversationType))
+        return Single.just("")
+                .map(input -> IMConversationManager.getInstance().pageQueryConversation(
+                        mSessionUserId,
+                        0,
+                        mPageSize,
+                        mConversationType))
                 .map(page -> {
                     List<IMConversation> imConversationList = page.items;
                     if (imConversationList == null) {
@@ -221,11 +222,12 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
             return null;
         }
 
-        return Single.fromCallable(() -> IMConversationManager.getInstance().pageQueryConversation(
-                mSessionUserId,
-                mLastConversationSeq,
-                mPageSize,
-                mConversationType))
+        return Single.just("")
+                .map(input -> IMConversationManager.getInstance().pageQueryConversation(
+                        mSessionUserId,
+                        mLastConversationSeq,
+                        mPageSize,
+                        mConversationType))
                 .map(page -> {
                     List<IMConversation> imConversationList = page.items;
                     if (imConversationList == null) {

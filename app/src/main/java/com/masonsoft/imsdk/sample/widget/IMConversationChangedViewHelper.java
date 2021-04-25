@@ -60,8 +60,8 @@ public abstract class IMConversationChangedViewHelper {
         if (reset) {
             onConversationChanged(null);
         }
-        mRequestHolder.set(Single.fromCallable(
-                () -> {
+        mRequestHolder.set(Single.just("")
+                .map(input -> {
                     final IMConversation conversation = IMConversationManager.getInstance().getConversation(
                             mSessionUserId,
                             mConversationId

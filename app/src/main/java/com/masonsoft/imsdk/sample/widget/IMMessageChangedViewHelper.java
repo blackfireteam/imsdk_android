@@ -100,8 +100,8 @@ public abstract class IMMessageChangedViewHelper {
         if (reset) {
             onMessageChanged(null);
         }
-        mRequestHolder.set(Single.fromCallable(
-                () -> {
+        mRequestHolder.set(Single.just("")
+                .map(input -> {
                     final IMMessage imMessage = IMMessageManager.getInstance().getMessage(
                             mSessionUserId,
                             mConversationType,

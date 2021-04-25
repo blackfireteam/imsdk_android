@@ -124,6 +124,52 @@ public class IMConversationManager {
     }
 
     /**
+     * 如果是对方发送的新消息，则累加未读消息数
+     */
+    public void increaseConversationUnreadCount(final long sessionUserId,
+                                                final int conversationType,
+                                                final long targetUserId,
+                                                final Message message) {
+        if (message == null) {
+            final Throwable e = new IllegalAccessError("unexpected. message is null");
+            IMLog.e(e);
+            RuntimeMode.fixme(e);
+            return;
+        }
+
+        if (message.messageType.isUnset()) {
+            final Throwable e = new IllegalAccessError("unexpected. message's messageType is unset");
+            IMLog.e(e);
+            RuntimeMode.fixme(e);
+            return;
+        }
+
+        // 指令消息不影响未读消息数
+        if (IMConstants.MessageType.isActionMessage(message.messageType.get())) {
+            IMLog.v("ignore. message's messageType:%s is action message", message.messageType.get());
+            return;
+        }
+
+        final IMConversation imConversation = getOrCreateConversationByTargetUserId(
+                sessionUserId, conversationType, targetUserId);
+        if (imConversation.id.isUnset()) {
+            final Throwable e = new IllegalAccessError("unexpected. conversation's id is unset");
+            IMLog.e(e);
+            RuntimeMode.fixme(e);
+            return;
+        }
+        if (imConversation.id.get() <= 0) {
+            final Throwable e = new IllegalAccessError("unexpected. conversation's id is invalid " + imConversation.id.get());
+            IMLog.e(e);
+            RuntimeMode.fixme(e);
+            return;
+        }
+
+        // TODO
+        // imConversation
+    }
+
+    /**
      * 如果 localMessageId 比当前会话上已经记录的 showMessageId 的 seq 更大，则将 showMessageId 替换为 localMessageId
      *
      * @param sessionUserId

@@ -131,13 +131,14 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                     mPageSize);
         }
 
-        return Single.fromCallable(() -> IMMessageManager.getInstance().pageQueryMessage(
-                mSessionUserId,
-                0,
-                mPageSize,
-                mConversationType,
-                mTargetUserId,
-                true))
+        return Single.just("")
+                .map(input -> IMMessageManager.getInstance().pageQueryMessage(
+                        mSessionUserId,
+                        0,
+                        mPageSize,
+                        mConversationType,
+                        mTargetUserId,
+                        true))
                 .map(page -> {
                     List<IMMessage> imMessages = page.items;
                     if (imMessages == null) {
@@ -205,13 +206,14 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
             return null;
         }
 
-        return Single.fromCallable(() -> IMMessageManager.getInstance().pageQueryMessage(
-                mSessionUserId,
-                mFirstMessageSeq,
-                mPageSize,
-                mConversationType,
-                mTargetUserId,
-                true))
+        return Single.just("")
+                .map(input -> IMMessageManager.getInstance().pageQueryMessage(
+                        mSessionUserId,
+                        mFirstMessageSeq,
+                        mPageSize,
+                        mConversationType,
+                        mTargetUserId,
+                        true))
                 .map(page -> {
                     List<IMMessage> imMessages = page.items;
                     if (imMessages == null) {
@@ -266,13 +268,14 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
             return null;
         }
 
-        return Single.fromCallable(() -> IMMessageManager.getInstance().pageQueryMessage(
-                mSessionUserId,
-                mLastMessageSeq,
-                mPageSize,
-                mConversationType,
-                mTargetUserId,
-                false))
+        return Single.just("")
+                .map(input -> IMMessageManager.getInstance().pageQueryMessage(
+                        mSessionUserId,
+                        mLastMessageSeq,
+                        mPageSize,
+                        mConversationType,
+                        mTargetUserId,
+                        false))
                 .map(page -> {
                     List<IMMessage> imMessages = page.items;
                     if (imMessages == null) {

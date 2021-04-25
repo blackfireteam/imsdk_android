@@ -42,8 +42,8 @@ public abstract class UserCacheChangedViewHelper {
         if (reset) {
             onUserCacheChanged(null);
         }
-        mRequestHolder.set(Single.fromCallable(
-                () -> {
+        mRequestHolder.set(Single.just("")
+                .map(input -> {
                     final UserInfo userInfo = UserInfoManager.getInstance().getByUserId(mTargetUserId);
                     return new ObjectWrapper(userInfo);
                 })
