@@ -124,7 +124,7 @@ public class SampleApplication extends Application {
                 SampleLog.e("printAnrStackToFileAsync cache dir is null");
                 return;
             }
-            final String filename = "anr " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date());
+            final String filename = "anr_" + new SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.CHINA).format(new Date());
             final String anrFile = FileUtil.createSimilarFileQuietly(new File(cacheDir, filename).getAbsolutePath());
             if (anrFile == null) {
                 SampleLog.e("printAnrStackToFileAsync anrFile is null");
