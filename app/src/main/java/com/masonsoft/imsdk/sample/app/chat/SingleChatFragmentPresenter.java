@@ -89,7 +89,9 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
             }
 
             if (mLastMessageSeq > 0) {
-                requestNextPage();
+                if (!getNextPageRequestStatus().isLoading()) {
+                    requestNextPage(true);
+                }
             } else {
                 if (!getInitRequestStatus().isLoading()) {
                     requestInit(true);
