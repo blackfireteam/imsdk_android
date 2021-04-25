@@ -106,7 +106,7 @@ public class SampleApplication extends Application {
     private void printAnrStack(final long dur) {
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         final PrintStream ps = new PrintStream(os);
-        new RuntimeException("anr found dur:" + dur).printStackTrace(ps);
+        new RuntimeException("anr found dur:" + dur + "ns, " + TimeUnit.NANOSECONDS.toMillis(dur) + "ms").printStackTrace(ps);
         ps.flush();
         final byte[] stack = os.toByteArray();
         try {
