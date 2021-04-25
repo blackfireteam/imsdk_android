@@ -13,6 +13,7 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
@@ -21,6 +22,7 @@ import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.signin.SignInActivity;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImagePickerDialog;
+import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentConfirmDialog;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentInputDialog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMineFragmentBinding;
 import com.masonsoft.imsdk.sample.util.TipUtil;
@@ -212,6 +214,24 @@ public class MineFragment extends SystemInsetsFragment {
     }
 
     private void requestSignOut() {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+
+        final SimpleContentConfirmDialog dialog = new SimpleContentConfirmDialog(
+                activity,
+                I18nResources.getString(R.string.imsdk_sample_sign_out_confirm_text));
+        dialog.setOnBtnRightClickListener(this::onSignOutConfirm);
+        dialog.show();
+    }
+
+    private void onSignOutConfirm() {
         final Activity activity = getActivity();
         if (activity == null) {
             SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
