@@ -124,6 +124,13 @@ public class IMConversationManager {
     }
 
     /**
+     * 获取所有会话的未读消息数
+     */
+    public int getAllUnreadCount(final long sessionUserId) {
+        return ConversationDatabaseProvider.getInstance().getAllUnreadCount(sessionUserId);
+    }
+
+    /**
      * 如果是对方发送的新消息，则累加未读消息数
      */
     public boolean increaseConversationUnreadCount(final long sessionUserId,

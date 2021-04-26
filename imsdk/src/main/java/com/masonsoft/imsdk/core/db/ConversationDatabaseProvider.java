@@ -12,6 +12,7 @@ import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.observable.ConversationObservable;
+import com.masonsoft.imsdk.util.CursorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,6 +112,30 @@ public class ConversationDatabaseProvider {
 
     }
 
+    private static class MemoryAllUnreadCountCache {
+
+        private static final MemoryAllUnreadCountCache DEFAULT = new MemoryAllUnreadCountCache();
+
+        private static final int MEMORY_CACHE_SIZE = 2000;
+
+        @NonNull
+        private final LruCache<Long, Integer> mAllUnreadCountCaches = new LruCache<>(MEMORY_CACHE_SIZE);
+
+        private void addAllUnreadCountCache(long sessionUserId, int allUnreadCount) {
+            mAllUnreadCountCaches.put(sessionUserId, allUnreadCount);
+        }
+
+        private void removeAllUnreadCountCache(long sessionUserId) {
+            mAllUnreadCountCaches.remove(sessionUserId);
+        }
+
+        @Nullable
+        private Integer getAllUnreadCountCache(long sessionUserId) {
+            return mAllUnreadCountCaches.get(sessionUserId);
+        }
+
+    }
+
     private ConversationDatabaseProvider() {
     }
 
@@ -188,6 +213,42 @@ public class ConversationDatabaseProvider {
         IMLog.v("found %s conversations[hasMore:%s] with sessionUserId:%s, conversationType:%s, seq:%s, limit:%s",
                 result.items.size(), result.hasMore, sessionUserId, conversationType, seq, limit);
         return result;
+    }
+
+    /**
+     * 获取所有会话的未读消息数
+     */
+    public int getAllUnreadCount(final long sessionUserId) {
+        final Integer cache = MemoryAllUnreadCountCache.DEFAULT.getAllUnreadCountCache(sessionUserId);
+        if (cache != null) {
+            if (cache != null) {
+                IMLog.v("getAllUnreadCount cache hit sessionUserId:%s", sessionUserId);
+                return cache;
+            }
+            return cache;
+        }
+
+        Cursor cursor = null;
+        try {
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
+
+            final String sql = "select sum(" + DatabaseHelper.ColumnsConversation.C_LOCAL_UNREAD_COUNT + ") from "
+                    + DatabaseHelper.TABLE_NAME_CONVERSATION;
+            cursor = db.rawQuery(sql, null);
+            final int count = CursorUtil.getInt(cursor, 0);
+            IMLog.v("getAllUnreadCount sessionUserId:%s, count:%s", sessionUserId, count);
+            MemoryAllUnreadCountCache.DEFAULT.addAllUnreadCountCache(sessionUserId, count);
+            return count;
+        } catch (Throwable e) {
+            IMLog.e(e);
+            RuntimeMode.fixme(e);
+        } finally {
+            IOUtil.closeQuietly(cursor);
+        }
+
+        // fallback
+        return 0;
     }
 
     /**
@@ -389,6 +450,13 @@ public class ConversationDatabaseProvider {
                 return false;
             }
 
+            // 当新加入的会话有未读消息数时，需要移除未读消息总数的缓存
+            if (!conversation.localUnreadCount.isUnset()) {
+                if (conversation.localUnreadCount.get() != 0) {
+                    MemoryAllUnreadCountCache.DEFAULT.removeAllUnreadCountCache(sessionUserId);
+                }
+            }
+
             // 自增主键
             conversation.localId.set(rowId);
             ConversationObservable.DEFAULT.notifyConversationCreated(
@@ -456,6 +524,11 @@ public class ConversationDatabaseProvider {
                         rowsAffected);
             }
             MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, conversation.localId.get());
+
+            // 当会话的未读消息数发生更新时，需要移除未读消息总数的缓存
+            if (!conversation.localUnreadCount.isUnset()) {
+                MemoryAllUnreadCountCache.DEFAULT.removeAllUnreadCountCache(sessionUserId);
+            }
 
             final Conversation readConversation = getConversation(sessionUserId, conversation.localId.get());
             if (readConversation != null) {
