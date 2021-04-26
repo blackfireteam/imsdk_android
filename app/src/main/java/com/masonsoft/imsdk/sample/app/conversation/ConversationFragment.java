@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.collect.Lists;
 import com.masonsoft.imsdk.IMConversation;
+import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleConversationFragmentBinding;
@@ -138,6 +139,7 @@ public class ConversationFragment extends SystemInsetsFragment {
             }
 
             final IMConversation updateConversation = (IMConversation) ((DataObject<?>) unionTypeItemObject.itemObject).object;
+            final boolean delete = updateConversation.delete.getOrDefault(IMConstants.FALSE) == IMConstants.TRUE;
             final List<UnionTypeItemObject> groupDefaultList = getAdapter().getData().getGroupItems(GROUP_DEFAULT);
             int removedPosition = -1;
             int insertPosition = -1;
@@ -148,13 +150,20 @@ public class ConversationFragment extends SystemInsetsFragment {
                     if (existsOne.isSameItem(unionTypeItemObject)) {
                         removedPosition = i;
                     }
-                    final IMConversation existsConversation = (IMConversation) ((DataObject<?>) existsOne.itemObject).object;
-                    if (updateConversation.seq.get() > existsConversation.seq.get() && insertPosition == -1) {
-                        insertPosition = i;
-                    }
 
-                    if (removedPosition >= 0 && insertPosition >= 0) {
-                        break;
+                    if (!delete) {
+                        final IMConversation existsConversation = (IMConversation) ((DataObject<?>) existsOne.itemObject).object;
+                        if (updateConversation.seq.get() > existsConversation.seq.get() && insertPosition == -1) {
+                            insertPosition = i;
+                        }
+
+                        if (removedPosition >= 0 && insertPosition >= 0) {
+                            break;
+                        }
+                    } else {
+                        if (removedPosition >= 0) {
+                            break;
+                        }
                     }
                 }
             }
@@ -170,6 +179,10 @@ public class ConversationFragment extends SystemInsetsFragment {
                     final Throwable e = new IllegalAccessError("fail to removeGroupItem GROUP_DEFAULT removedPosition:" + removedPosition);
                     SampleLog.e(e);
                 }
+            }
+
+            if (delete) {
+                return;
             }
             if (insertPosition == -1) {
                 insertPosition = 0;
