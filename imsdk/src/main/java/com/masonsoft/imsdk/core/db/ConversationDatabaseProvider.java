@@ -236,6 +236,9 @@ public class ConversationDatabaseProvider {
             final String sql = "select sum(" + DatabaseHelper.ColumnsConversation.C_LOCAL_UNREAD_COUNT + ") from "
                     + DatabaseHelper.TABLE_NAME_CONVERSATION;
             cursor = db.rawQuery(sql, null);
+            if (!cursor.moveToFirst()) {
+                throw new IllegalAccessError("unexpected. getAllUnreadCount cursor.moveToFirst return false.");
+            }
             final int count = CursorUtil.getInt(cursor, 0);
             IMLog.v("getAllUnreadCount sessionUserId:%s, count:%s", sessionUserId, count);
             MemoryAllUnreadCountCache.DEFAULT.addAllUnreadCountCache(sessionUserId, count);
