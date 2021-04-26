@@ -63,33 +63,52 @@
             android:textColor="@color/imsdk_sample_main_bottom_bar_text_selector" />
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/tab_conversation"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
         app:layout_constraintEnd_toStartOf="@id/tab_mine"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/tab_discover">
 
         <ImageView
+            android:id="@+id/image"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:contentDescription="@string/imsdk_sample_empty_text_hint"
             android:duplicateParentState="true"
             android:scaleType="centerInside"
-            android:src="@drawable/imsdk_sample_ic_conversation_selector" />
+            android:src="@drawable/imsdk_sample_ic_conversation_selector"
+            app:layout_constraintBottom_toTopOf="@id/text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
+            android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:duplicateParentState="true"
             android:includeFontPadding="false"
             android:paddingTop="5dp"
             android:text="@string/imsdk_sample_tab_conversation"
-            android:textColor="@color/imsdk_sample_main_bottom_bar_text_selector" />
-    </LinearLayout>
+            android:textColor="@color/imsdk_sample_main_bottom_bar_text_selector"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image" />
+
+        <com.masonsoft.imsdk.sample.widget.IMConversationUnreadCountView
+            android:id="@+id/unread_count_view"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_width="18dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/tab_mine"

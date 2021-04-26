@@ -16,6 +16,7 @@ import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.sample.Constants;
 
+import io.github.idonans.appcontext.AppContext;
 import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.lang.util.ViewUtil;
 
@@ -50,10 +51,19 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
     private String mUnreadCountText;
     private final RectF mTextRect = new RectF();
 
-    private final int mDefaultMeasureSize = DimenUtil.dp2px(18);
-    private final int mAdjustPaddingLeftRight = DimenUtil.dp2px(5);
+    private int mDefaultMeasureSize;
+    private int mAdjustPaddingLeftRight;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        if (isInEditMode()) {
+            AppContext.setContext(new ViewEditApplicationContext(this));
+            setUnreadCount(100);
+            mOnlyDrawableBackground = false;
+        }
+
+        mDefaultMeasureSize = DimenUtil.dp2px(18);
+        mAdjustPaddingLeftRight = DimenUtil.dp2px(5);
+
         mBackgroundPaint = new Paint();
         mBackgroundPaint.setAntiAlias(true);
         mBackgroundPaint.setDither(true);
@@ -104,7 +114,7 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
             }
         }
 
-        setUnreadCount(unreadCount);
+        // setUnreadCount(unreadCount);
     }
 
     public void setUnreadCount(long unreadCount) {

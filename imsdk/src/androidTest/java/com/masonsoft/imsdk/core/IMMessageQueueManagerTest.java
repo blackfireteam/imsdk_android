@@ -6,9 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.masonsoft.imsdk.EnqueueCallback;
+import com.masonsoft.imsdk.EnqueueMessage;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
-import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.core.session.Session;
 
 import org.junit.Test;
@@ -38,13 +38,13 @@ public class IMMessageQueueManagerTest {
                 2,
                 new EnqueueCallback() {
                     @Override
-                    public void onEnqueueSuccess(@NonNull IMSessionMessage imSessionMessage) {
-                        System.out.println("onEnqueueSuccess " + imSessionMessage);
+                    public void onEnqueueSuccess(@NonNull EnqueueMessage enqueueMessage) {
+                        System.out.println("onEnqueueSuccess " + enqueueMessage);
                     }
 
                     @Override
-                    public void onEnqueueFail(@NonNull IMSessionMessage imSessionMessage, int errorCode, String errorMessage) {
-                        System.out.println("onEnqueueFail " + imSessionMessage);
+                    public void onEnqueueFail(@NonNull EnqueueMessage enqueueMessage, int errorCode, String errorMessage) {
+                        System.out.println("onEnqueueFail " + enqueueMessage);
                         System.out.println("onEnqueueFail errorCode:" + errorCode + ", errorMessage:" + errorMessage);
                     }
                 }
