@@ -97,6 +97,10 @@ public class IMActionMessageManager {
          */
         private static final int ERROR_CODE_UNKNOWN = sNextErrorCode++;
         /**
+         * 目标消息没有找到
+         */
+        private static final int ERROR_CODE_TARGET_MESSAGE_NOT_FOUND = sNextErrorCode++;
+        /**
          * 构建 protoByteMessage 失败
          */
         private static final int ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL = sNextErrorCode++;
@@ -129,6 +133,7 @@ public class IMActionMessageManager {
 
         static {
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_UNKNOWN, "ERROR_CODE_UNKNOWN");
+            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_TARGET_MESSAGE_NOT_FOUND, "ERROR_CODE_TARGET_MESSAGE_NOT_FOUND");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL, "ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL");
             DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID");
@@ -388,6 +393,36 @@ public class IMActionMessageManager {
                     mActionMessagePacket = revokeActionMessagePacket;
                     mActionMessagePacket.getMessagePacketStateObservable().registerObserver(mActionMessagePacketStateObserver);
                     return revokeActionMessagePacket;
+                }
+
+                if (actionType == IMActionMessage.ACTION_TYPE_MARK_AS_READ) {
+                    // 回执消息已读
+                    final IMMessage message = (IMMessage) mActionMessage.getActionObject();
+                    final Message dbMessage = MessageDatabaseProvider.getInstance().getClosestLessThanTargetFromRemoteMessageIdWithSeq(
+                            mSessionUserId,
+                            message._conversationType.get(),
+                            message._targetUserId.get(),
+                            message.seq.get()
+                    );
+                    if (dbMessage == null) {
+                        // 本地没有对方发送的消息
+                        setError(LocalErrorCode.ERROR_CODE_TARGET_MESSAGE_NOT_FOUND);
+                        return null;
+                    } else {
+                        final ProtoMessage.MsgRead msgRead = ProtoMessage.MsgRead.newBuilder()
+                                .setSign(mSign)
+                                .setToUid(dbMessage._targetUserId.get())
+                                .setMsgId(dbMessage.remoteMessageId.get())
+                                .build();
+                        final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(msgRead);
+                        final MarkAsReadActionMessagePacket markAsReadActionMessagePacket = new MarkAsReadActionMessagePacket(
+                                protoByteMessage,
+                                mSign
+                        );
+                        mActionMessagePacket = markAsReadActionMessagePacket;
+                        mActionMessagePacket.getMessagePacketStateObservable().registerObserver(mActionMessagePacketStateObserver);
+                        return markAsReadActionMessagePacket;
+                    }
                 }
 
                 final Throwable e = new IllegalAccessError("unknown action type:" + actionType + " " + mActionMessage.getActionObject());

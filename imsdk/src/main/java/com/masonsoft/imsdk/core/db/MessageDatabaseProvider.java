@@ -376,6 +376,75 @@ public class MessageDatabaseProvider {
     }
 
     /**
+     * 获取紧挨着 seq 的更小的对方发送的 remote message id
+     */
+    @Nullable
+    public Message getClosestLessThanTargetFromRemoteMessageIdWithSeq(final long sessionUserId,
+                                                                      final int conversationType,
+                                                                      final long targetUserId,
+                                                                      final long seq) {
+        IMConstants.ConversationType.check(conversationType);
+
+        final ColumnsSelector<Message> columnsSelector = Message.COLUMNS_SELECTOR_ALL;
+        Cursor cursor = null;
+        try {
+            DatabaseHelper dbHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+            final String tableName = dbHelper.createTableMessageIfNeed(conversationType, targetUserId);
+            SQLiteDatabase db = dbHelper.getDBHelper().getWritableDatabase();
+
+            final StringBuilder selection = new StringBuilder();
+            final List<String> selectionArgs = new ArrayList<>();
+
+            selection.append(" " + DatabaseHelper.ColumnsMessage.C_REMOTE_MSG_ID + ">0 ");
+
+            selection.append(" and " + DatabaseHelper.ColumnsMessage.C_LOCAL_SEQ + "<=? ");
+            selectionArgs.add(String.valueOf(seq));
+
+            selection.append(" and " + DatabaseHelper.ColumnsMessage.C_FROM_USER_ID + "=? ");
+            selectionArgs.add(String.valueOf(targetUserId));
+
+            cursor = db.query(
+                    tableName,
+                    columnsSelector.queryColumns(),
+                    selection.toString(),
+                    selectionArgs.toArray(new String[]{}),
+                    null,
+                    null,
+                    DatabaseHelper.ColumnsMessage.C_LOCAL_SEQ + " desc",
+                    "0,1"
+            );
+
+            if (cursor.moveToNext()) {
+                final Message item = columnsSelector.cursorToObjectWithQueryColumns(cursor);
+                item.applyLogicField(sessionUserId, conversationType, targetUserId);
+
+                IMLog.v(
+                        "getClosestLessThanTargetFromRemoteMessageIdWithSeq found remoteMessageId:%s with sessionUserId:%s, conversationType:%s, targetUserId:%s, seq:%s",
+                        item.remoteMessageId.get(),
+                        sessionUserId,
+                        conversationType,
+                        targetUserId,
+                        seq);
+
+                return item;
+            }
+        } catch (Throwable e) {
+            IMLog.e(e);
+            RuntimeMode.fixme(e);
+        } finally {
+            IOUtil.closeQuietly(cursor);
+        }
+
+        IMLog.v(
+                "getClosestLessThanTargetFromRemoteMessageIdWithSeq remoteMessageId not found with sessionUserId:%s, conversationType:%s, targetUserId:%s, seq:%s",
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                seq);
+        return null;
+    }
+
+    /**
      * 获取与 seq 关联最紧密的 block id 值
      *
      * @see #getMessage(long, int, long, long)
