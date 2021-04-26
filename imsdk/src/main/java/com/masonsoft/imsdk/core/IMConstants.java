@@ -27,6 +27,13 @@ public final class IMConstants {
     public static final int ID_ANY = -1;
 
     /**
+     * 当两个 id 相等或者其中任意一个 id 为 ID_ANY 时，则匹配成功。
+     */
+    public static boolean isIdMatch(long id1, long id2) {
+        return id1 == id2 || id1 == ID_ANY || id2 == ID_ANY;
+    }
+
+    /**
      * @see #TRUE
      * @see #FALSE
      */

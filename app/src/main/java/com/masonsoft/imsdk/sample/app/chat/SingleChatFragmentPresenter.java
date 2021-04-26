@@ -60,9 +60,9 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     private final ConversationObservable.ConversationObserver mConversationObserver = new ConversationObservable.ConversationObserver() {
 
         private boolean notMatch(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            return (sessionUserId != IMConstants.ID_ANY && mSessionUserId != sessionUserId)
-                    || (conversationType != IMConstants.ID_ANY && mConversationType != conversationType)
-                    || (targetUserId != IMConstants.ID_ANY && mTargetUserId != targetUserId);
+            return !IMConstants.isIdMatch(mSessionUserId, sessionUserId)
+                    || !IMConstants.isIdMatch(mConversationType, conversationType)
+                    || !IMConstants.isIdMatch(mTargetUserId, targetUserId);
         }
 
         @Override

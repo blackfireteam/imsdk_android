@@ -91,8 +91,8 @@ public abstract class IMConversationChangedViewHelper {
     private final ConversationObservable.ConversationObserver mConversationObserver = new ConversationObservable.ConversationObserver() {
 
         private boolean notMatch(long sessionUserId, long conversationId) {
-            return (sessionUserId != IMConstants.ID_ANY && mSessionUserId != sessionUserId)
-                    || (conversationId != IMConstants.ID_ANY && mConversationId != conversationId);
+            return !IMConstants.isIdMatch(mSessionUserId, sessionUserId)
+                    || !IMConstants.isIdMatch(mConversationId, conversationId);
         }
 
         @Override
