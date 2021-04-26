@@ -13,6 +13,7 @@ import com.masonsoft.imsdk.core.message.packet.NotNullTimeoutMessagePacket;
 import com.masonsoft.imsdk.core.observable.ActionMessageObservable;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.processor.TinyChatRProcessor;
+import com.masonsoft.imsdk.core.processor.TinyLastReadMsgProcessor;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
@@ -496,6 +497,88 @@ public class IMActionMessageManager {
                     return proxy.doProcess(chatR);
                 }
             }
+
+            /**
+             * 消息已读回执
+             */
+            private class MarkAsReadActionMessagePacket extends ActionMessagePacket {
+
+                public MarkAsReadActionMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
+                    super(protoByteMessage, sign);
+                }
+
+                @Override
+                protected boolean doNotNullProcess(@NonNull ProtoByteMessageWrapper target) {
+                    Threads.mustNotUi();
+
+                    final Object protoMessageObject = target.getProtoMessageObject();
+                    if (protoMessageObject == null) {
+                        return false;
+                    }
+
+                    // 接收 Result 消息
+                    if (protoMessageObject instanceof ProtoMessage.Result) {
+                        final ProtoMessage.Result result = (ProtoMessage.Result) protoMessageObject;
+
+                        // 校验 sign 是否相等
+                        if (result.getSign() == getSign()) {
+                            synchronized (getStateLock()) {
+                                final int state = getState();
+                                if (state != STATE_WAIT_RESULT) {
+                                    IMLog.e(Objects.defaultObjectTag(this)
+                                            + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                                    return false;
+                                }
+
+                                if (result.getCode() != 0) {
+                                    setErrorCode(result.getCode());
+                                    setErrorMessage(result.getMsg());
+                                    IMLog.e(Objects.defaultObjectTag(this) +
+                                            " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
+                                    moveToState(STATE_FAIL);
+                                } else {
+                                    // 没有已读消息变动
+                                    moveToState(STATE_SUCCESS);
+                                }
+                            }
+                            return true;
+                        }
+                    }
+
+                    // 接收 LastReadMsg 消息
+                    if (protoMessageObject instanceof ProtoMessage.LastReadMsg) {
+                        final ProtoMessage.LastReadMsg lastReadMsg = (ProtoMessage.LastReadMsg) protoMessageObject;
+
+                        // 校验 sign 是否相等
+                        if (lastReadMsg.getSign() == getSign()) {
+                            synchronized (getStateLock()) {
+                                final int state = getState();
+                                if (state != STATE_WAIT_RESULT) {
+                                    IMLog.e(Objects.defaultObjectTag(this)
+                                            + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                                    return false;
+                                }
+
+                                if (!doNotNullProcessLastReadMsgInternal(lastReadMsg)) {
+                                    final Throwable e = new IllegalAccessError("unexpected. doNotNullProcessLastReadMsgInternal return false. sign:" + getSign());
+                                    IMLog.e(e);
+                                }
+                                moveToState(STATE_SUCCESS);
+                            }
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                private boolean doNotNullProcessLastReadMsgInternal(@NonNull ProtoMessage.LastReadMsg lastReadMsg) {
+                    final TinyLastReadMsgProcessor proxy = new TinyLastReadMsgProcessor(mSessionUserId);
+                    return proxy.doProcess(lastReadMsg);
+                }
+
+            }
+
         }
 
         private class ActionMessageObjectWrapperTask implements Runnable {

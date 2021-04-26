@@ -15,6 +15,10 @@ public class IMActionMessage implements EnqueueMessage {
      * 撤回一条会话消息(聊天消息)
      */
     public static final int ACTION_TYPE_REVOKE = 1;
+    /**
+     * 回执消息已读
+     */
+    public static final int ACTION_TYPE_MARK_AS_READ = 2;
 
     private final long mSessionUserId;
     private final int mActionType;

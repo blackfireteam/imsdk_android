@@ -184,7 +184,6 @@ public class IMConversationManager {
             return false;
         }
 
-        final long messageRemoteMessageId = message.remoteMessageId.get();
         final Conversation conversation = ConversationDatabaseProvider.getInstance()
                 .getConversationByTargetUserId(
                         sessionUserId,
@@ -196,16 +195,10 @@ public class IMConversationManager {
             RuntimeMode.fixme(e);
             return false;
         }
-        final long remoteMessageLastRead = conversation.remoteMessageLastRead.get();
-        if (remoteMessageLastRead >= messageRemoteMessageId) {
-            IMLog.v("ignore. message's remoteMessageLastRead >= messageRemoteMessageId");
-            return false;
-        }
 
         // 累加消息未读数
         final Conversation conversationUpdate = new Conversation();
         conversationUpdate.localId.set(conversation.localId.get());
-        conversationUpdate.remoteMessageLastRead.set(messageRemoteMessageId);
         conversationUpdate.localUnreadCount.set(conversation.localUnreadCount.get() + 1);
         return ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate);
     }

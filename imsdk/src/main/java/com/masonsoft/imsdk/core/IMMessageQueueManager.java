@@ -17,6 +17,7 @@ import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageOtherMessageRespon
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageResultIgnoreProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageSessionMessageResponseProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageSessionProcessor;
+import com.masonsoft.imsdk.core.processor.SendActionTypeMarkAsReadValidateProcessor;
 import com.masonsoft.imsdk.core.processor.SendActionTypeRevokeValidateProcessor;
 import com.masonsoft.imsdk.core.processor.SendSessionMessageRecoveryProcessor;
 import com.masonsoft.imsdk.core.processor.SendSessionMessageWriteDatabaseProcessor;
@@ -78,10 +79,9 @@ public class IMMessageQueueManager {
         mSendSessionMessageProcessor.addLastProcessor(new SendSessionMessageWriteDatabaseProcessor());
 
         mSendActionMessageProcessor.addLastProcessor(new SendActionTypeRevokeValidateProcessor());
+        mSendActionMessageProcessor.addLastProcessor(new SendActionTypeMarkAsReadValidateProcessor());
 
-        Threads.postBackground(() -> {
-            IMManager.getInstance().attach();
-        });
+        Threads.postBackground(() -> IMManager.getInstance().attach());
     }
 
     @NonNull
@@ -205,6 +205,13 @@ public class IMMessageQueueManager {
      */
     public void enqueueRevokeActionMessage(@NonNull IMMessage message) {
         this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_REVOKE, message);
+    }
+
+    /**
+     * 回执消息已读
+     */
+    public void enqueueMarkAsReadActionMessage(@NonNull IMMessage message) {
+        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_MARK_AS_READ, message);
     }
 
     /**
