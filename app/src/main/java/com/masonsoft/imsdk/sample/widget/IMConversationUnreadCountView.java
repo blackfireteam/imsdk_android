@@ -57,8 +57,8 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
     private int mAdjustPaddingLeftRight;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        AppContext.setContextInEditMode(this);
         if (isInEditMode()) {
-            AppContext.setContext(new ViewEditApplicationContext(this));
             setUnreadCount((long) (1 + Math.random() * 100));
         }
 
