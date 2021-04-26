@@ -126,6 +126,13 @@ public class TinyChatRProcessor extends NotNullProcessor<ProtoMessage.ChatR> {
                             targetUserId,
                             message.localId.get()
                     );
+                    // 更新未读消息数
+                    IMConversationManager.getInstance().increaseConversationUnreadCount(
+                            sessionUserId,
+                            conversationType,
+                            targetUserId,
+                            message
+                    );
                 } else {
                     final Throwable e = new IllegalAccessError("unexpected insertMessage return false " + message);
                     IMLog.e(e);

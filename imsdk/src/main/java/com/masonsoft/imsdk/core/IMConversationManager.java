@@ -149,6 +149,13 @@ public class IMConversationManager {
             return false;
         }
 
+        if (message.localId.isUnset()) {
+            final Throwable e = new IllegalAccessError("unexpected. message's localId is unset");
+            IMLog.e(e);
+            RuntimeMode.fixme(e);
+            return false;
+        }
+
         if (message.messageType.isUnset()) {
             final Throwable e = new IllegalAccessError("unexpected. message's messageType is unset");
             IMLog.e(e);
