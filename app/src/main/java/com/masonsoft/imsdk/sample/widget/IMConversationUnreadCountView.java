@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.IMConversation;
+import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.sample.Constants;
 
 import io.github.idonans.core.util.DimenUtil;
@@ -79,13 +81,30 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
         }
     }
 
+    @Nullable
     @Override
-    protected void onConversationUpdate(@Nullable IMConversation conversation) {
-        if (conversation == null) {
-            setUnreadCount(0L);
-        } else {
-            setUnreadCount(conversation.unreadCount.getOrDefault(0L));
+    protected Object loadCustomObject() {
+        if (getConversationId() == IMConstants.ID_ANY) {
+            return IMConversationManager.getInstance().getAllUnreadCount(getSessionUserId());
         }
+
+        return null;
+    }
+
+    @Override
+    protected void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject) {
+        long unreadCount = 0L;
+        if (getConversationId() == IMConstants.ID_ANY) {
+            if (customObject instanceof Number) {
+                unreadCount = ((Number) customObject).longValue();
+            }
+        } else {
+            if (conversation != null) {
+                unreadCount = conversation.unreadCount.getOrDefault(0L);
+            }
+        }
+
+        setUnreadCount(unreadCount);
     }
 
     public void setUnreadCount(long unreadCount) {

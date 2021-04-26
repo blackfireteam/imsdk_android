@@ -1,6 +1,8 @@
 package com.masonsoft.imsdk.sample.widget;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
+import androidx.core.util.Pair;
 
 import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.core.IMConstants;
@@ -58,7 +60,7 @@ public abstract class IMConversationChangedViewHelper {
         mRequestHolder.set(null);
 
         if (reset) {
-            onConversationChanged(null);
+            onConversationChanged(null, null);
         }
         mRequestHolder.set(Single.just("")
                 .map(input -> {
@@ -68,12 +70,22 @@ public abstract class IMConversationChangedViewHelper {
                     );
                     return new ObjectWrapper(conversation);
                 })
+                .map(input -> {
+                    final Object customObject = loadCustomObject();
+                    return Pair.create(input, customObject);
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(objectWrapper -> onConversationChanged((IMConversation) objectWrapper.getObject()), SampleLog::e));
+                .subscribe(pair -> onConversationChanged((IMConversation) pair.first.getObject(), pair.second), SampleLog::e));
     }
 
-    protected abstract void onConversationChanged(@Nullable IMConversation conversation);
+    @Nullable
+    @WorkerThread
+    protected Object loadCustomObject() {
+        return null;
+    }
+
+    protected abstract void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject);
 
     @SuppressWarnings("FieldCanBeLocal")
     private final ConversationObservable.ConversationObserver mConversationObserver = new ConversationObservable.ConversationObserver() {

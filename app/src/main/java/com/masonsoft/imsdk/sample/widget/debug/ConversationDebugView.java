@@ -31,7 +31,7 @@ public class ConversationDebugView extends DebugTextView {
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mConversationChangedViewHelper = new IMConversationChangedViewHelper() {
             @Override
-            protected void onConversationChanged(@Nullable IMConversation conversation) {
+            protected void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject) {
                 ConversationDebugView.this.showConversationDebugInfo(conversation);
             }
         };

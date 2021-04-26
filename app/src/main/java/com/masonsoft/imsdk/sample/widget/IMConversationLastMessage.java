@@ -43,7 +43,7 @@ public class IMConversationLastMessage extends IMConversationDynamicFrameLayout 
     }
 
     @Override
-    protected void onConversationUpdate(@Nullable IMConversation conversation) {
+    protected void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject) {
         if (conversation == null) {
             ViewUtil.setVisibilityIfChanged(mLastMessageView, View.GONE);
         } else {

@@ -47,6 +47,11 @@ public class IMConversationManager {
     public IMConversation getConversation(
             final long sessionUserId,
             final long conversationId) {
+        if (conversationId == IMConstants.ID_ANY) {
+            IMLog.v("getConversation fast return null, sessionUserId:%s, conversationId is id any.", sessionUserId);
+            return null;
+        }
+
         final Conversation conversation = ConversationDatabaseProvider.getInstance()
                 .getConversation(sessionUserId, conversationId);
         if (conversation != null) {

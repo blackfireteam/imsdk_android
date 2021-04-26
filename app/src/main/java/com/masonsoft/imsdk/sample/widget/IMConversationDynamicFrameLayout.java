@@ -6,6 +6,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.sample.Constants;
@@ -36,9 +37,15 @@ public abstract class IMConversationDynamicFrameLayout extends FrameLayout {
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mConversationChangedViewHelper = new IMConversationChangedViewHelper() {
+            @Nullable
             @Override
-            protected void onConversationChanged(@Nullable IMConversation conversation) {
-                IMConversationDynamicFrameLayout.this.onConversationUpdate(conversation);
+            protected Object loadCustomObject() {
+                return IMConversationDynamicFrameLayout.this.loadCustomObject();
+            }
+
+            @Override
+            protected void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject) {
+                IMConversationDynamicFrameLayout.this.onConversationChanged(conversation, customObject);
             }
         };
     }
@@ -55,6 +62,12 @@ public abstract class IMConversationDynamicFrameLayout extends FrameLayout {
         return mConversationChangedViewHelper.getConversationId();
     }
 
-    protected abstract void onConversationUpdate(@Nullable IMConversation conversation);
+    @Nullable
+    @WorkerThread
+    protected Object loadCustomObject() {
+        return null;
+    }
+
+    protected abstract void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject);
 
 }
