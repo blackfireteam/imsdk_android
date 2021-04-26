@@ -45,7 +45,6 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
         mBinding.name.setTargetUserId(targetUserId);
 
         mBinding.unreadCountView.setConversation(sessionUserId, conversationId);
-        mBinding.unreadCountView.setOnlyDrawableBackground(false);
 
         mBinding.time.setConversation(sessionUserId, conversationId);
         mBinding.msg.setConversation(sessionUserId, conversationId);

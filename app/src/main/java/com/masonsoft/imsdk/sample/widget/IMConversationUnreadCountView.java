@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk.sample.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -15,6 +16,7 @@ import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.sample.Constants;
+import com.masonsoft.imsdk.sample.R;
 
 import io.github.idonans.appcontext.AppContext;
 import io.github.idonans.core.util.DimenUtil;
@@ -45,7 +47,7 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
     private Paint mBackgroundPaint;
     private Paint mTextPaint;
 
-    private boolean mOnlyDrawableBackground = true;
+    private boolean mOnlyDrawableBackground;
 
     private long mUnreadCount;
     private String mUnreadCountText;
@@ -57,9 +59,13 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (isInEditMode()) {
             AppContext.setContext(new ViewEditApplicationContext(this));
-            setUnreadCount(100);
-            mOnlyDrawableBackground = false;
+            setUnreadCount((long) (1 + Math.random() * 100));
         }
+
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.IMConversationUnreadCountView, defStyleAttr,
+                defStyleRes);
+        mOnlyDrawableBackground = a.getBoolean(R.styleable.IMConversationUnreadCountView_OnlyDrawableBackground, mOnlyDrawableBackground);
+        a.recycle();
 
         mDefaultMeasureSize = DimenUtil.dp2px(18);
         mAdjustPaddingLeftRight = DimenUtil.dp2px(5);

@@ -36,4 +36,7 @@
         <attr name="android:orientation" />
         <attr name="android:progressDrawable" />
     </declare-styleable>
+    <declare-styleable name="IMConversationUnreadCountView">
+        <attr name="OnlyDrawableBackground" format="boolean" />
+    </declare-styleable>
 </resources>
