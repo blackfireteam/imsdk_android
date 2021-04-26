@@ -114,7 +114,7 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
             }
         }
 
-        // setUnreadCount(unreadCount);
+        setUnreadCount(unreadCount);
     }
 
     public void setUnreadCount(long unreadCount) {
