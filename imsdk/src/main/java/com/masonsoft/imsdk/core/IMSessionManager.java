@@ -720,9 +720,12 @@ public class IMSessionManager {
                 if (sessionUserId > 0) {
                     // 长连接上有合法的用户 id 时，同步到本地存储
                     setSessionUserId(session, sessionUserId);
-                    // 读取会话列表
-                    mFetchConversationListMessagePacket = FetchConversationListMessagePacket.create(getConversationListLastSyncTimeBySessionUserId(sessionUserId));
-                    sessionTcpClient.sendMessagePacketQuietly(mFetchConversationListMessagePacket);
+
+                    if (!session.isPendingSignOut()) {
+                        // 读取会话列表
+                        mFetchConversationListMessagePacket = FetchConversationListMessagePacket.create(getConversationListLastSyncTimeBySessionUserId(sessionUserId));
+                        sessionTcpClient.sendMessagePacketQuietly(mFetchConversationListMessagePacket);
+                    }
                 }
             }
         }

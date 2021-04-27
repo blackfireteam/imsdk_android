@@ -263,14 +263,7 @@ public class SessionTcpClient extends NettyTcpClient {
     protected void onFirstConnected() {
         IMLog.v("onFirstConnected");
 
-        //noinspection UnnecessaryLocalVariable
-        final Session session = mSession;
-        if (session.isPendingSignOut()) {
-            signOut();
-        } else {
-            // 发送认证信息
-            signIn();
-        }
+        signIn();
     }
 
     @Override
