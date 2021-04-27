@@ -124,6 +124,33 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
     }
 
     /**
+     * 判断当前数据包是否发送成功(数据包的发送状态为发送成功，意味着已经正确获取到了服务器的成功响应)
+     */
+    public boolean isSuccess() {
+        final int state = getState();
+        return state == STATE_SUCCESS;
+    }
+
+    /**
+     * 判断当前数据包是否发送失败(可能是收到了服务器返回的处理失败的响应，也可能是触发了超时)
+     *
+     * @see #isTimeoutTriggered()
+     */
+    public boolean isFail() {
+        final int state = getState();
+        return state == STATE_FAIL;
+    }
+
+    /**
+     * 是否触发了超时
+     *
+     * @see #isFail()
+     */
+    public boolean isTimeoutTriggered() {
+        return false;
+    }
+
+    /**
      * 判断当前数据包是否尚未发送(数据包状态为待发送)
      */
     public boolean isIdle() {

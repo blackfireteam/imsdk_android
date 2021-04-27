@@ -719,12 +719,15 @@ public class IMSessionManager {
                 clearSessionTcpClientProxyConfigRetryCount();
 
                 final Session session = sessionTcpClient.getSession();
-                final long sessionUserId = sessionTcpClient.getSessionUserId();
+                final long sessionUserId = messagePacket.getSessionUserId();
                 if (sessionUserId > 0) {
                     // 长连接上有合法的用户 id 时，同步到本地存储
                     setSessionUserId(session, sessionUserId);
 
-                    if (!session.isPendingSignOut()) {
+                    if (session.isPendingSignOut()) {
+                        // 退出登录
+                        sessionTcpClient.signOut();
+                    } else {
                         // 读取会话列表
                         mFetchConversationListMessagePacket = FetchConversationListMessagePacket.create(getConversationListLastSyncTimeBySessionUserId(sessionUserId));
                         sessionTcpClient.sendMessagePacketQuietly(mFetchConversationListMessagePacket);
@@ -747,7 +750,22 @@ public class IMSessionManager {
                 return;
             }
 
-            // TODO
+            if (messagePacket.isSignOutSuccess()) {
+                // 成功退出登录，关闭长连接
+                setSession(null);
+                return;
+            }
+
+            if (messagePacket.isFail()) {
+                final int errorCode = messagePacket.getErrorCode();
+                final String errorMessage = messagePacket.getErrorMessage();
+                IMLog.v("onSignOutStateChanged messagePacket.isFail errorCode:%s errorMessage:%s", errorCode, errorMessage);
+                if (errorCode != 0) {
+                    // 退出登录失败，服务器返回了某种异常信息
+                    // 关闭长连接
+                    setSession(null);
+                }
+            }
         }
     }
 

@@ -378,7 +378,7 @@ public class SessionTcpClient extends NettyTcpClient {
      */
     public void signOut() {
         IMLog.v(Objects.defaultObjectTag(this) + " signOut");
-        sendMessagePacketQuietly(mSignOutMessagePacket, false);
+        sendMessagePacketQuietly(mSignOutMessagePacket, true);
     }
 
     @Override
