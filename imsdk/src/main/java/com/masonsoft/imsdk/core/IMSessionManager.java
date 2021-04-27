@@ -188,6 +188,7 @@ public class IMSessionManager {
                     // 超时
                     IMLog.v(Objects.defaultObjectTag(this) + " getSessionUserIdWithBlockOrTimeout onClock timeout");
                     subjectTimeout.run();
+                    ClockObservable.DEFAULT.unregisterObserver(this);
                 } else {
                     validateSubjectState.run();
                 }
@@ -273,6 +274,7 @@ public class IMSessionManager {
                     // 超时
                     IMLog.v(Objects.defaultObjectTag(this) + " signOutWithBlockOrTimeout onClock timeout");
                     subjectTimeout.run();
+                    ClockObservable.DEFAULT.unregisterObserver(this);
                 } else {
                     validateSubjectState.run();
                 }
@@ -472,6 +474,7 @@ public class IMSessionManager {
                     // 超时
                     IMLog.v(Objects.defaultObjectTag(this) + " getSessionTcpClientProxyWithBlockOrTimeout onClock timeout");
                     subjectTimeout.run();
+                    ClockObservable.DEFAULT.unregisterObserver(this);
                 } else {
                     validateSubjectState.run();
                 }

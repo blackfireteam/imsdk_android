@@ -348,6 +348,7 @@ public class IMMessageManager {
                     // 超时
                     IMLog.v(Objects.defaultObjectTag(this) + " fetchWithBlockOrTimeout onClock timeout sign:%s", originSign);
                     subject.onSuccess(GeneralResult.valueOf(GeneralResult.ERROR_CODE_TIMEOUT));
+                    ClockObservable.DEFAULT.unregisterObserver(this);
                 }
             }
         };
