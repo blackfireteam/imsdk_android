@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -94,6 +95,8 @@ public class MineFragment extends SystemInsetsFragment {
         mBinding.modifyGoldSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onGoldChanged(isChecked));
         mBinding.modifyVerifiedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onVerifiedChanged(isChecked));
         ViewUtil.onClick(mBinding.actionSignOut, v -> requestSignOut());
+
+        mBinding.actionSignOut.setEnabled(IMSessionManager.getInstance().getSession() != null);
 
         return mBinding.getRoot();
     }
@@ -301,7 +304,7 @@ public class MineFragment extends SystemInsetsFragment {
             mBinding.modifyVerifiedSwitch.setChecked(verified);
             bindCheckedChangeListener();
 
-            mBinding.actionSignOut.setEnabled(userInfo != null);
+            mBinding.actionSignOut.setEnabled(IMSessionManager.getInstance().getSession() != null);
         }
 
         public void onAvatarUploadFail(Throwable e) {
