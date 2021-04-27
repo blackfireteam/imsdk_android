@@ -126,7 +126,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
             // 设置发送状态为 IDLE
             localSendingMessageUpdate.localSendStatus.set(IMConstants.SendStatus.IDLE);
             // 重置 errorCode 与 errorMessage
-            localSendingMessageUpdate.errorCode.set(0L);
+            localSendingMessageUpdate.errorCode.set(0);
             localSendingMessageUpdate.errorMessage.set(null);
 
             if (LocalSendingMessageProvider.getInstance().updateLocalSendingMessage(sessionUserId, localSendingMessageUpdate)) {

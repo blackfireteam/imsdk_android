@@ -185,7 +185,7 @@ public class OtherMessageManager {
             @NonNull
             private final OtherMessage mOtherMessage;
 
-            public long mErrorCode;
+            public int mErrorCode;
             public String mErrorMessage;
 
             private final AtomicBoolean mBuildOtherMessagePacket = new AtomicBoolean(false);

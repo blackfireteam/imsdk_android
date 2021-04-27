@@ -56,7 +56,7 @@ public class LocalSendingMessage {
      * @see DatabaseHelper.ColumnsLocalSendingMessage#C_ERROR_CODE
      */
     @NonNull
-    public final StateProp<Long> errorCode = new StateProp<>();
+    public final StateProp<Integer> errorCode = new StateProp<>();
 
     /**
      * @see DatabaseHelper.ColumnsLocalSendingMessage#C_ERROR_MESSAGE
@@ -182,7 +182,7 @@ public class LocalSendingMessage {
             target.targetUserId.set(CursorUtil.getLong(cursor, ++index));
             target.messageLocalId.set(CursorUtil.getLong(cursor, ++index));
             target.localSendStatus.set(CursorUtil.getInt(cursor, ++index));
-            target.errorCode.set(CursorUtil.getLong(cursor, ++index));
+            target.errorCode.set(CursorUtil.getInt(cursor, ++index));
             target.errorMessage.set(CursorUtil.getString(cursor, ++index));
             target.localAbortId.set(CursorUtil.getLong(cursor, ++index));
             return target;

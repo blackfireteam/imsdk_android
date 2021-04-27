@@ -161,7 +161,7 @@ public class IMSessionMessageUploadManager {
              */
             public float mSendProgress;
 
-            public long mErrorCode;
+            public int mErrorCode;
             public String mErrorMessage;
 
             //////////////////////////////////////////////////////////////////////

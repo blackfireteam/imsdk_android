@@ -154,7 +154,7 @@ public class IMMessage {
      * 消息发送失败时的错误码
      */
     @NonNull
-    public final StateProp<Long> errorCode = new StateProp<>();
+    public final StateProp<Integer> errorCode = new StateProp<>();
 
     /**
      * 消息发送失败时的错误描述信息
