@@ -18,6 +18,8 @@ import com.masonsoft.imsdk.core.observable.MessageObservable;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
+import com.masonsoft.imsdk.lang.GeneralErrorCode;
+import com.masonsoft.imsdk.lang.GeneralErrorCodeException;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.Preconditions;
@@ -93,92 +95,6 @@ public class IMSessionMessageUploadManager {
         return getSessionUploader(sessionUserId).getUploadProgress(localSendingMessageLocalId);
     }
 
-    private static class LocalErrorCodeException extends RuntimeException {
-        private final int mErrorCode;
-
-        private LocalErrorCodeException(int errorCode) {
-            mErrorCode = errorCode;
-        }
-    }
-
-    private static class LocalErrorCode {
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
-        private static final int FIRST_LOCAL_ERROR_CODE = Integer.MIN_VALUE / 2;
-        private static int sNextErrorCode = FIRST_LOCAL_ERROR_CODE;
-        /**
-         * 未知错误
-         */
-        private static final int ERROR_CODE_UNKNOWN = sNextErrorCode++;
-        /**
-         * 期望的目标对象没有找到
-         */
-        private static final int ERROR_CODE_TARGET_NOT_FOUND = sNextErrorCode++;
-        /**
-         * 绑定 abort id 失败
-         */
-        private static final int ERROR_CODE_BIND_ABORT_ID_FAIL = sNextErrorCode++;
-        /**
-         * 更新 sendStatus 失败
-         */
-        private static final int ERROR_CODE_UPDATE_SEND_STATUS_FAIL = sNextErrorCode++;
-        /**
-         * 构建 protoByteMessage 失败
-         */
-        private static final int ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL = sNextErrorCode++;
-        /**
-         * sessionTcpClientProxy 为 null
-         */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL = sNextErrorCode++;
-        /**
-         * sessionTcpClientProxy session 无效
-         */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID = sNextErrorCode++;
-        /**
-         * sessionTcpClientProxy 链接错误
-         */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR = sNextErrorCode++;
-        /**
-         * sessionTcpClientProxy 未知错误
-         */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN = sNextErrorCode++;
-        /**
-         * 文件上传失败
-         */
-        private static final int ERROR_CODE_FILE_UPLOAD_FAIL = sNextErrorCode++;
-        /**
-         * messagePacket 发送失败
-         */
-        private static final int ERROR_CODE_MESSAGE_PACKET_SEND_FAIL = sNextErrorCode++;
-        /**
-         * messagePacket 发送超时
-         */
-        private static final int ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT = sNextErrorCode++;
-
-        private static final Map<Integer, String> DEFAULT_ERROR_MESSAGE_MAP = new HashMap<>();
-
-        static {
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_UNKNOWN, "ERROR_CODE_UNKNOWN");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_TARGET_NOT_FOUND, "ERROR_CODE_TARGET_NOT_FOUND");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_BIND_ABORT_ID_FAIL, "ERROR_CODE_BIND_ABORT_ID_FAIL");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_UPDATE_SEND_STATUS_FAIL, "ERROR_CODE_UPDATE_SEND_STATUS_FAIL");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL, "ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_FILE_UPLOAD_FAIL, "ERROR_CODE_FILE_UPLOAD_FAIL");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_FAIL, "ERROR_CODE_MESSAGE_PACKET_SEND_FAIL");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT, "ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT");
-
-            Preconditions.checkArgument(DEFAULT_ERROR_MESSAGE_MAP.size() == sNextErrorCode - FIRST_LOCAL_ERROR_CODE);
-        }
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
-    }
-
     private class SessionWorker implements DebugManager.DebugInfoProvider {
 
         private class SessionMessageObjectWrapper {
@@ -214,7 +130,7 @@ public class IMSessionMessageUploadManager {
                         if (chatSMessagePacket.getErrorCode() != 0) {
                             setError(chatSMessagePacket.getErrorCode(), chatSMessagePacket.getErrorMessage());
                         } else if (chatSMessagePacket.isTimeoutTriggered()) {
-                            setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT);
+                            setError(GeneralErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT);
                         }
                         moveSendStatus(IMConstants.SendStatus.FAIL);
                     } else if (newState == MessagePacket.STATE_SUCCESS) {
@@ -284,13 +200,13 @@ public class IMSessionMessageUploadManager {
                 return this.mErrorCode != 0 || this.mAbortIdNotMatch;
             }
 
-            private void setError(long errorCode) {
+            private void setError(int errorCode) {
                 this.setError(errorCode, null);
             }
 
-            private void setError(long errorCode, String errorMessage) {
+            private void setError(int errorCode, String errorMessage) {
                 if (errorMessage == null) {
-                    errorMessage = LocalErrorCode.DEFAULT_ERROR_MESSAGE_MAP.get((int) errorCode);
+                    errorMessage = GeneralErrorCode.findDefaultErrorMessage(errorCode);
                 }
                 this.mErrorCode = errorCode;
                 this.mErrorMessage = errorMessage;
@@ -383,7 +299,7 @@ public class IMSessionMessageUploadManager {
                     return accessUrl;
                 } catch (Throwable e) {
                     IMLog.e(e);
-                    throw new LocalErrorCodeException(LocalErrorCode.ERROR_CODE_FILE_UPLOAD_FAIL);
+                    throw new GeneralErrorCodeException(GeneralErrorCode.ERROR_CODE_FILE_UPLOAD_FAIL);
                 }
             }
 
@@ -589,14 +505,14 @@ public class IMSessionMessageUploadManager {
                         if (localSendingMessage != null) {
                             this.mLocalSendingMessage = localSendingMessage;
                         } else {
-                            setError(LocalErrorCode.ERROR_CODE_TARGET_NOT_FOUND);
+                            setError(GeneralErrorCode.ERROR_CODE_TARGET_NOT_FOUND);
                         }
                     } else {
-                        setError(LocalErrorCode.ERROR_CODE_BIND_ABORT_ID_FAIL);
+                        setError(GeneralErrorCode.ERROR_CODE_BIND_ABORT_ID_FAIL);
                     }
                 } catch (Throwable e) {
                     IMLog.e(e);
-                    setError(LocalErrorCode.ERROR_CODE_UNKNOWN);
+                    setError(GeneralErrorCode.ERROR_CODE_UNKNOWN);
                 }
             }
 
@@ -610,7 +526,7 @@ public class IMSessionMessageUploadManager {
                         this.mLocalSendingMessage.localId.get()
                 );
                 if (localSendingMessage == null) {
-                    setError(LocalErrorCode.ERROR_CODE_TARGET_NOT_FOUND);
+                    setError(GeneralErrorCode.ERROR_CODE_TARGET_NOT_FOUND);
                     this.mAbortIdNotMatch = true;
                     return null;
                 }
@@ -646,14 +562,14 @@ public class IMSessionMessageUploadManager {
                         if (localSendingMessage != null) {
                             this.mLocalSendingMessage = localSendingMessage;
                         } else {
-                            setError(LocalErrorCode.ERROR_CODE_TARGET_NOT_FOUND);
+                            setError(GeneralErrorCode.ERROR_CODE_TARGET_NOT_FOUND);
                         }
                     } else {
-                        setError(LocalErrorCode.ERROR_CODE_UPDATE_SEND_STATUS_FAIL);
+                        setError(GeneralErrorCode.ERROR_CODE_UPDATE_SEND_STATUS_FAIL);
                     }
                 } catch (Throwable e) {
                     IMLog.e(e);
-                    setError(LocalErrorCode.ERROR_CODE_UNKNOWN);
+                    setError(GeneralErrorCode.ERROR_CODE_UNKNOWN);
                 }
             }
         }
@@ -865,23 +781,23 @@ public class IMSessionMessageUploadManager {
                 }
 
                 if (proxy == null) {
-                    mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL);
+                    mSessionMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL);
                     return null;
                 }
 
                 if (IMSessionManager.getInstance().getSessionUserId() != mSessionUserId) {
-                    mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID);
+                    mSessionMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID);
                     return null;
                 }
 
                 if (!proxy.isOnline()) {
-                    mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR);
+                    mSessionMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR);
                     return null;
                 }
 
                 final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
                 if (sessionTcpClient == null) {
-                    mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN);
+                    mSessionMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN);
                     return null;
                 }
 
@@ -905,7 +821,7 @@ public class IMSessionMessageUploadManager {
 
                     final Message message = mSessionMessageObjectWrapper.mMessage;
                     if (message == null) {
-                        mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_TARGET_NOT_FOUND);
+                        mSessionMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_TARGET_NOT_FOUND);
                         return;
                     }
 
@@ -919,7 +835,7 @@ public class IMSessionMessageUploadManager {
 
                     final MessagePacket messagePacket = mSessionMessageObjectWrapper.buildMessagePacket();
                     if (messagePacket == null) {
-                        mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL);
+                        mSessionMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL);
                         return;
                     }
 
@@ -935,7 +851,7 @@ public class IMSessionMessageUploadManager {
 
                     sessionTcpClient.sendMessagePacketQuietly(messagePacket);
                     if (messagePacket.getState() != MessagePacket.STATE_WAIT_RESULT) {
-                        mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_FAIL);
+                        mSessionMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_FAIL);
                         return;
                     }
 
@@ -954,10 +870,10 @@ public class IMSessionMessageUploadManager {
                     IMLog.v(Objects.defaultObjectTag(this) + " body run end. %s", messagePacket);
                 } catch (Throwable e) {
                     IMLog.e(e);
-                    if (e instanceof LocalErrorCodeException) {
-                        mSessionMessageObjectWrapper.setError(((LocalErrorCodeException) e).mErrorCode);
+                    if (e instanceof GeneralErrorCodeException) {
+                        mSessionMessageObjectWrapper.setError(((GeneralErrorCodeException) e).errorCode);
                     } else if (mSessionMessageObjectWrapper.mErrorCode == 0) {
-                        mSessionMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_UNKNOWN);
+                        mSessionMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_UNKNOWN);
                     }
                 }
             }

@@ -66,6 +66,22 @@ public class GeneralErrorCode {
      * messagePacket 发送超时
      */
     public static final int ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT = sNextErrorCode++;
+    /**
+     * 期望的目标对象没有找到
+     */
+    public static final int ERROR_CODE_TARGET_NOT_FOUND = sNextErrorCode++;
+    /**
+     * 绑定 abort id 失败
+     */
+    public static final int ERROR_CODE_BIND_ABORT_ID_FAIL = sNextErrorCode++;
+    /**
+     * 更新 sendStatus 失败
+     */
+    public static final int ERROR_CODE_UPDATE_SEND_STATUS_FAIL = sNextErrorCode++;
+    /**
+     * 文件上传失败
+     */
+    public static final int ERROR_CODE_FILE_UPLOAD_FAIL = sNextErrorCode++;
     //////////////////////////////////////////////////////////////////////
     /**
      * 非法的会话用户 id.
@@ -195,6 +211,10 @@ public class GeneralErrorCode {
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN, R.string.msimsdk_general_error_message_session_tcp_client_proxy_error_unknown);
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_FAIL, R.string.msimsdk_general_error_message_message_packet_send_fail);
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT, R.string.msimsdk_general_error_message_message_packet_send_timeout);
+        DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_TARGET_NOT_FOUND, R.string.msimsdk_general_error_message_target_not_found);
+        DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_BIND_ABORT_ID_FAIL, R.string.msimsdk_general_error_message_bind_abort_id_fail);
+        DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_UPDATE_SEND_STATUS_FAIL, R.string.msimsdk_general_error_message_update_send_status_fail);
+        DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_FILE_UPLOAD_FAIL, R.string.msimsdk_general_error_message_file_upload_fail);
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_INVALID_SESSION_USER_ID, R.string.msimsdk_general_error_message_invalid_session_user_id);
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_INVALID_FROM_USER_ID, R.string.msimsdk_general_error_message_invalid_from_user_id);
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_INVALID_TO_USER_ID, R.string.msimsdk_general_error_message_invalid_to_user_id);
