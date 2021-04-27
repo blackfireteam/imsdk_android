@@ -24,6 +24,7 @@ import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImagePickerDialog;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentConfirmDialog;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentInputDialog;
+import com.masonsoft.imsdk.sample.common.simpledialog.SimpleLoadingDialog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMineFragmentBinding;
 import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.user.UserInfo;
@@ -48,6 +49,39 @@ public class MineFragment extends SystemInsetsFragment {
     private ImsdkSampleMineFragmentBinding mBinding;
     private MineFragmentPresenter mPresenter;
     private ViewImpl mView;
+    @Nullable
+    private SimpleLoadingDialog mSignOutLoadingDialog;
+
+    private void showSignOutLoadingDialog() {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+        if (mSignOutLoadingDialog == null) {
+            mSignOutLoadingDialog = new SimpleLoadingDialog(activity);
+        }
+        mSignOutLoadingDialog.show();
+    }
+
+    private void hideSignOutLoadingDialog() {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+        if (mSignOutLoadingDialog != null) {
+            mSignOutLoadingDialog.hide();
+        }
+    }
 
     @Nullable
     @Override
@@ -246,6 +280,7 @@ public class MineFragment extends SystemInsetsFragment {
             SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
             return;
         }
+        showSignOutLoadingDialog();
         mPresenter.requestSignOut();
     }
 
