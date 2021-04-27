@@ -14,7 +14,7 @@ public class FetchMessageHistoryObservable extends WeakObservable<FetchMessageHi
 
         void onMessageHistoryFetchedSuccess(long sign);
 
-        void onMessageHistoryFetchedError(long sign, long errorCode, String errorMessage);
+        void onMessageHistoryFetchedError(long sign, int errorCode, String errorMessage);
     }
 
     public void notifyMessageHistoryFetchedLoading(long sign) {
@@ -25,7 +25,7 @@ public class FetchMessageHistoryObservable extends WeakObservable<FetchMessageHi
         forEach(fetchMessageHistoryObserver -> fetchMessageHistoryObserver.onMessageHistoryFetchedSuccess(sign));
     }
 
-    public void notifyMessageHistoryFetchedError(long sign, long errorCode, String errorMessage) {
+    public void notifyMessageHistoryFetchedError(long sign, int errorCode, String errorMessage) {
         forEach(fetchMessageHistoryObserver -> fetchMessageHistoryObserver.onMessageHistoryFetchedError(sign, errorCode, errorMessage));
     }
 
