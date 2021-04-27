@@ -30,6 +30,7 @@ import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentM
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManagerHost;
 import com.masonsoft.imsdk.sample.common.microlifecycle.VisibleRecyclerViewMicroLifecycleComponentManager;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSingleChatFragmentBinding;
+import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.util.ActivityUtil;
 import com.masonsoft.imsdk.sample.util.EditTextUtil;
@@ -101,6 +102,21 @@ public class SingleChatFragment extends SystemInsetsFragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(null);
         recyclerView.setHasFixedSize(true);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    int lastPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                    if (mDataAdapter != null && lastPosition >= 0) {
+                        if (lastPosition == mDataAdapter.getItemCount() - 1) {
+                            // 滚动到最底部
+                            hideNewMessagesTipView();
+                            sendMarkAsRead();
+                        }
+                    }
+                }
+            }
+        });
         mMicroLifecycleComponentManager = new VisibleRecyclerViewMicroLifecycleComponentManager(recyclerView, getLifecycle());
 
         UnionTypeAdapter adapter = new UnionTypeAdapterImpl();
@@ -331,6 +347,16 @@ public class SingleChatFragment extends SystemInsetsFragment {
         }
     }
 
+    private void showNewMessagesTipView() {
+        // TODO
+        // ViewUtil.setVisibilityIfChanged(mActionNewMessages, View.VISIBLE);
+    }
+
+    private void hideNewMessagesTipView() {
+        // TODO
+        // ViewUtil.setVisibilityIfChanged(mActionNewMessages, View.GONE);
+    }
+
     private void clearPresenter() {
         if (mPresenter != null) {
             mPresenter.setAbort();
@@ -350,6 +376,24 @@ public class SingleChatFragment extends SystemInsetsFragment {
         @Override
         public MicroLifecycleComponentManager getMicroLifecycleComponentManager() {
             return mMicroLifecycleComponentManager;
+        }
+    }
+
+    private void sendMarkAsRead() {
+        SampleLog.v(Objects.defaultObjectTag(this) + " sendMarkAsRead");
+        if (mDataAdapter != null) {
+            final List<UnionTypeItemObject> items = mDataAdapter.getData().getGroupItems(ViewImpl.GROUP_DEFAULT);
+            if (items != null && items.size() > 0) {
+                final UnionTypeItemObject lastItem = items.get(items.size() - 1);
+                if (lastItem.itemObject instanceof DataObject) {
+                    final DataObject<?> dataObject = (DataObject<?>) lastItem.itemObject;
+                    if (dataObject.object instanceof IMMessage) {
+                        final IMMessage message = (IMMessage) dataObject.object;
+                        SampleLog.v(Objects.defaultObjectTag(this) + " sendMarkAsRead message:%s", message);
+                        IMMessageQueueManager.getInstance().enqueueMarkAsReadActionMessage(message);
+                    }
+                }
+            }
         }
     }
 
@@ -387,6 +431,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                         int count = mDataAdapter.getItemCount();
                         if (count > 0) {
                             binding.recyclerView.scrollToPosition(count - 1);
+                            sendMarkAsRead();
                         }
                     }
                 });
@@ -423,13 +468,10 @@ public class SingleChatFragment extends SystemInsetsFragment {
                             }
                             if (autoScroll) {
                                 binding.recyclerView.smoothScrollToPosition(count - 1);
+                                sendMarkAsRead();
                             } else {
                                 // 显示向下的箭头
-                                // TODO
-                                SampleLog.v("require showNewMessagesTipView");
-                                /*
                                 showNewMessagesTipView();
-                                */
                             }
                         }
                     }
