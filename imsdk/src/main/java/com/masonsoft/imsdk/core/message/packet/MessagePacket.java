@@ -74,7 +74,7 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
 
     private final MessagePacketStateObservable mMessagePacketStateObservable = new MessagePacketStateObservable();
 
-    private long mErrorCode;
+    private int mErrorCode;
     private String mErrorMessage;
 
     public MessagePacket(@NonNull final ProtoByteMessage protoByteMessage) {
@@ -148,10 +148,14 @@ public abstract class MessagePacket implements Processor<ProtoByteMessageWrapper
     }
 
     public void setErrorCode(long errorCode) {
+        this.setErrorCode((int) errorCode);
+    }
+
+    public void setErrorCode(int errorCode) {
         mErrorCode = errorCode;
     }
 
-    public long getErrorCode() {
+    public int getErrorCode() {
         return mErrorCode;
     }
 

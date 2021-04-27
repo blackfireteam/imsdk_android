@@ -164,7 +164,7 @@ public class IMSessionManager {
             }
         };
         final Runnable subjectTimeout = () ->
-                subject.onSuccess(GeneralResult.valueOf(GeneralResult.CODE_ERROR_TIMEOUT));
+                subject.onSuccess(GeneralResult.valueOf(GeneralResult.ERROR_CODE_TIMEOUT));
         final SessionObservable.SessionObserver sessionObserver = new SessionObservable.SessionObserver() {
             @Override
             public void onSessionChanged() {
@@ -229,15 +229,15 @@ public class IMSessionManager {
             if (proxy != null) {
                 final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
                 if (sessionTcpClient != null) {
-                    final SignOutMessagePacket messagePacket = sessionTcpClient.getSignOutMessagePacket();
-                    if (messagePacket.isSignOutSuccess()) {
+                    final SignOutMessagePacket signOutMessagePacket = sessionTcpClient.getSignOutMessagePacket();
+                    if (signOutMessagePacket.isSignOutSuccess()) {
                         signOutImmediately();
                         subject.onSuccess(GeneralResult.success());
-                    } else if (messagePacket.isEnd()) {
-                        subject.onSuccess(GeneralResult.valueOfSubResult(
+                    } else if (signOutMessagePacket.isEnd()) {
+                        subject.onSuccess(GeneralResult.valueOfOther(
                                 GeneralResult.valueOf(
-                                        (int) messagePacket.getErrorCode(),
-                                        messagePacket.getErrorMessage()
+                                        signOutMessagePacket.getErrorCode(),
+                                        signOutMessagePacket.getErrorMessage()
                                 )
                         ));
                     }
@@ -245,7 +245,7 @@ public class IMSessionManager {
             }
         };
         final Runnable subjectTimeout = () ->
-                subject.onSuccess(GeneralResult.valueOf(GeneralResult.CODE_ERROR_TIMEOUT));
+                subject.onSuccess(GeneralResult.valueOf(GeneralResult.ERROR_CODE_TIMEOUT));
         final SessionTcpClientObservable.SessionTcpClientObserver sessionTcpClientObserver = new SessionTcpClientObservable.SessionTcpClientObserver() {
             @Override
             public void onConnectionStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
@@ -282,15 +282,39 @@ public class IMSessionManager {
         ClockObservable.DEFAULT.registerObserver(clockObserver);
         Threads.postBackground(() -> {
             final SessionTcpClientProxy proxy = getSessionTcpClientProxyWithBlockOrTimeout();
-            if (proxy != null) {
-                final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
-                if (sessionTcpClient != null) {
-                    if (sessionTcpClient.getSession() == session) {
-                        if (sessionTcpClient.getSignOutMessagePacket().isIdle()) {
-                            sessionTcpClient.signOut();
-                        }
-                    }
-                }
+            if (subject.hasValue()) {
+                return;
+            }
+            if (proxy == null) {
+                subject.onSuccess(GeneralResult.valueOf(GeneralResult.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL));
+                return;
+            }
+            if (!proxy.isOnline()) {
+                subject.onSuccess(GeneralResult.valueOf(GeneralResult.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR));
+                return;
+            }
+            final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
+            if (sessionTcpClient == null) {
+                subject.onSuccess(GeneralResult.valueOf(GeneralResult.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR));
+                return;
+            }
+            if (!sessionTcpClient.isOnline()) {
+                subject.onSuccess(GeneralResult.valueOf(GeneralResult.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR));
+                return;
+            }
+            final SignOutMessagePacket signOutMessagePacket = sessionTcpClient.getSignOutMessagePacket();
+            if (signOutMessagePacket.isIdle()) {
+                sessionTcpClient.signOut();
+            } else if (signOutMessagePacket.isSignOutSuccess()) {
+                signOutImmediately();
+                subject.onSuccess(GeneralResult.success());
+            } else if (signOutMessagePacket.isEnd()) {
+                subject.onSuccess(GeneralResult.valueOfOther(
+                        GeneralResult.valueOf(
+                                signOutMessagePacket.getErrorCode(),
+                                signOutMessagePacket.getErrorMessage()
+                        )
+                ));
             }
         });
         validateSubjectState.run();
@@ -418,7 +442,7 @@ public class IMSessionManager {
             }
         };
         final Runnable subjectTimeout = () ->
-                subject.onSuccess(GeneralResult.valueOf(GeneralResult.CODE_ERROR_TIMEOUT));
+                subject.onSuccess(GeneralResult.valueOf(GeneralResult.ERROR_CODE_TIMEOUT));
         final SessionTcpClientObservable.SessionTcpClientObserver sessionTcpClientObserver = new SessionTcpClientObservable.SessionTcpClientObserver() {
             @Override
             public void onConnectionStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
