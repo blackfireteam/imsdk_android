@@ -417,6 +417,9 @@ public class MineFragment extends SystemInsetsFragment {
             }
 
             TipUtil.showOrDefault(message);
+
+            SignInActivity.start(activity);
+            activity.finish();
         }
 
         public void onSignOutFail(Throwable e) {
@@ -433,6 +436,9 @@ public class MineFragment extends SystemInsetsFragment {
             }
 
             TipUtil.show(R.string.imsdk_sample_tip_action_general_fail);
+
+            SignInActivity.start(activity);
+            activity.finish();
         }
     }
 

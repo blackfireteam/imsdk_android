@@ -218,6 +218,14 @@ public class IMSessionManager {
      */
     @WorkerThread
     public GeneralResult signOutWithBlockOrTimeout() {
+        return this.signOutWithBlockOrTimeout(true);
+    }
+
+    /**
+     * 尽可能从长连接上发送退出登录的消息，如果长连接暂时无效，则会先 block, 直到成功发送退出消息或者超时.
+     */
+    @WorkerThread
+    public GeneralResult signOutWithBlockOrTimeout(boolean alwaysClearToken) {
         final Session session = mSession;
         if (session == null) {
             return GeneralResult.success();
@@ -323,6 +331,10 @@ public class IMSessionManager {
 
         final GeneralResult result = subject.blockingGet();
         IMLog.v("signOutWithBlockOrTimeout GeneralResult:%s", result.toShortString());
+
+        if (alwaysClearToken) {
+            signOutImmediately();
+        }
         return result;
     }
 
