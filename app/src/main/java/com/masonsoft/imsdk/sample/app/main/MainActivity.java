@@ -4,15 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
+import com.masonsoft.imsdk.sample.app.signin.SignInActivity;
 
 import io.github.idonans.systeminsets.SystemUiHelper;
 
 public class MainActivity extends FragmentDelegateActivity {
 
     public static void start(Context context) {
+        start(context, false);
+    }
+
+    public static void start(Context context, boolean redirectToSignIn) {
         Intent starter = new Intent(context, MainActivity.class);
         starter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        starter.putExtra(Constants.ExtrasKey.KEY_BOOLEAN, redirectToSignIn);
         context.startActivity(starter);
     }
 
@@ -29,6 +36,13 @@ public class MainActivity extends FragmentDelegateActivity {
                 .setLightStatusBar()
                 .setLightNavigationBar()
                 .apply();
+
+        final boolean redirectToSignIn = getIntent().getBooleanExtra(Constants.ExtrasKey.KEY_BOOLEAN, false);
+        if (redirectToSignIn) {
+            SignInActivity.start(this);
+            finish();
+            return;
+        }
 
         setFragmentDelegate(FRAGMENT_TAG_MAIN, MainFragment::newInstance);
     }
