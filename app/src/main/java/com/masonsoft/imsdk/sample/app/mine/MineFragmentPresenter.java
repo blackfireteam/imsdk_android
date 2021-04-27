@@ -299,8 +299,8 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                     if (result.isSuccess()) {
                         view.onSignOutSuccess();
                     } else {
-                        if (result.subResult != null) {
-                            view.onSignOutFail(result.subResult.code, result.subResult.message);
+                        if (result.other != null) {
+                            view.onSignOutFail(result.other.code, result.other.message);
                         } else {
                             view.onSignOutFail(result.code, result.message);
                         }

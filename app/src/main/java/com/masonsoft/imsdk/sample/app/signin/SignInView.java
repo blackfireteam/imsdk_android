@@ -94,8 +94,8 @@ public abstract class SignInView implements DynamicView {
             return;
         }
 
-        if (result.subResult != null) {
-            TipUtil.showOrDefault(result.subResult.message);
+        if (result.other != null) {
+            TipUtil.showOrDefault(result.other.message);
         } else {
             TipUtil.showOrDefault(result.message);
         }

@@ -329,13 +329,13 @@ public class IMMessageManager {
             }
 
             @Override
-            public void onMessageHistoryFetchedError(long sign, long errorCode, String errorMessage) {
+            public void onMessageHistoryFetchedError(long sign, int errorCode, String errorMessage) {
                 if (originSign != sign) {
                     return;
                 }
                 IMLog.v(Objects.defaultObjectTag(this) + " fetchWithBlockOrTimeout onMessageHistoryFetchedError sign:%s, errorCode:%s, errorMessage:%s",
                         sign, errorCode, errorMessage);
-                subject.onSuccess(GeneralResult.valueOfSubResult(GeneralResult.valueOf((int) errorCode, errorMessage)));
+                subject.onSuccess(GeneralResult.valueOfOther(GeneralResult.valueOf(errorCode, errorMessage)));
             }
         };
         final ClockObservable.ClockObserver clockObserver = new ClockObservable.ClockObserver() {
@@ -347,7 +347,7 @@ public class IMMessageManager {
                 if (System.currentTimeMillis() - mTimeStartMs > TIMEOUT_MS) {
                     // 超时
                     IMLog.v(Objects.defaultObjectTag(this) + " fetchWithBlockOrTimeout onClock timeout sign:%s", originSign);
-                    subject.onSuccess(GeneralResult.valueOf(GeneralResult.CODE_ERROR_TIMEOUT));
+                    subject.onSuccess(GeneralResult.valueOf(GeneralResult.ERROR_CODE_TIMEOUT));
                 }
             }
         };
