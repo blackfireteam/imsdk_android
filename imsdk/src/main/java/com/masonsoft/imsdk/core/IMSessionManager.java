@@ -240,7 +240,7 @@ public class IMSessionManager {
                 if (sessionTcpClient != null) {
                     final SignOutMessagePacket signOutMessagePacket = sessionTcpClient.getSignOutMessagePacket();
                     if (signOutMessagePacket.isSignOutSuccess()) {
-                        signOutImmediately();
+                        setSession(null);
                         subject.onSuccess(GeneralResult.success());
                     } else if (signOutMessagePacket.isEnd()) {
                         subject.onSuccess(GeneralResult.valueOfOther(
@@ -316,7 +316,7 @@ public class IMSessionManager {
             if (signOutMessagePacket.isIdle()) {
                 sessionTcpClient.signOut();
             } else if (signOutMessagePacket.isSignOutSuccess()) {
-                signOutImmediately();
+                setSession(null);
                 subject.onSuccess(GeneralResult.success());
             } else if (signOutMessagePacket.isEnd()) {
                 subject.onSuccess(GeneralResult.valueOfOther(
@@ -333,7 +333,7 @@ public class IMSessionManager {
         IMLog.v("signOutWithBlockOrTimeout GeneralResult:%s", result.toShortString());
 
         if (alwaysClearToken) {
-            signOutImmediately();
+            setSession(null);
         }
         return result;
     }

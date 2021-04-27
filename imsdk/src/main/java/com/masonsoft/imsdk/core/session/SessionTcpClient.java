@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
+import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.NettyTcpClient;
 import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
@@ -13,10 +14,14 @@ import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.PingMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignInMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignOutMessagePacket;
+import com.masonsoft.imsdk.core.observable.KickedObservable;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.observable.SessionObservable;
 import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
+import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.lang.MultiProcessor;
+import com.masonsoft.imsdk.lang.NotNullProcessor;
+import com.masonsoft.imsdk.lang.Processor;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.Preconditions;
 
@@ -66,6 +71,32 @@ public class SessionTcpClient extends NettyTcpClient {
     // 监听退出登录消息包的状态变化
     @SuppressWarnings("FieldCanBeLocal")
     private final MessagePacketStateObservable.MessagePacketStateObserver mSignOutMessagePacketStateObserver;
+    // 处理踢下线通知
+    @SuppressWarnings("FieldCanBeLocal")
+    private final Processor<ProtoByteMessageWrapper> mKickedProcessor = new NotNullProcessor<ProtoByteMessageWrapper>() {
+        @Override
+        protected boolean doNotNullProcess(@NonNull ProtoByteMessageWrapper target) {
+            final Object protoMessageObject = target.getProtoMessageObject();
+            if (protoMessageObject instanceof ProtoMessage.Result) {
+                final long code = ((ProtoMessage.Result) protoMessageObject).getCode();
+                if (code == 2008) {
+                    // 当前长连接被踢下线
+
+                    long sessionUserId = mSignInMessagePacket.getSessionUserId();
+                    if (sessionUserId <= 0) {
+                        sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    }
+                    KickedObservable.DEFAULT.notifyKicked(mSession, sessionUserId);
+
+                    // 断开长连接
+                    IMSessionManager.getInstance().setSession(null);
+
+                    return true;
+                }
+            }
+            return false;
+        }
+    };
 
     /**
      * 用来处理服务器返回的与登录，退出登录相关的消息
@@ -92,6 +123,7 @@ public class SessionTcpClient extends NettyTcpClient {
         mLocalMessageProcessor = new MultiProcessor<>();
         mLocalMessageProcessor.addLastProcessor(mSignInMessagePacket);
         mLocalMessageProcessor.addLastProcessor(mSignOutMessagePacket);
+        mLocalMessageProcessor.addLastProcessor(mKickedProcessor);
 
         mSessionObserver = new SessionObservable.SessionObserver() {
             @Override
