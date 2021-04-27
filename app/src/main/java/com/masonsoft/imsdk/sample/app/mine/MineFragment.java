@@ -19,7 +19,7 @@ import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
-import com.masonsoft.imsdk.sample.app.signin.SignInActivity;
+import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImagePickerDialog;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentConfirmDialog;
@@ -434,8 +434,7 @@ public class MineFragment extends SystemInsetsFragment {
                 return;
             }
 
-            SignInActivity.start(activity);
-            activity.finish();
+            MainActivity.start(activity, true);
         }
 
         public void onSignOutFail(int code, String message) {
@@ -453,8 +452,7 @@ public class MineFragment extends SystemInsetsFragment {
 
             TipUtil.showOrDefault(message);
 
-            SignInActivity.start(activity);
-            activity.finish();
+            MainActivity.start(activity, true);
         }
 
         public void onSignOutFail(Throwable e) {
@@ -472,8 +470,7 @@ public class MineFragment extends SystemInsetsFragment {
 
             TipUtil.show(R.string.imsdk_sample_tip_action_general_fail);
 
-            SignInActivity.start(activity);
-            activity.finish();
+            MainActivity.start(activity, true);
         }
     }
 
