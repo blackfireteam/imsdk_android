@@ -569,7 +569,7 @@ public class FetchMessageHistoryManager {
                                 }
 
                                 if (result.getCode() != 0) {
-                                    setErrorCode(result.getCode());
+                                    setErrorCode((int) result.getCode());
                                     setErrorMessage(result.getMsg());
                                     IMLog.e(Objects.defaultObjectTag(this) +
                                             " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());

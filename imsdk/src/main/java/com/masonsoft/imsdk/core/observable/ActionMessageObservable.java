@@ -14,7 +14,7 @@ public class ActionMessageObservable extends WeakObservable<ActionMessageObserva
 
         void onActionMessageSuccess(long sign);
 
-        void onActionMessageError(long sign, long errorCode, String errorMessage);
+        void onActionMessageError(long sign, int errorCode, String errorMessage);
     }
 
     public void notifyActionMessageLoading(long sign) {
@@ -25,7 +25,7 @@ public class ActionMessageObservable extends WeakObservable<ActionMessageObserva
         forEach(actionMessageObserver -> actionMessageObserver.onActionMessageSuccess(sign));
     }
 
-    public void notifyActionMessageError(long sign, long errorCode, String errorMessage) {
+    public void notifyActionMessageError(long sign, int errorCode, String errorMessage) {
         forEach(actionMessageObserver -> actionMessageObserver.onActionMessageError(sign, errorCode, errorMessage));
     }
 

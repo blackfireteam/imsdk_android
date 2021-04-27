@@ -52,7 +52,7 @@ public class FetchConversationListMessagePacket extends NotNullTimeoutMessagePac
                         IMLog.v(Objects.defaultObjectTag(FetchConversationListMessagePacket.this) + " conversation list is empty");
                         moveToState(STATE_SUCCESS);
                     } else if (code != 0) {
-                        setErrorCode(result.getCode());
+                        setErrorCode((int) result.getCode());
                         setErrorMessage(result.getMsg());
                         IMLog.e(Objects.defaultObjectTag(FetchConversationListMessagePacket.this) +
                                 " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());

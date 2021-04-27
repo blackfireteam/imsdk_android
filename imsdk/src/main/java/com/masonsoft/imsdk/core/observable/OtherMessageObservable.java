@@ -17,7 +17,7 @@ public class OtherMessageObservable extends WeakObservable<OtherMessageObservabl
 
         void onOtherMessageSuccess(long sign, @NonNull OtherMessage otherMessage);
 
-        void onOtherMessageError(long sign, @NonNull OtherMessage otherMessage, long errorCode, String errorMessage);
+        void onOtherMessageError(long sign, @NonNull OtherMessage otherMessage, int errorCode, String errorMessage);
     }
 
     public void notifyOtherMessageLoading(long sign, @NonNull OtherMessage otherMessage) {
@@ -28,7 +28,7 @@ public class OtherMessageObservable extends WeakObservable<OtherMessageObservabl
         forEach(otherMessageObserver -> otherMessageObserver.onOtherMessageSuccess(sign, otherMessage));
     }
 
-    public void notifyOtherMessageError(long sign, @NonNull OtherMessage otherMessage, long errorCode, String errorMessage) {
+    public void notifyOtherMessageError(long sign, @NonNull OtherMessage otherMessage, int errorCode, String errorMessage) {
         forEach(otherMessageObserver -> otherMessageObserver.onOtherMessageError(sign, otherMessage, errorCode, errorMessage));
     }
 

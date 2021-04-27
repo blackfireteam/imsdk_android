@@ -229,7 +229,7 @@ public class DefaultApi {
             }
 
             @Override
-            public void onOtherMessageError(long sign, @NonNull OtherMessage otherMessage, long errorCode, String errorMessage) {
+            public void onOtherMessageError(long sign, @NonNull OtherMessage otherMessage, int errorCode, String errorMessage) {
                 if (originSign != sign) {
                     return;
                 }

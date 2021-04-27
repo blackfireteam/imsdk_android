@@ -46,7 +46,7 @@ public class SignOutMessagePacket extends NotNullTimeoutMessagePacket {
                     }
 
                     if (result.getCode() != 0) {
-                        setErrorCode(result.getCode());
+                        setErrorCode((int) result.getCode());
                         setErrorMessage(result.getMsg());
                         moveToState(STATE_FAIL);
                     } else {

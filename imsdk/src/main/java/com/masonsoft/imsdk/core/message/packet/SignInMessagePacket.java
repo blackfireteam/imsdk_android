@@ -56,7 +56,7 @@ public class SignInMessagePacket extends NotNullTimeoutMessagePacket {
                     }
 
                     if (result.getCode() != 0) {
-                        setErrorCode(result.getCode());
+                        setErrorCode((int) result.getCode());
                         setErrorMessage(result.getMsg());
                         IMLog.e(Objects.defaultObjectTag(SignInMessagePacket.this) +
                                 " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
