@@ -17,11 +17,13 @@ import com.facebook.imagepipeline.backends.okhttp3.OkHttpNetworkFetcher;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.masonsoft.imsdk.core.DebugManager;
 import com.masonsoft.imsdk.core.FileUploadManager;
+import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMManager;
 import com.masonsoft.imsdk.core.observable.KickedObservable;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.common.TopActivity;
+import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentNoticeDialog;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
 
@@ -47,7 +49,13 @@ public class SampleApplication extends Application {
         if (topActivity == null) {
             return;
         }
-        MainActivity.start(topActivity, true);
+
+        final SimpleContentNoticeDialog dialog = new SimpleContentNoticeDialog(
+                topActivity,
+                I18nResources.getString(R.string.imsdk_sample_tip_kicked)
+        );
+        dialog.setOnHideListener(cancel -> MainActivity.start(topActivity, true));
+        dialog.show();
     };
 
     @Override
