@@ -10,9 +10,10 @@ import com.masonsoft.imsdk.core.message.packet.TimeoutMessagePacket;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.observable.OtherMessageObservable;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
+import com.masonsoft.imsdk.lang.GeneralErrorCode;
+import com.masonsoft.imsdk.lang.GeneralErrorCodeException;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
 import com.masonsoft.imsdk.util.Objects;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,72 +70,6 @@ public class OtherMessageManager {
 
     public boolean dispatchTcpResponse(final long sessionUserId, final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
         return getSessionWorker(sessionUserId).dispatchTcpResponse(sign, wrapper);
-    }
-
-    private static class LocalErrorCodeException extends RuntimeException {
-        private final int mErrorCode;
-
-        private LocalErrorCodeException(int errorCode) {
-            mErrorCode = errorCode;
-        }
-    }
-
-    private static class LocalErrorCode {
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
-        private static final int FIRST_LOCAL_ERROR_CODE = Integer.MIN_VALUE / 2;
-        private static int sNextErrorCode = FIRST_LOCAL_ERROR_CODE;
-        /**
-         * 未知错误
-         */
-        private static final int ERROR_CODE_UNKNOWN = sNextErrorCode++;
-        /**
-         * 构建 protoByteMessage 失败
-         */
-        private static final int ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL = sNextErrorCode++;
-        /**
-         * sessionTcpClientProxy 为 null
-         */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL = sNextErrorCode++;
-        /**
-         * sessionTcpClientProxy session 无效
-         */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID = sNextErrorCode++;
-        /**
-         * sessionTcpClientProxy 链接错误
-         */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR = sNextErrorCode++;
-        /**
-         * sessionTcpClientProxy 未知错误
-         */
-        private static final int ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN = sNextErrorCode++;
-        /**
-         * messagePacket 发送失败
-         */
-        private static final int ERROR_CODE_MESSAGE_PACKET_SEND_FAIL = sNextErrorCode++;
-        /**
-         * messagePacket 发送超时
-         */
-        private static final int ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT = sNextErrorCode++;
-
-        private static final Map<Integer, String> DEFAULT_ERROR_MESSAGE_MAP = new HashMap<>();
-
-        static {
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_UNKNOWN, "ERROR_CODE_UNKNOWN");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL, "ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN, "ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_FAIL, "ERROR_CODE_MESSAGE_PACKET_SEND_FAIL");
-            DEFAULT_ERROR_MESSAGE_MAP.put(ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT, "ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT");
-
-            Preconditions.checkArgument(DEFAULT_ERROR_MESSAGE_MAP.size() == sNextErrorCode - FIRST_LOCAL_ERROR_CODE);
-        }
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
     }
 
     private static class SessionWorker implements DebugManager.DebugInfoProvider {
@@ -280,7 +215,7 @@ public class OtherMessageManager {
                         if (otherMessagePacket.getErrorCode() != 0) {
                             setError(otherMessagePacket.getErrorCode(), otherMessagePacket.getErrorMessage());
                         } else if (otherMessagePacket.isTimeoutTriggered()) {
-                            setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT);
+                            setError(GeneralErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT);
                         }
                         notifySendStatus(IMConstants.SendStatus.FAIL);
                     } else if (newState == MessagePacket.STATE_SUCCESS) {
@@ -309,13 +244,13 @@ public class OtherMessageManager {
                 return this.mErrorCode != 0;
             }
 
-            private void setError(long errorCode) {
+            private void setError(int errorCode) {
                 this.setError(errorCode, null);
             }
 
-            private void setError(long errorCode, String errorMessage) {
+            private void setError(int errorCode, String errorMessage) {
                 if (errorMessage == null) {
-                    errorMessage = LocalErrorCode.DEFAULT_ERROR_MESSAGE_MAP.get((int) errorCode);
+                    errorMessage = GeneralErrorCode.findDefaultErrorMessage(errorCode);
                 }
                 this.mErrorCode = errorCode;
                 this.mErrorMessage = errorMessage;
@@ -397,23 +332,23 @@ public class OtherMessageManager {
                 }
 
                 if (proxy == null) {
-                    mOtherMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL);
+                    mOtherMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_IS_NULL);
                     return null;
                 }
 
                 if (IMSessionManager.getInstance().getSessionUserId() != mSessionUserId) {
-                    mOtherMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID);
+                    mOtherMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_SESSION_INVALID);
                     return null;
                 }
 
                 if (!proxy.isOnline()) {
-                    mOtherMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR);
+                    mOtherMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_CONNECTION_ERROR);
                     return null;
                 }
 
                 final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
                 if (sessionTcpClient == null) {
-                    mOtherMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN);
+                    mOtherMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_SESSION_TCP_CLIENT_PROXY_ERROR_UNKNOWN);
                     return null;
                 }
 
@@ -442,7 +377,7 @@ public class OtherMessageManager {
 
                     final MessagePacket messagePacket = mOtherMessageObjectWrapper.buildMessagePacket();
                     if (messagePacket == null) {
-                        mOtherMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL);
+                        mOtherMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_MESSAGE_PACKET_BUILD_FAIL);
                         return;
                     }
 
@@ -454,7 +389,7 @@ public class OtherMessageManager {
 
                     sessionTcpClient.sendMessagePacketQuietly(messagePacket);
                     if (messagePacket.getState() != MessagePacket.STATE_WAIT_RESULT) {
-                        mOtherMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_FAIL);
+                        mOtherMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_FAIL);
                         return;
                     }
 
@@ -473,10 +408,10 @@ public class OtherMessageManager {
                     IMLog.v(Objects.defaultObjectTag(this) + " body run end. %s", messagePacket);
                 } catch (Throwable e) {
                     IMLog.e(e);
-                    if (e instanceof LocalErrorCodeException) {
-                        mOtherMessageObjectWrapper.setError(((LocalErrorCodeException) e).mErrorCode);
+                    if (e instanceof GeneralErrorCodeException) {
+                        mOtherMessageObjectWrapper.setError(((GeneralErrorCodeException) e).errorCode);
                     } else if (mOtherMessageObjectWrapper.mErrorCode == 0) {
-                        mOtherMessageObjectWrapper.setError(LocalErrorCode.ERROR_CODE_UNKNOWN);
+                        mOtherMessageObjectWrapper.setError(GeneralErrorCode.ERROR_CODE_UNKNOWN);
                     }
                 }
             }
