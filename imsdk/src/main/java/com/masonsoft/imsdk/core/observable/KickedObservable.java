@@ -13,11 +13,11 @@ public class KickedObservable extends WeakObservable<KickedObservable.KickedObse
     public static final KickedObservable DEFAULT = new KickedObservable();
 
     public interface KickedObserver {
-        void onKicked(@NonNull final Session session, final long sessionUserId);
+        void onKicked(@NonNull final Session session);
     }
 
-    public void notifyKicked(@NonNull final Session session, final long sessionUserId) {
-        forEach(kickedObserver -> kickedObserver.onKicked(session, sessionUserId));
+    public void notifyKicked(@NonNull final Session session) {
+        forEach(kickedObserver -> kickedObserver.onKicked(session));
     }
 
 }

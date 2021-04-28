@@ -44,21 +44,19 @@ import io.github.idonans.dynamic.DynamicLog;
 
 public class SampleApplication extends Application {
 
-    private final KickedObservable.KickedObserver mKickedObserver = (session, sessionUserId) -> {
-        Threads.postUi(() -> {
-            final Activity topActivity = TopActivity.getInstance().get();
-            if (topActivity == null) {
-                return;
-            }
+    private final KickedObservable.KickedObserver mKickedObserver = session -> Threads.postUi(() -> {
+        final Activity topActivity = TopActivity.getInstance().get();
+        if (topActivity == null) {
+            return;
+        }
 
-            final SimpleContentNoticeDialog dialog = new SimpleContentNoticeDialog(
-                    topActivity,
-                    I18nResources.getString(R.string.imsdk_sample_tip_kicked)
-            );
-            dialog.setOnHideListener(cancel -> MainActivity.start(topActivity, true));
-            dialog.show();
-        });
-    };
+        final SimpleContentNoticeDialog dialog = new SimpleContentNoticeDialog(
+                topActivity,
+                I18nResources.getString(R.string.imsdk_sample_tip_kicked)
+        );
+        dialog.setOnHideListener(cancel -> MainActivity.start(topActivity, true));
+        dialog.show();
+    });
 
     @Override
     public void onCreate() {

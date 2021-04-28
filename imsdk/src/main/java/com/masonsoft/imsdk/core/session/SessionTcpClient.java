@@ -81,16 +81,10 @@ public class SessionTcpClient extends NettyTcpClient {
                 final long code = ((ProtoMessage.Result) protoMessageObject).getCode();
                 if (code == 2008) {
                     // 当前长连接被踢下线
-
-                    long sessionUserId = mSignInMessagePacket.getSessionUserId();
-                    if (sessionUserId <= 0) {
-                        sessionUserId = IMSessionManager.getInstance().getSessionUserId();
-                    }
-                    KickedObservable.DEFAULT.notifyKicked(mSession, sessionUserId);
+                    KickedObservable.DEFAULT.notifyKicked(mSession);
 
                     // 断开长连接
                     IMSessionManager.getInstance().setSession(null);
-
                     return true;
                 }
             }
