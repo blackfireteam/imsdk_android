@@ -234,6 +234,10 @@ public class IMSessionManager {
 
         final SingleSubject<GeneralResult> subject = SingleSubject.create();
         final Runnable validateSubjectState = () -> {
+            if (mSession == null) {
+                subject.onSuccess(GeneralResult.success());
+                return;
+            }
             final SessionTcpClientProxy proxy = mSessionTcpClientProxy;
             if (proxy != null) {
                 final SessionTcpClient sessionTcpClient = proxy.getSessionTcpClient();
@@ -291,6 +295,10 @@ public class IMSessionManager {
         SessionTcpClientObservable.DEFAULT.registerObserver(sessionTcpClientObserver);
         ClockObservable.DEFAULT.registerObserver(clockObserver);
         Threads.postBackground(() -> {
+            if (mSession == null) {
+                subject.onSuccess(GeneralResult.success());
+                return;
+            }
             final SessionTcpClientProxy proxy = getSessionTcpClientProxyWithBlockOrTimeout();
             if (subject.hasValue()) {
                 return;
