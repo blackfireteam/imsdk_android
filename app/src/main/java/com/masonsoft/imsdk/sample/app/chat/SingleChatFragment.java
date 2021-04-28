@@ -163,7 +163,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 binding.recyclerView.post(() -> {
                     int count = mDataAdapter.getItemCount();
                     if (count > 0) {
-                        binding.recyclerView.smoothScrollToPosition(count - 1);
+                        if (count > 5) {
+                            binding.recyclerView.scrollToPosition(count - 1);
+                        } else {
+                            binding.recyclerView.smoothScrollToPosition(count - 1);
+                        }
                     }
                 });
 
