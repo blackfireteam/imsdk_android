@@ -163,10 +163,30 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 binding.recyclerView.post(() -> {
                     int count = mDataAdapter.getItemCount();
                     if (count > 0) {
-                        if (count > 5) {
-                            binding.recyclerView.scrollToPosition(count - 1);
-                        } else {
+                        final int firstPosition = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+                        final int lastPosition = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                        final int archPosition = Math.max(0, count - 3);
+
+                        boolean scrollWithAnimation = false;
+                        if (archPosition >= firstPosition && archPosition <= lastPosition) {
+                            scrollWithAnimation = true;
+                        }
+
+                        SampleLog.v("onSoftKeyboardLayoutShown scrollWithAnimation:%s, firstPosition:%s, count:%s",
+                                scrollWithAnimation, firstPosition, count);
+                        if (scrollWithAnimation) {
                             binding.recyclerView.smoothScrollToPosition(count - 1);
+                        } else {
+                            binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                                @Override
+                                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                                    super.onScrolled(recyclerView, dx, dy);
+                                    binding.recyclerView.removeOnScrollListener(this);
+                                    SampleLog.v("onSoftKeyboardLayoutShown scrollWithAnimation:false addOnScrollListener onScrolled");
+                                    binding.recyclerView.smoothScrollToPosition(count - 1);
+                                }
+                            });
+                            binding.recyclerView.scrollToPosition(archPosition);
                         }
                     }
                 });
