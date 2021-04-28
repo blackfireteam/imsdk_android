@@ -44,7 +44,7 @@ import io.github.idonans.dynamic.DynamicLog;
 
 public class SampleApplication extends Application {
 
-    private final KickedObservable.KickedObserver mKickedObserver = session -> Threads.postUi(() -> {
+    private final KickedObservable.KickedObserver mKickedObserver = (session, errorCode) -> Threads.postUi(() -> {
         final Activity topActivity = TopActivity.getInstance().get();
         if (topActivity == null) {
             return;
