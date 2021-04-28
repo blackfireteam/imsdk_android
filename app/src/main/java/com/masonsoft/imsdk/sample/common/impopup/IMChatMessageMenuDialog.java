@@ -48,7 +48,7 @@ public class IMChatMessageMenuDialog {
         final ImsdkSampleCommonImChatMessageMenuDialogBinding binding = ImsdkSampleCommonImChatMessageMenuDialogBinding.bind(mViewDialog.getContentView());
         mPopupView = binding.popupView;
         mPopupView.showForAnchorView(anchorView, coverDrawableResId, menuList, menuIdList);
-        mPopupView.setOnIMMenuClickListener((menuText, menuIndex, menuId) -> {
+        mPopupView.setOnMenuClickListener((menuText, menuIndex, menuId) -> {
             if (mOnIMMenuClickListener != null) {
                 mOnIMMenuClickListener.onItemMenuClick(menuText, menuIndex, menuId);
             }

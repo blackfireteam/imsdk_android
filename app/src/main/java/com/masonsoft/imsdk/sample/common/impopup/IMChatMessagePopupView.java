@@ -152,15 +152,15 @@ public class IMChatMessagePopupView extends ViewGroup {
             SampleLog.v("dispatchMenuClick menuId:%s, menuText:%s, menuView:%s",
                     menuId, menuText, menuView);
         }
-        if (mOnIMMenuClickListener != null) {
-            mOnIMMenuClickListener.onItemMenuClick(menuId, menuText, menuView);
+        if (mOnMenuClickListener != null) {
+            mOnMenuClickListener.onItemMenuClick(menuId, menuText, menuView);
         }
     }
 
-    private OnIMMenuClickListener mOnIMMenuClickListener;
+    private OnIMMenuClickListener mOnMenuClickListener;
 
-    public void setOnIMMenuClickListener(OnIMMenuClickListener onIMMenuClickListener) {
-        mOnIMMenuClickListener = onIMMenuClickListener;
+    public void setOnMenuClickListener(OnIMMenuClickListener listener) {
+        mOnMenuClickListener = listener;
     }
 
     @Override

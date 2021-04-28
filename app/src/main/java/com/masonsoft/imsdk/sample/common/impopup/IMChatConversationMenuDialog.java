@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonImChatConversationMenuDialogBinding;
 
+import java.util.List;
+
 import io.github.idonans.backstack.dialog.ViewDialog;
 
 /**
@@ -21,7 +23,8 @@ public class IMChatConversationMenuDialog {
                                         ViewGroup parentView,
                                         View anchorView,
                                         int coverDrawableResId,
-                                        String[] menus) {
+                                        List<String> menuList,
+                                        List<Integer> menuIdList) {
         mViewDialog = new ViewDialog.Builder(activity)
                 .setContentView(R.layout.imsdk_sample_common_im_chat_conversation_menu_dialog)
                 .setParentView(parentView)
@@ -40,13 +43,12 @@ public class IMChatConversationMenuDialog {
                 .dimBackground(false)
                 .setCancelable(true)
                 .create();
-        //noinspection ConstantConditions
         final ImsdkSampleCommonImChatConversationMenuDialogBinding binding = ImsdkSampleCommonImChatConversationMenuDialogBinding.bind(mViewDialog.getContentView());
         mPopupView = binding.popupView;
-        mPopupView.showForAnchorView(anchorView, coverDrawableResId, menus);
-        mPopupView.setOnIMMenuClickListener((menuText, menuIndex) -> {
+        mPopupView.showForAnchorView(anchorView, coverDrawableResId, menuList, menuIdList);
+        mPopupView.setOnMenuClickListener((menuId, menuText, menuView) -> {
             if (mOnIMMenuClickListener != null) {
-                mOnIMMenuClickListener.onItemMenuClick(menuText, menuIndex);
+                mOnIMMenuClickListener.onItemMenuClick(menuId, menuText, menuView);
             }
             hide();
         });
@@ -62,8 +64,8 @@ public class IMChatConversationMenuDialog {
 
     private OnIMMenuClickListener mOnIMMenuClickListener;
 
-    public IMChatConversationMenuDialog setOnIMMenuClickListener(OnIMMenuClickListener onIMMenuClickListener) {
-        mOnIMMenuClickListener = onIMMenuClickListener;
+    public IMChatConversationMenuDialog setOnIMMenuClickListener(OnIMMenuClickListener listener) {
+        mOnIMMenuClickListener = listener;
         return this;
     }
 
