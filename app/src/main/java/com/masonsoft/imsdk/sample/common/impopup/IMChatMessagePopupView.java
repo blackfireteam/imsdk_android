@@ -22,10 +22,13 @@ import android.widget.TextView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
+
+import java.util.List;
 
 import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.lang.util.ViewUtil;
@@ -98,28 +101,31 @@ public class IMChatMessagePopupView extends ViewGroup {
     /**
      * @param anchorView         显示在目标 view 的顶部或者底部，顶部优先。
      * @param coverDrawableResId 覆盖在目标 view 上遮盖层
-     * @param menus              需要显示的菜单项
+     * @param menuList           需要显示的菜单项
      */
-    public void showForAnchorView(View anchorView, @DrawableRes int coverDrawableResId, String[] menus) {
+    public void showForAnchorView(View anchorView,
+                                  @DrawableRes int coverDrawableResId,
+                                  List<String> menuList,
+                                  List<Integer> menuIdList) {
         mAnchorViewRect = new Rect();
         anchorView.getGlobalVisibleRect(mAnchorViewRect);
 
         mAnchorView = anchorView;
         if (coverDrawableResId != 0) {
-            mAnchorViewCover = getResources().getDrawable(coverDrawableResId, null);
+            mAnchorViewCover = ResourcesCompat.getDrawable(getResources(), coverDrawableResId, null);
         }
-        updateMenus(menus);
+        updateMenus(menuList, menuIdList);
         requestLayout();
         invalidate();
     }
 
-    private void updateMenus(String[] menus) {
+    private void updateMenus(List<String> menuList, List<Integer> menuIdList) {
         mMenuLayout.removeAllViews();
-        if (menus != null) {
-            int size = menus.length;
+        if (menuList != null) {
+            int size = menuList.size();
             for (int i = 0; i < size; i++) {
-                final int menuIndex = i;
-                final String menuText = menus[i];
+                final String menuText = menuList.get(i);
+                final int menuId = menuIdList.get(i);
                 TextView textView = new TextView(getContext());
                 textView.setText(menuText);
                 textView.setIncludeFontPadding(false);
@@ -129,7 +135,7 @@ public class IMChatMessagePopupView extends ViewGroup {
                 textView.setTextColor(mMenuTextColor);
                 textView.setPadding(mMenuTextPaddingLeft, mMenuTextPaddingTop, mMenuTextPaddingRight, mMenuTextPaddingBottom);
 
-                ViewUtil.onClick(textView, v -> dispatchMenuClick(textView, menuText, menuIndex));
+                ViewUtil.onClick(textView, v -> dispatchMenuClick(menuId, menuText, textView));
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -141,12 +147,13 @@ public class IMChatMessagePopupView extends ViewGroup {
         }
     }
 
-    private void dispatchMenuClick(View menuView, String menuText, int menuIndex) {
+    private void dispatchMenuClick(int menuId, String menuText, View menuView) {
         if (DEBUG) {
-            SampleLog.v("dispatchMenuClick menuText:%s, menuIndex:%s", menuText, menuIndex);
+            SampleLog.v("dispatchMenuClick menuId:%s, menuText:%s, menuView:%s",
+                    menuId, menuText, menuView);
         }
         if (mOnIMMenuClickListener != null) {
-            mOnIMMenuClickListener.onItemMenuClick(menuText, menuIndex);
+            mOnIMMenuClickListener.onItemMenuClick(menuId, menuText, menuView);
         }
     }
 

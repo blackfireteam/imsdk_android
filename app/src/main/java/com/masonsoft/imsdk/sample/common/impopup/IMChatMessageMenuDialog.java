@@ -6,6 +6,9 @@ import android.view.ViewGroup;
 
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonImChatMessageMenuDialogBinding;
+import com.masonsoft.imsdk.util.Preconditions;
+
+import java.util.List;
 
 import io.github.idonans.backstack.dialog.ViewDialog;
 
@@ -21,7 +24,8 @@ public class IMChatMessageMenuDialog {
                                    ViewGroup parentView,
                                    View anchorView,
                                    int coverDrawableResId,
-                                   String[] menus) {
+                                   List<String> menuList,
+                                   List<Integer> menuIdList) {
         mViewDialog = new ViewDialog.Builder(activity)
                 .setContentView(R.layout.imsdk_sample_common_im_chat_message_menu_dialog)
                 .setParentView(parentView)
@@ -40,13 +44,13 @@ public class IMChatMessageMenuDialog {
                 .dimBackground(false)
                 .setCancelable(true)
                 .create();
-        //noinspection ConstantConditions
+        Preconditions.checkArgument(menuList.size() == menuIdList.size());
         final ImsdkSampleCommonImChatMessageMenuDialogBinding binding = ImsdkSampleCommonImChatMessageMenuDialogBinding.bind(mViewDialog.getContentView());
         mPopupView = binding.popupView;
-        mPopupView.showForAnchorView(anchorView, coverDrawableResId, menus);
-        mPopupView.setOnIMMenuClickListener((menuText, menuIndex) -> {
+        mPopupView.showForAnchorView(anchorView, coverDrawableResId, menuList, menuIdList);
+        mPopupView.setOnIMMenuClickListener((menuText, menuIndex, menuId) -> {
             if (mOnIMMenuClickListener != null) {
-                mOnIMMenuClickListener.onItemMenuClick(menuText, menuIndex);
+                mOnIMMenuClickListener.onItemMenuClick(menuText, menuIndex, menuId);
             }
             hide();
         });

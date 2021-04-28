@@ -25,7 +25,6 @@ import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.dynamic.page.PageView;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.lang.DisposableHolder;
-import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
@@ -103,9 +102,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     private final UnionTypeViewHolderListeners.OnItemLongClickListener mOnHolderItemLongClickListener = viewHolder -> {
         SingleChatFragment.ViewImpl view = getView();
         if (view != null) {
-            if (IMMessageViewHolder.Helper.showMenu(viewHolder)) {
-                ViewUtil.requestParentDisallowInterceptTouchEvent(viewHolder.itemView);
-            }
+            IMMessageViewHolder.Helper.showMenu(viewHolder);
         }
     };
 

@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.Constants;
@@ -38,10 +39,14 @@ import com.masonsoft.imsdk.sample.widget.debug.MessageDebugView;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.NetUtil;
 import io.github.idonans.core.util.SystemUtil;
+import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
@@ -327,36 +332,39 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             return null;
         }
 
-        @SuppressWarnings("rawtypes")
-        private static boolean getHolderFinder(UnionTypeViewHolder holder, HolderFinder[] out) {
+        @Nullable
+        private static HolderFinder getHolderFinder(@NonNull UnionTypeViewHolder holder) {
+            clearHolderFinderTag(holder);
+
             int position = holder.getAdapterPosition();
             if (position < 0) {
                 SampleLog.e("invalid position %s", position);
-                return false;
+                return null;
             }
             UnionTypeItemObject itemObject = holder.host.getAdapter().getItem(position);
             if (itemObject == null) {
                 SampleLog.e("item object is null");
-                return false;
+                return null;
             }
             if (!(itemObject.itemObject instanceof DataObject)) {
                 SampleLog.e("item object is not data object");
-                return false;
+                return null;
             }
-            if (!(((DataObject) itemObject.itemObject).object instanceof IMMessage)) {
+            final DataObject<?> dataObject = (DataObject<?>) itemObject.itemObject;
+            if (!(dataObject.object instanceof IMMessage)) {
                 SampleLog.e("item object's data object's object is not ImMessage");
-                return false;
+                return null;
             }
 
-            final IMMessage imMessage = (IMMessage) ((DataObject) itemObject.itemObject).object;
+            final IMMessage message = (IMMessage) dataObject.object;
             Activity innerActivity = holder.host.getActivity();
             if (innerActivity == null) {
                 SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
-                return false;
+                return null;
             }
             if (innerActivity != TopActivity.getInstance().get()) {
                 SampleLog.e("activity is not the top activity");
-                return false;
+                return null;
             }
             Lifecycle lifecycle = null;
             Fragment fragment = holder.host.getFragment();
@@ -369,26 +377,58 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             }
             if (lifecycle == null) {
                 SampleLog.e("lifecycle is null");
-                return false;
+                return null;
             }
 
             // 区分消息是收到的还是发送的
-            final boolean received = imMessage.toUserId.getOrDefault(0L) == IMSessionManager.getInstance().getSessionUserId();
+            final boolean received = message.toUserId.getOrDefault(0L) == IMSessionManager.getInstance().getSessionUserId();
             HolderFinder holderFinder = new HolderFinder();
+            holderFinder.holder = holder;
             holderFinder.position = position;
             holderFinder.itemObject = itemObject;
-            holderFinder.imMessage = imMessage;
+            holderFinder.dataObject = dataObject;
+            holderFinder.message = message;
             holderFinder.innerActivity = innerActivity;
             holderFinder.lifecycle = lifecycle;
             holderFinder.received = received;
-            out[0] = holderFinder;
-            return true;
+            return holderFinder;
+        }
+
+        private interface OnHolderFinderRefreshCallback {
+            void onHolderFinderRefresh(@Nullable HolderFinder holderFinder);
+        }
+
+        private static void refreshHolderFinderAsync(@NonNull final HolderFinder input, @NonNull OnHolderFinderRefreshCallback callback) {
+            final Object tag = new Object();
+            setHolderFinderTag(input.holder, tag);
+            Threads.postBackground(() -> {
+                final IMMessage message = IMMessageManager.getInstance().getMessage(
+                        input.message._sessionUserId.get(),
+                        input.message._conversationType.get(),
+                        input.message._targetUserId.get(),
+                        input.message.id.get()
+                );
+                Threads.runOnUi(() -> {
+                    if (isHolderFinderTagChanged(input.holder, tag)) {
+                        SampleLog.v("ignore. holder finder tag changed");
+                        return;
+                    }
+                    if (message == null) {
+                        callback.onHolderFinderRefresh(null);
+                    } else {
+                        input.message = message;
+                        callback.onHolderFinderRefresh(input);
+                    }
+                });
+            });
         }
 
         public static class HolderFinder {
+            public UnionTypeViewHolder holder;
             public int position;
             public UnionTypeItemObject itemObject;
-            public IMMessage imMessage;
+            public DataObject<?> dataObject;
+            public IMMessage message;
             public Activity innerActivity;
             public Lifecycle lifecycle;
 
@@ -400,39 +440,66 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             boolean onDefaultPreviewAction(@NonNull UnionTypeViewHolder holder, long targetUserId, @NonNull HolderFinder finder);
         }
 
-        public static boolean showPreview(UnionTypeViewHolder holder, long targetUserId, @Nullable DefaultPreviewAction defaultPreviewAction) {
-            HolderFinder[] holderFinders = new HolderFinder[1];
-            if (!getHolderFinder(holder, holderFinders)) {
-                return false;
+        public static void showPreview(UnionTypeViewHolder holder, long targetUserId, @Nullable DefaultPreviewAction defaultPreviewAction) {
+            final HolderFinder holderFinder = getHolderFinder(holder);
+            if (holderFinder == null) {
+                SampleLog.e("showPreview holderFinder is null");
+                return;
             }
-            HolderFinder holderFinder = holderFinders[0];
-            if (holderFinder.imMessage.type.isUnset()) {
-                SampleLog.e("imMessage type is unset %s", holderFinder.imMessage);
-                return false;
+
+            if (holderFinder.message.type.isUnset()) {
+                SampleLog.e("imMessage type is unset %s", holderFinder.message);
+                return;
             }
-            final long type = holderFinder.imMessage.type.get();
+            final long type = holderFinder.message.type.get();
 
             // TODO
-            SampleLog.e("imMessage type is unknown %s", holderFinder.imMessage);
-            return false;
+            SampleLog.e("imMessage type is unknown %s", holderFinder.message);
         }
 
-        public static boolean showMenu(UnionTypeViewHolder holder) {
-            final HolderFinder[] holderFinders = new HolderFinder[1];
-            if (!getHolderFinder(holder, holderFinders)) {
+        private static void clearHolderFinderTag(UnionTypeViewHolder holder) {
+            setHolderFinderTag(holder, new Object());
+        }
+
+        private static void setHolderFinderTag(UnionTypeViewHolder holder, Object tag) {
+            holder.itemView.setTag(R.id.imsdk_sample_holder_finder_tag, tag);
+        }
+
+        private static boolean isHolderFinderTagChanged(UnionTypeViewHolder holder, Object tag) {
+            return holder.itemView.getTag(R.id.imsdk_sample_holder_finder_tag) != tag;
+        }
+
+        public static void showMenu(UnionTypeViewHolder holder) {
+            final HolderFinder holderFinder = getHolderFinder(holder);
+            if (holderFinder == null) {
+                SampleLog.e("holder finder is null");
+                return;
+            }
+            refreshHolderFinderAsync(holderFinder, refreshHolderFinder -> {
+                if (refreshHolderFinder == null) {
+                    SampleLog.e("refreshHolderFinderAsync refreshHolderFinder is null");
+                    return;
+                }
+                if (showMenuInternal(refreshHolderFinder)) {
+                    ViewUtil.requestParentDisallowInterceptTouchEvent(refreshHolderFinder.holder.itemView);
+                }
+            });
+        }
+
+        private static boolean showMenuInternal(@NonNull final HolderFinder holderFinder) {
+            if (holderFinder.message.type.isUnset()) {
+                SampleLog.e("message type is unset %s", holderFinder.message);
                 return false;
             }
-            final HolderFinder holderFinder = holderFinders[0];
-            if (holderFinder.imMessage.type.isUnset()) {
-                SampleLog.e("imMessage type is unset %s", holderFinder.imMessage);
-                return false;
-            }
-            final long type = holderFinder.imMessage.type.get();
+
+            final long type = holderFinder.message.type.get();
+            final int MENU_ID_COPY = 1;
+            final int MENU_ID_RECALL = 2;
             if (type == IMConstants.MessageType.TEXT) {
                 // 文字
-                View anchorView = holder.itemView.findViewById(R.id.message_text);
+                View anchorView = holderFinder.holder.itemView.findViewById(R.id.message_text);
                 if (anchorView == null) {
-                    SampleLog.v("showMenu MESSAGE_TYPE_TEXT R.id.message_text not found");
+                    SampleLog.v("showMenu MessageType.TEXT R.id.message_text not found");
                     return false;
                 }
 
@@ -441,25 +508,80 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                     return false;
                 }
 
+                final List<String> menuList = new ArrayList<>();
+                final List<Integer> menuIdList = new ArrayList<>();
+
+                menuList.add(I18nResources.getString(R.string.imsdk_sample_menu_copy));
+                menuIdList.add(MENU_ID_COPY);
+                if (!holderFinder.received) {
+                    if (holderFinder.message.sendState.getOrDefault(IMConstants.SendStatus.SUCCESS) == IMConstants.SendStatus.SUCCESS) {
+                        menuList.add(I18nResources.getString(R.string.imsdk_sample_menu_recall));
+                        menuIdList.add(MENU_ID_RECALL);
+                    }
+                }
+
                 IMChatMessageMenuDialog menuDialog = new IMChatMessageMenuDialog(
                         holderFinder.innerActivity,
                         holderFinder.innerActivity.findViewById(Window.ID_ANDROID_CONTENT),
                         anchorView,
                         0,
-                        new String[]{
-                                I18nResources.getString(R.string.imsdk_sample_menu_copy),
-                                I18nResources.getString(R.string.imsdk_sample_menu_recall),
-                        });
-                menuDialog.setOnIMMenuClickListener((menuText, menuIndex) -> {
-                    if (menuIndex == 0) {
+                        menuList,
+                        menuIdList);
+                menuDialog.setOnIMMenuClickListener((menuId, menuText, menuView) -> {
+                    if (menuId == MENU_ID_COPY) {
                         // 复制
-                        ClipboardUtil.copy(holderFinder.imMessage.body.getOrDefault(""));
-                    } else if (menuIndex == 1) {
+                        ClipboardUtil.copy(holderFinder.message.body.getOrDefault(""));
+                    } else if (menuId == MENU_ID_RECALL) {
                         // 撤回
-                        revoke(holder);
+                        revoke(holderFinder.holder);
                     } else {
-                        SampleLog.e("showMenu onItemMenuClick invalid menuText:%s, menuIndex:%s",
-                                menuText, menuIndex);
+                        SampleLog.e("showMenu onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
+                                menuId, menuText, menuView);
+                    }
+                });
+                menuDialog.show();
+                return true;
+            }
+            if (type == IMConstants.MessageType.IMAGE) {
+                // 图片
+                View anchorView = holderFinder.holder.itemView.findViewById(R.id.resize_image_view);
+                if (anchorView == null) {
+                    SampleLog.v("showMenu MessageType.IMAGE R.id.resize_image_view not found");
+                    return false;
+                }
+
+                if (anchorView.getWidth() <= 0 || anchorView.getHeight() <= 0) {
+                    SampleLog.v("showMenu anchor view not layout");
+                    return false;
+                }
+
+                final List<String> menuList = new ArrayList<>();
+                final List<Integer> menuIdList = new ArrayList<>();
+
+                if (!holderFinder.received) {
+                    if (holderFinder.message.sendState.getOrDefault(IMConstants.SendStatus.SUCCESS) == IMConstants.SendStatus.SUCCESS) {
+                        menuList.add(I18nResources.getString(R.string.imsdk_sample_menu_recall));
+                        menuIdList.add(MENU_ID_RECALL);
+                    }
+                }
+
+                if (menuList.size() <= 0) {
+                    return false;
+                }
+                IMChatMessageMenuDialog menuDialog = new IMChatMessageMenuDialog(
+                        holderFinder.innerActivity,
+                        holderFinder.innerActivity.findViewById(Window.ID_ANDROID_CONTENT),
+                        anchorView,
+                        0,
+                        menuList,
+                        menuIdList);
+                menuDialog.setOnIMMenuClickListener((menuId, menuText, menuView) -> {
+                    if (menuId == MENU_ID_RECALL) {
+                        // 撤回
+                        revoke(holderFinder.holder);
+                    } else {
+                        SampleLog.e("showMenu onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
+                                menuId, menuText, menuView);
                     }
                 });
                 menuDialog.show();
@@ -467,7 +589,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             }
 
             // TODO
-            SampleLog.e("imMessage type is unknown %s", holderFinder.imMessage);
+            SampleLog.e("imMessage type is unknown %s", holderFinder.message);
             return false;
         }
 
@@ -475,12 +597,12 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
          * 撤回
          */
         private static void revoke(UnionTypeViewHolder holder) {
-            final HolderFinder[] holderFinders = new HolderFinder[1];
-            if (!getHolderFinder(holder, holderFinders)) {
+            final HolderFinder holderFinder = getHolderFinder(holder);
+            if (holderFinder == null) {
+                SampleLog.e("revoke getHolderFinder return null");
                 return;
             }
-            final HolderFinder holderFinder = holderFinders[0];
-            final IMMessage message = holderFinder.imMessage;
+            final IMMessage message = holderFinder.message;
             IMMessageQueueManager.getInstance().enqueueRevokeActionMessage(message);
         }
 
