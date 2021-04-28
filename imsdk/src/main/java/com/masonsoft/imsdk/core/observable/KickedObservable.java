@@ -14,10 +14,16 @@ public class KickedObservable extends WeakObservable<KickedObservable.KickedObse
 
     public interface KickedObserver {
         void onKicked(@NonNull final Session session);
+
+        void onSessionInvalid(@NonNull final Session session);
     }
 
     public void notifyKicked(@NonNull final Session session) {
         forEach(kickedObserver -> kickedObserver.onKicked(session));
+    }
+
+    public void notifySessionInvalid(@NonNull final Session session) {
+        forEach(kickedObserver -> kickedObserver.onSessionInvalid(session));
     }
 
 }

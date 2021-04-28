@@ -105,6 +105,17 @@ public class SessionTcpClient extends NettyTcpClient {
 
         mSignInMessagePacketStateObserver = (packet, oldState, newState) -> {
             // 登录的消息包发生状态变化
+
+            if (newState == MessagePacket.STATE_FAIL) {
+                // 登录失败
+                if (packet.getErrorCode() == 4) {
+                    // token 非法
+                    KickedObservable.DEFAULT.notifySessionInvalid(mSession);
+                    // 断开长连接
+                    IMSessionManager.getInstance().setSession(null);
+                }
+            }
+
             SessionTcpClientObservable.DEFAULT.notifySignInStateChanged(this, (SignInMessagePacket) packet);
         };
         mSignInMessagePacket.getMessagePacketStateObservable().registerObserver(mSignInMessagePacketStateObserver);
