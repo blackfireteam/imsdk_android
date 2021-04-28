@@ -50,7 +50,7 @@ public class IMMessageManager {
     private static final long TIMEOUT_MS = 20 * 1000L;
 
     private IMMessageManager() {
-        Threads.postBackground(() -> IMManager.getInstance().attach());
+        Threads.postBackground(() -> IMManager.getInstance().start());
     }
 
     @WorkerThread

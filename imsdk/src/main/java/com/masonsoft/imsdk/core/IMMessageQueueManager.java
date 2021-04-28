@@ -81,7 +81,7 @@ public class IMMessageQueueManager {
         mSendActionMessageProcessor.addLastProcessor(new SendActionTypeRevokeValidateProcessor());
         mSendActionMessageProcessor.addLastProcessor(new SendActionTypeMarkAsReadValidateProcessor());
 
-        Threads.postBackground(() -> IMManager.getInstance().attach());
+        Threads.postBackground(() -> IMManager.getInstance().start());
     }
 
     @NonNull

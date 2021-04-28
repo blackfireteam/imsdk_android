@@ -40,8 +40,8 @@ public class DiscoverUserManager {
                 .addFirstProcessor(new ProfileOnlineOfflineProcessor());
     }
 
-    public void attach() {
-        SampleLog.v(Objects.defaultObjectTag(this) + "attach");
+    public void start() {
+        SampleLog.v(Objects.defaultObjectTag(this) + " start");
     }
 
     @NonNull

@@ -110,8 +110,8 @@ public class TcpClientAutoReconnectionManager {
         }
     }
 
-    public void attach() {
-        IMLog.v("%s attach", Objects.defaultObjectTag(this));
+    public void start() {
+        IMLog.v(Objects.defaultObjectTag(this) + " start");
     }
 
     private class InternalActivityLifecycleCallbacks extends ActivityLifecycleCallbacksAdapter {

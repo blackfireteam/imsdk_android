@@ -1,6 +1,5 @@
 package com.masonsoft.imsdk.sample;
 
-import android.app.Activity;
 import android.app.Application;
 import android.os.Build;
 import android.util.Log;
@@ -17,13 +16,9 @@ import com.facebook.imagepipeline.backends.okhttp3.OkHttpNetworkFetcher;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.masonsoft.imsdk.core.DebugManager;
 import com.masonsoft.imsdk.core.FileUploadManager;
-import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMManager;
-import com.masonsoft.imsdk.core.observable.KickedObservable;
-import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.common.TopActivity;
-import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentNoticeDialog;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
 
@@ -44,28 +39,15 @@ import io.github.idonans.dynamic.DynamicLog;
 
 public class SampleApplication extends Application {
 
-    private final KickedObservable.KickedObserver mKickedObserver = (session, errorCode) -> Threads.postUi(() -> {
-        final Activity topActivity = TopActivity.getInstance().get();
-        if (topActivity == null) {
-            return;
-        }
-
-        final SimpleContentNoticeDialog dialog = new SimpleContentNoticeDialog(
-                topActivity,
-                I18nResources.getString(R.string.imsdk_sample_tip_kicked)
-        );
-        dialog.setOnHideListener(cancel -> MainActivity.start(topActivity, true));
-        dialog.show();
-    });
-
     @Override
     public void onCreate() {
         super.onCreate();
 
         IMLog.setLogLevel(Log.VERBOSE);
-        LocalSettingsManager.getInstance().attach();
-        DiscoverUserManager.getInstance().attach();
-        IMManager.getInstance().attach();
+        IMKickedManager.getInstance().start();
+        LocalSettingsManager.getInstance().start();
+        DiscoverUserManager.getInstance().start();
+        IMManager.getInstance().start();
         DebugManager.getInstance().start();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             WebView.setDataDirectorySuffix(ProcessManager.getInstance().getProcessTag());
@@ -73,9 +55,6 @@ public class SampleApplication extends Application {
 
         // 设置文件上服务
         FileUploadManager.getInstance().setFileUploadProvider(new TencentOSSFileUploadProvider());
-
-        // 设置踢下线监听
-        KickedObservable.DEFAULT.registerObserver(mKickedObserver);
 
         SampleLog.setLogLevel(Log.VERBOSE);
         DynamicLog.setLogLevel(Log.VERBOSE);

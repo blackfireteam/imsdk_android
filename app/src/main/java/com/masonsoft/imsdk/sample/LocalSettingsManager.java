@@ -37,8 +37,8 @@ public class LocalSettingsManager {
         restore();
     }
 
-    public void attach() {
-        SampleLog.v(Objects.defaultObjectTag(this) + " attach");
+    public void start() {
+        SampleLog.v(Objects.defaultObjectTag(this) + " start");
 
         IMSessionManager.getInstance().setSession(mSettings.createSession());
     }

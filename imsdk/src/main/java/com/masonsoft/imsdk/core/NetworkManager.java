@@ -36,8 +36,8 @@ public class NetworkManager {
         registerNetworkCallback();
     }
 
-    public void attach() {
-        IMLog.v("%s attach", Objects.defaultObjectTag(this));
+    public void start() {
+        IMLog.v(Objects.defaultObjectTag(this) + " start");
     }
 
     private void registerNetworkCallback() {

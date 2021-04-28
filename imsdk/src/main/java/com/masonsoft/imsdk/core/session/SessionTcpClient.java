@@ -81,10 +81,9 @@ public class SessionTcpClient extends NettyTcpClient {
                 final long code = ((ProtoMessage.Result) protoMessageObject).getCode();
                 if (code == 2008) {
                     // 当前长连接被踢下线
-                    KickedObservable.DEFAULT.notifyKicked(mSession, (int) code);
-
                     // 断开长连接
                     IMSessionManager.getInstance().setSession(null);
+                    KickedObservable.DEFAULT.notifyKicked(mSession, (int) code);
                     return true;
                 }
             }
@@ -111,9 +110,9 @@ public class SessionTcpClient extends NettyTcpClient {
                 final int errorCode = packet.getErrorCode();
                 if (errorCode == 4) {
                     // token 非法
-                    KickedObservable.DEFAULT.notifyKicked(mSession, errorCode);
                     // 断开长连接
                     IMSessionManager.getInstance().setSession(null);
+                    KickedObservable.DEFAULT.notifyKicked(mSession, errorCode);
                 }
             }
 

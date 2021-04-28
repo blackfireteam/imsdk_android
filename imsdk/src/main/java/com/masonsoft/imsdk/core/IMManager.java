@@ -29,12 +29,12 @@ public class IMManager {
     }
 
     private IMManager() {
-        NetworkManager.getInstance().attach();
-        TcpClientAutoReconnectionManager.getInstance().attach();
+        NetworkManager.getInstance().start();
+        TcpClientAutoReconnectionManager.getInstance().start();
     }
 
-    public void attach() {
-        IMLog.v("%s attach", Objects.defaultObjectTag(this));
+    public void start() {
+        IMLog.v(Objects.defaultObjectTag(this) + " start");
     }
 
 }
