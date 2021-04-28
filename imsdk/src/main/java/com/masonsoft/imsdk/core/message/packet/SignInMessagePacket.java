@@ -50,24 +50,22 @@ public class SignInMessagePacket extends NotNullTimeoutMessagePacket {
                 synchronized (getStateLock()) {
                     final int state = getState();
                     if (state != STATE_WAIT_RESULT) {
-                        IMLog.e(Objects.defaultObjectTag(SignInMessagePacket.this)
-                                + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                        IMLog.e(Objects.defaultObjectTag(this) + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
                         return false;
                     }
 
                     if (result.getCode() != 0) {
                         setErrorCode((int) result.getCode());
                         setErrorMessage(result.getMsg());
-                        IMLog.e(Objects.defaultObjectTag(SignInMessagePacket.this) +
-                                " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
+                        IMLog.e(Objects.defaultObjectTag(this) + " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
                         moveToState(STATE_FAIL);
                     } else {
                         final long sessionUserId = result.getUid();
                         if (sessionUserId <= 0) {
-                            IMLog.e("SignInMessagePacket unexpected. accept with same sign:%s and invalid user id:%s", getSign(), sessionUserId);
+                            IMLog.e(Objects.defaultObjectTag(this) + " unexpected. accept with same sign:%s and invalid user id:%s", getSign(), sessionUserId);
                             return false;
                         }
-                        IMLog.v(Objects.defaultObjectTag(SignInMessagePacket.this) + " sign in success, sessionUserId:%s", sessionUserId);
+                        IMLog.v(Objects.defaultObjectTag(this) + " sign in success, sessionUserId:%s", sessionUserId);
                         mSessionUserId = sessionUserId;
                         moveToState(STATE_SUCCESS);
                     }

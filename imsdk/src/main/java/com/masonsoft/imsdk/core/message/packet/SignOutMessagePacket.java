@@ -48,6 +48,7 @@ public class SignOutMessagePacket extends NotNullTimeoutMessagePacket {
                     if (result.getCode() != 0) {
                         setErrorCode((int) result.getCode());
                         setErrorMessage(result.getMsg());
+                        IMLog.e(Objects.defaultObjectTag(this) + " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
                         moveToState(STATE_FAIL);
                     } else {
                         moveToState(STATE_SUCCESS);
