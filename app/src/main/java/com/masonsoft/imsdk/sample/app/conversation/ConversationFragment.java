@@ -1,6 +1,5 @@
 package com.masonsoft.imsdk.sample.app.conversation;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -124,11 +123,6 @@ public class ConversationFragment extends SystemInsetsFragment {
             super.onNextPageDataLoad(items);
         }
 
-        // TODO
-        public Activity getActivity() {
-            return ConversationFragment.this.getActivity();
-        }
-
         public void replaceConversation(@NonNull final UnionTypeItemObject unionTypeItemObject) {
             if (!hasPageContent()) {
                 SampleLog.v(Objects.defaultObjectTag(this) + " page content is empty, use requestInit instead of replace");
@@ -153,11 +147,16 @@ public class ConversationFragment extends SystemInsetsFragment {
 
                     if (!delete) {
                         final IMConversation existsConversation = (IMConversation) ((DataObject<?>) existsOne.itemObject).object;
+                        SampleLog.v("updateConversation===>" + updateConversation);
+                        SampleLog.v("existsConversation===>" + existsConversation);
                         if (updateConversation.seq.get() > existsConversation.seq.get() && insertPosition == -1) {
                             insertPosition = i;
                         }
 
                         if (removedPosition >= 0 && insertPosition >= 0) {
+                            if (removedPosition < insertPosition) {
+                                insertPosition--;
+                            }
                             break;
                         }
                     } else {
