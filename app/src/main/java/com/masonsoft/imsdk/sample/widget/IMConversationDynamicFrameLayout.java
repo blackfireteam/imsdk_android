@@ -11,6 +11,8 @@ import androidx.annotation.WorkerThread;
 import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.sample.Constants;
 
+import io.github.idonans.appcontext.AppContext;
+
 public abstract class IMConversationDynamicFrameLayout extends FrameLayout {
 
     private final boolean DEBUG = Constants.DEBUG_WIDGET;
@@ -36,6 +38,8 @@ public abstract class IMConversationDynamicFrameLayout extends FrameLayout {
     private IMConversationChangedViewHelper mConversationChangedViewHelper;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        AppContext.setContextInEditMode(this);
+
         mConversationChangedViewHelper = new IMConversationChangedViewHelper() {
             @Nullable
             @Override

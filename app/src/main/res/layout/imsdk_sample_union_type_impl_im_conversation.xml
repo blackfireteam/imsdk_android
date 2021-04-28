@@ -34,27 +34,51 @@
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="7dp"
             app:layout_constraintBottom_toTopOf="@id/h_line_1"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:layout_width="100dp" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <com.masonsoft.imsdk.sample.widget.UserCacheName
-            android:id="@+id/name"
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/name_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:includeFontPadding="false"
-            android:maxLines="1"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:singleLine="true"
-            android:textColor="#333333"
-            android:textSize="16sp"
+            app:alignItems="center"
             app:layout_constraintBottom_toTopOf="@id/h_line_1"
             app:layout_constraintEnd_toStartOf="@id/time"
-            app:layout_constraintStart_toEndOf="@id/avatar"
-            tools:text="大师兄" />
+            app:layout_constraintStart_toEndOf="@id/avatar">
+
+            <com.masonsoft.imsdk.sample.widget.UserCacheName
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                app:layout_flexGrow="0"
+                app:layout_flexShrink="1"
+                tools:text="大师兄大师兄大师兄大师兄大师兄大师兄大师兄大师兄大师兄大师兄大师兄" />
+
+            <com.masonsoft.imsdk.sample.widget.UserCacheVerifiedFlagView
+                android:id="@+id/user_verified_flag"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_margin="5dp"
+                app:layout_flexGrow="0"
+                app:layout_flexShrink="0" />
+
+            <com.masonsoft.imsdk.sample.widget.UserCacheGoldFlagView
+                android:id="@+id/user_gold_flag"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_margin="5dp"
+                app:layout_flexGrow="0"
+                app:layout_flexShrink="0" />
+        </com.google.android.flexbox.FlexboxLayout>
 
         <com.masonsoft.imsdk.sample.widget.IMConversationUnreadCountView
             android:id="@+id/unread_count_view"

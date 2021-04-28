@@ -54,6 +54,10 @@ public class IMConversationTimeView extends IMConversationDynamicFrameLayout {
         params.gravity = Gravity.CENTER_VERTICAL | Gravity.END;
         mTimeTextView.setLayoutParams(params);
         addView(mTimeTextView);
+
+        if (isInEditMode()) {
+            setTime("12:01");
+        }
     }
 
     @Override
