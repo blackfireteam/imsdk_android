@@ -50,6 +50,7 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
 
     private Drawable mSendFailDrawable;
 
+    private long mMessageSendTimeMs = 0L;
     private int mMessageSendStatus = -1;
 
     @Nullable
@@ -80,25 +81,28 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
     }
 
     @Override
-    protected void onMessageUpdate(@Nullable IMMessage imMessage) {
+    protected void onMessageUpdate(@Nullable IMMessage message) {
         if (DEBUG) {
-            SampleLog.v("onMessageUpdate %s", imMessage);
+            SampleLog.v("onMessageUpdate %s", message);
         }
-        mImMessageUnsafe = imMessage;
-        if (imMessage == null) {
+        mImMessageUnsafe = message;
+        if (message == null) {
+            mMessageSendStatus = -1;
+            mMessageSendTimeMs = 0L;
+            postInvalidate();
+            return;
+        }
+
+        mMessageSendTimeMs = message.timeMs.getOrDefault(0L);
+
+        if (message.sendState.isUnset()) {
             mMessageSendStatus = -1;
             postInvalidate();
             return;
         }
 
-        if (imMessage.sendState.isUnset()) {
-            mMessageSendStatus = -1;
-            postInvalidate();
-            return;
-        }
-
-        if (imMessage.sendState.get() != mMessageSendStatus) {
-            mMessageSendStatus = imMessage.sendState.get();
+        if (message.sendState.get() != mMessageSendStatus) {
+            mMessageSendStatus = message.sendState.get();
             postInvalidate();
         }
     }
@@ -139,9 +143,23 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
                 || mMessageSendStatus == IMConstants.SendStatus.SENDING) {
             // 发送中
             // 绘画三个点
-            canvas.drawPoint(mPointsLocation[0], mPointsLocation[1], mPointPaint);
-            canvas.drawPoint(mPointsLocation[2], mPointsLocation[3], mPointPaint);
-            canvas.drawPoint(mPointsLocation[4], mPointsLocation[5], mPointPaint);
+            final long delayTimeMs = 700L;
+            boolean drawPoint = true;
+            long invalidateDelay = 0;
+            if (mMessageSendTimeMs > 0) {
+                final long diff = System.currentTimeMillis() - mMessageSendTimeMs;
+                if (diff >= 0 && diff < delayTimeMs) {
+                    drawPoint = false;
+                    invalidateDelay = delayTimeMs - diff;
+                }
+            }
+            if (drawPoint) {
+                canvas.drawPoint(mPointsLocation[0], mPointsLocation[1], mPointPaint);
+                canvas.drawPoint(mPointsLocation[2], mPointsLocation[3], mPointPaint);
+                canvas.drawPoint(mPointsLocation[4], mPointsLocation[5], mPointPaint);
+            } else {
+                postInvalidateDelayed(invalidateDelay);
+            }
         } else if (mMessageSendStatus == IMConstants.SendStatus.FAIL) {
             // 发送失败
             mSendFailDrawable.draw(canvas);
