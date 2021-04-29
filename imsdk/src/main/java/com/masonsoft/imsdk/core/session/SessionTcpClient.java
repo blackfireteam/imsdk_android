@@ -2,6 +2,7 @@ package com.masonsoft.imsdk.core.session;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
@@ -34,6 +35,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import io.github.idonans.core.Charsets;
+import io.github.idonans.core.thread.Threads;
 
 /**
  * 维护长连接的可用性，包括在长连接上进行 Session 认证，发送心跳等。
@@ -65,6 +67,12 @@ public class SessionTcpClient extends NettyTcpClient {
     // 退出登录消息包
     private final SignOutMessagePacket mSignOutMessagePacket;
 
+    // 在会话列表没有获取结束时，用来临时记录 ChatR 新消息的最新时间, 当会话列表获取结束时，使用此时间(如果比会话结束的标记时间更大)作为最终时间
+    private long mConversationListUpdateTimeTmp;
+    // 记录该长连接上的会话列表是否已经获取结束
+    private boolean mFetchConversationListFinish;
+    private long mFetchConversationListFinishUpdateTime;
+
     // 监听登录消息包的状态变化
     @SuppressWarnings("FieldCanBeLocal")
     private final MessagePacketStateObservable.MessagePacketStateObserver mSignInMessagePacketStateObserver;
@@ -73,10 +81,10 @@ public class SessionTcpClient extends NettyTcpClient {
     private final MessagePacketStateObservable.MessagePacketStateObserver mSignOutMessagePacketStateObserver;
     // 处理踢下线通知
     @SuppressWarnings("FieldCanBeLocal")
-    private final Processor<ProtoByteMessageWrapper> mKickedProcessor = new NotNullProcessor<ProtoByteMessageWrapper>() {
+    private final Processor<SessionProtoByteMessageWrapper> mKickedProcessor = new NotNullProcessor<SessionProtoByteMessageWrapper>() {
         @Override
-        protected boolean doNotNullProcess(@NonNull ProtoByteMessageWrapper target) {
-            final Object protoMessageObject = target.getProtoMessageObject();
+        protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
+            final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
             if (protoMessageObject instanceof ProtoMessage.Result) {
                 final long code = ((ProtoMessage.Result) protoMessageObject).getCode();
                 if (code == 2008) {
@@ -94,7 +102,7 @@ public class SessionTcpClient extends NettyTcpClient {
     /**
      * 用来处理服务器返回的与登录，退出登录相关的消息
      */
-    private final MultiProcessor<ProtoByteMessageWrapper> mLocalMessageProcessor;
+    private final MultiProcessor<SessionProtoByteMessageWrapper> mLocalMessageProcessor;
 
     public SessionTcpClient(@NonNull Session session) {
         mSession = session;
@@ -162,7 +170,7 @@ public class SessionTcpClient extends NettyTcpClient {
     }
 
     @NonNull
-    public MultiProcessor<ProtoByteMessageWrapper> getLocalMessageProcessor() {
+    public MultiProcessor<SessionProtoByteMessageWrapper> getLocalMessageProcessor() {
         return mLocalMessageProcessor;
     }
 
@@ -249,6 +257,34 @@ public class SessionTcpClient extends NettyTcpClient {
             return true;
         }
         return getState() == STATE_CLOSED;
+    }
+
+    @WorkerThread
+    public void setConversationListUpdateTimeTmp(long conversationListUpdateTimeTmp) {
+        if (mConversationListUpdateTimeTmp < conversationListUpdateTimeTmp) {
+            mConversationListUpdateTimeTmp = conversationListUpdateTimeTmp;
+            saveConversationListLastSyncTime();
+        }
+    }
+
+    @WorkerThread
+    public void setFetchConversationListFinish(long fetchConversationListFinishUpdateTime) {
+        this.mFetchConversationListFinish = true;
+        this.mFetchConversationListFinishUpdateTime = fetchConversationListFinishUpdateTime;
+        saveConversationListLastSyncTime();
+    }
+
+    @WorkerThread
+    private void saveConversationListLastSyncTime() {
+        Threads.mustNotUi();
+
+        if (mFetchConversationListFinish) {
+            final long maxTime = Math.max(mConversationListUpdateTimeTmp, mFetchConversationListFinishUpdateTime);
+            final long sessionUserId = getSessionUserId();
+            if (sessionUserId > 0 && maxTime > 0) {
+                IMSessionManager.setConversationListLastSyncTimeBySessionUserId(sessionUserId, maxTime);
+            }
+        }
     }
 
     @NonNull
@@ -382,23 +418,24 @@ public class SessionTcpClient extends NettyTcpClient {
             }
 
             final ProtoByteMessageWrapper protoByteMessageWrapper = new ProtoByteMessageWrapper(protoByteMessage);
+            final long sessionUserId = mSignInMessagePacket.getSessionUserId();
+            final SessionProtoByteMessageWrapper sessionProtoByteMessageWrapper = new SessionProtoByteMessageWrapper(this, sessionUserId, protoByteMessageWrapper);
 
             // 优先本地消费(直接消费，快速响应)
-            if (mLocalMessageProcessor.doProcess(protoByteMessageWrapper)) {
+            if (mLocalMessageProcessor.doProcess(sessionProtoByteMessageWrapper)) {
                 return;
             }
 
             // 其它消息，分发给消息队列处理
             // 需要是已登录状态
-            final long sessionUserId = mSignInMessagePacket.getSessionUserId();
             if (!mSignInMessagePacket.isSignIn()) {
                 // 当前没有正确登录，但是收到了意外地消息
                 IMLog.e(new IllegalStateException(
                         Objects.defaultObjectTag(SessionTcpClient.this) +
-                                " is not sign in, but received message"), "protoByteMessageWrapper:%s", protoByteMessageWrapper);
+                                " is not sign in, but received message"), "sessionProtoByteMessageWrapper:%s", sessionProtoByteMessageWrapper);
                 return;
             }
-            IMMessageQueueManager.getInstance().enqueueReceivedMessage(new SessionProtoByteMessageWrapper(sessionUserId, protoByteMessageWrapper));
+            IMMessageQueueManager.getInstance().enqueueReceivedMessage(sessionProtoByteMessageWrapper);
         }
     }
 

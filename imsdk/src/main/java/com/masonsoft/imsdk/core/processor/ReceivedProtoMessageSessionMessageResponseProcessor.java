@@ -29,10 +29,13 @@ public class ReceivedProtoMessageSessionMessageResponseProcessor extends Receive
             return false;
         }
 
+        if (sign <= 0) {
+            return false;
+        }
+
         final boolean result = IMSessionMessageUploadManager.getInstance().dispatchTcpResponse(
-                sessionUserId,
                 sign,
-                protoByteMessageWrapper
+                target
         );
         IMLog.v(Objects.defaultObjectTag(this) + " dispatchTcpResponse return:%s, sessionUserId:%s, sign:%s",
                 result, sessionUserId, sign);

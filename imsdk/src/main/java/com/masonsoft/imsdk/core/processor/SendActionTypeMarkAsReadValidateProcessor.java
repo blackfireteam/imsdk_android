@@ -57,7 +57,6 @@ public class SendActionTypeMarkAsReadValidateProcessor extends SendActionTypeVal
 
         // 派发到指令发送队列
         IMActionMessageManager.getInstance().enqueueActionMessage(
-                message._sessionUserId.get(),
                 target.getSign(),
                 target);
         return true;

@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.ProtoByteMessage;
 import com.masonsoft.imsdk.core.SignGenerator;
-import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
+import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.util.Objects;
 
@@ -32,11 +32,11 @@ public class SignInMessagePacket extends NotNullTimeoutMessagePacket {
     }
 
     @Override
-    protected boolean doNotNullProcess(@NonNull ProtoByteMessageWrapper target) {
+    protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
         // check thread state
         Threads.mustNotUi();
 
-        final Object protoMessageObject = target.getProtoMessageObject();
+        final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
         if (protoMessageObject == null) {
             return false;
         }

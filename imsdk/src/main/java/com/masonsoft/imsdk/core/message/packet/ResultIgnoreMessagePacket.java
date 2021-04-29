@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.ProtoByteMessage;
-import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
+import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 
 /**
@@ -24,12 +24,12 @@ public class ResultIgnoreMessagePacket extends MessagePacket {
     }
 
     @Override
-    public boolean doProcess(@Nullable ProtoByteMessageWrapper target) {
+    public boolean doProcess(@Nullable SessionProtoByteMessageWrapper target) {
         if (target == null) {
             return false;
         }
 
-        final Object protoMessageObject = target.getProtoMessageObject();
+        final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
         if (protoMessageObject instanceof ProtoMessage.Result) {
             return ((ProtoMessage.Result) protoMessageObject).getSign() == SIGN_IGNORE;
         }

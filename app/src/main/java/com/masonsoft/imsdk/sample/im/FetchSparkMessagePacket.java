@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.ProtoByteMessage;
-import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
+import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.NotNullTimeoutMessagePacket;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.sample.entity.Spark;
@@ -30,10 +30,10 @@ public class FetchSparkMessagePacket extends NotNullTimeoutMessagePacket {
     }
 
     @Override
-    protected boolean doNotNullProcess(@NonNull ProtoByteMessageWrapper target) {
+    protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
         Threads.mustNotUi();
 
-        final Object protoMessageObject = target.getProtoMessageObject();
+        final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
         if (protoMessageObject == null) {
             return false;
         }

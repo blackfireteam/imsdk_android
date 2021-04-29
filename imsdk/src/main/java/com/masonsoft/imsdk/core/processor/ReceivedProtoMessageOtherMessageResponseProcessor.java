@@ -32,7 +32,7 @@ public class ReceivedProtoMessageOtherMessageResponseProcessor extends ReceivedP
             return false;
         }
 
-        return OtherMessageManager.getInstance().dispatchTcpResponse(target.getSessionUserId(), sign, target.getProtoByteMessageWrapper());
+        return OtherMessageManager.getInstance().dispatchTcpResponse(sign, target);
     }
 
 }

@@ -30,7 +30,7 @@ public class ReceivedProtoMessageFetchMessageHistoryResponseProcessor extends Re
             return false;
         }
 
-        return FetchMessageHistoryManager.getInstance().dispatchTcpResponse(target.getSessionUserId(), sign, target.getProtoByteMessageWrapper());
+        return FetchMessageHistoryManager.getInstance().dispatchTcpResponse(sign, target);
     }
 
 }

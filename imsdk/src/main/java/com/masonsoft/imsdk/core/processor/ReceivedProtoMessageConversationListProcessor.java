@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.core.FetchMessageHistoryManager;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.db.Conversation;
 import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
@@ -58,7 +57,8 @@ public class ReceivedProtoMessageConversationListProcessor extends ReceivedProto
             }
 
             if (updateTime > 0) {
-                IMSessionManager.setConversationListLastSyncTimeBySessionUserId(sessionUserId, updateTime);
+                // 会话获取结束
+                target.getSessionTcpClient().setFetchConversationListFinish(updateTime);
             }
             return true;
         }

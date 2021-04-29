@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.OtherMessage;
-import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
+import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.TimeoutMessagePacket;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
@@ -68,8 +68,8 @@ public class OtherMessageManager {
         getSessionWorker(sessionUserId).enqueueOtherMessage(sign, otherMessage);
     }
 
-    public boolean dispatchTcpResponse(final long sessionUserId, final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
-        return getSessionWorker(sessionUserId).dispatchTcpResponse(sign, wrapper);
+    public boolean dispatchTcpResponse(final long sign, @NonNull final SessionProtoByteMessageWrapper wrapper) {
+        return getSessionWorker(wrapper.getSessionUserId()).dispatchTcpResponse(sign, wrapper);
     }
 
     private static class SessionWorker implements DebugManager.DebugInfoProvider {
@@ -140,7 +140,7 @@ public class OtherMessageManager {
             }));
         }
 
-        private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
+        private boolean dispatchTcpResponse(final long sign, @NonNull final SessionProtoByteMessageWrapper wrapper) {
             synchronized (mAllRunningTasks) {
                 final OtherMessageObjectWrapperTask task = getTask(sign);
                 if (task == null) {
@@ -297,7 +297,7 @@ public class OtherMessageManager {
                 return mOtherMessagePacket;
             }
 
-            private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
+            private boolean dispatchTcpResponse(final long sign, @NonNull final SessionProtoByteMessageWrapper wrapper) {
                 final MessagePacket otherMessagePacket = mOtherMessagePacket;
                 if (otherMessagePacket == null) {
                     final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected mOtherMessagePacket is null");

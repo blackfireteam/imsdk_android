@@ -14,7 +14,7 @@ import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.MessageFactory;
-import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
+import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.NotNullTimeoutMessagePacket;
 import com.masonsoft.imsdk.core.observable.FetchMessageHistoryObservable;
@@ -83,8 +83,8 @@ public class FetchMessageHistoryManager {
         getSessionWorker(sessionUserId).enqueueFetchMessageHistory(sign, conversationType, targetUserId, blockId, history);
     }
 
-    public boolean dispatchTcpResponse(final long sessionUserId, final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
-        return getSessionWorker(sessionUserId).dispatchTcpResponse(sign, wrapper);
+    public boolean dispatchTcpResponse(final long sign, @NonNull final SessionProtoByteMessageWrapper wrapper) {
+        return getSessionWorker(wrapper.getSessionUserId()).dispatchTcpResponse(sign, wrapper);
     }
 
     private static class SessionWorker implements DebugManager.DebugInfoProvider {
@@ -158,7 +158,7 @@ public class FetchMessageHistoryManager {
             }));
         }
 
-        private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
+        private boolean dispatchTcpResponse(final long sign, @NonNull final SessionProtoByteMessageWrapper wrapper) {
             synchronized (mAllRunningTasks) {
                 final FetchMessageObjectWrapperTask task = getTask(sign);
                 if (task == null) {
@@ -522,7 +522,7 @@ public class FetchMessageHistoryManager {
                 return fetchMessageHistoryMessagePacket;
             }
 
-            private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
+            private boolean dispatchTcpResponse(final long sign, @NonNull final SessionProtoByteMessageWrapper wrapper) {
                 final FetchMessageHistoryMessagePacket fetchMessageHistoryMessagePacket = mFetchMessageHistoryMessagePacket;
                 if (fetchMessageHistoryMessagePacket == null) {
                     final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected mFetchMessageHistoryMessagePacket is null");
@@ -546,10 +546,10 @@ public class FetchMessageHistoryManager {
                 }
 
                 @Override
-                protected boolean doNotNullProcess(@NonNull ProtoByteMessageWrapper target) {
+                protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
                     Threads.mustNotUi();
 
-                    final Object protoMessageObject = target.getProtoMessageObject();
+                    final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
                     if (protoMessageObject == null) {
                         return false;
                     }

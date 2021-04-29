@@ -7,7 +7,7 @@ import com.masonsoft.imsdk.IMActionMessage;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
-import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
+import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.NotNullTimeoutMessagePacket;
 import com.masonsoft.imsdk.core.observable.ActionMessageObservable;
@@ -69,14 +69,15 @@ public class IMActionMessageManager {
     }
 
     public void enqueueActionMessage(
-            final long sessionUserId,
             final long sign,
             @NonNull final IMActionMessage actionMessage) {
-        getSessionWorker(sessionUserId).enqueueActionMessage(sign, actionMessage);
+        getSessionWorker(actionMessage.getSessionUserId()).enqueueActionMessage(sign, actionMessage);
     }
 
-    public boolean dispatchTcpResponse(final long sessionUserId, final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
-        return getSessionWorker(sessionUserId).dispatchTcpResponse(sign, wrapper);
+    public boolean dispatchTcpResponse(
+            final long sign,
+            @NonNull final SessionProtoByteMessageWrapper wrapper) {
+        return getSessionWorker(wrapper.getSessionUserId()).dispatchTcpResponse(sign, wrapper);
     }
 
     private static class SessionWorker implements DebugManager.DebugInfoProvider {
@@ -147,7 +148,9 @@ public class IMActionMessageManager {
             }));
         }
 
-        private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
+        private boolean dispatchTcpResponse(
+                final long sign,
+                @NonNull final SessionProtoByteMessageWrapper wrapper) {
             synchronized (mAllRunningTasks) {
                 final ActionMessageObjectWrapperTask task = getTask(sign);
                 if (task == null) {
@@ -360,7 +363,8 @@ public class IMActionMessageManager {
                 return null;
             }
 
-            private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
+            private boolean dispatchTcpResponse(final long sign,
+                                                @NonNull final SessionProtoByteMessageWrapper target) {
                 final ActionMessagePacket actionMessagePacket = mActionMessagePacket;
                 if (actionMessagePacket == null) {
                     final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected mActionMessagePacket is null");
@@ -372,7 +376,7 @@ public class IMActionMessageManager {
                     IMLog.e(e);
                     return false;
                 }
-                final boolean result = actionMessagePacket.doProcess(wrapper);
+                final boolean result = actionMessagePacket.doProcess(target);
                 IMLog.v(Objects.defaultObjectTag(this) + " dispatchTcpResponse actionMessagePacket.doProcess result:%s", result);
                 return result;
             }
@@ -393,10 +397,10 @@ public class IMActionMessageManager {
                 }
 
                 @Override
-                protected boolean doNotNullProcess(@NonNull ProtoByteMessageWrapper target) {
+                protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
                     Threads.mustNotUi();
 
-                    final Object protoMessageObject = target.getProtoMessageObject();
+                    final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
                     if (protoMessageObject == null) {
                         return false;
                     }
@@ -444,7 +448,7 @@ public class IMActionMessageManager {
                                     return false;
                                 }
 
-                                if (!doNotNullProcessChatRInternal(chatR)) {
+                                if (!doNotNullProcessChatRInternal(target)) {
                                     final Throwable e = new IllegalAccessError("unexpected. doNotNullProcessChatRInternal return false. sign:" + getSign());
                                     IMLog.e(e);
                                 }
@@ -457,9 +461,9 @@ public class IMActionMessageManager {
                     return false;
                 }
 
-                private boolean doNotNullProcessChatRInternal(@NonNull ProtoMessage.ChatR chatR) {
-                    final TinyChatRProcessor proxy = new TinyChatRProcessor(mSessionUserId);
-                    return proxy.doProcess(chatR);
+                private boolean doNotNullProcessChatRInternal(@NonNull SessionProtoByteMessageWrapper target) {
+                    final TinyChatRProcessor proxy = new TinyChatRProcessor();
+                    return proxy.doProcess(target);
                 }
             }
 
@@ -473,10 +477,10 @@ public class IMActionMessageManager {
                 }
 
                 @Override
-                protected boolean doNotNullProcess(@NonNull ProtoByteMessageWrapper target) {
+                protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
                     Threads.mustNotUi();
 
-                    final Object protoMessageObject = target.getProtoMessageObject();
+                    final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
                     if (protoMessageObject == null) {
                         return false;
                     }

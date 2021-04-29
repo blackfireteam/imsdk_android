@@ -36,8 +36,8 @@ public class ProtoByteMessageWrapper {
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
         builder.append(Objects.defaultObjectTag(this));
-        builder.append(" origin:").append(this.mOrigin);
-        builder.append(" ").append(Objects.defaultObjectTag(this.mProtoMessageObject));
+        builder.append(" mOrigin:").append(this.mOrigin);
+        builder.append(" mProtoMessageObject:").append(Objects.defaultObjectTag(this.mProtoMessageObject));
         return builder.toString();
     }
 

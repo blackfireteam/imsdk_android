@@ -32,7 +32,7 @@ public class ReceivedProtoMessageActionMessageResponseProcessor extends Received
             return false;
         }
 
-        return IMActionMessageManager.getInstance().dispatchTcpResponse(target.getSessionUserId(), sign, target.getProtoByteMessageWrapper());
+        return IMActionMessageManager.getInstance().dispatchTcpResponse(sign, target);
     }
 
 }

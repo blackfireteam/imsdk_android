@@ -20,9 +20,8 @@ public class ReceivedProtoMessageProtoTypeChatRProcessor extends ReceivedProtoMe
     protected boolean doNotNullProtoMessageObjectProcess(
             @NonNull SessionProtoByteMessageWrapper target,
             @NonNull ProtoMessage.ChatR protoMessageObject) {
-        final long sessionUserId = target.getSessionUserId();
-        final TinyChatRProcessor proxy = new TinyChatRProcessor(sessionUserId);
-        return proxy.doProcess(protoMessageObject);
+        final TinyChatRProcessor proxy = new TinyChatRProcessor();
+        return proxy.doProcess(target);
     }
 
 }

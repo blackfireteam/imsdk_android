@@ -14,8 +14,8 @@ import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.MessageFactory;
 import com.masonsoft.imsdk.core.db.Sequence;
+import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
-import com.masonsoft.imsdk.lang.NotNullProcessor;
 import com.masonsoft.imsdk.user.UserInfoSyncManager;
 import com.masonsoft.imsdk.util.Preconditions;
 
@@ -24,16 +24,19 @@ import com.masonsoft.imsdk.util.Preconditions;
  *
  * @since 1.0
  */
-public class TinyChatRProcessor extends NotNullProcessor<ProtoMessage.ChatR> {
+public class TinyChatRProcessor extends ReceivedProtoMessageProtoTypeProcessor<ProtoMessage.ChatR> {
 
-    private final long mSessionUserId;
-
-    public TinyChatRProcessor(long sessionUserId) {
-        mSessionUserId = sessionUserId;
+    public TinyChatRProcessor() {
+        super(ProtoMessage.ChatR.class);
     }
 
     @Override
-    protected boolean doNotNullProcess(@NonNull ProtoMessage.ChatR target) {
+    protected boolean doNotNullProtoMessageObjectProcess(@NonNull SessionProtoByteMessageWrapper wrapper, @NonNull ProtoMessage.ChatR target) {
+        {
+            final long messageTime = target.getMsgTime();
+            wrapper.getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
+        }
+
         final Message message = MessageFactory.create(target);
         // 接收到新消息
         // 设置新消息的 seq
@@ -41,7 +44,7 @@ public class TinyChatRProcessor extends NotNullProcessor<ProtoMessage.ChatR> {
         // 设置新消息的显示时间为当前时间
         message.localTimeMs.set(System.currentTimeMillis());
 
-        final long sessionUserId = mSessionUserId;
+        final long sessionUserId = wrapper.getSessionUserId();
         final long fromUserId = message.fromUserId.get();
         final long toUserId = message.toUserId.get();
         if (fromUserId != sessionUserId && toUserId != sessionUserId) {
@@ -90,7 +93,9 @@ public class TinyChatRProcessor extends NotNullProcessor<ProtoMessage.ChatR> {
 
         final long remoteMessageId = message.remoteMessageId.get();
         final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
-        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+        synchronized (DatabaseSessionWriteLock.getInstance().
+
+                getSessionWriteLock(databaseHelper)) {
             final Message dbMessage = MessageDatabaseProvider.getInstance().getMessageWithRemoteMessageId(
                     sessionUserId,
                     conversationType,

@@ -11,7 +11,7 @@ import com.masonsoft.imsdk.core.db.LocalSendingMessage;
 import com.masonsoft.imsdk.core.db.LocalSendingMessageProvider;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
-import com.masonsoft.imsdk.core.message.ProtoByteMessageWrapper;
+import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.NotNullTimeoutMessagePacket;
 import com.masonsoft.imsdk.core.observable.MessageObservable;
@@ -83,8 +83,8 @@ public class IMSessionMessageUploadManager {
         getSessionUploader(sessionUserId).dispatchCheckIdleMessage();
     }
 
-    public boolean dispatchTcpResponse(final long sessionUserId, final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
-        return getSessionUploader(sessionUserId).dispatchTcpResponse(sign, wrapper);
+    public boolean dispatchTcpResponse(final long sign, @NonNull final SessionProtoByteMessageWrapper wrapper) {
+        return getSessionUploader(wrapper.getSessionUserId()).dispatchTcpResponse(sign, wrapper);
     }
 
     public void touch(final long sessionUserId) {
@@ -303,7 +303,7 @@ public class IMSessionMessageUploadManager {
                 }
             }
 
-            private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
+            private boolean dispatchTcpResponse(final long sign, @NonNull final SessionProtoByteMessageWrapper wrapper) {
                 final ChatSMessagePacket chatSMessagePacket = mChatSMessagePacket;
                 if (chatSMessagePacket == null) {
                     final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected mChatSMessagePacket is null");
@@ -327,11 +327,11 @@ public class IMSessionMessageUploadManager {
                 }
 
                 @Override
-                protected boolean doNotNullProcess(@NonNull ProtoByteMessageWrapper target) {
+                protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
                     // check thread state
                     Threads.mustNotUi();
 
-                    final Object protoMessageObject = target.getProtoMessageObject();
+                    final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
                     if (protoMessageObject == null) {
                         return false;
                     }
@@ -673,7 +673,7 @@ public class IMSessionMessageUploadManager {
             return null;
         }
 
-        private boolean dispatchTcpResponse(final long sign, @NonNull final ProtoByteMessageWrapper wrapper) {
+        private boolean dispatchTcpResponse(final long sign, @NonNull final SessionProtoByteMessageWrapper wrapper) {
             synchronized (mAllRunningTasks) {
                 final SessionMessageObjectWrapperTask task = getTask(sign);
                 if (task == null) {
