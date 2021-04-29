@@ -2,6 +2,7 @@ package com.masonsoft.imsdk.sample;
 
 import android.app.Application;
 import android.os.Build;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Choreographer;
 import android.webkit.WebView;
@@ -22,14 +23,14 @@ import com.masonsoft.imsdk.sample.common.TopActivity;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.manager.ProcessManager;
@@ -83,7 +84,7 @@ public class SampleApplication extends Application {
                 .build());
     }
 
-    private final long mAnrTimeout = TimeUnit.SECONDS.toNanos(2);
+    private final long mAnrTimeout = TimeUnit.MILLISECONDS.toNanos(IMLog.getLogLevel() <= Log.VERBOSE ? 50 : 1500);
     private long mLastFrameTimeNanos;
 
     private void addAnrDebug() {
@@ -105,35 +106,60 @@ public class SampleApplication extends Application {
     }
 
     private void printAnrStack(final long dur) {
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final PrintStream ps = new PrintStream(os);
-        new RuntimeException("anr found dur:" + dur + "ns, " + TimeUnit.NANOSECONDS.toMillis(dur) + "ms").printStackTrace(ps);
-        ps.flush();
-        final byte[] stack = os.toByteArray();
         try {
-            System.err.write(stack);
-        } catch (IOException e) {
+            final Thread mainThread = Looper.getMainLooper().getThread();
+            final Map<Thread, StackTraceElement[]> stackTraces = new TreeMap<>((lhs, rhs) -> {
+                if (lhs == rhs)
+                    return 0;
+                if (lhs == mainThread)
+                    return 1;
+                if (rhs == mainThread)
+                    return -1;
+                return rhs.getName().compareTo(lhs.getName());
+            });
+            for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+                stackTraces.put(entry.getKey(), entry.getValue());
+            }
+            printAnrStackToFileAsync(dur, stackTraces);
+        } catch (Throwable e) {
             SampleLog.e(e);
         }
-        printAnrStackToFileAsync(stack);
     }
 
-    private void printAnrStackToFileAsync(final byte[] stack) {
+    private void printAnrStackToFileAsync(final long dur, final Map<Thread, StackTraceElement[]> stackTraces) {
         Threads.postBackground(() -> {
             final File cacheDir = FileUtil.getAppCacheDir();
             if (cacheDir == null) {
                 SampleLog.e("printAnrStackToFileAsync cache dir is null");
                 return;
             }
-            final String filename = "anr_" + new SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.CHINA).format(new Date());
+            final long durMs = TimeUnit.NANOSECONDS.toMillis(dur);
+            final String filename = "anr_" + new SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.CHINA).format(new Date()) + "_" + durMs + "ms";
             final String anrFile = FileUtil.createSimilarFileQuietly(new File(cacheDir, filename).getAbsolutePath());
             if (anrFile == null) {
                 SampleLog.e("printAnrStackToFileAsync anrFile is null");
                 return;
             }
-            try (FileOutputStream fos = new FileOutputStream(new File(anrFile))) {
-                fos.write(stack);
-                fos.flush();
+            try (PrintWriter writer = new PrintWriter(new FileWriter(new File(anrFile)))) {
+                writer.println("--------------------------------------------------------------");
+                writer.println("--------------------------------------------------------------");
+                writer.println("---------------- anr " + durMs + " ms ------------------------");
+                writer.println("--------------------------------------------------------------");
+                writer.println("--------------------------------------------------------------");
+                for (Map.Entry<Thread, StackTraceElement[]> entry : stackTraces.entrySet()) {
+                    writer.println("----------------------------");
+                    writer.println(entry.getKey());
+                    writer.println("-------");
+                    for (StackTraceElement stackTraceElement : entry.getValue()) {
+                        writer.println(stackTraceElement);
+                    }
+                    writer.println("----------------------------");
+                }
+                writer.println("--------------------------------------------------------------");
+                writer.println("--------------------------------------------------------------");
+                writer.println("--------------------------------------------------------------");
+                writer.println("--------------------------------------------------------------");
+                writer.flush();
             } catch (Throwable e) {
                 SampleLog.e(e);
             }
