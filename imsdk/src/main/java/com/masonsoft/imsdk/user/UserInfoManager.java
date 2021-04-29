@@ -257,6 +257,9 @@ public class UserInfoManager {
         if (!update) {
             return;
         }
+        if (userInfoUpdate == null) {
+            return;
+        }
 
         final UserInfo mergeUserInfo;
         if (userInfo == null) {
