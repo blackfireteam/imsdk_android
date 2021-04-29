@@ -3,6 +3,7 @@
 
     <style name="UserCacheAvatar">
         <item name="roundSize">6dp</item>
+        <item name="smallCache">true</item>
     </style>
 
     <style name="SessionUserCacheAvatar" parent="UserCacheAvatar">

@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -68,6 +69,7 @@ public class ImageLayout extends ClipLayout {
     // 默认 1.5 倍屏幕大小
     private float mImageResizePercent = 1.5f;
     private int mImageResize = -1;
+    private boolean mSmallCache;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ImageLayout, defStyleAttr,
@@ -77,6 +79,7 @@ public class ImageLayout extends ClipLayout {
         mPlaceHolderFail = a.getDrawable(R.styleable.ImageLayout_imagePlaceHolderFail);
         mImageResizePercent = a.getFloat(R.styleable.ImageLayout_imageResizePercent, mImageResizePercent);
         mImageResize = a.getDimensionPixelOffset(R.styleable.ImageLayout_imageResize, mImageResize);
+        mSmallCache = a.getBoolean(R.styleable.ImageLayout_smallCache, mSmallCache);
         a.recycle();
 
         if (mPlaceHolderLoading == null) {
@@ -110,6 +113,11 @@ public class ImageLayout extends ClipLayout {
         return null;
     }
 
+    @NonNull
+    private ImageRequest.CacheChoice createCacheChoice() {
+        return mSmallCache ? ImageRequest.CacheChoice.SMALL : ImageRequest.CacheChoice.DEFAULT;
+    }
+
     public void setScaleType(@ScaleType int scaleType) {
         if (mScaleType != scaleType) {
             mScaleType = scaleType;
@@ -129,6 +137,7 @@ public class ImageLayout extends ClipLayout {
                         ImageRequestBuilder
                                 .newBuilderWithSource(Uri.parse(url))
                                 .setResizeOptions(createResizeOptions())
+                                .setCacheChoice(createCacheChoice())
                                 .build());
             }
         }
@@ -144,6 +153,7 @@ public class ImageLayout extends ClipLayout {
             thumbImageRequest = ImageRequestBuilder
                     .newBuilderWithSource(Uri.parse(thumbUrl))
                     .setResizeOptions(createResizeOptions())
+                    .setCacheChoice(createCacheChoice())
                     .build();
         }
         mDraweeView.setController(Fresco.newDraweeControllerBuilder()
@@ -172,6 +182,7 @@ public class ImageLayout extends ClipLayout {
             thumbImageRequest = ImageRequestBuilder
                     .newBuilderWithSource(Uri.parse(thumbUrl))
                     .setResizeOptions(createResizeOptions())
+                    .setCacheChoice(createCacheChoice())
                     .build();
         }
         ImageRequest imageRequest = null;
@@ -179,6 +190,7 @@ public class ImageLayout extends ClipLayout {
             imageRequest = ImageRequestBuilder
                     .newBuilderWithSource(Uri.parse(url))
                     .setResizeOptions(createResizeOptions())
+                    .setCacheChoice(createCacheChoice())
                     .build();
         }
 

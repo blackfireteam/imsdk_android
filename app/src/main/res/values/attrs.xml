@@ -18,6 +18,7 @@
         <attr name="imagePlaceHolderFail" format="reference" />
         <attr name="imageResizePercent" format="float" />
         <attr name="imageResize" format="dimension|reference" />
+        <attr name="smallCache" format="boolean" />
     </declare-styleable>
     <declare-styleable name="UserCacheAvatar">
         <attr name="avatarSize">

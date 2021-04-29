@@ -2,9 +2,7 @@ package com.masonsoft.imsdk.sample;
 
 import android.app.Application;
 import android.os.Build;
-import android.os.Looper;
 import android.util.Log;
-import android.view.Choreographer;
 import android.webkit.WebView;
 
 import androidx.emoji.bundled.BundledEmojiCompatConfig;
@@ -23,19 +21,7 @@ import com.masonsoft.imsdk.sample.common.TopActivity;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
-
 import io.github.idonans.core.manager.ProcessManager;
-import io.github.idonans.core.thread.Threads;
-import io.github.idonans.core.util.FileUtil;
 import io.github.idonans.dynamic.DynamicLog;
 
 public class SampleApplication extends Application {
@@ -64,8 +50,6 @@ public class SampleApplication extends Application {
 
         initFresco();
         registerActivityLifecycleCallbacks(TopActivity.getInstance().getActivityLifecycleCallbacks());
-
-        addAnrDebug();
     }
 
     private void initFresco() {
@@ -82,88 +66,6 @@ public class SampleApplication extends Application {
                         .setBaseDirectoryName(ProcessManager.getInstance().getProcessTag() + "_fresco_small")
                         .build())
                 .build());
-    }
-
-    private long mLastFrameTimeNanos;
-
-    private void addAnrDebug() {
-        final Choreographer.FrameCallback callback = new Choreographer.FrameCallback() {
-            @Override
-            public void doFrame(long frameTimeNanos) {
-                Choreographer.getInstance().postFrameCallback(this);
-                final long lastFrameTimeNanos = mLastFrameTimeNanos;
-                mLastFrameTimeNanos = frameTimeNanos;
-                if (lastFrameTimeNanos > 0) {
-                    final long dur = frameTimeNanos - lastFrameTimeNanos;
-                    final long mAnrTimeout = TimeUnit.MILLISECONDS.toNanos(IMLog.getLogLevel() <= Log.VERBOSE ? 50 : 1500);
-                    if (dur > mAnrTimeout) {
-                        printAnrStack(dur);
-                    }
-                }
-            }
-        };
-        Choreographer.getInstance().postFrameCallback(callback);
-    }
-
-    private void printAnrStack(final long dur) {
-        try {
-            final Thread mainThread = Looper.getMainLooper().getThread();
-            final Map<Thread, StackTraceElement[]> stackTraces = new TreeMap<>((lhs, rhs) -> {
-                if (lhs == rhs)
-                    return 0;
-                if (lhs == mainThread)
-                    return 1;
-                if (rhs == mainThread)
-                    return -1;
-                return rhs.getName().compareTo(lhs.getName());
-            });
-            for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
-                stackTraces.put(entry.getKey(), entry.getValue());
-            }
-            printAnrStackToFileAsync(dur, stackTraces);
-        } catch (Throwable e) {
-            SampleLog.e(e);
-        }
-    }
-
-    private void printAnrStackToFileAsync(final long dur, final Map<Thread, StackTraceElement[]> stackTraces) {
-        Threads.postBackground(() -> {
-            final File cacheDir = FileUtil.getAppCacheDir();
-            if (cacheDir == null) {
-                SampleLog.e("printAnrStackToFileAsync cache dir is null");
-                return;
-            }
-            final long durMs = TimeUnit.NANOSECONDS.toMillis(dur);
-            final String filename = "anr_" + new SimpleDateFormat("yyyyMMdd_HH_mm_ss", Locale.CHINA).format(new Date()) + "_" + durMs + "ms";
-            final String anrFile = FileUtil.createSimilarFileQuietly(new File(cacheDir, filename).getAbsolutePath());
-            if (anrFile == null) {
-                SampleLog.e("printAnrStackToFileAsync anrFile is null");
-                return;
-            }
-            try (PrintWriter writer = new PrintWriter(new FileWriter(new File(anrFile)))) {
-                writer.println("--------------------------------------------------------------");
-                writer.println("--------------------------------------------------------------");
-                writer.println("---------------- anr " + durMs + " ms ------------------------");
-                writer.println("--------------------------------------------------------------");
-                writer.println("--------------------------------------------------------------");
-                for (Map.Entry<Thread, StackTraceElement[]> entry : stackTraces.entrySet()) {
-                    writer.println("----------------------------");
-                    writer.println(entry.getKey());
-                    writer.println("-------");
-                    for (StackTraceElement stackTraceElement : entry.getValue()) {
-                        writer.println(stackTraceElement);
-                    }
-                    writer.println("----------------------------");
-                }
-                writer.println("--------------------------------------------------------------");
-                writer.println("--------------------------------------------------------------");
-                writer.println("--------------------------------------------------------------");
-                writer.println("--------------------------------------------------------------");
-                writer.flush();
-            } catch (Throwable e) {
-                SampleLog.e(e);
-            }
-        });
     }
 
 }
