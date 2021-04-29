@@ -84,7 +84,6 @@ public class SampleApplication extends Application {
                 .build());
     }
 
-    private final long mAnrTimeout = TimeUnit.MILLISECONDS.toNanos(IMLog.getLogLevel() <= Log.VERBOSE ? 50 : 1500);
     private long mLastFrameTimeNanos;
 
     private void addAnrDebug() {
@@ -96,6 +95,7 @@ public class SampleApplication extends Application {
                 mLastFrameTimeNanos = frameTimeNanos;
                 if (lastFrameTimeNanos > 0) {
                     final long dur = frameTimeNanos - lastFrameTimeNanos;
+                    final long mAnrTimeout = TimeUnit.MILLISECONDS.toNanos(IMLog.getLogLevel() <= Log.VERBOSE ? 50 : 1500);
                     if (dur > mAnrTimeout) {
                         printAnrStack(dur);
                     }
