@@ -7892,651 +7892,6 @@ public final class ProtoMessage {
     }
   }
 
-  public interface LastReadMsgOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:LastReadMsg)
-          com.google.protobuf.MessageLiteOrBuilder {
-
-    /**
-     * <code>optional int64 sign = 1;</code>
-     */
-    long getSign();
-
-    /**
-     * <pre>
-     * 谁的会话
-     * </pre>
-     *
-     * <code>optional int64 from_uid = 2;</code>
-     */
-    long getFromUid();
-
-    /**
-     * <pre>
-     * 我发给对方的消息中，最后一条已读消息（被动通知 会有这个）
-     * </pre>
-     *
-     * <code>optional int64 msg_id = 3;</code>
-     */
-    long getMsgId();
-
-    /**
-     * <pre>
-     *对方发给我的消息中，还有多少条未读消息（主动调用MsgRead 一方会收到这个）
-     * </pre>
-     *
-     * <code>optional int64 unread = 4;</code>
-     */
-    long getUnread();
-
-    /**
-     * <pre>
-     *服务器收到已读回执的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-     * </pre>
-     *
-     * <code>optional int64 update_time = 5;</code>
-     */
-    long getUpdateTime();
-  }
-  /**
-   * <pre>
-   *11 消息已读状态发生变更通知（客户端收到这个才去变更）
-   * </pre>
-   *
-   * Protobuf type {@code LastReadMsg}
-   */
-  public  static final class LastReadMsg extends
-          com.google.protobuf.GeneratedMessageLite<
-                  LastReadMsg, LastReadMsg.Builder> implements
-          // @@protoc_insertion_point(message_implements:LastReadMsg)
-          LastReadMsgOrBuilder {
-    private LastReadMsg() {
-    }
-    public static final int SIGN_FIELD_NUMBER = 1;
-    private long sign_;
-    /**
-     * <code>optional int64 sign = 1;</code>
-     */
-    public long getSign() {
-      return sign_;
-    }
-    /**
-     * <code>optional int64 sign = 1;</code>
-     */
-    private void setSign(long value) {
-
-      sign_ = value;
-    }
-    /**
-     * <code>optional int64 sign = 1;</code>
-     */
-    private void clearSign() {
-
-      sign_ = 0L;
-    }
-
-    public static final int FROM_UID_FIELD_NUMBER = 2;
-    private long fromUid_;
-    /**
-     * <pre>
-     * 谁的会话
-     * </pre>
-     *
-     * <code>optional int64 from_uid = 2;</code>
-     */
-    public long getFromUid() {
-      return fromUid_;
-    }
-    /**
-     * <pre>
-     * 谁的会话
-     * </pre>
-     *
-     * <code>optional int64 from_uid = 2;</code>
-     */
-    private void setFromUid(long value) {
-
-      fromUid_ = value;
-    }
-    /**
-     * <pre>
-     * 谁的会话
-     * </pre>
-     *
-     * <code>optional int64 from_uid = 2;</code>
-     */
-    private void clearFromUid() {
-
-      fromUid_ = 0L;
-    }
-
-    public static final int MSG_ID_FIELD_NUMBER = 3;
-    private long msgId_;
-    /**
-     * <pre>
-     * 我发给对方的消息中，最后一条已读消息（被动通知 会有这个）
-     * </pre>
-     *
-     * <code>optional int64 msg_id = 3;</code>
-     */
-    public long getMsgId() {
-      return msgId_;
-    }
-    /**
-     * <pre>
-     * 我发给对方的消息中，最后一条已读消息（被动通知 会有这个）
-     * </pre>
-     *
-     * <code>optional int64 msg_id = 3;</code>
-     */
-    private void setMsgId(long value) {
-
-      msgId_ = value;
-    }
-    /**
-     * <pre>
-     * 我发给对方的消息中，最后一条已读消息（被动通知 会有这个）
-     * </pre>
-     *
-     * <code>optional int64 msg_id = 3;</code>
-     */
-    private void clearMsgId() {
-
-      msgId_ = 0L;
-    }
-
-    public static final int UNREAD_FIELD_NUMBER = 4;
-    private long unread_;
-    /**
-     * <pre>
-     *对方发给我的消息中，还有多少条未读消息（主动调用MsgRead 一方会收到这个）
-     * </pre>
-     *
-     * <code>optional int64 unread = 4;</code>
-     */
-    public long getUnread() {
-      return unread_;
-    }
-    /**
-     * <pre>
-     *对方发给我的消息中，还有多少条未读消息（主动调用MsgRead 一方会收到这个）
-     * </pre>
-     *
-     * <code>optional int64 unread = 4;</code>
-     */
-    private void setUnread(long value) {
-
-      unread_ = value;
-    }
-    /**
-     * <pre>
-     *对方发给我的消息中，还有多少条未读消息（主动调用MsgRead 一方会收到这个）
-     * </pre>
-     *
-     * <code>optional int64 unread = 4;</code>
-     */
-    private void clearUnread() {
-
-      unread_ = 0L;
-    }
-
-    public static final int UPDATE_TIME_FIELD_NUMBER = 5;
-    private long updateTime_;
-    /**
-     * <pre>
-     *服务器收到已读回执的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-     * </pre>
-     *
-     * <code>optional int64 update_time = 5;</code>
-     */
-    public long getUpdateTime() {
-      return updateTime_;
-    }
-    /**
-     * <pre>
-     *服务器收到已读回执的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-     * </pre>
-     *
-     * <code>optional int64 update_time = 5;</code>
-     */
-    private void setUpdateTime(long value) {
-
-      updateTime_ = value;
-    }
-    /**
-     * <pre>
-     *服务器收到已读回执的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-     * </pre>
-     *
-     * <code>optional int64 update_time = 5;</code>
-     */
-    private void clearUpdateTime() {
-
-      updateTime_ = 0L;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-      if (sign_ != 0L) {
-        output.writeInt64(1, sign_);
-      }
-      if (fromUid_ != 0L) {
-        output.writeInt64(2, fromUid_);
-      }
-      if (msgId_ != 0L) {
-        output.writeInt64(3, msgId_);
-      }
-      if (unread_ != 0L) {
-        output.writeInt64(4, unread_);
-      }
-      if (updateTime_ != 0L) {
-        output.writeInt64(5, updateTime_);
-      }
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (sign_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, sign_);
-      }
-      if (fromUid_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(2, fromUid_);
-      }
-      if (msgId_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(3, msgId_);
-      }
-      if (unread_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(4, unread_);
-      }
-      if (updateTime_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(5, updateTime_);
-      }
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, data);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, data, extensionRegistry);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, data);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, data, extensionRegistry);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, input);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, input, extensionRegistry);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
-      return parseDelimitedFrom(DEFAULT_INSTANCE, input);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-      return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, input);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    /**
-     * <pre>
-     *11 消息已读状态发生变更通知（客户端收到这个才去变更）
-     * </pre>
-     *
-     * Protobuf type {@code LastReadMsg}
-     */
-    public static final class Builder extends
-            com.google.protobuf.GeneratedMessageLite.Builder<
-                    com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg, Builder> implements
-            // @@protoc_insertion_point(builder_implements:LastReadMsg)
-            com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsgOrBuilder {
-      // Construct using com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg.newBuilder()
-      private Builder() {
-        super(DEFAULT_INSTANCE);
-      }
-
-
-      /**
-       * <code>optional int64 sign = 1;</code>
-       */
-      public long getSign() {
-        return instance.getSign();
-      }
-      /**
-       * <code>optional int64 sign = 1;</code>
-       */
-      public Builder setSign(long value) {
-        copyOnWrite();
-        instance.setSign(value);
-        return this;
-      }
-      /**
-       * <code>optional int64 sign = 1;</code>
-       */
-      public Builder clearSign() {
-        copyOnWrite();
-        instance.clearSign();
-        return this;
-      }
-
-      /**
-       * <pre>
-       * 谁的会话
-       * </pre>
-       *
-       * <code>optional int64 from_uid = 2;</code>
-       */
-      public long getFromUid() {
-        return instance.getFromUid();
-      }
-      /**
-       * <pre>
-       * 谁的会话
-       * </pre>
-       *
-       * <code>optional int64 from_uid = 2;</code>
-       */
-      public Builder setFromUid(long value) {
-        copyOnWrite();
-        instance.setFromUid(value);
-        return this;
-      }
-      /**
-       * <pre>
-       * 谁的会话
-       * </pre>
-       *
-       * <code>optional int64 from_uid = 2;</code>
-       */
-      public Builder clearFromUid() {
-        copyOnWrite();
-        instance.clearFromUid();
-        return this;
-      }
-
-      /**
-       * <pre>
-       * 我发给对方的消息中，最后一条已读消息（被动通知 会有这个）
-       * </pre>
-       *
-       * <code>optional int64 msg_id = 3;</code>
-       */
-      public long getMsgId() {
-        return instance.getMsgId();
-      }
-      /**
-       * <pre>
-       * 我发给对方的消息中，最后一条已读消息（被动通知 会有这个）
-       * </pre>
-       *
-       * <code>optional int64 msg_id = 3;</code>
-       */
-      public Builder setMsgId(long value) {
-        copyOnWrite();
-        instance.setMsgId(value);
-        return this;
-      }
-      /**
-       * <pre>
-       * 我发给对方的消息中，最后一条已读消息（被动通知 会有这个）
-       * </pre>
-       *
-       * <code>optional int64 msg_id = 3;</code>
-       */
-      public Builder clearMsgId() {
-        copyOnWrite();
-        instance.clearMsgId();
-        return this;
-      }
-
-      /**
-       * <pre>
-       *对方发给我的消息中，还有多少条未读消息（主动调用MsgRead 一方会收到这个）
-       * </pre>
-       *
-       * <code>optional int64 unread = 4;</code>
-       */
-      public long getUnread() {
-        return instance.getUnread();
-      }
-      /**
-       * <pre>
-       *对方发给我的消息中，还有多少条未读消息（主动调用MsgRead 一方会收到这个）
-       * </pre>
-       *
-       * <code>optional int64 unread = 4;</code>
-       */
-      public Builder setUnread(long value) {
-        copyOnWrite();
-        instance.setUnread(value);
-        return this;
-      }
-      /**
-       * <pre>
-       *对方发给我的消息中，还有多少条未读消息（主动调用MsgRead 一方会收到这个）
-       * </pre>
-       *
-       * <code>optional int64 unread = 4;</code>
-       */
-      public Builder clearUnread() {
-        copyOnWrite();
-        instance.clearUnread();
-        return this;
-      }
-
-      /**
-       * <pre>
-       *服务器收到已读回执的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-       * </pre>
-       *
-       * <code>optional int64 update_time = 5;</code>
-       */
-      public long getUpdateTime() {
-        return instance.getUpdateTime();
-      }
-      /**
-       * <pre>
-       *服务器收到已读回执的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-       * </pre>
-       *
-       * <code>optional int64 update_time = 5;</code>
-       */
-      public Builder setUpdateTime(long value) {
-        copyOnWrite();
-        instance.setUpdateTime(value);
-        return this;
-      }
-      /**
-       * <pre>
-       *服务器收到已读回执的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-       * </pre>
-       *
-       * <code>optional int64 update_time = 5;</code>
-       */
-      public Builder clearUpdateTime() {
-        copyOnWrite();
-        instance.clearUpdateTime();
-        return this;
-      }
-
-      // @@protoc_insertion_point(builder_scope:LastReadMsg)
-    }
-    protected final Object dynamicMethod(
-            com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
-            Object arg0, Object arg1) {
-      switch (method) {
-        case NEW_MUTABLE_INSTANCE: {
-          return new com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg();
-        }
-        case IS_INITIALIZED: {
-          return DEFAULT_INSTANCE;
-        }
-        case MAKE_IMMUTABLE: {
-          return null;
-        }
-        case NEW_BUILDER: {
-          return new Builder();
-        }
-        case VISIT: {
-          Visitor visitor = (Visitor) arg0;
-          com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg other = (com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg) arg1;
-          sign_ = visitor.visitLong(sign_ != 0L, sign_,
-                  other.sign_ != 0L, other.sign_);
-          fromUid_ = visitor.visitLong(fromUid_ != 0L, fromUid_,
-                  other.fromUid_ != 0L, other.fromUid_);
-          msgId_ = visitor.visitLong(msgId_ != 0L, msgId_,
-                  other.msgId_ != 0L, other.msgId_);
-          unread_ = visitor.visitLong(unread_ != 0L, unread_,
-                  other.unread_ != 0L, other.unread_);
-          updateTime_ = visitor.visitLong(updateTime_ != 0L, updateTime_,
-                  other.updateTime_ != 0L, other.updateTime_);
-          if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
-                  .INSTANCE) {
-          }
-          return this;
-        }
-        case MERGE_FROM_STREAM: {
-          com.google.protobuf.CodedInputStream input =
-                  (com.google.protobuf.CodedInputStream) arg0;
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry =
-                  (com.google.protobuf.ExtensionRegistryLite) arg1;
-          try {
-            boolean done = false;
-            while (!done) {
-              int tag = input.readTag();
-              switch (tag) {
-                case 0:
-                  done = true;
-                  break;
-                default: {
-                  if (!input.skipField(tag)) {
-                    done = true;
-                  }
-                  break;
-                }
-                case 8: {
-
-                  sign_ = input.readInt64();
-                  break;
-                }
-                case 16: {
-
-                  fromUid_ = input.readInt64();
-                  break;
-                }
-                case 24: {
-
-                  msgId_ = input.readInt64();
-                  break;
-                }
-                case 32: {
-
-                  unread_ = input.readInt64();
-                  break;
-                }
-                case 40: {
-
-                  updateTime_ = input.readInt64();
-                  break;
-                }
-              }
-            }
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw new RuntimeException(e.setUnfinishedMessage(this));
-          } catch (java.io.IOException e) {
-            throw new RuntimeException(
-                    new com.google.protobuf.InvalidProtocolBufferException(
-                            e.getMessage()).setUnfinishedMessage(this));
-          } finally {
-          }
-        }
-        case GET_DEFAULT_INSTANCE: {
-          return DEFAULT_INSTANCE;
-        }
-        case GET_PARSER: {
-          if (PARSER == null) {    synchronized (com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg.class) {
-            if (PARSER == null) {
-              PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
-            }
-          }
-          }
-          return PARSER;
-        }
-      }
-      throw new UnsupportedOperationException();
-    }
-
-
-    // @@protoc_insertion_point(class_scope:LastReadMsg)
-    private static final com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new LastReadMsg();
-      DEFAULT_INSTANCE.makeImmutable();
-    }
-
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.LastReadMsg getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static volatile com.google.protobuf.Parser<LastReadMsg> PARSER;
-
-    public static com.google.protobuf.Parser<LastReadMsg> parser() {
-      return DEFAULT_INSTANCE.getParserForType();
-    }
-  }
-
   public interface DelChatOrBuilder extends
           // @@protoc_insertion_point(interface_extends:DelChat)
           com.google.protobuf.MessageLiteOrBuilder {
@@ -8558,19 +7913,10 @@ public final class ProtoMessage {
      * <code>optional int64 to_uid = 2;</code>
      */
     long getToUid();
-
-    /**
-     * <pre>
-     *服务器删除会话的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-     * </pre>
-     *
-     * <code>optional int64 update_time = 3;</code>
-     */
-    long getUpdateTime();
   }
   /**
    * <pre>
-   *12 该proto 既是请求，也是返回，返回时带update_time, 请求时不带update_time
+   *11 删除会话
    * </pre>
    *
    * Protobuf type {@code DelChat}
@@ -8652,41 +7998,6 @@ public final class ProtoMessage {
       toUid_ = 0L;
     }
 
-    public static final int UPDATE_TIME_FIELD_NUMBER = 3;
-    private long updateTime_;
-    /**
-     * <pre>
-     *服务器删除会话的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-     * </pre>
-     *
-     * <code>optional int64 update_time = 3;</code>
-     */
-    public long getUpdateTime() {
-      return updateTime_;
-    }
-    /**
-     * <pre>
-     *服务器删除会话的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-     * </pre>
-     *
-     * <code>optional int64 update_time = 3;</code>
-     */
-    private void setUpdateTime(long value) {
-
-      updateTime_ = value;
-    }
-    /**
-     * <pre>
-     *服务器删除会话的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-     * </pre>
-     *
-     * <code>optional int64 update_time = 3;</code>
-     */
-    private void clearUpdateTime() {
-
-      updateTime_ = 0L;
-    }
-
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
       if (sign_ != 0L) {
@@ -8694,9 +8005,6 @@ public final class ProtoMessage {
       }
       if (toUid_ != 0L) {
         output.writeInt64(2, toUid_);
-      }
-      if (updateTime_ != 0L) {
-        output.writeInt64(3, updateTime_);
       }
     }
 
@@ -8712,10 +8020,6 @@ public final class ProtoMessage {
       if (toUid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(2, toUid_);
-      }
-      if (updateTime_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(3, updateTime_);
       }
       memoizedSerializedSize = size;
       return size;
@@ -8791,7 +8095,7 @@ public final class ProtoMessage {
 
     /**
      * <pre>
-     *12 该proto 既是请求，也是返回，返回时带update_time, 请求时不带update_time
+     *11 删除会话
      * </pre>
      *
      * Protobuf type {@code DelChat}
@@ -8877,41 +8181,6 @@ public final class ProtoMessage {
         return this;
       }
 
-      /**
-       * <pre>
-       *服务器删除会话的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-       * </pre>
-       *
-       * <code>optional int64 update_time = 3;</code>
-       */
-      public long getUpdateTime() {
-        return instance.getUpdateTime();
-      }
-      /**
-       * <pre>
-       *服务器删除会话的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-       * </pre>
-       *
-       * <code>optional int64 update_time = 3;</code>
-       */
-      public Builder setUpdateTime(long value) {
-        copyOnWrite();
-        instance.setUpdateTime(value);
-        return this;
-      }
-      /**
-       * <pre>
-       *服务器删除会话的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-       * </pre>
-       *
-       * <code>optional int64 update_time = 3;</code>
-       */
-      public Builder clearUpdateTime() {
-        copyOnWrite();
-        instance.clearUpdateTime();
-        return this;
-      }
-
       // @@protoc_insertion_point(builder_scope:DelChat)
     }
     protected final Object dynamicMethod(
@@ -8937,8 +8206,6 @@ public final class ProtoMessage {
                   other.sign_ != 0L, other.sign_);
           toUid_ = visitor.visitLong(toUid_ != 0L, toUid_,
                   other.toUid_ != 0L, other.toUid_);
-          updateTime_ = visitor.visitLong(updateTime_ != 0L, updateTime_,
-                  other.updateTime_ != 0L, other.updateTime_);
           if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
                   .INSTANCE) {
           }
@@ -8971,11 +8238,6 @@ public final class ProtoMessage {
                 case 16: {
 
                   toUid_ = input.readInt64();
-                  break;
-                }
-                case 24: {
-
-                  updateTime_ = input.readInt64();
                   break;
                 }
               }
@@ -9045,10 +8307,19 @@ public final class ProtoMessage {
      * <code>optional int64 update_time = 2;</code>
      */
     long getUpdateTime();
+
+    /**
+     * <pre>
+     *websocket 端传此值, 作为分页指针
+     * </pre>
+     *
+     * <code>optional int64 uid = 3;</code>
+     */
+    long getUid();
   }
   /**
    * <pre>
-   *13
+   *12
    * </pre>
    *
    * Protobuf type {@code GetChatList}
@@ -9130,6 +8401,41 @@ public final class ProtoMessage {
       updateTime_ = 0L;
     }
 
+    public static final int UID_FIELD_NUMBER = 3;
+    private long uid_;
+    /**
+     * <pre>
+     *websocket 端传此值, 作为分页指针
+     * </pre>
+     *
+     * <code>optional int64 uid = 3;</code>
+     */
+    public long getUid() {
+      return uid_;
+    }
+    /**
+     * <pre>
+     *websocket 端传此值, 作为分页指针
+     * </pre>
+     *
+     * <code>optional int64 uid = 3;</code>
+     */
+    private void setUid(long value) {
+
+      uid_ = value;
+    }
+    /**
+     * <pre>
+     *websocket 端传此值, 作为分页指针
+     * </pre>
+     *
+     * <code>optional int64 uid = 3;</code>
+     */
+    private void clearUid() {
+
+      uid_ = 0L;
+    }
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
       if (sign_ != 0L) {
@@ -9137,6 +8443,9 @@ public final class ProtoMessage {
       }
       if (updateTime_ != 0L) {
         output.writeInt64(2, updateTime_);
+      }
+      if (uid_ != 0L) {
+        output.writeInt64(3, uid_);
       }
     }
 
@@ -9152,6 +8461,10 @@ public final class ProtoMessage {
       if (updateTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(2, updateTime_);
+      }
+      if (uid_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(3, uid_);
       }
       memoizedSerializedSize = size;
       return size;
@@ -9227,7 +8540,7 @@ public final class ProtoMessage {
 
     /**
      * <pre>
-     *13
+     *12
      * </pre>
      *
      * Protobuf type {@code GetChatList}
@@ -9313,6 +8626,41 @@ public final class ProtoMessage {
         return this;
       }
 
+      /**
+       * <pre>
+       *websocket 端传此值, 作为分页指针
+       * </pre>
+       *
+       * <code>optional int64 uid = 3;</code>
+       */
+      public long getUid() {
+        return instance.getUid();
+      }
+      /**
+       * <pre>
+       *websocket 端传此值, 作为分页指针
+       * </pre>
+       *
+       * <code>optional int64 uid = 3;</code>
+       */
+      public Builder setUid(long value) {
+        copyOnWrite();
+        instance.setUid(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *websocket 端传此值, 作为分页指针
+       * </pre>
+       *
+       * <code>optional int64 uid = 3;</code>
+       */
+      public Builder clearUid() {
+        copyOnWrite();
+        instance.clearUid();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:GetChatList)
     }
     protected final Object dynamicMethod(
@@ -9338,6 +8686,8 @@ public final class ProtoMessage {
                   other.sign_ != 0L, other.sign_);
           updateTime_ = visitor.visitLong(updateTime_ != 0L, updateTime_,
                   other.updateTime_ != 0L, other.updateTime_);
+          uid_ = visitor.visitLong(uid_ != 0L, uid_,
+                  other.uid_ != 0L, other.uid_);
           if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
                   .INSTANCE) {
           }
@@ -9370,6 +8720,11 @@ public final class ProtoMessage {
                 case 16: {
 
                   updateTime_ = input.readInt64();
+                  break;
+                }
+                case 24: {
+
+                  uid_ = input.readInt64();
                   break;
                 }
               }
@@ -9443,42 +8798,74 @@ public final class ProtoMessage {
     long getShowMsgId();
 
     /**
-     * <code>optional int64 unread = 6;</code>
+     * <pre>
+     *仅websocket端 返回
+     * </pre>
+     *
+     * <code>optional int64 show_msg_type = 6;</code>
+     */
+    long getShowMsgType();
+
+    /**
+     * <pre>
+     *仅websocket端 返回
+     * </pre>
+     *
+     * <code>optional string show_msg = 7;</code>
+     */
+    java.lang.String getShowMsg();
+    /**
+     * <pre>
+     *仅websocket端 返回
+     * </pre>
+     *
+     * <code>optional string show_msg = 7;</code>
+     */
+    com.google.protobuf.ByteString
+    getShowMsgBytes();
+
+    /**
+     * <code>optional int64 show_msg_time = 8;</code>
+     */
+    long getShowMsgTime();
+
+    /**
+     * <code>optional int64 unread = 9;</code>
      */
     long getUnread();
 
     /**
-     * <code>optional bool matched = 7;</code>
+     * <code>optional bool matched = 10;</code>
      */
     boolean getMatched();
 
     /**
-     * <code>optional bool new_msg = 8;</code>
+     * <code>optional bool new_msg = 11;</code>
      */
     boolean getNewMsg();
 
     /**
-     * <code>optional bool my_move = 9;</code>
+     * <code>optional bool my_move = 12;</code>
      */
     boolean getMyMove();
 
     /**
-     * <code>optional bool ice_break = 10;</code>
+     * <code>optional bool ice_break = 13;</code>
      */
     boolean getIceBreak();
 
     /**
-     * <code>optional bool tip_free = 11;</code>
+     * <code>optional bool tip_free = 14;</code>
      */
     boolean getTipFree();
 
     /**
-     * <code>optional bool top_album = 12;</code>
+     * <code>optional bool top_album = 15;</code>
      */
     boolean getTopAlbum();
 
     /**
-     * <code>optional bool i_block_u = 13;</code>
+     * <code>optional bool i_block_u = 16;</code>
      */
     boolean getIBlockU();
 
@@ -9487,13 +8874,22 @@ public final class ProtoMessage {
      *双方互发过消息了
      * </pre>
      *
-     * <code>optional bool connected = 14;</code>
+     * <code>optional bool connected = 17;</code>
      */
     boolean getConnected();
+
+    /**
+     * <pre>
+     *该会话已删除
+     * </pre>
+     *
+     * <code>optional bool deleted = 18;</code>
+     */
+    boolean getDeleted();
   }
   /**
    * <pre>
-   *14
+   *13
    * </pre>
    *
    * Protobuf type {@code ChatItem}
@@ -9504,6 +8900,7 @@ public final class ProtoMessage {
           // @@protoc_insertion_point(message_implements:ChatItem)
           ChatItemOrBuilder {
     private ChatItem() {
+      showMsg_ = "";
     }
     public static final int UID_FIELD_NUMBER = 1;
     private long uid_;
@@ -9597,198 +8994,322 @@ public final class ProtoMessage {
       showMsgId_ = 0L;
     }
 
-    public static final int UNREAD_FIELD_NUMBER = 6;
+    public static final int SHOW_MSG_TYPE_FIELD_NUMBER = 6;
+    private long showMsgType_;
+    /**
+     * <pre>
+     *仅websocket端 返回
+     * </pre>
+     *
+     * <code>optional int64 show_msg_type = 6;</code>
+     */
+    public long getShowMsgType() {
+      return showMsgType_;
+    }
+    /**
+     * <pre>
+     *仅websocket端 返回
+     * </pre>
+     *
+     * <code>optional int64 show_msg_type = 6;</code>
+     */
+    private void setShowMsgType(long value) {
+
+      showMsgType_ = value;
+    }
+    /**
+     * <pre>
+     *仅websocket端 返回
+     * </pre>
+     *
+     * <code>optional int64 show_msg_type = 6;</code>
+     */
+    private void clearShowMsgType() {
+
+      showMsgType_ = 0L;
+    }
+
+    public static final int SHOW_MSG_FIELD_NUMBER = 7;
+    private java.lang.String showMsg_;
+    /**
+     * <pre>
+     *仅websocket端 返回
+     * </pre>
+     *
+     * <code>optional string show_msg = 7;</code>
+     */
+    public java.lang.String getShowMsg() {
+      return showMsg_;
+    }
+    /**
+     * <pre>
+     *仅websocket端 返回
+     * </pre>
+     *
+     * <code>optional string show_msg = 7;</code>
+     */
+    public com.google.protobuf.ByteString
+    getShowMsgBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(showMsg_);
+    }
+    /**
+     * <pre>
+     *仅websocket端 返回
+     * </pre>
+     *
+     * <code>optional string show_msg = 7;</code>
+     */
+    private void setShowMsg(
+            java.lang.String value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+
+      showMsg_ = value;
+    }
+    /**
+     * <pre>
+     *仅websocket端 返回
+     * </pre>
+     *
+     * <code>optional string show_msg = 7;</code>
+     */
+    private void clearShowMsg() {
+
+      showMsg_ = getDefaultInstance().getShowMsg();
+    }
+    /**
+     * <pre>
+     *仅websocket端 返回
+     * </pre>
+     *
+     * <code>optional string show_msg = 7;</code>
+     */
+    private void setShowMsgBytes(
+            com.google.protobuf.ByteString value) {
+      if (value == null) {
+        throw new NullPointerException();
+      }
+      checkByteStringIsUtf8(value);
+
+      showMsg_ = value.toStringUtf8();
+    }
+
+    public static final int SHOW_MSG_TIME_FIELD_NUMBER = 8;
+    private long showMsgTime_;
+    /**
+     * <code>optional int64 show_msg_time = 8;</code>
+     */
+    public long getShowMsgTime() {
+      return showMsgTime_;
+    }
+    /**
+     * <code>optional int64 show_msg_time = 8;</code>
+     */
+    private void setShowMsgTime(long value) {
+
+      showMsgTime_ = value;
+    }
+    /**
+     * <code>optional int64 show_msg_time = 8;</code>
+     */
+    private void clearShowMsgTime() {
+
+      showMsgTime_ = 0L;
+    }
+
+    public static final int UNREAD_FIELD_NUMBER = 9;
     private long unread_;
     /**
-     * <code>optional int64 unread = 6;</code>
+     * <code>optional int64 unread = 9;</code>
      */
     public long getUnread() {
       return unread_;
     }
     /**
-     * <code>optional int64 unread = 6;</code>
+     * <code>optional int64 unread = 9;</code>
      */
     private void setUnread(long value) {
 
       unread_ = value;
     }
     /**
-     * <code>optional int64 unread = 6;</code>
+     * <code>optional int64 unread = 9;</code>
      */
     private void clearUnread() {
 
       unread_ = 0L;
     }
 
-    public static final int MATCHED_FIELD_NUMBER = 7;
+    public static final int MATCHED_FIELD_NUMBER = 10;
     private boolean matched_;
     /**
-     * <code>optional bool matched = 7;</code>
+     * <code>optional bool matched = 10;</code>
      */
     public boolean getMatched() {
       return matched_;
     }
     /**
-     * <code>optional bool matched = 7;</code>
+     * <code>optional bool matched = 10;</code>
      */
     private void setMatched(boolean value) {
 
       matched_ = value;
     }
     /**
-     * <code>optional bool matched = 7;</code>
+     * <code>optional bool matched = 10;</code>
      */
     private void clearMatched() {
 
       matched_ = false;
     }
 
-    public static final int NEW_MSG_FIELD_NUMBER = 8;
+    public static final int NEW_MSG_FIELD_NUMBER = 11;
     private boolean newMsg_;
     /**
-     * <code>optional bool new_msg = 8;</code>
+     * <code>optional bool new_msg = 11;</code>
      */
     public boolean getNewMsg() {
       return newMsg_;
     }
     /**
-     * <code>optional bool new_msg = 8;</code>
+     * <code>optional bool new_msg = 11;</code>
      */
     private void setNewMsg(boolean value) {
 
       newMsg_ = value;
     }
     /**
-     * <code>optional bool new_msg = 8;</code>
+     * <code>optional bool new_msg = 11;</code>
      */
     private void clearNewMsg() {
 
       newMsg_ = false;
     }
 
-    public static final int MY_MOVE_FIELD_NUMBER = 9;
+    public static final int MY_MOVE_FIELD_NUMBER = 12;
     private boolean myMove_;
     /**
-     * <code>optional bool my_move = 9;</code>
+     * <code>optional bool my_move = 12;</code>
      */
     public boolean getMyMove() {
       return myMove_;
     }
     /**
-     * <code>optional bool my_move = 9;</code>
+     * <code>optional bool my_move = 12;</code>
      */
     private void setMyMove(boolean value) {
 
       myMove_ = value;
     }
     /**
-     * <code>optional bool my_move = 9;</code>
+     * <code>optional bool my_move = 12;</code>
      */
     private void clearMyMove() {
 
       myMove_ = false;
     }
 
-    public static final int ICE_BREAK_FIELD_NUMBER = 10;
+    public static final int ICE_BREAK_FIELD_NUMBER = 13;
     private boolean iceBreak_;
     /**
-     * <code>optional bool ice_break = 10;</code>
+     * <code>optional bool ice_break = 13;</code>
      */
     public boolean getIceBreak() {
       return iceBreak_;
     }
     /**
-     * <code>optional bool ice_break = 10;</code>
+     * <code>optional bool ice_break = 13;</code>
      */
     private void setIceBreak(boolean value) {
 
       iceBreak_ = value;
     }
     /**
-     * <code>optional bool ice_break = 10;</code>
+     * <code>optional bool ice_break = 13;</code>
      */
     private void clearIceBreak() {
 
       iceBreak_ = false;
     }
 
-    public static final int TIP_FREE_FIELD_NUMBER = 11;
+    public static final int TIP_FREE_FIELD_NUMBER = 14;
     private boolean tipFree_;
     /**
-     * <code>optional bool tip_free = 11;</code>
+     * <code>optional bool tip_free = 14;</code>
      */
     public boolean getTipFree() {
       return tipFree_;
     }
     /**
-     * <code>optional bool tip_free = 11;</code>
+     * <code>optional bool tip_free = 14;</code>
      */
     private void setTipFree(boolean value) {
 
       tipFree_ = value;
     }
     /**
-     * <code>optional bool tip_free = 11;</code>
+     * <code>optional bool tip_free = 14;</code>
      */
     private void clearTipFree() {
 
       tipFree_ = false;
     }
 
-    public static final int TOP_ALBUM_FIELD_NUMBER = 12;
+    public static final int TOP_ALBUM_FIELD_NUMBER = 15;
     private boolean topAlbum_;
     /**
-     * <code>optional bool top_album = 12;</code>
+     * <code>optional bool top_album = 15;</code>
      */
     public boolean getTopAlbum() {
       return topAlbum_;
     }
     /**
-     * <code>optional bool top_album = 12;</code>
+     * <code>optional bool top_album = 15;</code>
      */
     private void setTopAlbum(boolean value) {
 
       topAlbum_ = value;
     }
     /**
-     * <code>optional bool top_album = 12;</code>
+     * <code>optional bool top_album = 15;</code>
      */
     private void clearTopAlbum() {
 
       topAlbum_ = false;
     }
 
-    public static final int I_BLOCK_U_FIELD_NUMBER = 13;
+    public static final int I_BLOCK_U_FIELD_NUMBER = 16;
     private boolean iBlockU_;
     /**
-     * <code>optional bool i_block_u = 13;</code>
+     * <code>optional bool i_block_u = 16;</code>
      */
     public boolean getIBlockU() {
       return iBlockU_;
     }
     /**
-     * <code>optional bool i_block_u = 13;</code>
+     * <code>optional bool i_block_u = 16;</code>
      */
     private void setIBlockU(boolean value) {
 
       iBlockU_ = value;
     }
     /**
-     * <code>optional bool i_block_u = 13;</code>
+     * <code>optional bool i_block_u = 16;</code>
      */
     private void clearIBlockU() {
 
       iBlockU_ = false;
     }
 
-    public static final int CONNECTED_FIELD_NUMBER = 14;
+    public static final int CONNECTED_FIELD_NUMBER = 17;
     private boolean connected_;
     /**
      * <pre>
      *双方互发过消息了
      * </pre>
      *
-     * <code>optional bool connected = 14;</code>
+     * <code>optional bool connected = 17;</code>
      */
     public boolean getConnected() {
       return connected_;
@@ -9798,7 +9319,7 @@ public final class ProtoMessage {
      *双方互发过消息了
      * </pre>
      *
-     * <code>optional bool connected = 14;</code>
+     * <code>optional bool connected = 17;</code>
      */
     private void setConnected(boolean value) {
 
@@ -9809,11 +9330,46 @@ public final class ProtoMessage {
      *双方互发过消息了
      * </pre>
      *
-     * <code>optional bool connected = 14;</code>
+     * <code>optional bool connected = 17;</code>
      */
     private void clearConnected() {
 
       connected_ = false;
+    }
+
+    public static final int DELETED_FIELD_NUMBER = 18;
+    private boolean deleted_;
+    /**
+     * <pre>
+     *该会话已删除
+     * </pre>
+     *
+     * <code>optional bool deleted = 18;</code>
+     */
+    public boolean getDeleted() {
+      return deleted_;
+    }
+    /**
+     * <pre>
+     *该会话已删除
+     * </pre>
+     *
+     * <code>optional bool deleted = 18;</code>
+     */
+    private void setDeleted(boolean value) {
+
+      deleted_ = value;
+    }
+    /**
+     * <pre>
+     *该会话已删除
+     * </pre>
+     *
+     * <code>optional bool deleted = 18;</code>
+     */
+    private void clearDeleted() {
+
+      deleted_ = false;
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
@@ -9830,32 +9386,44 @@ public final class ProtoMessage {
       if (showMsgId_ != 0L) {
         output.writeInt64(5, showMsgId_);
       }
+      if (showMsgType_ != 0L) {
+        output.writeInt64(6, showMsgType_);
+      }
+      if (!showMsg_.isEmpty()) {
+        output.writeString(7, getShowMsg());
+      }
+      if (showMsgTime_ != 0L) {
+        output.writeInt64(8, showMsgTime_);
+      }
       if (unread_ != 0L) {
-        output.writeInt64(6, unread_);
+        output.writeInt64(9, unread_);
       }
       if (matched_ != false) {
-        output.writeBool(7, matched_);
+        output.writeBool(10, matched_);
       }
       if (newMsg_ != false) {
-        output.writeBool(8, newMsg_);
+        output.writeBool(11, newMsg_);
       }
       if (myMove_ != false) {
-        output.writeBool(9, myMove_);
+        output.writeBool(12, myMove_);
       }
       if (iceBreak_ != false) {
-        output.writeBool(10, iceBreak_);
+        output.writeBool(13, iceBreak_);
       }
       if (tipFree_ != false) {
-        output.writeBool(11, tipFree_);
+        output.writeBool(14, tipFree_);
       }
       if (topAlbum_ != false) {
-        output.writeBool(12, topAlbum_);
+        output.writeBool(15, topAlbum_);
       }
       if (iBlockU_ != false) {
-        output.writeBool(13, iBlockU_);
+        output.writeBool(16, iBlockU_);
       }
       if (connected_ != false) {
-        output.writeBool(14, connected_);
+        output.writeBool(17, connected_);
+      }
+      if (deleted_ != false) {
+        output.writeBool(18, deleted_);
       }
     }
 
@@ -9880,41 +9448,57 @@ public final class ProtoMessage {
         size += com.google.protobuf.CodedOutputStream
                 .computeInt64Size(5, showMsgId_);
       }
+      if (showMsgType_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(6, showMsgType_);
+      }
+      if (!showMsg_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeStringSize(7, getShowMsg());
+      }
+      if (showMsgTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(8, showMsgTime_);
+      }
       if (unread_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(6, unread_);
+                .computeInt64Size(9, unread_);
       }
       if (matched_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(7, matched_);
+                .computeBoolSize(10, matched_);
       }
       if (newMsg_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(8, newMsg_);
+                .computeBoolSize(11, newMsg_);
       }
       if (myMove_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(9, myMove_);
+                .computeBoolSize(12, myMove_);
       }
       if (iceBreak_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(10, iceBreak_);
+                .computeBoolSize(13, iceBreak_);
       }
       if (tipFree_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(11, tipFree_);
+                .computeBoolSize(14, tipFree_);
       }
       if (topAlbum_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(12, topAlbum_);
+                .computeBoolSize(15, topAlbum_);
       }
       if (iBlockU_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(13, iBlockU_);
+                .computeBoolSize(16, iBlockU_);
       }
       if (connected_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(14, connected_);
+                .computeBoolSize(17, connected_);
+      }
+      if (deleted_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBoolSize(18, deleted_);
       }
       memoizedSerializedSize = size;
       return size;
@@ -9990,7 +9574,7 @@ public final class ProtoMessage {
 
     /**
      * <pre>
-     *14
+     *13
      * </pre>
      *
      * Protobuf type {@code ChatItem}
@@ -10099,13 +9683,131 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional int64 unread = 6;</code>
+       * <pre>
+       *仅websocket端 返回
+       * </pre>
+       *
+       * <code>optional int64 show_msg_type = 6;</code>
+       */
+      public long getShowMsgType() {
+        return instance.getShowMsgType();
+      }
+      /**
+       * <pre>
+       *仅websocket端 返回
+       * </pre>
+       *
+       * <code>optional int64 show_msg_type = 6;</code>
+       */
+      public Builder setShowMsgType(long value) {
+        copyOnWrite();
+        instance.setShowMsgType(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *仅websocket端 返回
+       * </pre>
+       *
+       * <code>optional int64 show_msg_type = 6;</code>
+       */
+      public Builder clearShowMsgType() {
+        copyOnWrite();
+        instance.clearShowMsgType();
+        return this;
+      }
+
+      /**
+       * <pre>
+       *仅websocket端 返回
+       * </pre>
+       *
+       * <code>optional string show_msg = 7;</code>
+       */
+      public java.lang.String getShowMsg() {
+        return instance.getShowMsg();
+      }
+      /**
+       * <pre>
+       *仅websocket端 返回
+       * </pre>
+       *
+       * <code>optional string show_msg = 7;</code>
+       */
+      public com.google.protobuf.ByteString
+      getShowMsgBytes() {
+        return instance.getShowMsgBytes();
+      }
+      /**
+       * <pre>
+       *仅websocket端 返回
+       * </pre>
+       *
+       * <code>optional string show_msg = 7;</code>
+       */
+      public Builder setShowMsg(
+              java.lang.String value) {
+        copyOnWrite();
+        instance.setShowMsg(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *仅websocket端 返回
+       * </pre>
+       *
+       * <code>optional string show_msg = 7;</code>
+       */
+      public Builder clearShowMsg() {
+        copyOnWrite();
+        instance.clearShowMsg();
+        return this;
+      }
+      /**
+       * <pre>
+       *仅websocket端 返回
+       * </pre>
+       *
+       * <code>optional string show_msg = 7;</code>
+       */
+      public Builder setShowMsgBytes(
+              com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setShowMsgBytes(value);
+        return this;
+      }
+
+      /**
+       * <code>optional int64 show_msg_time = 8;</code>
+       */
+      public long getShowMsgTime() {
+        return instance.getShowMsgTime();
+      }
+      /**
+       * <code>optional int64 show_msg_time = 8;</code>
+       */
+      public Builder setShowMsgTime(long value) {
+        copyOnWrite();
+        instance.setShowMsgTime(value);
+        return this;
+      }
+      /**
+       * <code>optional int64 show_msg_time = 8;</code>
+       */
+      public Builder clearShowMsgTime() {
+        copyOnWrite();
+        instance.clearShowMsgTime();
+        return this;
+      }
+
+      /**
+       * <code>optional int64 unread = 9;</code>
        */
       public long getUnread() {
         return instance.getUnread();
       }
       /**
-       * <code>optional int64 unread = 6;</code>
+       * <code>optional int64 unread = 9;</code>
        */
       public Builder setUnread(long value) {
         copyOnWrite();
@@ -10113,7 +9815,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional int64 unread = 6;</code>
+       * <code>optional int64 unread = 9;</code>
        */
       public Builder clearUnread() {
         copyOnWrite();
@@ -10122,13 +9824,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool matched = 7;</code>
+       * <code>optional bool matched = 10;</code>
        */
       public boolean getMatched() {
         return instance.getMatched();
       }
       /**
-       * <code>optional bool matched = 7;</code>
+       * <code>optional bool matched = 10;</code>
        */
       public Builder setMatched(boolean value) {
         copyOnWrite();
@@ -10136,7 +9838,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool matched = 7;</code>
+       * <code>optional bool matched = 10;</code>
        */
       public Builder clearMatched() {
         copyOnWrite();
@@ -10145,13 +9847,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool new_msg = 8;</code>
+       * <code>optional bool new_msg = 11;</code>
        */
       public boolean getNewMsg() {
         return instance.getNewMsg();
       }
       /**
-       * <code>optional bool new_msg = 8;</code>
+       * <code>optional bool new_msg = 11;</code>
        */
       public Builder setNewMsg(boolean value) {
         copyOnWrite();
@@ -10159,7 +9861,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool new_msg = 8;</code>
+       * <code>optional bool new_msg = 11;</code>
        */
       public Builder clearNewMsg() {
         copyOnWrite();
@@ -10168,13 +9870,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool my_move = 9;</code>
+       * <code>optional bool my_move = 12;</code>
        */
       public boolean getMyMove() {
         return instance.getMyMove();
       }
       /**
-       * <code>optional bool my_move = 9;</code>
+       * <code>optional bool my_move = 12;</code>
        */
       public Builder setMyMove(boolean value) {
         copyOnWrite();
@@ -10182,7 +9884,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool my_move = 9;</code>
+       * <code>optional bool my_move = 12;</code>
        */
       public Builder clearMyMove() {
         copyOnWrite();
@@ -10191,13 +9893,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool ice_break = 10;</code>
+       * <code>optional bool ice_break = 13;</code>
        */
       public boolean getIceBreak() {
         return instance.getIceBreak();
       }
       /**
-       * <code>optional bool ice_break = 10;</code>
+       * <code>optional bool ice_break = 13;</code>
        */
       public Builder setIceBreak(boolean value) {
         copyOnWrite();
@@ -10205,7 +9907,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool ice_break = 10;</code>
+       * <code>optional bool ice_break = 13;</code>
        */
       public Builder clearIceBreak() {
         copyOnWrite();
@@ -10214,13 +9916,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool tip_free = 11;</code>
+       * <code>optional bool tip_free = 14;</code>
        */
       public boolean getTipFree() {
         return instance.getTipFree();
       }
       /**
-       * <code>optional bool tip_free = 11;</code>
+       * <code>optional bool tip_free = 14;</code>
        */
       public Builder setTipFree(boolean value) {
         copyOnWrite();
@@ -10228,7 +9930,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool tip_free = 11;</code>
+       * <code>optional bool tip_free = 14;</code>
        */
       public Builder clearTipFree() {
         copyOnWrite();
@@ -10237,13 +9939,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool top_album = 12;</code>
+       * <code>optional bool top_album = 15;</code>
        */
       public boolean getTopAlbum() {
         return instance.getTopAlbum();
       }
       /**
-       * <code>optional bool top_album = 12;</code>
+       * <code>optional bool top_album = 15;</code>
        */
       public Builder setTopAlbum(boolean value) {
         copyOnWrite();
@@ -10251,7 +9953,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool top_album = 12;</code>
+       * <code>optional bool top_album = 15;</code>
        */
       public Builder clearTopAlbum() {
         copyOnWrite();
@@ -10260,13 +9962,13 @@ public final class ProtoMessage {
       }
 
       /**
-       * <code>optional bool i_block_u = 13;</code>
+       * <code>optional bool i_block_u = 16;</code>
        */
       public boolean getIBlockU() {
         return instance.getIBlockU();
       }
       /**
-       * <code>optional bool i_block_u = 13;</code>
+       * <code>optional bool i_block_u = 16;</code>
        */
       public Builder setIBlockU(boolean value) {
         copyOnWrite();
@@ -10274,7 +9976,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional bool i_block_u = 13;</code>
+       * <code>optional bool i_block_u = 16;</code>
        */
       public Builder clearIBlockU() {
         copyOnWrite();
@@ -10287,7 +9989,7 @@ public final class ProtoMessage {
        *双方互发过消息了
        * </pre>
        *
-       * <code>optional bool connected = 14;</code>
+       * <code>optional bool connected = 17;</code>
        */
       public boolean getConnected() {
         return instance.getConnected();
@@ -10297,7 +9999,7 @@ public final class ProtoMessage {
        *双方互发过消息了
        * </pre>
        *
-       * <code>optional bool connected = 14;</code>
+       * <code>optional bool connected = 17;</code>
        */
       public Builder setConnected(boolean value) {
         copyOnWrite();
@@ -10309,11 +10011,46 @@ public final class ProtoMessage {
        *双方互发过消息了
        * </pre>
        *
-       * <code>optional bool connected = 14;</code>
+       * <code>optional bool connected = 17;</code>
        */
       public Builder clearConnected() {
         copyOnWrite();
         instance.clearConnected();
+        return this;
+      }
+
+      /**
+       * <pre>
+       *该会话已删除
+       * </pre>
+       *
+       * <code>optional bool deleted = 18;</code>
+       */
+      public boolean getDeleted() {
+        return instance.getDeleted();
+      }
+      /**
+       * <pre>
+       *该会话已删除
+       * </pre>
+       *
+       * <code>optional bool deleted = 18;</code>
+       */
+      public Builder setDeleted(boolean value) {
+        copyOnWrite();
+        instance.setDeleted(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *该会话已删除
+       * </pre>
+       *
+       * <code>optional bool deleted = 18;</code>
+       */
+      public Builder clearDeleted() {
+        copyOnWrite();
+        instance.clearDeleted();
         return this;
       }
 
@@ -10346,6 +10083,12 @@ public final class ProtoMessage {
                   other.msgLastRead_ != 0L, other.msgLastRead_);
           showMsgId_ = visitor.visitLong(showMsgId_ != 0L, showMsgId_,
                   other.showMsgId_ != 0L, other.showMsgId_);
+          showMsgType_ = visitor.visitLong(showMsgType_ != 0L, showMsgType_,
+                  other.showMsgType_ != 0L, other.showMsgType_);
+          showMsg_ = visitor.visitString(!showMsg_.isEmpty(), showMsg_,
+                  !other.showMsg_.isEmpty(), other.showMsg_);
+          showMsgTime_ = visitor.visitLong(showMsgTime_ != 0L, showMsgTime_,
+                  other.showMsgTime_ != 0L, other.showMsgTime_);
           unread_ = visitor.visitLong(unread_ != 0L, unread_,
                   other.unread_ != 0L, other.unread_);
           matched_ = visitor.visitBoolean(matched_ != false, matched_,
@@ -10364,6 +10107,8 @@ public final class ProtoMessage {
                   other.iBlockU_ != false, other.iBlockU_);
           connected_ = visitor.visitBoolean(connected_ != false, connected_,
                   other.connected_ != false, other.connected_);
+          deleted_ = visitor.visitBoolean(deleted_ != false, deleted_,
+                  other.deleted_ != false, other.deleted_);
           if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
                   .INSTANCE) {
           }
@@ -10410,47 +10155,68 @@ public final class ProtoMessage {
                 }
                 case 48: {
 
-                  unread_ = input.readInt64();
+                  showMsgType_ = input.readInt64();
                   break;
                 }
-                case 56: {
+                case 58: {
+                  String s = input.readStringRequireUtf8();
 
-                  matched_ = input.readBool();
+                  showMsg_ = s;
                   break;
                 }
                 case 64: {
 
-                  newMsg_ = input.readBool();
+                  showMsgTime_ = input.readInt64();
                   break;
                 }
                 case 72: {
 
-                  myMove_ = input.readBool();
+                  unread_ = input.readInt64();
                   break;
                 }
                 case 80: {
 
-                  iceBreak_ = input.readBool();
+                  matched_ = input.readBool();
                   break;
                 }
                 case 88: {
 
-                  tipFree_ = input.readBool();
+                  newMsg_ = input.readBool();
                   break;
                 }
                 case 96: {
 
-                  topAlbum_ = input.readBool();
+                  myMove_ = input.readBool();
                   break;
                 }
                 case 104: {
 
-                  iBlockU_ = input.readBool();
+                  iceBreak_ = input.readBool();
                   break;
                 }
                 case 112: {
 
+                  tipFree_ = input.readBool();
+                  break;
+                }
+                case 120: {
+
+                  topAlbum_ = input.readBool();
+                  break;
+                }
+                case 128: {
+
+                  iBlockU_ = input.readBool();
+                  break;
+                }
+                case 136: {
+
                   connected_ = input.readBool();
+                  break;
+                }
+                case 144: {
+
+                  deleted_ = input.readBool();
                   break;
                 }
               }
@@ -10499,32 +10265,834 @@ public final class ProtoMessage {
     }
   }
 
+  public interface ChatItemUpdateOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:ChatItemUpdate)
+          com.google.protobuf.MessageLiteOrBuilder {
+
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    long getSign();
+
+    /**
+     * <pre>
+     *变动的哪个uid
+     * </pre>
+     *
+     * <code>optional int64 uid = 2;</code>
+     */
+    long getUid();
+
+    /**
+     * <pre>
+     * 0 msg_last_read 变动    1 unread 数变动    2 i_block_u 变动   3 deleted 变动
+     * </pre>
+     *
+     * <code>optional int64 event = 3;</code>
+     */
+    long getEvent();
+
+    /**
+     * <code>optional int64 update_time = 4;</code>
+     */
+    long getUpdateTime();
+
+    /**
+     * <code>optional int64 msg_last_read = 5;</code>
+     */
+    long getMsgLastRead();
+
+    /**
+     * <code>optional int64 unread = 6;</code>
+     */
+    long getUnread();
+
+    /**
+     * <code>optional bool i_block_u = 7;</code>
+     */
+    boolean getIBlockU();
+
+    /**
+     * <code>optional bool deleted = 8;</code>
+     */
+    boolean getDeleted();
+  }
+  /**
+   * <pre>
+   *14
+   * </pre>
+   *
+   * Protobuf type {@code ChatItemUpdate}
+   */
+  public  static final class ChatItemUpdate extends
+          com.google.protobuf.GeneratedMessageLite<
+                  ChatItemUpdate, ChatItemUpdate.Builder> implements
+          // @@protoc_insertion_point(message_implements:ChatItemUpdate)
+          ChatItemUpdateOrBuilder {
+    private ChatItemUpdate() {
+    }
+    public static final int SIGN_FIELD_NUMBER = 1;
+    private long sign_;
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    public long getSign() {
+      return sign_;
+    }
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    private void setSign(long value) {
+
+      sign_ = value;
+    }
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    private void clearSign() {
+
+      sign_ = 0L;
+    }
+
+    public static final int UID_FIELD_NUMBER = 2;
+    private long uid_;
+    /**
+     * <pre>
+     *变动的哪个uid
+     * </pre>
+     *
+     * <code>optional int64 uid = 2;</code>
+     */
+    public long getUid() {
+      return uid_;
+    }
+    /**
+     * <pre>
+     *变动的哪个uid
+     * </pre>
+     *
+     * <code>optional int64 uid = 2;</code>
+     */
+    private void setUid(long value) {
+
+      uid_ = value;
+    }
+    /**
+     * <pre>
+     *变动的哪个uid
+     * </pre>
+     *
+     * <code>optional int64 uid = 2;</code>
+     */
+    private void clearUid() {
+
+      uid_ = 0L;
+    }
+
+    public static final int EVENT_FIELD_NUMBER = 3;
+    private long event_;
+    /**
+     * <pre>
+     * 0 msg_last_read 变动    1 unread 数变动    2 i_block_u 变动   3 deleted 变动
+     * </pre>
+     *
+     * <code>optional int64 event = 3;</code>
+     */
+    public long getEvent() {
+      return event_;
+    }
+    /**
+     * <pre>
+     * 0 msg_last_read 变动    1 unread 数变动    2 i_block_u 变动   3 deleted 变动
+     * </pre>
+     *
+     * <code>optional int64 event = 3;</code>
+     */
+    private void setEvent(long value) {
+
+      event_ = value;
+    }
+    /**
+     * <pre>
+     * 0 msg_last_read 变动    1 unread 数变动    2 i_block_u 变动   3 deleted 变动
+     * </pre>
+     *
+     * <code>optional int64 event = 3;</code>
+     */
+    private void clearEvent() {
+
+      event_ = 0L;
+    }
+
+    public static final int UPDATE_TIME_FIELD_NUMBER = 4;
+    private long updateTime_;
+    /**
+     * <code>optional int64 update_time = 4;</code>
+     */
+    public long getUpdateTime() {
+      return updateTime_;
+    }
+    /**
+     * <code>optional int64 update_time = 4;</code>
+     */
+    private void setUpdateTime(long value) {
+
+      updateTime_ = value;
+    }
+    /**
+     * <code>optional int64 update_time = 4;</code>
+     */
+    private void clearUpdateTime() {
+
+      updateTime_ = 0L;
+    }
+
+    public static final int MSG_LAST_READ_FIELD_NUMBER = 5;
+    private long msgLastRead_;
+    /**
+     * <code>optional int64 msg_last_read = 5;</code>
+     */
+    public long getMsgLastRead() {
+      return msgLastRead_;
+    }
+    /**
+     * <code>optional int64 msg_last_read = 5;</code>
+     */
+    private void setMsgLastRead(long value) {
+
+      msgLastRead_ = value;
+    }
+    /**
+     * <code>optional int64 msg_last_read = 5;</code>
+     */
+    private void clearMsgLastRead() {
+
+      msgLastRead_ = 0L;
+    }
+
+    public static final int UNREAD_FIELD_NUMBER = 6;
+    private long unread_;
+    /**
+     * <code>optional int64 unread = 6;</code>
+     */
+    public long getUnread() {
+      return unread_;
+    }
+    /**
+     * <code>optional int64 unread = 6;</code>
+     */
+    private void setUnread(long value) {
+
+      unread_ = value;
+    }
+    /**
+     * <code>optional int64 unread = 6;</code>
+     */
+    private void clearUnread() {
+
+      unread_ = 0L;
+    }
+
+    public static final int I_BLOCK_U_FIELD_NUMBER = 7;
+    private boolean iBlockU_;
+    /**
+     * <code>optional bool i_block_u = 7;</code>
+     */
+    public boolean getIBlockU() {
+      return iBlockU_;
+    }
+    /**
+     * <code>optional bool i_block_u = 7;</code>
+     */
+    private void setIBlockU(boolean value) {
+
+      iBlockU_ = value;
+    }
+    /**
+     * <code>optional bool i_block_u = 7;</code>
+     */
+    private void clearIBlockU() {
+
+      iBlockU_ = false;
+    }
+
+    public static final int DELETED_FIELD_NUMBER = 8;
+    private boolean deleted_;
+    /**
+     * <code>optional bool deleted = 8;</code>
+     */
+    public boolean getDeleted() {
+      return deleted_;
+    }
+    /**
+     * <code>optional bool deleted = 8;</code>
+     */
+    private void setDeleted(boolean value) {
+
+      deleted_ = value;
+    }
+    /**
+     * <code>optional bool deleted = 8;</code>
+     */
+    private void clearDeleted() {
+
+      deleted_ = false;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (sign_ != 0L) {
+        output.writeInt64(1, sign_);
+      }
+      if (uid_ != 0L) {
+        output.writeInt64(2, uid_);
+      }
+      if (event_ != 0L) {
+        output.writeInt64(3, event_);
+      }
+      if (updateTime_ != 0L) {
+        output.writeInt64(4, updateTime_);
+      }
+      if (msgLastRead_ != 0L) {
+        output.writeInt64(5, msgLastRead_);
+      }
+      if (unread_ != 0L) {
+        output.writeInt64(6, unread_);
+      }
+      if (iBlockU_ != false) {
+        output.writeBool(7, iBlockU_);
+      }
+      if (deleted_ != false) {
+        output.writeBool(8, deleted_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (sign_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(1, sign_);
+      }
+      if (uid_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(2, uid_);
+      }
+      if (event_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(3, event_);
+      }
+      if (updateTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(4, updateTime_);
+      }
+      if (msgLastRead_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(5, msgLastRead_);
+      }
+      if (unread_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(6, unread_);
+      }
+      if (iBlockU_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBoolSize(7, iBlockU_);
+      }
+      if (deleted_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBoolSize(8, deleted_);
+      }
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, data);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, data);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, input);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, input);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    /**
+     * <pre>
+     *14
+     * </pre>
+     *
+     * Protobuf type {@code ChatItemUpdate}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageLite.Builder<
+                    com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate, Builder> implements
+            // @@protoc_insertion_point(builder_implements:ChatItemUpdate)
+            com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdateOrBuilder {
+      // Construct using com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate.newBuilder()
+      private Builder() {
+        super(DEFAULT_INSTANCE);
+      }
+
+
+      /**
+       * <code>optional int64 sign = 1;</code>
+       */
+      public long getSign() {
+        return instance.getSign();
+      }
+      /**
+       * <code>optional int64 sign = 1;</code>
+       */
+      public Builder setSign(long value) {
+        copyOnWrite();
+        instance.setSign(value);
+        return this;
+      }
+      /**
+       * <code>optional int64 sign = 1;</code>
+       */
+      public Builder clearSign() {
+        copyOnWrite();
+        instance.clearSign();
+        return this;
+      }
+
+      /**
+       * <pre>
+       *变动的哪个uid
+       * </pre>
+       *
+       * <code>optional int64 uid = 2;</code>
+       */
+      public long getUid() {
+        return instance.getUid();
+      }
+      /**
+       * <pre>
+       *变动的哪个uid
+       * </pre>
+       *
+       * <code>optional int64 uid = 2;</code>
+       */
+      public Builder setUid(long value) {
+        copyOnWrite();
+        instance.setUid(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *变动的哪个uid
+       * </pre>
+       *
+       * <code>optional int64 uid = 2;</code>
+       */
+      public Builder clearUid() {
+        copyOnWrite();
+        instance.clearUid();
+        return this;
+      }
+
+      /**
+       * <pre>
+       * 0 msg_last_read 变动    1 unread 数变动    2 i_block_u 变动   3 deleted 变动
+       * </pre>
+       *
+       * <code>optional int64 event = 3;</code>
+       */
+      public long getEvent() {
+        return instance.getEvent();
+      }
+      /**
+       * <pre>
+       * 0 msg_last_read 变动    1 unread 数变动    2 i_block_u 变动   3 deleted 变动
+       * </pre>
+       *
+       * <code>optional int64 event = 3;</code>
+       */
+      public Builder setEvent(long value) {
+        copyOnWrite();
+        instance.setEvent(value);
+        return this;
+      }
+      /**
+       * <pre>
+       * 0 msg_last_read 变动    1 unread 数变动    2 i_block_u 变动   3 deleted 变动
+       * </pre>
+       *
+       * <code>optional int64 event = 3;</code>
+       */
+      public Builder clearEvent() {
+        copyOnWrite();
+        instance.clearEvent();
+        return this;
+      }
+
+      /**
+       * <code>optional int64 update_time = 4;</code>
+       */
+      public long getUpdateTime() {
+        return instance.getUpdateTime();
+      }
+      /**
+       * <code>optional int64 update_time = 4;</code>
+       */
+      public Builder setUpdateTime(long value) {
+        copyOnWrite();
+        instance.setUpdateTime(value);
+        return this;
+      }
+      /**
+       * <code>optional int64 update_time = 4;</code>
+       */
+      public Builder clearUpdateTime() {
+        copyOnWrite();
+        instance.clearUpdateTime();
+        return this;
+      }
+
+      /**
+       * <code>optional int64 msg_last_read = 5;</code>
+       */
+      public long getMsgLastRead() {
+        return instance.getMsgLastRead();
+      }
+      /**
+       * <code>optional int64 msg_last_read = 5;</code>
+       */
+      public Builder setMsgLastRead(long value) {
+        copyOnWrite();
+        instance.setMsgLastRead(value);
+        return this;
+      }
+      /**
+       * <code>optional int64 msg_last_read = 5;</code>
+       */
+      public Builder clearMsgLastRead() {
+        copyOnWrite();
+        instance.clearMsgLastRead();
+        return this;
+      }
+
+      /**
+       * <code>optional int64 unread = 6;</code>
+       */
+      public long getUnread() {
+        return instance.getUnread();
+      }
+      /**
+       * <code>optional int64 unread = 6;</code>
+       */
+      public Builder setUnread(long value) {
+        copyOnWrite();
+        instance.setUnread(value);
+        return this;
+      }
+      /**
+       * <code>optional int64 unread = 6;</code>
+       */
+      public Builder clearUnread() {
+        copyOnWrite();
+        instance.clearUnread();
+        return this;
+      }
+
+      /**
+       * <code>optional bool i_block_u = 7;</code>
+       */
+      public boolean getIBlockU() {
+        return instance.getIBlockU();
+      }
+      /**
+       * <code>optional bool i_block_u = 7;</code>
+       */
+      public Builder setIBlockU(boolean value) {
+        copyOnWrite();
+        instance.setIBlockU(value);
+        return this;
+      }
+      /**
+       * <code>optional bool i_block_u = 7;</code>
+       */
+      public Builder clearIBlockU() {
+        copyOnWrite();
+        instance.clearIBlockU();
+        return this;
+      }
+
+      /**
+       * <code>optional bool deleted = 8;</code>
+       */
+      public boolean getDeleted() {
+        return instance.getDeleted();
+      }
+      /**
+       * <code>optional bool deleted = 8;</code>
+       */
+      public Builder setDeleted(boolean value) {
+        copyOnWrite();
+        instance.setDeleted(value);
+        return this;
+      }
+      /**
+       * <code>optional bool deleted = 8;</code>
+       */
+      public Builder clearDeleted() {
+        copyOnWrite();
+        instance.clearDeleted();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:ChatItemUpdate)
+    }
+    protected final Object dynamicMethod(
+            com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
+            Object arg0, Object arg1) {
+      switch (method) {
+        case NEW_MUTABLE_INSTANCE: {
+          return new com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate();
+        }
+        case IS_INITIALIZED: {
+          return DEFAULT_INSTANCE;
+        }
+        case MAKE_IMMUTABLE: {
+          return null;
+        }
+        case NEW_BUILDER: {
+          return new Builder();
+        }
+        case VISIT: {
+          Visitor visitor = (Visitor) arg0;
+          com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate other = (com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate) arg1;
+          sign_ = visitor.visitLong(sign_ != 0L, sign_,
+                  other.sign_ != 0L, other.sign_);
+          uid_ = visitor.visitLong(uid_ != 0L, uid_,
+                  other.uid_ != 0L, other.uid_);
+          event_ = visitor.visitLong(event_ != 0L, event_,
+                  other.event_ != 0L, other.event_);
+          updateTime_ = visitor.visitLong(updateTime_ != 0L, updateTime_,
+                  other.updateTime_ != 0L, other.updateTime_);
+          msgLastRead_ = visitor.visitLong(msgLastRead_ != 0L, msgLastRead_,
+                  other.msgLastRead_ != 0L, other.msgLastRead_);
+          unread_ = visitor.visitLong(unread_ != 0L, unread_,
+                  other.unread_ != 0L, other.unread_);
+          iBlockU_ = visitor.visitBoolean(iBlockU_ != false, iBlockU_,
+                  other.iBlockU_ != false, other.iBlockU_);
+          deleted_ = visitor.visitBoolean(deleted_ != false, deleted_,
+                  other.deleted_ != false, other.deleted_);
+          if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
+                  .INSTANCE) {
+          }
+          return this;
+        }
+        case MERGE_FROM_STREAM: {
+          com.google.protobuf.CodedInputStream input =
+                  (com.google.protobuf.CodedInputStream) arg0;
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry =
+                  (com.google.protobuf.ExtensionRegistryLite) arg1;
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                default: {
+                  if (!input.skipField(tag)) {
+                    done = true;
+                  }
+                  break;
+                }
+                case 8: {
+
+                  sign_ = input.readInt64();
+                  break;
+                }
+                case 16: {
+
+                  uid_ = input.readInt64();
+                  break;
+                }
+                case 24: {
+
+                  event_ = input.readInt64();
+                  break;
+                }
+                case 32: {
+
+                  updateTime_ = input.readInt64();
+                  break;
+                }
+                case 40: {
+
+                  msgLastRead_ = input.readInt64();
+                  break;
+                }
+                case 48: {
+
+                  unread_ = input.readInt64();
+                  break;
+                }
+                case 56: {
+
+                  iBlockU_ = input.readBool();
+                  break;
+                }
+                case 64: {
+
+                  deleted_ = input.readBool();
+                  break;
+                }
+              }
+            }
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw new RuntimeException(e.setUnfinishedMessage(this));
+          } catch (java.io.IOException e) {
+            throw new RuntimeException(
+                    new com.google.protobuf.InvalidProtocolBufferException(
+                            e.getMessage()).setUnfinishedMessage(this));
+          } finally {
+          }
+        }
+        case GET_DEFAULT_INSTANCE: {
+          return DEFAULT_INSTANCE;
+        }
+        case GET_PARSER: {
+          if (PARSER == null) {    synchronized (com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate.class) {
+            if (PARSER == null) {
+              PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
+            }
+          }
+          }
+          return PARSER;
+        }
+      }
+      throw new UnsupportedOperationException();
+    }
+
+
+    // @@protoc_insertion_point(class_scope:ChatItemUpdate)
+    private static final com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new ChatItemUpdate();
+      DEFAULT_INSTANCE.makeImmutable();
+    }
+
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemUpdate getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static volatile com.google.protobuf.Parser<ChatItemUpdate> PARSER;
+
+    public static com.google.protobuf.Parser<ChatItemUpdate> parser() {
+      return DEFAULT_INSTANCE.getParserForType();
+    }
+  }
+
   public interface ChatListOrBuilder extends
           // @@protoc_insertion_point(interface_extends:ChatList)
           com.google.protobuf.MessageLiteOrBuilder {
 
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <pre>
+     *websocket 会返回该值
+     * </pre>
+     *
+     * <code>optional int64 sign = 1;</code>
+     */
+    long getSign();
+
+    /**
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     java.util.List<com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem>
     getChatItemsList();
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem getChatItems(int index);
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     int getChatItemsCount();
 
     /**
      * <pre>
-     *有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
+     *app会返回，有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
      * </pre>
      *
-     * <code>optional int64 update_time = 2;</code>
+     * <code>optional int64 update_time = 3;</code>
      */
     long getUpdateTime();
+
+    /**
+     * <pre>
+     *websocket 会返回该值，说明还有下一页
+     * </pre>
+     *
+     * <code>optional bool has_more = 4;</code>
+     */
+    boolean getHasMore();
   }
   /**
    * <pre>
@@ -10542,35 +11110,70 @@ public final class ProtoMessage {
       chatItems_ = emptyProtobufList();
     }
     private int bitField0_;
-    public static final int CHAT_ITEMS_FIELD_NUMBER = 1;
+    public static final int SIGN_FIELD_NUMBER = 1;
+    private long sign_;
+    /**
+     * <pre>
+     *websocket 会返回该值
+     * </pre>
+     *
+     * <code>optional int64 sign = 1;</code>
+     */
+    public long getSign() {
+      return sign_;
+    }
+    /**
+     * <pre>
+     *websocket 会返回该值
+     * </pre>
+     *
+     * <code>optional int64 sign = 1;</code>
+     */
+    private void setSign(long value) {
+
+      sign_ = value;
+    }
+    /**
+     * <pre>
+     *websocket 会返回该值
+     * </pre>
+     *
+     * <code>optional int64 sign = 1;</code>
+     */
+    private void clearSign() {
+
+      sign_ = 0L;
+    }
+
+    public static final int CHAT_ITEMS_FIELD_NUMBER = 2;
     private com.google.protobuf.Internal.ProtobufList<com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem> chatItems_;
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     public java.util.List<com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem> getChatItemsList() {
       return chatItems_;
     }
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     public java.util.List<? extends com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemOrBuilder>
     getChatItemsOrBuilderList() {
       return chatItems_;
     }
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     public int getChatItemsCount() {
       return chatItems_.size();
     }
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     public com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem getChatItems(int index) {
       return chatItems_.get(index);
     }
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     public com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItemOrBuilder getChatItemsOrBuilder(
             int index) {
@@ -10584,7 +11187,7 @@ public final class ProtoMessage {
     }
 
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     private void setChatItems(
             int index, com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem value) {
@@ -10595,7 +11198,7 @@ public final class ProtoMessage {
       chatItems_.set(index, value);
     }
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     private void setChatItems(
             int index, com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem.Builder builderForValue) {
@@ -10603,7 +11206,7 @@ public final class ProtoMessage {
       chatItems_.set(index, builderForValue.build());
     }
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     private void addChatItems(com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem value) {
       if (value == null) {
@@ -10613,7 +11216,7 @@ public final class ProtoMessage {
       chatItems_.add(value);
     }
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     private void addChatItems(
             int index, com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem value) {
@@ -10624,7 +11227,7 @@ public final class ProtoMessage {
       chatItems_.add(index, value);
     }
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     private void addChatItems(
             com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem.Builder builderForValue) {
@@ -10632,7 +11235,7 @@ public final class ProtoMessage {
       chatItems_.add(builderForValue.build());
     }
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     private void addChatItems(
             int index, com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem.Builder builderForValue) {
@@ -10640,7 +11243,7 @@ public final class ProtoMessage {
       chatItems_.add(index, builderForValue.build());
     }
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     private void addAllChatItems(
             java.lang.Iterable<? extends com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem> values) {
@@ -10649,37 +11252,37 @@ public final class ProtoMessage {
               values, chatItems_);
     }
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     private void clearChatItems() {
       chatItems_ = emptyProtobufList();
     }
     /**
-     * <code>repeated .ChatItem chat_items = 1;</code>
+     * <code>repeated .ChatItem chat_items = 2;</code>
      */
     private void removeChatItems(int index) {
       ensureChatItemsIsMutable();
       chatItems_.remove(index);
     }
 
-    public static final int UPDATE_TIME_FIELD_NUMBER = 2;
+    public static final int UPDATE_TIME_FIELD_NUMBER = 3;
     private long updateTime_;
     /**
      * <pre>
-     *有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
+     *app会返回，有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
      * </pre>
      *
-     * <code>optional int64 update_time = 2;</code>
+     * <code>optional int64 update_time = 3;</code>
      */
     public long getUpdateTime() {
       return updateTime_;
     }
     /**
      * <pre>
-     *有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
+     *app会返回，有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
      * </pre>
      *
-     * <code>optional int64 update_time = 2;</code>
+     * <code>optional int64 update_time = 3;</code>
      */
     private void setUpdateTime(long value) {
 
@@ -10687,23 +11290,64 @@ public final class ProtoMessage {
     }
     /**
      * <pre>
-     *有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
+     *app会返回，有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
      * </pre>
      *
-     * <code>optional int64 update_time = 2;</code>
+     * <code>optional int64 update_time = 3;</code>
      */
     private void clearUpdateTime() {
 
       updateTime_ = 0L;
     }
 
+    public static final int HAS_MORE_FIELD_NUMBER = 4;
+    private boolean hasMore_;
+    /**
+     * <pre>
+     *websocket 会返回该值，说明还有下一页
+     * </pre>
+     *
+     * <code>optional bool has_more = 4;</code>
+     */
+    public boolean getHasMore() {
+      return hasMore_;
+    }
+    /**
+     * <pre>
+     *websocket 会返回该值，说明还有下一页
+     * </pre>
+     *
+     * <code>optional bool has_more = 4;</code>
+     */
+    private void setHasMore(boolean value) {
+
+      hasMore_ = value;
+    }
+    /**
+     * <pre>
+     *websocket 会返回该值，说明还有下一页
+     * </pre>
+     *
+     * <code>optional bool has_more = 4;</code>
+     */
+    private void clearHasMore() {
+
+      hasMore_ = false;
+    }
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
+      if (sign_ != 0L) {
+        output.writeInt64(1, sign_);
+      }
       for (int i = 0; i < chatItems_.size(); i++) {
-        output.writeMessage(1, chatItems_.get(i));
+        output.writeMessage(2, chatItems_.get(i));
       }
       if (updateTime_ != 0L) {
-        output.writeInt64(2, updateTime_);
+        output.writeInt64(3, updateTime_);
+      }
+      if (hasMore_ != false) {
+        output.writeBool(4, hasMore_);
       }
     }
 
@@ -10712,13 +11356,21 @@ public final class ProtoMessage {
       if (size != -1) return size;
 
       size = 0;
+      if (sign_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(1, sign_);
+      }
       for (int i = 0; i < chatItems_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-                .computeMessageSize(1, chatItems_.get(i));
+                .computeMessageSize(2, chatItems_.get(i));
       }
       if (updateTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(2, updateTime_);
+                .computeInt64Size(3, updateTime_);
+      }
+      if (hasMore_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBoolSize(4, hasMore_);
       }
       memoizedSerializedSize = size;
       return size;
@@ -10811,25 +11463,60 @@ public final class ProtoMessage {
 
 
       /**
-       * <code>repeated .ChatItem chat_items = 1;</code>
+       * <pre>
+       *websocket 会返回该值
+       * </pre>
+       *
+       * <code>optional int64 sign = 1;</code>
+       */
+      public long getSign() {
+        return instance.getSign();
+      }
+      /**
+       * <pre>
+       *websocket 会返回该值
+       * </pre>
+       *
+       * <code>optional int64 sign = 1;</code>
+       */
+      public Builder setSign(long value) {
+        copyOnWrite();
+        instance.setSign(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *websocket 会返回该值
+       * </pre>
+       *
+       * <code>optional int64 sign = 1;</code>
+       */
+      public Builder clearSign() {
+        copyOnWrite();
+        instance.clearSign();
+        return this;
+      }
+
+      /**
+       * <code>repeated .ChatItem chat_items = 2;</code>
        */
       public java.util.List<com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem> getChatItemsList() {
         return java.util.Collections.unmodifiableList(
                 instance.getChatItemsList());
       }
       /**
-       * <code>repeated .ChatItem chat_items = 1;</code>
+       * <code>repeated .ChatItem chat_items = 2;</code>
        */
       public int getChatItemsCount() {
         return instance.getChatItemsCount();
       }/**
-       * <code>repeated .ChatItem chat_items = 1;</code>
+       * <code>repeated .ChatItem chat_items = 2;</code>
        */
       public com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem getChatItems(int index) {
         return instance.getChatItems(index);
       }
       /**
-       * <code>repeated .ChatItem chat_items = 1;</code>
+       * <code>repeated .ChatItem chat_items = 2;</code>
        */
       public Builder setChatItems(
               int index, com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem value) {
@@ -10838,7 +11525,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>repeated .ChatItem chat_items = 1;</code>
+       * <code>repeated .ChatItem chat_items = 2;</code>
        */
       public Builder setChatItems(
               int index, com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem.Builder builderForValue) {
@@ -10847,7 +11534,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>repeated .ChatItem chat_items = 1;</code>
+       * <code>repeated .ChatItem chat_items = 2;</code>
        */
       public Builder addChatItems(com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem value) {
         copyOnWrite();
@@ -10855,7 +11542,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>repeated .ChatItem chat_items = 1;</code>
+       * <code>repeated .ChatItem chat_items = 2;</code>
        */
       public Builder addChatItems(
               int index, com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem value) {
@@ -10864,7 +11551,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>repeated .ChatItem chat_items = 1;</code>
+       * <code>repeated .ChatItem chat_items = 2;</code>
        */
       public Builder addChatItems(
               com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem.Builder builderForValue) {
@@ -10873,7 +11560,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>repeated .ChatItem chat_items = 1;</code>
+       * <code>repeated .ChatItem chat_items = 2;</code>
        */
       public Builder addChatItems(
               int index, com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem.Builder builderForValue) {
@@ -10882,7 +11569,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>repeated .ChatItem chat_items = 1;</code>
+       * <code>repeated .ChatItem chat_items = 2;</code>
        */
       public Builder addAllChatItems(
               java.lang.Iterable<? extends com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem> values) {
@@ -10891,7 +11578,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>repeated .ChatItem chat_items = 1;</code>
+       * <code>repeated .ChatItem chat_items = 2;</code>
        */
       public Builder clearChatItems() {
         copyOnWrite();
@@ -10899,7 +11586,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>repeated .ChatItem chat_items = 1;</code>
+       * <code>repeated .ChatItem chat_items = 2;</code>
        */
       public Builder removeChatItems(int index) {
         copyOnWrite();
@@ -10909,20 +11596,20 @@ public final class ProtoMessage {
 
       /**
        * <pre>
-       *有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
+       *app会返回，有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
        * </pre>
        *
-       * <code>optional int64 update_time = 2;</code>
+       * <code>optional int64 update_time = 3;</code>
        */
       public long getUpdateTime() {
         return instance.getUpdateTime();
       }
       /**
        * <pre>
-       *有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
+       *app会返回，有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
        * </pre>
        *
-       * <code>optional int64 update_time = 2;</code>
+       * <code>optional int64 update_time = 3;</code>
        */
       public Builder setUpdateTime(long value) {
         copyOnWrite();
@@ -10931,14 +11618,49 @@ public final class ProtoMessage {
       }
       /**
        * <pre>
-       *有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
+       *app会返回，有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
        * </pre>
        *
-       * <code>optional int64 update_time = 2;</code>
+       * <code>optional int64 update_time = 3;</code>
        */
       public Builder clearUpdateTime() {
         copyOnWrite();
         instance.clearUpdateTime();
+        return this;
+      }
+
+      /**
+       * <pre>
+       *websocket 会返回该值，说明还有下一页
+       * </pre>
+       *
+       * <code>optional bool has_more = 4;</code>
+       */
+      public boolean getHasMore() {
+        return instance.getHasMore();
+      }
+      /**
+       * <pre>
+       *websocket 会返回该值，说明还有下一页
+       * </pre>
+       *
+       * <code>optional bool has_more = 4;</code>
+       */
+      public Builder setHasMore(boolean value) {
+        copyOnWrite();
+        instance.setHasMore(value);
+        return this;
+      }
+      /**
+       * <pre>
+       *websocket 会返回该值，说明还有下一页
+       * </pre>
+       *
+       * <code>optional bool has_more = 4;</code>
+       */
+      public Builder clearHasMore() {
+        copyOnWrite();
+        instance.clearHasMore();
         return this;
       }
 
@@ -10964,9 +11686,13 @@ public final class ProtoMessage {
         case VISIT: {
           Visitor visitor = (Visitor) arg0;
           com.masonsoft.imsdk.core.proto.ProtoMessage.ChatList other = (com.masonsoft.imsdk.core.proto.ProtoMessage.ChatList) arg1;
+          sign_ = visitor.visitLong(sign_ != 0L, sign_,
+                  other.sign_ != 0L, other.sign_);
           chatItems_= visitor.visitList(chatItems_, other.chatItems_);
           updateTime_ = visitor.visitLong(updateTime_ != 0L, updateTime_,
                   other.updateTime_ != 0L, other.updateTime_);
+          hasMore_ = visitor.visitBoolean(hasMore_ != false, hasMore_,
+                  other.hasMore_ != false, other.hasMore_);
           if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
                   .INSTANCE) {
             bitField0_ |= other.bitField0_;
@@ -10992,7 +11718,12 @@ public final class ProtoMessage {
                   }
                   break;
                 }
-                case 10: {
+                case 8: {
+
+                  sign_ = input.readInt64();
+                  break;
+                }
+                case 18: {
                   if (!chatItems_.isModifiable()) {
                     chatItems_ =
                             com.google.protobuf.GeneratedMessageLite.mutableCopy(chatItems_);
@@ -11001,9 +11732,14 @@ public final class ProtoMessage {
                           input.readMessage(com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem.parser(), extensionRegistry));
                   break;
                 }
-                case 16: {
+                case 24: {
 
                   updateTime_ = input.readInt64();
+                  break;
+                }
+                case 32: {
+
+                  hasMore_ = input.readBool();
                   break;
                 }
               }
@@ -13331,608 +14067,6 @@ public final class ProtoMessage {
     private static volatile com.google.protobuf.Parser<ProfileList> PARSER;
 
     public static com.google.protobuf.Parser<ProfileList> parser() {
-      return DEFAULT_INSTANCE.getParserForType();
-    }
-  }
-
-  public interface BlockUOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:BlockU)
-          com.google.protobuf.MessageLiteOrBuilder {
-
-    /**
-     * <pre>
-     *block谁
-     * </pre>
-     *
-     * <code>optional int64 to_uid = 1;</code>
-     */
-    long getToUid();
-  }
-  /**
-   * <pre>
-   *20
-   * </pre>
-   *
-   * Protobuf type {@code BlockU}
-   */
-  public  static final class BlockU extends
-          com.google.protobuf.GeneratedMessageLite<
-                  BlockU, BlockU.Builder> implements
-          // @@protoc_insertion_point(message_implements:BlockU)
-          BlockUOrBuilder {
-    private BlockU() {
-    }
-    public static final int TO_UID_FIELD_NUMBER = 1;
-    private long toUid_;
-    /**
-     * <pre>
-     *block谁
-     * </pre>
-     *
-     * <code>optional int64 to_uid = 1;</code>
-     */
-    public long getToUid() {
-      return toUid_;
-    }
-    /**
-     * <pre>
-     *block谁
-     * </pre>
-     *
-     * <code>optional int64 to_uid = 1;</code>
-     */
-    private void setToUid(long value) {
-
-      toUid_ = value;
-    }
-    /**
-     * <pre>
-     *block谁
-     * </pre>
-     *
-     * <code>optional int64 to_uid = 1;</code>
-     */
-    private void clearToUid() {
-
-      toUid_ = 0L;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-      if (toUid_ != 0L) {
-        output.writeInt64(1, toUid_);
-      }
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (toUid_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, toUid_);
-      }
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, data);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, data, extensionRegistry);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, data);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, data, extensionRegistry);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, input);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, input, extensionRegistry);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
-      return parseDelimitedFrom(DEFAULT_INSTANCE, input);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-      return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, input);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    /**
-     * <pre>
-     *20
-     * </pre>
-     *
-     * Protobuf type {@code BlockU}
-     */
-    public static final class Builder extends
-            com.google.protobuf.GeneratedMessageLite.Builder<
-                    com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU, Builder> implements
-            // @@protoc_insertion_point(builder_implements:BlockU)
-            com.masonsoft.imsdk.core.proto.ProtoMessage.BlockUOrBuilder {
-      // Construct using com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU.newBuilder()
-      private Builder() {
-        super(DEFAULT_INSTANCE);
-      }
-
-
-      /**
-       * <pre>
-       *block谁
-       * </pre>
-       *
-       * <code>optional int64 to_uid = 1;</code>
-       */
-      public long getToUid() {
-        return instance.getToUid();
-      }
-      /**
-       * <pre>
-       *block谁
-       * </pre>
-       *
-       * <code>optional int64 to_uid = 1;</code>
-       */
-      public Builder setToUid(long value) {
-        copyOnWrite();
-        instance.setToUid(value);
-        return this;
-      }
-      /**
-       * <pre>
-       *block谁
-       * </pre>
-       *
-       * <code>optional int64 to_uid = 1;</code>
-       */
-      public Builder clearToUid() {
-        copyOnWrite();
-        instance.clearToUid();
-        return this;
-      }
-
-      // @@protoc_insertion_point(builder_scope:BlockU)
-    }
-    protected final Object dynamicMethod(
-            com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
-            Object arg0, Object arg1) {
-      switch (method) {
-        case NEW_MUTABLE_INSTANCE: {
-          return new com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU();
-        }
-        case IS_INITIALIZED: {
-          return DEFAULT_INSTANCE;
-        }
-        case MAKE_IMMUTABLE: {
-          return null;
-        }
-        case NEW_BUILDER: {
-          return new Builder();
-        }
-        case VISIT: {
-          Visitor visitor = (Visitor) arg0;
-          com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU other = (com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU) arg1;
-          toUid_ = visitor.visitLong(toUid_ != 0L, toUid_,
-                  other.toUid_ != 0L, other.toUid_);
-          if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
-                  .INSTANCE) {
-          }
-          return this;
-        }
-        case MERGE_FROM_STREAM: {
-          com.google.protobuf.CodedInputStream input =
-                  (com.google.protobuf.CodedInputStream) arg0;
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry =
-                  (com.google.protobuf.ExtensionRegistryLite) arg1;
-          try {
-            boolean done = false;
-            while (!done) {
-              int tag = input.readTag();
-              switch (tag) {
-                case 0:
-                  done = true;
-                  break;
-                default: {
-                  if (!input.skipField(tag)) {
-                    done = true;
-                  }
-                  break;
-                }
-                case 8: {
-
-                  toUid_ = input.readInt64();
-                  break;
-                }
-              }
-            }
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw new RuntimeException(e.setUnfinishedMessage(this));
-          } catch (java.io.IOException e) {
-            throw new RuntimeException(
-                    new com.google.protobuf.InvalidProtocolBufferException(
-                            e.getMessage()).setUnfinishedMessage(this));
-          } finally {
-          }
-        }
-        case GET_DEFAULT_INSTANCE: {
-          return DEFAULT_INSTANCE;
-        }
-        case GET_PARSER: {
-          if (PARSER == null) {    synchronized (com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU.class) {
-            if (PARSER == null) {
-              PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
-            }
-          }
-          }
-          return PARSER;
-        }
-      }
-      throw new UnsupportedOperationException();
-    }
-
-
-    // @@protoc_insertion_point(class_scope:BlockU)
-    private static final com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new BlockU();
-      DEFAULT_INSTANCE.makeImmutable();
-    }
-
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.BlockU getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static volatile com.google.protobuf.Parser<BlockU> PARSER;
-
-    public static com.google.protobuf.Parser<BlockU> parser() {
-      return DEFAULT_INSTANCE.getParserForType();
-    }
-  }
-
-  public interface UnblockUOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:UnblockU)
-          com.google.protobuf.MessageLiteOrBuilder {
-
-    /**
-     * <pre>
-     *unblock谁
-     * </pre>
-     *
-     * <code>optional int64 to_uid = 1;</code>
-     */
-    long getToUid();
-  }
-  /**
-   * <pre>
-   *21
-   * </pre>
-   *
-   * Protobuf type {@code UnblockU}
-   */
-  public  static final class UnblockU extends
-          com.google.protobuf.GeneratedMessageLite<
-                  UnblockU, UnblockU.Builder> implements
-          // @@protoc_insertion_point(message_implements:UnblockU)
-          UnblockUOrBuilder {
-    private UnblockU() {
-    }
-    public static final int TO_UID_FIELD_NUMBER = 1;
-    private long toUid_;
-    /**
-     * <pre>
-     *unblock谁
-     * </pre>
-     *
-     * <code>optional int64 to_uid = 1;</code>
-     */
-    public long getToUid() {
-      return toUid_;
-    }
-    /**
-     * <pre>
-     *unblock谁
-     * </pre>
-     *
-     * <code>optional int64 to_uid = 1;</code>
-     */
-    private void setToUid(long value) {
-
-      toUid_ = value;
-    }
-    /**
-     * <pre>
-     *unblock谁
-     * </pre>
-     *
-     * <code>optional int64 to_uid = 1;</code>
-     */
-    private void clearToUid() {
-
-      toUid_ = 0L;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
-      if (toUid_ != 0L) {
-        output.writeInt64(1, toUid_);
-      }
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (toUid_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, toUid_);
-      }
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, data);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, data, extensionRegistry);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, data);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, data, extensionRegistry);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, input);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, input, extensionRegistry);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
-      return parseDelimitedFrom(DEFAULT_INSTANCE, input);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-      return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, input);
-    }
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageLite.parseFrom(
-              DEFAULT_INSTANCE, input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-
-    /**
-     * <pre>
-     *21
-     * </pre>
-     *
-     * Protobuf type {@code UnblockU}
-     */
-    public static final class Builder extends
-            com.google.protobuf.GeneratedMessageLite.Builder<
-                    com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU, Builder> implements
-            // @@protoc_insertion_point(builder_implements:UnblockU)
-            com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockUOrBuilder {
-      // Construct using com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU.newBuilder()
-      private Builder() {
-        super(DEFAULT_INSTANCE);
-      }
-
-
-      /**
-       * <pre>
-       *unblock谁
-       * </pre>
-       *
-       * <code>optional int64 to_uid = 1;</code>
-       */
-      public long getToUid() {
-        return instance.getToUid();
-      }
-      /**
-       * <pre>
-       *unblock谁
-       * </pre>
-       *
-       * <code>optional int64 to_uid = 1;</code>
-       */
-      public Builder setToUid(long value) {
-        copyOnWrite();
-        instance.setToUid(value);
-        return this;
-      }
-      /**
-       * <pre>
-       *unblock谁
-       * </pre>
-       *
-       * <code>optional int64 to_uid = 1;</code>
-       */
-      public Builder clearToUid() {
-        copyOnWrite();
-        instance.clearToUid();
-        return this;
-      }
-
-      // @@protoc_insertion_point(builder_scope:UnblockU)
-    }
-    protected final Object dynamicMethod(
-            com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
-            Object arg0, Object arg1) {
-      switch (method) {
-        case NEW_MUTABLE_INSTANCE: {
-          return new com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU();
-        }
-        case IS_INITIALIZED: {
-          return DEFAULT_INSTANCE;
-        }
-        case MAKE_IMMUTABLE: {
-          return null;
-        }
-        case NEW_BUILDER: {
-          return new Builder();
-        }
-        case VISIT: {
-          Visitor visitor = (Visitor) arg0;
-          com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU other = (com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU) arg1;
-          toUid_ = visitor.visitLong(toUid_ != 0L, toUid_,
-                  other.toUid_ != 0L, other.toUid_);
-          if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
-                  .INSTANCE) {
-          }
-          return this;
-        }
-        case MERGE_FROM_STREAM: {
-          com.google.protobuf.CodedInputStream input =
-                  (com.google.protobuf.CodedInputStream) arg0;
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry =
-                  (com.google.protobuf.ExtensionRegistryLite) arg1;
-          try {
-            boolean done = false;
-            while (!done) {
-              int tag = input.readTag();
-              switch (tag) {
-                case 0:
-                  done = true;
-                  break;
-                default: {
-                  if (!input.skipField(tag)) {
-                    done = true;
-                  }
-                  break;
-                }
-                case 8: {
-
-                  toUid_ = input.readInt64();
-                  break;
-                }
-              }
-            }
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw new RuntimeException(e.setUnfinishedMessage(this));
-          } catch (java.io.IOException e) {
-            throw new RuntimeException(
-                    new com.google.protobuf.InvalidProtocolBufferException(
-                            e.getMessage()).setUnfinishedMessage(this));
-          } finally {
-          }
-        }
-        case GET_DEFAULT_INSTANCE: {
-          return DEFAULT_INSTANCE;
-        }
-        case GET_PARSER: {
-          if (PARSER == null) {    synchronized (com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU.class) {
-            if (PARSER == null) {
-              PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
-            }
-          }
-          }
-          return PARSER;
-        }
-      }
-      throw new UnsupportedOperationException();
-    }
-
-
-    // @@protoc_insertion_point(class_scope:UnblockU)
-    private static final com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new UnblockU();
-      DEFAULT_INSTANCE.makeImmutable();
-    }
-
-    public static com.masonsoft.imsdk.core.proto.ProtoMessage.UnblockU getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static volatile com.google.protobuf.Parser<UnblockU> PARSER;
-
-    public static com.google.protobuf.Parser<UnblockU> parser() {
       return DEFAULT_INSTANCE.getParserForType();
     }
   }

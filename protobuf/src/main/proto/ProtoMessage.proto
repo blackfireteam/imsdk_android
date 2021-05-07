@@ -1,7 +1,7 @@
 syntax = "proto3";
 option java_package = "com.masonsoft.imsdk.core.proto";
 
-// 最近修改时间-2021-04-12 10:34:02
+// 最近修改时间-2021-05-06 10:11:02
 
 //0
 message Ping
@@ -103,50 +103,59 @@ message MsgRead
   int64 to_uid = 2;// 谁发的消息已读
   int64 msg_id = 3;// 已读消息id
 }
-//11 消息已读状态发生变更通知（客户端收到这个才去变更）
-message LastReadMsg
-{
-  int64 sign = 1;
-  int64 from_uid = 2;// 谁的会话
-  int64 msg_id = 3;// 我发给对方的消息中，最后一条已读消息（被动通知 会有这个）
-  int64 unread = 4;//对方发给我的消息中，还有多少条未读消息（主动调用MsgRead 一方会收到这个）
-  int64 update_time = 5;//服务器收到已读回执的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
-}
-//12 该proto 既是请求，也是返回，返回时带update_time, 请求时不带update_time
+//11 删除会话
 message DelChat
 {
   int64 sign = 1; //客户端自定义标识，服务器会原样返回
   int64 to_uid = 2;// 删除谁的
-  int64 update_time = 3;//服务器删除会话的时间，用于标记会话列表的最后一次变动时间（精确到百万分之一秒的时间戳）
 }
-//13
+//12
 message GetChatList
 {
   int64 sign = 1; //客户端自定义标识，服务器会原样返回
   int64 update_time = 2;// 客户端本地保存的会话列表的最新一个会话的变动时间（精确到百万分之一秒的时间戳）
+  int64 uid = 3;//websocket 端传此值, 作为分页指针
 }
-//14
+//13
 message ChatItem
 {
   int64 uid = 1;
   int64 msg_end = 3;
   int64 msg_last_read = 4;
   int64 show_msg_id = 5;
+  int64 show_msg_type = 6;//仅websocket端 返回
+  string show_msg = 7;//仅websocket端 返回
+  int64 show_msg_time = 8;
+  int64 unread = 9;
+  bool matched = 10;
+  bool new_msg = 11;
+  bool my_move = 12;
+  bool ice_break = 13;
+  bool tip_free = 14;
+  bool top_album = 15;
+  bool i_block_u = 16;
+  bool connected = 17;//双方互发过消息了
+  bool deleted = 18;//该会话已删除
+}
+//14
+message ChatItemUpdate
+{
+  int64 sign = 1;
+  int64 uid = 2; //变动的哪个uid
+  int64 event = 3;// 0 msg_last_read 变动    1 unread 数变动    2 i_block_u 变动   3 deleted 变动
+  int64 update_time = 4;
+  int64 msg_last_read = 5;
   int64 unread = 6;
-  bool matched = 7;
-  bool new_msg = 8;
-  bool my_move = 9;
-  bool ice_break = 10;
-  bool tip_free = 11;
-  bool top_album = 12;
-  bool i_block_u = 13;
-  bool connected = 14;//双方互发过消息了
+  bool i_block_u = 7;
+  bool deleted = 8;
 }
 //15
 message ChatList
 {
-  repeated ChatItem chat_items = 1;
-  int64 update_time = 2;//有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
+  int64 sign = 1;//websocket 会返回该值
+  repeated ChatItem chat_items = 2;
+  int64 update_time = 3;//app会返回，有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
+  bool has_more = 4;//websocket 会返回该值，说明还有下一页
 }
 //16
 message GetProfile
@@ -176,16 +185,6 @@ message Profile
 message ProfileList
 {
   repeated Profile profiles = 1;
-}
-//20
-message BlockU
-{
-  int64 to_uid = 1;//block谁
-}
-//21
-message UnblockU
-{
-  int64 to_uid = 1;//unblock谁
 }
 //50  for demo: 通知客户端用户上线事件
 message ProfileOnline
