@@ -148,8 +148,9 @@ public final class DatabaseHelper {
          *
          * @since db version 1
          */
+        @Remote("deleted")
         @Local
-        String C_LOCAL_DELETE = "c_local_delete";
+        String C_DELETE = "c_delete";
 
         /**
          * 业务定制：是否 match
@@ -580,7 +581,7 @@ public final class DatabaseHelper {
                 ColumnsConversation.C_REMOTE_UNREAD + " integer not null default 0," +
                 ColumnsConversation.C_LOCAL_UNREAD_COUNT + " integer not null default 0," +
                 ColumnsConversation.C_LOCAL_TIME_MS + " integer not null default 0," +
-                ColumnsConversation.C_LOCAL_DELETE + " integer not null default 0," +
+                ColumnsConversation.C_DELETE + " integer not null default 0," +
                 ColumnsConversation.C_MATCHED + " integer not null default 0," +
                 ColumnsConversation.C_NEW_MSG + " integer not null default 0," +
                 ColumnsConversation.C_MY_MOVE + " integer not null default 0," +

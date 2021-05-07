@@ -176,7 +176,7 @@ public class ConversationDatabaseProvider {
             }
 
             if (!includeDelete) {
-                selection.append(" and " + DatabaseHelper.ColumnsConversation.C_LOCAL_DELETE + "=0 ");
+                selection.append(" and " + DatabaseHelper.ColumnsConversation.C_DELETE + "=0 ");
             }
 
             cursor = db.query(
@@ -235,7 +235,7 @@ public class ConversationDatabaseProvider {
 
             final String sql = "select sum(" + DatabaseHelper.ColumnsConversation.C_LOCAL_UNREAD_COUNT + ") from "
                     + DatabaseHelper.TABLE_NAME_CONVERSATION + " where "
-                    + DatabaseHelper.ColumnsConversation.C_LOCAL_DELETE + "=0";
+                    + DatabaseHelper.ColumnsConversation.C_DELETE + "=0";
             cursor = db.rawQuery(sql, null);
             if (!cursor.moveToFirst()) {
                 throw new IllegalAccessError("unexpected. getAllUnreadCount cursor.moveToFirst return false.");

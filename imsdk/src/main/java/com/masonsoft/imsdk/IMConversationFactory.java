@@ -31,7 +31,7 @@ public class IMConversationFactory {
         target.showMessageId.apply(input.localShowMessageId);
         target.unreadCount.apply(input.localUnreadCount);
         target.timeMs.apply(input.localTimeMs);
-        target.delete.apply(input.localDelete);
+        target.delete.apply(input.delete);
         target.matched.apply(input.matched);
         target.newMessage.apply(input.newMessage);
         target.myMove.apply(input.myMove);

@@ -97,10 +97,10 @@ public class Conversation {
     public final StateProp<Long> localTimeMs = new StateProp<>();
 
     /**
-     * @see ColumnsConversation#C_LOCAL_DELETE
+     * @see ColumnsConversation#C_DELETE
      */
     @NonNull
-    public final StateProp<Integer> localDelete = new StateProp<>();
+    public final StateProp<Integer> delete = new StateProp<>();
 
     /**
      * @see ColumnsConversation#C_MATCHED
@@ -231,8 +231,8 @@ public class Conversation {
         if (!this.localTimeMs.isUnset()) {
             target.put(ColumnsConversation.C_LOCAL_TIME_MS, this.localTimeMs.get());
         }
-        if (!this.localDelete.isUnset()) {
-            target.put(ColumnsConversation.C_LOCAL_DELETE, this.localDelete.get());
+        if (!this.delete.isUnset()) {
+            target.put(ColumnsConversation.C_DELETE, this.delete.get());
         }
         if (!this.matched.isUnset()) {
             target.put(ColumnsConversation.C_MATCHED, this.matched.get());
@@ -282,7 +282,7 @@ public class Conversation {
                     ColumnsConversation.C_REMOTE_UNREAD,
                     ColumnsConversation.C_LOCAL_UNREAD_COUNT,
                     ColumnsConversation.C_LOCAL_TIME_MS,
-                    ColumnsConversation.C_LOCAL_DELETE,
+                    ColumnsConversation.C_DELETE,
                     ColumnsConversation.C_MATCHED,
                     ColumnsConversation.C_NEW_MSG,
                     ColumnsConversation.C_MY_MOVE,
@@ -311,7 +311,7 @@ public class Conversation {
             target.remoteUnread.set(CursorUtil.getLong(cursor, ++index));
             target.localUnreadCount.set(CursorUtil.getLong(cursor, ++index));
             target.localTimeMs.set(CursorUtil.getLong(cursor, ++index));
-            target.localDelete.set(CursorUtil.getInt(cursor, ++index));
+            target.delete.set(CursorUtil.getInt(cursor, ++index));
             target.matched.set(CursorUtil.getInt(cursor, ++index));
             target.newMessage.set(CursorUtil.getInt(cursor, ++index));
             target.myMove.set(CursorUtil.getInt(cursor, ++index));
