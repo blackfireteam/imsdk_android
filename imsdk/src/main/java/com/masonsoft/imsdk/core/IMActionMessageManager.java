@@ -13,7 +13,7 @@ import com.masonsoft.imsdk.core.message.packet.NotNullTimeoutMessagePacket;
 import com.masonsoft.imsdk.core.observable.ActionMessageObservable;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.processor.TinyChatRProcessor;
-import com.masonsoft.imsdk.core.processor.TinyLastReadMsgProcessor;
+import com.masonsoft.imsdk.core.processor.TinyConversationUpdateProcessor;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.GeneralErrorCode;
@@ -515,11 +515,11 @@ public class IMActionMessageManager {
                     }
 
                     // 接收 LastReadMsg 消息
-                    if (protoMessageObject instanceof ProtoMessage.LastReadMsg) {
-                        final ProtoMessage.LastReadMsg lastReadMsg = (ProtoMessage.LastReadMsg) protoMessageObject;
+                    if (protoMessageObject instanceof ProtoMessage.ChatItemUpdate) {
+                        final ProtoMessage.ChatItemUpdate chatItemUpdate = (ProtoMessage.ChatItemUpdate) protoMessageObject;
 
                         // 校验 sign 是否相等
-                        if (lastReadMsg.getSign() == getSign()) {
+                        if (chatItemUpdate.getSign() == getSign()) {
                             synchronized (getStateLock()) {
                                 final int state = getState();
                                 if (state != STATE_WAIT_RESULT) {
@@ -528,7 +528,7 @@ public class IMActionMessageManager {
                                     return false;
                                 }
 
-                                if (!doNotNullProcessLastReadMsgInternal(lastReadMsg)) {
+                                if (!doNotNullProcessConversationUpdateInternal(target)) {
                                     final Throwable e = new IllegalAccessError("unexpected. doNotNullProcessLastReadMsgInternal return false. sign:" + getSign());
                                     IMLog.e(e);
                                 }
@@ -541,9 +541,9 @@ public class IMActionMessageManager {
                     return false;
                 }
 
-                private boolean doNotNullProcessLastReadMsgInternal(@NonNull ProtoMessage.LastReadMsg lastReadMsg) {
-                    final TinyLastReadMsgProcessor proxy = new TinyLastReadMsgProcessor(mSessionUserId);
-                    return proxy.doProcess(lastReadMsg);
+                private boolean doNotNullProcessConversationUpdateInternal(@NonNull SessionProtoByteMessageWrapper target) {
+                    final TinyConversationUpdateProcessor proxy = new TinyConversationUpdateProcessor();
+                    return proxy.doProcess(target);
                 }
 
             }

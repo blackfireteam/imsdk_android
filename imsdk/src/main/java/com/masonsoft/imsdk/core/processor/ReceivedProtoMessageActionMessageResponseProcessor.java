@@ -22,8 +22,8 @@ public class ReceivedProtoMessageActionMessageResponseProcessor extends Received
             sign = ((ProtoMessage.Result) protoMessageObject).getSign();
         } else if (protoMessageObject instanceof ProtoMessage.ChatR) {
             sign = ((ProtoMessage.ChatR) protoMessageObject).getSign();
-        } else if (protoMessageObject instanceof ProtoMessage.LastReadMsg) {
-            sign = ((ProtoMessage.LastReadMsg) protoMessageObject).getSign();
+        } else if (protoMessageObject instanceof ProtoMessage.ChatItemUpdate) {
+            sign = ((ProtoMessage.ChatItemUpdate) protoMessageObject).getSign();
         } else {
             return false;
         }

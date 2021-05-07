@@ -12,12 +12,18 @@ import com.masonsoft.imsdk.lang.MultiProcessor;
 public class InternalReceivedProtoMessageProtoTypeProcessor extends MultiProcessor<SessionProtoByteMessageWrapper> {
 
     public InternalReceivedProtoMessageProtoTypeProcessor() {
+        // response 内容优先处理(有 sign)
         addLastProcessor(new ReceivedProtoMessageActionMessageResponseProcessor());
         addLastProcessor(new ReceivedProtoMessageFetchMessageHistoryResponseProcessor());
+        addLastProcessor(new ReceivedProtoMessageSessionMessageResponseProcessor());
+        addLastProcessor(new ReceivedProtoMessageOtherMessageResponseProcessor());
+
+        // 处理没有 sign 的内容
         addLastProcessor(new ReceivedProtoMessageProtoTypeProfileProcessor());
         addLastProcessor(new ReceivedProtoMessageProtoTypeProfileListProcessor());
         addLastProcessor(new ReceivedProtoMessageProtoTypeChatRProcessor());
-        addLastProcessor(new ReceivedProtoMessageProtoTypeLastReadMessageProcessor());
+        addLastProcessor(new ReceivedProtoMessageConversationListProcessor());
+        addLastProcessor(new ReceivedProtoMessageConversationUpdateProcessor());
     }
 
 }

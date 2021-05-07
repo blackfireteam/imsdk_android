@@ -251,8 +251,8 @@ public class UserInfoSyncManager {
                     UserInfoManager.getInstance().touchUserInfo(mUserId);
                 } else {
                     mUserUpdateTimeMs = userInfo.updateTimeMs.getOrDefault(0L);
-                    if (mServerUpdateTimeMs > 0 && mServerUpdateTimeMs > mUserUpdateTimeMs) {
-                        requireSync = true;
+                    if (mServerUpdateTimeMs > 0) {
+                        requireSync = mServerUpdateTimeMs > mUserUpdateTimeMs;
                     }
                 }
 

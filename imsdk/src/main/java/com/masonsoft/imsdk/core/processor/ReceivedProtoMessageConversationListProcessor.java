@@ -27,40 +27,37 @@ import java.util.List;
  *
  * @since 1.0
  */
-public class ReceivedProtoMessageConversationListProcessor extends ReceivedProtoMessageNotNullProcessor {
+public class ReceivedProtoMessageConversationListProcessor extends ReceivedProtoMessageProtoTypeProcessor<ProtoMessage.ChatList> {
+
+    public ReceivedProtoMessageConversationListProcessor() {
+        super(ProtoMessage.ChatList.class);
+    }
 
     @Override
-    protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
-        final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
-
-        if (protoMessageObject instanceof ProtoMessage.ChatList) {
-            final long sessionUserId = target.getSessionUserId();
-            final ProtoMessage.ChatList chatList = (ProtoMessage.ChatList) protoMessageObject;
-            final long updateTime = chatList.getUpdateTime();
-            final List<ProtoMessage.ChatItem> chatItemList = chatList.getChatItemsList();
-            final List<Conversation> conversationList = new ArrayList<>();
-            if (chatItemList != null) {
-                for (ProtoMessage.ChatItem item : chatItemList) {
-                    conversationList.add(ConversationFactory.create(item));
-                }
+    protected boolean doNotNullProtoMessageObjectProcess(@NonNull SessionProtoByteMessageWrapper target, @NonNull ProtoMessage.ChatList protoMessageObject) {
+        final long sessionUserId = target.getSessionUserId();
+        final long updateTime = protoMessageObject.getUpdateTime();
+        final List<ProtoMessage.ChatItem> chatItemList = protoMessageObject.getChatItemsList();
+        final List<Conversation> conversationList = new ArrayList<>();
+        if (chatItemList != null) {
+            for (ProtoMessage.ChatItem item : chatItemList) {
+                conversationList.add(ConversationFactory.create(item));
             }
-            IMLog.v(Objects.defaultObjectTag(this) + " received conversation list size:%s, sessionUserId:%s, updateTime:%s",
-                    conversationList.size(), sessionUserId, updateTime);
+        }
+        IMLog.v(Objects.defaultObjectTag(this) + " received conversation list size:%s, sessionUserId:%s, updateTime:%s",
+                conversationList.size(), sessionUserId, updateTime);
 
-            if (!conversationList.isEmpty()) {
-                syncConversationUserInfo(conversationList);
-                updateConversationList(sessionUserId, conversationList);
-                syncLastMessages(sessionUserId, conversationList);
-            }
-
-            if (updateTime > 0) {
-                // 会话获取结束
-                target.getSessionTcpClient().setFetchConversationListFinish(updateTime);
-            }
-            return true;
+        if (!conversationList.isEmpty()) {
+            syncConversationUserInfo(conversationList);
+            updateConversationList(sessionUserId, conversationList);
+            syncLastMessages(sessionUserId, conversationList);
         }
 
-        return false;
+        if (updateTime > 0) {
+            // 会话获取结束
+            target.getSessionTcpClient().setFetchConversationListFinish(updateTime);
+        }
+        return true;
     }
 
     private void syncConversationUserInfo(@NonNull final List<Conversation> conversationList) {
