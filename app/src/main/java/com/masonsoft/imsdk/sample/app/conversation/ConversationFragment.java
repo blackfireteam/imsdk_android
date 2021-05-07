@@ -124,6 +124,7 @@ public class ConversationFragment extends SystemInsetsFragment {
         }
 
         public void replaceConversation(@NonNull final UnionTypeItemObject unionTypeItemObject) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " replaceConversation " + Objects.defaultObjectTag(unionTypeItemObject));
             if (!hasPageContent()) {
                 SampleLog.v(Objects.defaultObjectTag(this) + " page content is empty, use requestInit instead of replace");
                 if (!mPresenter.getInitRequestStatus().isLoading()) {
@@ -183,12 +184,16 @@ public class ConversationFragment extends SystemInsetsFragment {
             if (delete) {
                 return;
             }
-            if (insertPosition == -1) {
-                insertPosition = 0;
-            }
-            if (!getAdapter().insertGroupItems(GROUP_DEFAULT, insertPosition, Lists.newArrayList(unionTypeItemObject))) {
-                final Throwable e = new IllegalAccessError("fail to insertGroupItems GROUP_DEFAULT insertPosition:" + insertPosition);
-                SampleLog.e(e);
+            if (insertPosition >= 0) {
+                if (!getAdapter().insertGroupItems(GROUP_DEFAULT, insertPosition, Lists.newArrayList(unionTypeItemObject))) {
+                    final Throwable e = new IllegalAccessError("fail to insertGroupItems GROUP_DEFAULT insertPosition:" + insertPosition);
+                    SampleLog.e(e);
+                }
+            } else {
+                if (!getAdapter().appendGroupItems(GROUP_DEFAULT, Lists.newArrayList(unionTypeItemObject))) {
+                    final Throwable e = new IllegalAccessError("fail to appendGroupItems GROUP_DEFAULT");
+                    SampleLog.e(e);
+                }
             }
         }
     }
