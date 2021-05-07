@@ -7,6 +7,9 @@ import com.masonsoft.imsdk.annotation.DemoOnly;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.util.Objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 传输于长连接上的原始消息
  *
@@ -65,129 +68,698 @@ public class ProtoByteMessage {
      * @see #getType()
      */
     public static class Type {
+
+        private interface Transform {
+            @Nullable
+            Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException;
+
+            @Nullable
+            ProtoByteMessage encode(@NonNull Object protoMessageObject);
+        }
+
+        private static final List<Transform> TRANSFORM_LIST = new ArrayList<>();
+
         /**
          * 心跳
          */
         public static final int PING = 0;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == PING) {
+                        return ProtoMessage.Ping.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.Ping) {
+                        return new ProtoByteMessage(PING, ((ProtoMessage.Ping) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 登录 IM
          */
         public static final int IM_LOGIN = 1;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == IM_LOGIN) {
+                        return ProtoMessage.ImLogin.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.ImLogin) {
+                        return new ProtoByteMessage(IM_LOGIN, ((ProtoMessage.ImLogin) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 退出登录
          */
         public static final int IM_LOGOUT = 2;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == IM_LOGOUT) {
+                        return ProtoMessage.ImLogout.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.ImLogout) {
+                        return new ProtoByteMessage(IM_LOGOUT, ((ProtoMessage.ImLogout) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 服务器回复的消息(对发送的非会话消息的回复)
          */
         public static final int RESULT = 3;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == RESULT) {
+                        return ProtoMessage.Result.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.Result) {
+                        return new ProtoByteMessage(RESULT, ((ProtoMessage.Result) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 发送会话消息
          */
         public static final int CHAT_S = 4;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == CHAT_S) {
+                        return ProtoMessage.ChatS.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.ChatS) {
+                        return new ProtoByteMessage(CHAT_S, ((ProtoMessage.ChatS) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 服务器回复的消息(对发送的会话消息的回复)
          */
         public static final int CHAT_S_R = 5;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == CHAT_S_R) {
+                        return ProtoMessage.ChatSR.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.ChatSR) {
+                        return new ProtoByteMessage(CHAT_S_R, ((ProtoMessage.ChatSR) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 收到的服务器下发的会话消息(可能是别人给我发的，也可能是我给别人发的)
          */
         public static final int CHAT_R = 6;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == CHAT_R) {
+                        return ProtoMessage.ChatR.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.ChatR) {
+                        return new ProtoByteMessage(CHAT_R, ((ProtoMessage.ChatR) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 一次性收到多条会话消息(可能是别人给我发的，也可能是我给别人发的)
          */
         public static final int CHAT_R_BATCH = 7;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == CHAT_R_BATCH) {
+                        return ProtoMessage.ChatRBatch.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.ChatRBatch) {
+                        return new ProtoByteMessage(CHAT_R_BATCH, ((ProtoMessage.ChatRBatch) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 请求获取历史消息
          */
         public static final int GET_HISTORY = 8;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == GET_HISTORY) {
+                        return ProtoMessage.GetHistory.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.GetHistory) {
+                        return new ProtoByteMessage(GET_HISTORY, ((ProtoMessage.GetHistory) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 撤回消息
          */
         public static final int REVOKE = 9;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == REVOKE) {
+                        return ProtoMessage.Revoke.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.Revoke) {
+                        return new ProtoByteMessage(REVOKE, ((ProtoMessage.Revoke) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 消息已读
          */
         public static final int MSG_READ = 10;
-        /**
-         * 消息已读状态发生变更通知
-         */
-        public static final int LAST_READ_MSG = 11;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == MSG_READ) {
+                        return ProtoMessage.MsgRead.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.MsgRead) {
+                        return new ProtoByteMessage(MSG_READ, ((ProtoMessage.MsgRead) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 删除会话
          */
-        public static final int DEL_CHAT = 12;
+        public static final int DEL_CHAT = 11;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == DEL_CHAT) {
+                        return ProtoMessage.DelChat.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.DelChat) {
+                        return new ProtoByteMessage(DEL_CHAT, ((ProtoMessage.DelChat) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 获取会话列表
          */
-        public static final int GET_CHAT_LIST = 13;
+        public static final int GET_CHAT_LIST = 12;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == GET_CHAT_LIST) {
+                        return ProtoMessage.GetChatList.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.GetChatList) {
+                        return new ProtoByteMessage(GET_CHAT_LIST, ((ProtoMessage.GetChatList) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 一个会话信息
          */
-        public static final int CHAT_ITEM = 14;
+        public static final int CHAT_ITEM = 13;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == CHAT_ITEM) {
+                        return ProtoMessage.ChatItem.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.ChatItem) {
+                        return new ProtoByteMessage(CHAT_ITEM, ((ProtoMessage.ChatItem) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
+        /**
+         * 一个会话信息发生变更
+         */
+        public static final int CHAT_ITEM_UPDATE = 14;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == CHAT_ITEM_UPDATE) {
+                        return ProtoMessage.ChatItemUpdate.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.ChatItemUpdate) {
+                        return new ProtoByteMessage(CHAT_ITEM_UPDATE, ((ProtoMessage.ChatItemUpdate) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 会话列表(并不一定包含全部会话)
          */
         public static final int CHAT_LIST = 15;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == CHAT_LIST) {
+                        return ProtoMessage.ChatList.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.ChatList) {
+                        return new ProtoByteMessage(CHAT_LIST, ((ProtoMessage.ChatList) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 获取用户的 profile
          */
         public static final int GET_PROFILE = 16;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == GET_PROFILE) {
+                        return ProtoMessage.GetProfile.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.GetProfile) {
+                        return new ProtoByteMessage(GET_PROFILE, ((ProtoMessage.GetProfile) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 批量获取用户的 profile
          */
         public static final int GET_PROFILES = 17;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == GET_PROFILES) {
+                        return ProtoMessage.GetProfiles.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.GetProfiles) {
+                        return new ProtoByteMessage(GET_PROFILES, ((ProtoMessage.GetProfiles) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 用户信息
          */
         public static final int PROFILE = 18;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == PROFILE) {
+                        return ProtoMessage.Profile.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.Profile) {
+                        return new ProtoByteMessage(PROFILE, ((ProtoMessage.Profile) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 批量用户信息
          */
         public static final int PROFILE_LIST = 19;
-        /**
-         * block 指定用户
-         */
-        public static final int BLOCK_U = 20;
-        /**
-         * unblock 指定用户
-         */
-        public static final int UNBLOCK_U = 21;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == PROFILE_LIST) {
+                        return ProtoMessage.ProfileList.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.ProfileList) {
+                        return new ProtoByteMessage(PROFILE_LIST, ((ProtoMessage.ProfileList) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 通知客户端用户上线事件
          */
         @DemoOnly
         public static final int PROFILE_ONLINE = 50;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == PROFILE_ONLINE) {
+                        return ProtoMessage.ProfileOnline.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.ProfileOnline) {
+                        return new ProtoByteMessage(PROFILE_ONLINE, ((ProtoMessage.ProfileOnline) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 通知客户端用户下线事件
          */
         @DemoOnly
         public static final int USR_OFFLINE = 52;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == USR_OFFLINE) {
+                        return ProtoMessage.UsrOffline.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.UsrOffline) {
+                        return new ProtoByteMessage(USR_OFFLINE, ((ProtoMessage.UsrOffline) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 注册新用户
          */
         @DemoOnly
         public static final int SIGN_UP = 53;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == SIGN_UP) {
+                        return ProtoMessage.Signup.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.Signup) {
+                        return new ProtoByteMessage(SIGN_UP, ((ProtoMessage.Signup) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 获取 spark
          */
         @DemoOnly
         public static final int FETCH_SPARK = 54;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == FETCH_SPARK) {
+                        return ProtoMessage.FetchSpark.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.FetchSpark) {
+                        return new ProtoByteMessage(FETCH_SPARK, ((ProtoMessage.FetchSpark) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * spark
          */
         @DemoOnly
         public static final int SPARK = 55;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == SPARK) {
+                        return ProtoMessage.Spark.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.Spark) {
+                        return new ProtoByteMessage(SPARK, ((ProtoMessage.Spark) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 多个 spark
          */
         @DemoOnly
         public static final int SPARKS = 56;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == SPARKS) {
+                        return ProtoMessage.Sparks.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.Sparks) {
+                        return new ProtoByteMessage(SPARKS, ((ProtoMessage.Sparks) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
+
         /**
          * 获取用户 token
          */
         @DemoOnly
         public static final int GET_IM_TOKEN = 57;
+
+        static {
+            TRANSFORM_LIST.add(new Transform() {
+                @Override
+                public Object decode(@NonNull ProtoByteMessage protoByteMessage) throws com.google.protobuf.InvalidProtocolBufferException {
+                    if (protoByteMessage.getType() == GET_IM_TOKEN) {
+                        return ProtoMessage.GetImToken.parseFrom(protoByteMessage.getData());
+                    }
+                    return null;
+                }
+
+                @Override
+                public ProtoByteMessage encode(@NonNull Object protoMessageObject) {
+                    if (protoMessageObject instanceof ProtoMessage.GetImToken) {
+                        return new ProtoByteMessage(GET_IM_TOKEN, ((ProtoMessage.GetImToken) protoMessageObject).toByteArray());
+                    }
+                    return null;
+                }
+            });
+        }
 
         /**
          * 将 ProtoByteMessage 解码为 ProtoMessage 内定义的实体对象。如果解码失败，返回 null.
@@ -195,69 +767,11 @@ public class ProtoByteMessage {
         @Nullable
         public static Object decode(@NonNull ProtoByteMessage protoByteMessage) {
             try {
-                final int type = protoByteMessage.getType();
-                final byte[] data = protoByteMessage.getData();
-                switch (type) {
-                    case PING:
-                        return ProtoMessage.Ping.parseFrom(data);
-                    case IM_LOGIN:
-                        return ProtoMessage.ImLogin.parseFrom(data);
-                    case IM_LOGOUT:
-                        return ProtoMessage.ImLogout.parseFrom(data);
-                    case RESULT:
-                        return ProtoMessage.Result.parseFrom(data);
-                    case CHAT_S:
-                        return ProtoMessage.ChatS.parseFrom(data);
-                    case CHAT_S_R:
-                        return ProtoMessage.ChatSR.parseFrom(data);
-                    case CHAT_R:
-                        return ProtoMessage.ChatR.parseFrom(data);
-                    case CHAT_R_BATCH:
-                        return ProtoMessage.ChatRBatch.parseFrom(data);
-                    case GET_HISTORY:
-                        return ProtoMessage.GetHistory.parseFrom(data);
-                    case REVOKE:
-                        return ProtoMessage.Revoke.parseFrom(data);
-                    case MSG_READ:
-                        return ProtoMessage.MsgRead.parseFrom(data);
-                    case LAST_READ_MSG:
-                        return ProtoMessage.LastReadMsg.parseFrom(data);
-                    case DEL_CHAT:
-                        return ProtoMessage.DelChat.parseFrom(data);
-                    case GET_CHAT_LIST:
-                        return ProtoMessage.GetChatList.parseFrom(data);
-                    case CHAT_ITEM:
-                        return ProtoMessage.ChatItem.parseFrom(data);
-                    case CHAT_LIST:
-                        return ProtoMessage.ChatList.parseFrom(data);
-                    case GET_PROFILE:
-                        return ProtoMessage.GetProfile.parseFrom(data);
-                    case GET_PROFILES:
-                        return ProtoMessage.GetProfiles.parseFrom(data);
-                    case PROFILE:
-                        return ProtoMessage.Profile.parseFrom(data);
-                    case PROFILE_LIST:
-                        return ProtoMessage.ProfileList.parseFrom(data);
-                    case BLOCK_U:
-                        return ProtoMessage.BlockU.parseFrom(data);
-                    case UNBLOCK_U:
-                        return ProtoMessage.UnblockU.parseFrom(data);
-                    case PROFILE_ONLINE:
-                        return ProtoMessage.ProfileOnline.parseFrom(data);
-                    case USR_OFFLINE:
-                        return ProtoMessage.UsrOffline.parseFrom(data);
-                    case SIGN_UP:
-                        return ProtoMessage.Signup.parseFrom(data);
-                    case FETCH_SPARK:
-                        return ProtoMessage.FetchSpark.parseFrom(data);
-                    case SPARK:
-                        return ProtoMessage.Spark.parseFrom(data);
-                    case SPARKS:
-                        return ProtoMessage.Sparks.parseFrom(data);
-                    case GET_IM_TOKEN:
-                        return ProtoMessage.GetImToken.parseFrom(data);
-                    default:
-                        throw new IllegalAccessError("unknown type:" + type);
+                for (Transform transform : TRANSFORM_LIST) {
+                    Object result = transform.decode(protoByteMessage);
+                    if (result != null) {
+                        return result;
+                    }
                 }
             } catch (Throwable e) {
                 IMLog.e(e);
@@ -271,120 +785,11 @@ public class ProtoByteMessage {
          */
         @NonNull
         public static ProtoByteMessage encode(@NonNull Object protoMessageObject) {
-            if (protoMessageObject instanceof ProtoMessage.Ping) {
-                return new ProtoByteMessage(PING, ((ProtoMessage.Ping) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.ImLogin) {
-                return new ProtoByteMessage(IM_LOGIN, ((ProtoMessage.ImLogin) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.ImLogout) {
-                return new ProtoByteMessage(IM_LOGOUT, ((ProtoMessage.ImLogout) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.Result) {
-                return new ProtoByteMessage(RESULT, ((ProtoMessage.Result) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.ChatS) {
-                return new ProtoByteMessage(CHAT_S, ((ProtoMessage.ChatS) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.ChatSR) {
-                return new ProtoByteMessage(CHAT_S_R, ((ProtoMessage.ChatSR) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.ChatR) {
-                return new ProtoByteMessage(CHAT_R, ((ProtoMessage.ChatR) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.ChatRBatch) {
-                return new ProtoByteMessage(CHAT_R_BATCH, ((ProtoMessage.ChatRBatch) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.GetHistory) {
-                return new ProtoByteMessage(GET_HISTORY, ((ProtoMessage.GetHistory) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.Revoke) {
-                return new ProtoByteMessage(REVOKE, ((ProtoMessage.Revoke) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.MsgRead) {
-                return new ProtoByteMessage(MSG_READ, ((ProtoMessage.MsgRead) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.LastReadMsg) {
-                return new ProtoByteMessage(LAST_READ_MSG, ((ProtoMessage.LastReadMsg) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.DelChat) {
-                return new ProtoByteMessage(DEL_CHAT, ((ProtoMessage.DelChat) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.GetChatList) {
-                return new ProtoByteMessage(GET_CHAT_LIST, ((ProtoMessage.GetChatList) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.ChatItem) {
-                return new ProtoByteMessage(CHAT_ITEM, ((ProtoMessage.ChatItem) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.ChatList) {
-                return new ProtoByteMessage(CHAT_LIST, ((ProtoMessage.ChatList) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.GetProfile) {
-                return new ProtoByteMessage(GET_PROFILE, ((ProtoMessage.GetProfile) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.GetProfiles) {
-                return new ProtoByteMessage(GET_PROFILES, ((ProtoMessage.GetProfiles) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.Profile) {
-                return new ProtoByteMessage(PROFILE, ((ProtoMessage.Profile) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.ProfileList) {
-                return new ProtoByteMessage(PROFILE_LIST, ((ProtoMessage.ProfileList) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.BlockU) {
-                return new ProtoByteMessage(BLOCK_U, ((ProtoMessage.BlockU) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.UnblockU) {
-                return new ProtoByteMessage(UNBLOCK_U, ((ProtoMessage.UnblockU) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.ProfileOnline) {
-                return new ProtoByteMessage(PROFILE_ONLINE, ((ProtoMessage.ProfileOnline) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.UsrOffline) {
-                return new ProtoByteMessage(USR_OFFLINE, ((ProtoMessage.UsrOffline) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.Signup) {
-                return new ProtoByteMessage(SIGN_UP, ((ProtoMessage.Signup) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.FetchSpark) {
-                return new ProtoByteMessage(FETCH_SPARK, ((ProtoMessage.FetchSpark) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.Spark) {
-                return new ProtoByteMessage(SPARK, ((ProtoMessage.Spark) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.Sparks) {
-                return new ProtoByteMessage(SPARKS, ((ProtoMessage.Sparks) protoMessageObject).toByteArray());
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.GetImToken) {
-                return new ProtoByteMessage(GET_IM_TOKEN, ((ProtoMessage.GetImToken) protoMessageObject).toByteArray());
+            for (Transform transform : TRANSFORM_LIST) {
+                ProtoByteMessage result = transform.encode(protoMessageObject);
+                if (result != null) {
+                    return result;
+                }
             }
 
             final Throwable e = new IllegalArgumentException("unknown proto message object: " + protoMessageObject);
