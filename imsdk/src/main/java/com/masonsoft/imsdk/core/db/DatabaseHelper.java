@@ -295,6 +295,14 @@ public final class DatabaseHelper {
         String C_LOCAL_TIME_MS = "c_local_time_ms";
 
         /**
+         * 我发送的消息对方是否已读
+         *
+         * @since db version 1
+         */
+        @Local
+        String C_LOCAL_READ = "c_local_read";
+
+        /**
          * 消息发送者的个人信息的最后更新时间。用来校验本地缓存是否需要更新。<br>
          * 服务器时间是秒，本地转存储为毫秒格式(放大 1000 倍).
          *
@@ -678,6 +686,7 @@ public final class DatabaseHelper {
                 ColumnsMessage.C_REMOTE_MSG_ID + " integer," +
                 ColumnsMessage.C_REMOTE_MSG_TIME + " integer not null default 0," +
                 ColumnsMessage.C_LOCAL_TIME_MS + " integer not null," +
+                ColumnsMessage.C_LOCAL_READ + " integer not null default 0," +
                 ColumnsMessage.C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY_MS + " integer not null default 0," +
                 ColumnsMessage.C_MSG_TYPE + " integer not null," +
                 ColumnsMessage.C_TITLE + " text," +
@@ -706,6 +715,7 @@ public final class DatabaseHelper {
                 "create index if not exists " + tableNameMessage + "_index_from_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_FROM_USER_ID + ")",
                 "create index if not exists " + tableNameMessage + "_index_to_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_TO_USER_ID + ")",
                 "create unique index if not exists " + tableNameMessage + "_index_unique_rmi on " + tableNameMessage + "(" + ColumnsMessage.C_REMOTE_MSG_ID + ")",
+                "create index if not exists " + tableNameMessage + "_index_local_read on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_READ + ")",
                 "create index if not exists " + tableNameMessage + "_index_msg_type on " + tableNameMessage + "(" + ColumnsMessage.C_MSG_TYPE + ")",
                 "create index if not exists " + tableNameMessage + "_index_local_action_msg on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_ACTION_MSG + ")",
                 "create index if not exists " + tableNameMessage + "_index_local_block_id on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_BLOCK_ID + ")",

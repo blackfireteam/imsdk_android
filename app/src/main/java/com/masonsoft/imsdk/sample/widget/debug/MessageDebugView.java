@@ -31,7 +31,7 @@ public class MessageDebugView extends DebugTextView {
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mMessageChangedViewHelper = new IMMessageChangedViewHelper() {
             @Override
-            protected void onMessageChanged(@Nullable IMMessage message) {
+            protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {
                 MessageDebugView.this.showMessageDebugInfo(message);
             }
         };

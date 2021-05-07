@@ -33,6 +33,8 @@ public class IMMessageTextSendViewHolder extends IMMessageTextViewHolder {
         mBinding.avatar.setTargetUserId(message.fromUserId.getOrDefault(0L));
         mBinding.avatar.setShowBorder(false);
 
+        mBinding.readStatusView.setMessage(message);
+
         ViewUtil.onClick(mBinding.avatar, v -> {
             Activity innerActivity = host.getActivity();
             if (innerActivity == null) {

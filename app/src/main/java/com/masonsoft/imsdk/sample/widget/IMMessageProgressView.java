@@ -42,7 +42,7 @@ public class IMMessageProgressView extends ProgressView {
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mMessageChangedViewHelper = new IMMessageChangedViewHelper() {
             @Override
-            protected void onMessageChanged(@Nullable IMMessage message) {
+            protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {
                 IMMessageProgressView.this.updateProgress(message);
             }
         };

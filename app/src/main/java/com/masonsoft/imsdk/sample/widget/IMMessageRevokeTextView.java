@@ -33,6 +33,10 @@ public class IMMessageRevokeTextView extends UserCacheDynamicTextView {
                 defStyleRes);
         mReceived = a.getBoolean(R.styleable.IMMessageRevokeTextView_received, mReceived);
         a.recycle();
+
+        if (isInEditMode()) {
+            setText(R.string.imsdk_sample_recall_send_message);
+        }
     }
 
     private String buildRecallText(@Nullable UserInfo userInfo) {

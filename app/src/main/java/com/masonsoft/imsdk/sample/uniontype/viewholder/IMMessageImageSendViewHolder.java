@@ -35,6 +35,8 @@ public class IMMessageImageSendViewHolder extends IMMessageImageViewHolder {
         mBinding.avatar.setTargetUserId(message.fromUserId.getOrDefault(0L));
         mBinding.avatar.setShowBorder(false);
 
+        mBinding.readStatusView.setMessage(message);
+
         ViewUtil.onClick(mBinding.avatar, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {

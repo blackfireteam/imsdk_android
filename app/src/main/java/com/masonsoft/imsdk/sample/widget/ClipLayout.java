@@ -13,6 +13,8 @@ import android.widget.FrameLayout;
 
 import com.masonsoft.imsdk.sample.R;
 
+import io.github.idonans.appcontext.AppContext;
+
 public class ClipLayout extends FrameLayout {
 
     public ClipLayout(Context context) {
@@ -42,6 +44,8 @@ public class ClipLayout extends FrameLayout {
     private Paint mBorderPaint;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        AppContext.setContextInEditMode(this);
+
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ClipLayout, defStyleAttr,
                 defStyleRes);
         mRoundSize = a.getDimension(R.styleable.ClipLayout_roundSize, mRoundSize);

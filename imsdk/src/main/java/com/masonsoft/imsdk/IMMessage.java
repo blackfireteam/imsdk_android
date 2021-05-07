@@ -77,6 +77,12 @@ public class IMMessage {
     public final StateProp<Long> timeMs = new StateProp<>();
 
     /**
+     * 消息是否已读
+     */
+    @NonNull
+    public final StateProp<Integer> read = new StateProp<>();
+
+    /**
      * 消息的类型
      *
      * @see MessageType
@@ -195,6 +201,7 @@ public class IMMessage {
         this.fromUserId.apply(input.fromUserId);
         this.toUserId.apply(input.toUserId);
         this.timeMs.apply(input.timeMs);
+        this.read.apply(input.read);
         this.type.apply(input.type);
         this.title.apply(input.title);
         this.body.apply(input.body);
@@ -251,6 +258,11 @@ public class IMMessage {
             builder.append(" type:unset");
         } else {
             builder.append(" type:").append(this.type.get());
+        }
+        if (this.read.isUnset()) {
+            builder.append(" read:unset");
+        } else {
+            builder.append(" read:").append(this.read.get());
         }
         if (this.sendState.isUnset()) {
             builder.append(" sendState:unset");

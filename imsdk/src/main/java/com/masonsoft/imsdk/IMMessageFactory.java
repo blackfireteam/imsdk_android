@@ -123,6 +123,7 @@ public class IMMessageFactory {
         target.fromUserId.apply(input.fromUserId);
         target.toUserId.apply(input.toUserId);
         target.timeMs.apply(input.localTimeMs);
+        target.read.apply(input.localRead);
         target.type.apply(input.messageType);
         target.title.apply(input.title);
         target.body.apply(input.body);

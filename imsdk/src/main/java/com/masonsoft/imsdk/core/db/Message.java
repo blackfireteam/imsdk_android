@@ -87,6 +87,12 @@ public class Message {
     public final StateProp<Long> localTimeMs = new StateProp<>();
 
     /**
+     * @see ColumnsMessage#C_LOCAL_READ
+     */
+    @NonNull
+    public final StateProp<Integer> localRead = new StateProp<>();
+
+    /**
      * @see ColumnsMessage#C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY_MS
      */
     @NonNull
@@ -250,6 +256,7 @@ public class Message {
         this.remoteMessageId.apply(input.remoteMessageId);
         this.remoteMessageTime.apply(input.remoteMessageTime);
         this.localTimeMs.apply(input.localTimeMs);
+        this.localRead.apply(input.localRead);
         this.remoteFromUserProfileLastModifyMs.apply(input.remoteFromUserProfileLastModifyMs);
         this.messageType.apply(input.messageType);
         this.title.apply(input.title);
@@ -293,6 +300,9 @@ public class Message {
         }
         if (!this.localTimeMs.isUnset()) {
             target.put(ColumnsMessage.C_LOCAL_TIME_MS, this.localTimeMs.get());
+        }
+        if (!this.localRead.isUnset()) {
+            target.put(ColumnsMessage.C_LOCAL_READ, this.localRead.get());
         }
         if (!this.remoteFromUserProfileLastModifyMs.isUnset()) {
             target.put(ColumnsMessage.C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY_MS, this.remoteFromUserProfileLastModifyMs.get());
@@ -359,6 +369,7 @@ public class Message {
                     ColumnsMessage.C_REMOTE_MSG_ID,
                     ColumnsMessage.C_REMOTE_MSG_TIME,
                     ColumnsMessage.C_LOCAL_TIME_MS,
+                    ColumnsMessage.C_LOCAL_READ,
                     ColumnsMessage.C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY_MS,
                     ColumnsMessage.C_MSG_TYPE,
                     ColumnsMessage.C_TITLE,
@@ -390,6 +401,7 @@ public class Message {
             target.remoteMessageId.set(CursorUtil.getLong(cursor, ++index));
             target.remoteMessageTime.set(CursorUtil.getLong(cursor, ++index));
             target.localTimeMs.set(CursorUtil.getLong(cursor, ++index));
+            target.localRead.set(CursorUtil.getInt(cursor, ++index));
             target.remoteFromUserProfileLastModifyMs.set(CursorUtil.getLong(cursor, ++index));
             target.messageType.set(CursorUtil.getInt(cursor, ++index));
             target.title.set(CursorUtil.getString(cursor, ++index));

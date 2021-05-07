@@ -37,11 +37,12 @@ public class IMImageView extends ImageLayout {
         initFromAttributes(context, attrs, defStyleAttr, 0);
     }
 
-    private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-    }
+    private String mLocationThumbUrl;
 
-    private final int mLocationImageSize = DimenUtil.dp2px(200);
-    private final String mLocationThumbUrl = "http://restapi.amap.com/v3/staticmap?location=%s,%s&zoom=%s&size=" + mLocationImageSize + "*" + mLocationImageSize + "&markers=mid,0xFF0000,0:%s,%s&key=7d496af79e5fabd7616131817f337541";
+    private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        final int locationImageSize = DimenUtil.dp2px(200);
+        mLocationThumbUrl = "http://restapi.amap.com/v3/staticmap?location=%s,%s&zoom=%s&size=" + locationImageSize + "*" + locationImageSize + "&markers=mid,0xFF0000,0:%s,%s&key=7d496af79e5fabd7616131817f337541";
+    }
 
     public void setChatMessage(IMMessage message) {
         String thumbUrl = null;

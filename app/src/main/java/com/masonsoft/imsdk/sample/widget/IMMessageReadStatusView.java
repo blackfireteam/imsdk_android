@@ -50,6 +50,10 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
             layoutParams.gravity = Gravity.CENTER;
             addView(mReadTextView, layoutParams);
         }
+
+        if (isInEditMode()) {
+            mReadTextView.setText(R.string.imsdk_sample_tip_message_read);
+        }
     }
 
     @Override
@@ -64,12 +68,20 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
         }
 
         int messageSendStatus = IMConstants.SendStatus.SUCCESS;
+        boolean read = false;
         if (!message.sendState.isUnset()) {
             messageSendStatus = message.sendState.get();
         }
+        if (!message.read.isUnset()) {
+            read = message.read.get() == IMConstants.TRUE;
+        }
 
         if (messageSendStatus == IMConstants.SendStatus.SUCCESS) {
-            mReadTextView.setText(R.string.imsdk_sample_tip_message_delivered);
+            if (read) {
+                mReadTextView.setText(R.string.imsdk_sample_tip_message_read);
+            } else {
+                mReadTextView.setText(R.string.imsdk_sample_tip_message_delivered);
+            }
         } else {
             mReadTextView.setText(null);
         }

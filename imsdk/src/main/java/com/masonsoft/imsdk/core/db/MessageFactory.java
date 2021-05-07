@@ -61,6 +61,7 @@ public class MessageFactory {
         target.fromUserId.apply(input.fromUserId);
         target.toUserId.apply(input.toUserId);
         target.localTimeMs.apply(input.timeMs);
+        target.localRead.apply(input.read);
         target.messageType.apply(input.type);
         target.title.apply(input.title);
         target.body.apply(input.body);
