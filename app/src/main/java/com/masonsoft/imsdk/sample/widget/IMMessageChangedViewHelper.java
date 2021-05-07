@@ -2,6 +2,8 @@ package com.masonsoft.imsdk.sample.widget;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
+import androidx.core.util.Pair;
 
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
@@ -12,6 +14,7 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -98,7 +101,7 @@ public abstract class IMMessageChangedViewHelper {
         mRequestHolder.set(null);
 
         if (reset) {
-            onMessageChanged(null);
+            onMessageChanged(null, null);
         }
         mRequestHolder.set(Single.just("")
                 .map(input -> {
@@ -110,12 +113,25 @@ public abstract class IMMessageChangedViewHelper {
                     );
                     return new ObjectWrapper(imMessage);
                 })
+                .map(input -> {
+                    final Object customObject = loadCustomObject();
+                    return Pair.create(input, customObject);
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(objectWrapper -> onMessageChanged((IMMessage) objectWrapper.getObject()), SampleLog::e));
+                .subscribe(pair -> {
+                    Preconditions.checkNotNull(pair.first);
+                    onMessageChanged((IMMessage) pair.first.getObject(), pair.second);
+                }, SampleLog::e));
     }
 
-    protected abstract void onMessageChanged(@Nullable IMMessage message);
+    @Nullable
+    @WorkerThread
+    protected Object loadCustomObject() {
+        return null;
+    }
+
+    protected abstract void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject);
 
     @SuppressWarnings("FieldCanBeLocal")
     private final MessageObservable.MessageObserver mMessageObserver = new MessageObservable.MessageObserver() {

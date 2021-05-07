@@ -13,6 +13,7 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -76,7 +77,10 @@ public abstract class IMConversationChangedViewHelper {
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(pair -> onConversationChanged((IMConversation) pair.first.getObject(), pair.second), SampleLog::e));
+                .subscribe(pair -> {
+                    Preconditions.checkNotNull(pair.first);
+                    onConversationChanged((IMConversation) pair.first.getObject(), pair.second);
+                }, SampleLog::e));
     }
 
     @Nullable

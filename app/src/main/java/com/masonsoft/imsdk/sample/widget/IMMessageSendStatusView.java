@@ -38,7 +38,6 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
-
     private ImageView mSendFailView;
     private ProgressBar mSendingView;
 
@@ -87,9 +86,9 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
     }
 
     @Override
-    protected void onMessageUpdate(@Nullable IMMessage message) {
+    protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {
         if (DEBUG) {
-            SampleLog.v("onMessageUpdate %s", message);
+            SampleLog.v("onMessageChanged %s", message);
         }
         mMessageUnsafe = message;
         if (message == null) {
@@ -100,9 +99,7 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
             if (message.sendState.isUnset()) {
                 mMessageSendStatus = -1;
             } else {
-                if (message.sendState.get() != mMessageSendStatus) {
-                    mMessageSendStatus = message.sendState.get();
-                }
+                mMessageSendStatus = message.sendState.get();
             }
         }
 

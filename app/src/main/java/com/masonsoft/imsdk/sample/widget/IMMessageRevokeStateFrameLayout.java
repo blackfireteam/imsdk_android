@@ -66,7 +66,7 @@ public class IMMessageRevokeStateFrameLayout extends IMMessageDynamicFrameLayout
     }
 
     @Override
-    protected void onMessageUpdate(@Nullable IMMessage imMessage) {
+    protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {
         int childCount = getChildCount();
         if (childCount != 2) {
             final Throwable e = new IllegalStateException("only support 2 child. current child count:" + childCount);
@@ -76,7 +76,7 @@ public class IMMessageRevokeStateFrameLayout extends IMMessageDynamicFrameLayout
 
         final View firstChild = getChildAt(0);
         final View secondChild = getChildAt(1);
-        final boolean isRevoked = imMessage != null && imMessage.type.get() == IMConstants.MessageType.REVOKED;
+        final boolean isRevoked = message != null && message.type.get() == IMConstants.MessageType.REVOKED;
         if (isRevoked) {
             ViewUtil.setVisibilityIfChanged(firstChild, View.VISIBLE);
             ViewUtil.setVisibilityIfChanged(secondChild, View.GONE);

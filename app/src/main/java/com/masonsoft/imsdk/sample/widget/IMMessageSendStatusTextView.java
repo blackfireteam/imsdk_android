@@ -68,9 +68,9 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
     }
 
     @Override
-    protected void onMessageUpdate(@Nullable IMMessage message) {
+    protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {
         if (DEBUG) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onMessageUpdate %s", message);
+            SampleLog.v(Objects.defaultObjectTag(this) + " onMessageChanged %s", message);
         }
         if (message == null) {
             mTextView.setText(null);
