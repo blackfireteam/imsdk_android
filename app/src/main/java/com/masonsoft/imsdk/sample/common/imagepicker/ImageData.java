@@ -14,7 +14,6 @@ import androidx.core.util.ObjectsCompat;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import java.io.Closeable;
 import java.io.File;
@@ -30,6 +29,7 @@ import io.github.idonans.core.util.AbortUtil;
 import io.github.idonans.core.util.ContextUtil;
 import io.github.idonans.core.util.HumanUtil;
 import io.github.idonans.core.util.IOUtil;
+import io.github.idonans.core.util.Preconditions;
 
 public class ImageData {
 

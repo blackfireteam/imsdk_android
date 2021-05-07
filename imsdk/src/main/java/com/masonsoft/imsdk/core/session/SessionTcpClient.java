@@ -24,7 +24,6 @@ import com.masonsoft.imsdk.lang.MultiProcessor;
 import com.masonsoft.imsdk.lang.NotNullProcessor;
 import com.masonsoft.imsdk.lang.Processor;
 import com.masonsoft.imsdk.util.Objects;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -36,6 +35,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import io.github.idonans.core.Charsets;
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.Preconditions;
 
 /**
  * 维护长连接的可用性，包括在长连接上进行 Session 认证，发送心跳等。

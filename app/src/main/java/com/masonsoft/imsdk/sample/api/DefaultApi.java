@@ -25,7 +25,6 @@ import com.masonsoft.imsdk.sample.im.FetchSparkMessagePacket;
 import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
 import com.masonsoft.imsdk.sample.util.RequestSignUtil;
 import com.masonsoft.imsdk.user.UserInfoManager;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import io.github.idonans.core.util.Preconditions;
 import io.reactivex.rxjava3.subjects.SingleSubject;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;

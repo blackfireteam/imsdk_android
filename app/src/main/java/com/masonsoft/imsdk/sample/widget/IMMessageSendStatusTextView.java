@@ -22,6 +22,8 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.util.Objects;
 
+import io.github.idonans.core.util.Preconditions;
+
 public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
 
     public IMMessageSendStatusTextView(Context context) {
@@ -48,8 +50,10 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mSendFailDrawable = ContextCompat.getDrawable(context, R.drawable.imsdk_sample_ic_conversation_send_status_small_fail);
+        Preconditions.checkNotNull(mSendFailDrawable);
         mSendFailDrawable.setBounds(0, 0, mSendFailDrawable.getIntrinsicWidth(), mSendFailDrawable.getIntrinsicHeight());
         mSendingDrawable = ContextCompat.getDrawable(context, R.drawable.imsdk_sample_ic_conversation_send_status_small_sending);
+        Preconditions.checkNotNull(mSendingDrawable);
         mSendingDrawable.setBounds(0, 0, mSendingDrawable.getIntrinsicWidth(), mSendingDrawable.getIntrinsicHeight());
 
         mTextView = new AppCompatTextView(context);

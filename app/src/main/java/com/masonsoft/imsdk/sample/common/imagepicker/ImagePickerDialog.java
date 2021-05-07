@@ -23,7 +23,6 @@ import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonImagePickerDialog
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonImagePickerDialogPagerViewBinding;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.widget.GridItemDecoration;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.List;
 
@@ -31,6 +30,7 @@ import io.github.idonans.backstack.ViewBackLayer;
 import io.github.idonans.backstack.dialog.ViewDialog;
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeItemObject;

@@ -17,7 +17,6 @@ import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.util.Objects;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +25,7 @@ import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.AbortUtil;
 import io.github.idonans.core.util.IOUtil;
+import io.github.idonans.core.util.Preconditions;
 import io.reactivex.rxjava3.subjects.SingleSubject;
 
 /**

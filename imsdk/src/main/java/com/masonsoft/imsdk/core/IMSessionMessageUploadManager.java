@@ -22,7 +22,6 @@ import com.masonsoft.imsdk.lang.GeneralErrorCode;
 import com.masonsoft.imsdk.lang.GeneralErrorCodeException;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
 import com.masonsoft.imsdk.util.Objects;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +33,7 @@ import io.github.idonans.core.Progress;
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.TaskQueue;
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.Preconditions;
 
 /**
  * 会话消息上传队列. 从 LocalSendingMessage 表中读取需要发送的内容依次处理, 并处理对应的消息响应。

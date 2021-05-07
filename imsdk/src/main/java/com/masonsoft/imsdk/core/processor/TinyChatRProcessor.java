@@ -17,7 +17,8 @@ import com.masonsoft.imsdk.core.db.Sequence;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.user.UserInfoSyncManager;
-import com.masonsoft.imsdk.util.Preconditions;
+
+import io.github.idonans.core.util.Preconditions;
 
 /**
  * 处理单条 ChatR 消息

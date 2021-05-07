@@ -17,11 +17,11 @@ import com.masonsoft.imsdk.sample.databinding.ImsdkSampleDiscoverFragmentBinding
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.widget.GridItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.List;
 
 import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.systeminsets.SystemInsetsLayout;
 import io.github.idonans.uniontype.Host;

@@ -14,10 +14,10 @@ import com.masonsoft.imsdk.sample.widget.SessionUserIdChangedViewHelper;
 import com.masonsoft.imsdk.sample.widget.UserCacheChangedViewHelper;
 import com.masonsoft.imsdk.user.UserInfo;
 import com.masonsoft.imsdk.user.UserInfoManager;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import io.github.idonans.core.Progress;
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.dynamic.DynamicPresenter;
 import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;

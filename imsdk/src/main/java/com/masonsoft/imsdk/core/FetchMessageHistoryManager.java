@@ -25,7 +25,6 @@ import com.masonsoft.imsdk.lang.GeneralErrorCode;
 import com.masonsoft.imsdk.lang.GeneralErrorCodeException;
 import com.masonsoft.imsdk.lang.SafetyRunnable;
 import com.masonsoft.imsdk.util.Objects;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.TaskQueue;
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.Preconditions;
 
 /**
  * 获取历史消息

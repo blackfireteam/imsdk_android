@@ -4,10 +4,11 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.github.idonans.core.util.Preconditions;
 
 public class GeneralErrorCode {
 

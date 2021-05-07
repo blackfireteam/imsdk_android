@@ -6,11 +6,11 @@ import android.view.ViewGroup;
 
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonImChatMessageMenuDialogBinding;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import java.util.List;
 
 import io.github.idonans.backstack.dialog.ViewDialog;
+import io.github.idonans.core.util.Preconditions;
 
 /**
  * 长按一个消息的弹框, 内部基于 IMChatMessagePopupView 实现

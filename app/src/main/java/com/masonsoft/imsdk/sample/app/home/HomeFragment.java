@@ -27,9 +27,9 @@ import com.masonsoft.imsdk.sample.uniontype.viewholder.HomeSparkViewHolder;
 import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardLayoutItemTouchHelper;
 import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardLayoutManager;
 import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardTouchCallbackImpl;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import io.github.idonans.core.util.IOUtil;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.systeminsets.SystemInsetsLayout;

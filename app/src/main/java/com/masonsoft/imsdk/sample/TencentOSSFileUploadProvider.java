@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.FileUploadProvider;
 import com.masonsoft.imsdk.sample.util.FilenameUtil;
-import com.masonsoft.imsdk.util.Preconditions;
 import com.tencent.cos.xml.CosXmlService;
 import com.tencent.cos.xml.CosXmlServiceConfig;
 import com.tencent.cos.xml.model.object.PutObjectRequest;
@@ -17,6 +16,7 @@ import com.tencent.qcloud.core.auth.ShortTimeCredentialProvider;
 import io.github.idonans.core.Progress;
 import io.github.idonans.core.util.ContextUtil;
 import io.github.idonans.core.util.FileUtil;
+import io.github.idonans.core.util.Preconditions;
 
 /**
  * 基于腾讯云对象存储实现的文件上传服务

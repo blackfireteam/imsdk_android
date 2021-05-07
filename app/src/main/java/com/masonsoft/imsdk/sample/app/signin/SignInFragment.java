@@ -21,9 +21,9 @@ import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentConfirmDialog
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
 import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
-import com.masonsoft.imsdk.util.Preconditions;
 
 import io.github.idonans.core.FormValidator;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.core.util.SystemUtil;
 import io.github.idonans.core.util.ToastUtil;
 import io.github.idonans.lang.util.ViewUtil;
