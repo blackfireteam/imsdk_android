@@ -21,6 +21,10 @@ public final class IMConstants {
      */
     public static final int FALSE = 0;
 
+    public static int trueOfFalse(boolean input) {
+        return input ? TRUE : FALSE;
+    }
+
     /**
      * 指代任意 id
      */

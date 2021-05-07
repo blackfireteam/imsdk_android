@@ -8,6 +8,8 @@ import com.masonsoft.imsdk.core.proto.ProtoMessage;
 
 public class ConversationFactory {
 
+    private static final long NEW_SEQ_DIFF = 1577808000000000L;
+
     private ConversationFactory() {
     }
 
@@ -20,14 +22,24 @@ public class ConversationFactory {
         target.remoteShowMessageId.set(input.getShowMsgId());
         target.remoteUnread.set(input.getUnread());
         target.localUnreadCount.set(input.getUnread());
-        target.matched.set(input.getMatched() ? IMConstants.TRUE : IMConstants.FALSE);
-        target.newMessage.set(input.getNewMsg() ? IMConstants.TRUE : IMConstants.FALSE);
-        target.myMove.set(input.getMyMove() ? IMConstants.TRUE : IMConstants.FALSE);
-        target.iceBreak.set(input.getIceBreak() ? IMConstants.TRUE : IMConstants.FALSE);
-        target.tipFree.set(input.getTipFree() ? IMConstants.TRUE : IMConstants.FALSE);
-        target.topAlbum.set(input.getTopAlbum() ? IMConstants.TRUE : IMConstants.FALSE);
-        target.iBlockU.set(input.getIBlockU() ? IMConstants.TRUE : IMConstants.FALSE);
-        target.connected.set(input.getConnected() ? IMConstants.TRUE : IMConstants.FALSE);
+        target.matched.set(IMConstants.trueOfFalse(input.getMatched()));
+        target.newMessage.set(IMConstants.trueOfFalse(input.getNewMsg()));
+        target.myMove.set(IMConstants.trueOfFalse(input.getMyMove()));
+        target.iceBreak.set(IMConstants.trueOfFalse(input.getIceBreak()));
+        target.tipFree.set(IMConstants.trueOfFalse(input.getTipFree()));
+        target.topAlbum.set(IMConstants.trueOfFalse(input.getTopAlbum()));
+        target.iBlockU.set(IMConstants.trueOfFalse(input.getIBlockU()));
+        target.connected.set(IMConstants.trueOfFalse(input.getConnected()));
+        target.delete.set(IMConstants.trueOfFalse(input.getDeleted()));
+
+        final long showMessageTime = input.getShowMsgTime();
+        if (showMessageTime > 0) {
+            target.localSeq.set(Sequence.create(showMessageTime));
+        } else {
+            // 设置一个较小的 seq
+            target.localSeq.set(Sequence.create(SignGenerator.next() - NEW_SEQ_DIFF));
+        }
+
         return target;
     }
 
