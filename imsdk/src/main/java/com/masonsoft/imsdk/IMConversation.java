@@ -52,6 +52,12 @@ public class IMConversation {
     public final StateProp<Long> targetUserId = new StateProp<>();
 
     /**
+     * 最后一条已读的消息 id
+     */
+    @NonNull
+    public final StateProp<Long> messageLastRead = new StateProp<>();
+
+    /**
      * 在该会话上应该显示的 "最后一条" 消息
      */
     @NonNull
@@ -138,6 +144,7 @@ public class IMConversation {
         this.seq.apply(input.seq);
         this.type.apply(input.type);
         this.targetUserId.apply(input.targetUserId);
+        this.messageLastRead.apply(input.messageLastRead);
         this.showMessageId.apply(input.showMessageId);
         this.unreadCount.apply(input.unreadCount);
         this.timeMs.apply(input.timeMs);

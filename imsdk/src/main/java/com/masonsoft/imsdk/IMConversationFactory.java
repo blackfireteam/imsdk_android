@@ -28,6 +28,7 @@ public class IMConversationFactory {
         target.seq.apply(input.localSeq);
         target.type.apply(input.localConversationType);
         target.targetUserId.apply(input.targetUserId);
+        target.messageLastRead.apply(input.messageLastRead);
         target.showMessageId.apply(input.localShowMessageId);
         target.unreadCount.apply(input.localUnreadCount);
         target.timeMs.apply(input.localTimeMs);

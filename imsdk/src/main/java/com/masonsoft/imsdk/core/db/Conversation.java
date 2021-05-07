@@ -61,10 +61,10 @@ public class Conversation {
     public final StateProp<Long> remoteMessageEnd = new StateProp<>();
 
     /**
-     * @see ColumnsConversation#C_REMOTE_MSG_LAST_READ
+     * @see ColumnsConversation#C_MSG_LAST_READ
      */
     @NonNull
-    public final StateProp<Long> remoteMessageLastRead = new StateProp<>();
+    public final StateProp<Long> messageLastRead = new StateProp<>();
 
     /**
      * @see ColumnsConversation#C_REMOTE_SHOW_MSG_ID
@@ -213,8 +213,8 @@ public class Conversation {
         if (!this.remoteMessageEnd.isUnset()) {
             target.put(ColumnsConversation.C_REMOTE_MSG_END, this.remoteMessageEnd.get());
         }
-        if (!this.remoteMessageLastRead.isUnset()) {
-            target.put(ColumnsConversation.C_REMOTE_MSG_LAST_READ, this.remoteMessageLastRead.get());
+        if (!this.messageLastRead.isUnset()) {
+            target.put(ColumnsConversation.C_MSG_LAST_READ, this.messageLastRead.get());
         }
         if (!this.remoteShowMessageId.isUnset()) {
             target.put(ColumnsConversation.C_REMOTE_SHOW_MSG_ID, this.remoteShowMessageId.get());
@@ -276,7 +276,7 @@ public class Conversation {
                     ColumnsConversation.C_LOCAL_CONVERSATION_TYPE,
                     ColumnsConversation.C_TARGET_USER_ID,
                     ColumnsConversation.C_REMOTE_MSG_END,
-                    ColumnsConversation.C_REMOTE_MSG_LAST_READ,
+                    ColumnsConversation.C_MSG_LAST_READ,
                     ColumnsConversation.C_REMOTE_SHOW_MSG_ID,
                     ColumnsConversation.C_LOCAL_SHOW_MSG_ID,
                     ColumnsConversation.C_REMOTE_UNREAD,
@@ -305,7 +305,7 @@ public class Conversation {
             target.localConversationType.set(CursorUtil.getInt(cursor, ++index));
             target.targetUserId.set(CursorUtil.getLong(cursor, ++index));
             target.remoteMessageEnd.set(CursorUtil.getLong(cursor, ++index));
-            target.remoteMessageLastRead.set(CursorUtil.getLong(cursor, ++index));
+            target.messageLastRead.set(CursorUtil.getLong(cursor, ++index));
             target.remoteShowMessageId.set(CursorUtil.getLong(cursor, ++index));
             target.localShowMessageId.set(CursorUtil.getLong(cursor, ++index));
             target.remoteUnread.set(CursorUtil.getLong(cursor, ++index));

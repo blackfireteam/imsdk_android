@@ -18,7 +18,7 @@ public class ConversationFactory {
         final Conversation target = new Conversation();
         target.targetUserId.set(input.getUid());
         target.remoteMessageEnd.set(input.getMsgEnd());
-        target.remoteMessageLastRead.set(input.getMsgLastRead());
+        target.messageLastRead.set(input.getMsgLastRead());
         target.remoteShowMessageId.set(input.getShowMsgId());
         target.remoteUnread.set(input.getUnread());
         target.localUnreadCount.set(input.getUnread());

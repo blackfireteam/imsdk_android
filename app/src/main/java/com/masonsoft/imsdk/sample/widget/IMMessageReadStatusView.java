@@ -10,8 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
+import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMConversationManager;
+import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 
@@ -35,10 +38,28 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    @SuppressWarnings("FieldCanBeLocal")
+    private IMConversationChangedViewHelper mConversationChangedViewHelper;
     private TextView mReadTextView;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        setWillNotDraw(false);
+        mConversationChangedViewHelper = new IMConversationChangedViewHelper() {
+            @Nullable
+            @Override
+            protected IMMessage loadCustomObject() {
+                final long localMessageId = getLocalMessageId();
+                if (localMessageId > 0) {
+                    return IMMessageManager.getInstance().getMessage(getSessionUserId(), getConversationType(), getTargetUserId(), localMessageId);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject) {
+                onConversationOrMessageChanged(conversation, (IMMessage) customObject);
+            }
+        };
+
         {
             mReadTextView = new AppCompatTextView(context);
             mReadTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
@@ -56,13 +77,23 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
         }
     }
 
+    @Nullable
+    @Override
+    protected IMConversation loadCustomObject() {
+        return IMConversationManager.getInstance().getConversationByTargetUserId(getSessionUserId(), getConversationType(), getTargetUserId());
+    }
+
     @Override
     protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {
+        onConversationOrMessageChanged((IMConversation) customObject, message);
+    }
+
+    private void onConversationOrMessageChanged(@Nullable IMConversation conversation, @Nullable IMMessage message) {
         if (DEBUG) {
-            SampleLog.v("onMessageChanged %s", message);
+            SampleLog.v("onConversationOrMessageChanged conversation:%s message:%s", conversation, message);
         }
 
-        if (message == null) {
+        if (message == null || conversation == null) {
             mReadTextView.setText(null);
             return;
         }
@@ -72,8 +103,9 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
         if (!message.sendState.isUnset()) {
             messageSendStatus = message.sendState.get();
         }
-        if (!message.read.isUnset()) {
-            read = message.read.get() == IMConstants.TRUE;
+
+        if (!conversation.messageLastRead.isUnset()) {
+            read = message.id.get() <= conversation.messageLastRead.get();
         }
 
         if (messageSendStatus == IMConstants.SendStatus.SUCCESS) {

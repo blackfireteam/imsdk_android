@@ -54,7 +54,7 @@ public class TinyConversationUpdateProcessor extends ReceivedProtoMessageProtoTy
         conversationUpdate.localId.set(dbConversation.localId.get());
         boolean fetchMessageHistory = false;
         if (event == EVENT_MSG_LAST_READ) {
-            conversationUpdate.remoteMessageLastRead.set(protoMessageObject.getMsgLastRead());
+            conversationUpdate.messageLastRead.set(protoMessageObject.getMsgLastRead());
         } else if (event == EVENT_UNREAD) {
             conversationUpdate.remoteUnread.set(protoMessageObject.getUnread());
             conversationUpdate.localUnreadCount.set(protoMessageObject.getUnread());

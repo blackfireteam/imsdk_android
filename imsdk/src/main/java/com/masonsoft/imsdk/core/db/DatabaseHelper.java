@@ -99,7 +99,7 @@ public final class DatabaseHelper {
          * @since db version 1
          */
         @Remote("msg_last_read")
-        String C_REMOTE_MSG_LAST_READ = "c_remote_msg_last_read";
+        String C_MSG_LAST_READ = "c_msg_last_read";
 
         /**
          * 在会话上需要展示的那条消息的 id(这条消息可能并没有存储在本地)。
@@ -293,14 +293,6 @@ public final class DatabaseHelper {
          */
         @Local
         String C_LOCAL_TIME_MS = "c_local_time_ms";
-
-        /**
-         * 我发送的消息对方是否已读
-         *
-         * @since db version 1
-         */
-        @Local
-        String C_LOCAL_READ = "c_local_read";
 
         /**
          * 消息发送者的个人信息的最后更新时间。用来校验本地缓存是否需要更新。<br>
@@ -583,7 +575,7 @@ public final class DatabaseHelper {
                 ColumnsConversation.C_LOCAL_CONVERSATION_TYPE + " integer not null," +
                 ColumnsConversation.C_TARGET_USER_ID + " integer not null," +
                 ColumnsConversation.C_REMOTE_MSG_END + " integer not null default 0," +
-                ColumnsConversation.C_REMOTE_MSG_LAST_READ + " integer not null default 0," +
+                ColumnsConversation.C_MSG_LAST_READ + " integer not null default 0," +
                 ColumnsConversation.C_REMOTE_SHOW_MSG_ID + " integer not null default 0," +
                 ColumnsConversation.C_LOCAL_SHOW_MSG_ID + " integer not null default 0," +
                 ColumnsConversation.C_REMOTE_UNREAD + " integer not null default 0," +
@@ -686,7 +678,6 @@ public final class DatabaseHelper {
                 ColumnsMessage.C_REMOTE_MSG_ID + " integer," +
                 ColumnsMessage.C_REMOTE_MSG_TIME + " integer not null default 0," +
                 ColumnsMessage.C_LOCAL_TIME_MS + " integer not null," +
-                ColumnsMessage.C_LOCAL_READ + " integer not null default 0," +
                 ColumnsMessage.C_REMOTE_FROM_USER_PROFILE_LAST_MODIFY_MS + " integer not null default 0," +
                 ColumnsMessage.C_MSG_TYPE + " integer not null," +
                 ColumnsMessage.C_TITLE + " text," +
@@ -715,7 +706,6 @@ public final class DatabaseHelper {
                 "create index if not exists " + tableNameMessage + "_index_from_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_FROM_USER_ID + ")",
                 "create index if not exists " + tableNameMessage + "_index_to_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_TO_USER_ID + ")",
                 "create unique index if not exists " + tableNameMessage + "_index_unique_rmi on " + tableNameMessage + "(" + ColumnsMessage.C_REMOTE_MSG_ID + ")",
-                "create index if not exists " + tableNameMessage + "_index_local_read on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_READ + ")",
                 "create index if not exists " + tableNameMessage + "_index_msg_type on " + tableNameMessage + "(" + ColumnsMessage.C_MSG_TYPE + ")",
                 "create index if not exists " + tableNameMessage + "_index_local_action_msg on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_ACTION_MSG + ")",
                 "create index if not exists " + tableNameMessage + "_index_local_block_id on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_BLOCK_ID + ")",
