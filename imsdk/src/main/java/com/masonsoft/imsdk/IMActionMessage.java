@@ -19,6 +19,10 @@ public class IMActionMessage implements EnqueueMessage {
      * 回执消息已读
      */
     public static final int ACTION_TYPE_MARK_AS_READ = 2;
+    /**
+     * 删除会话
+     */
+    public static final int ACTION_TYPE_DELETE_CONVERSATION = 3;
 
     private final long mSessionUserId;
     private final int mActionType;

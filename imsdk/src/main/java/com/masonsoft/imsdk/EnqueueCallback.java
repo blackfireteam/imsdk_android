@@ -57,6 +57,11 @@ public interface EnqueueCallback<T extends EnqueueMessage> {
      */
     int ERROR_CODE_MESSAGE_ALREADY_REVOKE = 9;
 
+    /**
+     * 非法的会话 id.
+     */
+    int ERROR_CODE_INVALID_CONVERSATION_ID = 10;
+
     //////////////////////////////////////////
     //////////////////////////////////////////
     /**

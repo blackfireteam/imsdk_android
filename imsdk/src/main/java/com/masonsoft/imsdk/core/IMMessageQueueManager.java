@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.EnqueueCallback;
 import com.masonsoft.imsdk.EnqueueCallbackAdapter;
 import com.masonsoft.imsdk.IMActionMessage;
+import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.IMSessionMessage;
@@ -14,6 +15,7 @@ import com.masonsoft.imsdk.core.processor.InternalReceivedProtoMessageProtoTypeP
 import com.masonsoft.imsdk.core.processor.InternalSendSessionMessageTypeValidateProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageResultIgnoreProcessor;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageSessionProcessor;
+import com.masonsoft.imsdk.core.processor.SendActionTypeDeleteConversationValidateProcessor;
 import com.masonsoft.imsdk.core.processor.SendActionTypeMarkAsReadValidateProcessor;
 import com.masonsoft.imsdk.core.processor.SendActionTypeRevokeValidateProcessor;
 import com.masonsoft.imsdk.core.processor.SendSessionMessageRecoveryProcessor;
@@ -74,6 +76,7 @@ public class IMMessageQueueManager {
 
         mSendActionMessageProcessor.addLastProcessor(new SendActionTypeRevokeValidateProcessor());
         mSendActionMessageProcessor.addLastProcessor(new SendActionTypeMarkAsReadValidateProcessor());
+        mSendActionMessageProcessor.addLastProcessor(new SendActionTypeDeleteConversationValidateProcessor());
 
         Threads.postBackground(() -> IMManager.getInstance().start());
     }
@@ -206,6 +209,13 @@ public class IMMessageQueueManager {
      */
     public void enqueueMarkAsReadActionMessage(@NonNull IMMessage message) {
         this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_MARK_AS_READ, message);
+    }
+
+    /**
+     * 删除会话
+     */
+    public void enqueueDeleteConversationActionMessage(@NonNull IMConversation conversation) {
+        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_DELETE_CONVERSATION, conversation);
     }
 
     /**
