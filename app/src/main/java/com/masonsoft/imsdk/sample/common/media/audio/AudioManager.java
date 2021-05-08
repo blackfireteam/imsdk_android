@@ -1,14 +1,19 @@
 package com.masonsoft.imsdk.sample.common.media.audio;
 
 import android.media.MediaRecorder;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.math.MathUtils;
 
+import com.masonsoft.imsdk.lang.MediaInfo;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.util.MediaUtil;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.manager.TmpFileManager;
@@ -39,6 +44,8 @@ public class AudioManager {
     private MediaRecorder mAudioRecorder;
     private String mAudioRecorderFile;
     private long mAudioRecordStartTimeMs;
+
+    private OnAudioRecordListener mOnAudioRecordListener;
 
     private AudioManager() {
     }
@@ -158,24 +165,126 @@ public class AudioManager {
 
     // 通知录音开始
     private void notifyAudioRecordStart() {
+        Threads.postUi(() -> {
+            if (mOnAudioRecordListener != null) {
+                mOnAudioRecordListener.onAudioRecordStart();
+            }
+        });
     }
 
     // 通知录音进度
     private void notifyAudioRecordProgress(long duration) {
+        Threads.postUi(() -> {
+            if (mOnAudioRecordListener != null) {
+                mOnAudioRecordListener.onAudioRecordProgress(duration);
+            }
+        });
     }
 
     // 通知录音出错
     private void notifyAudioRecordError() {
+        Threads.postUi(() -> {
+            if (mOnAudioRecordListener != null) {
+                mOnAudioRecordListener.onAudioRecordError();
+            }
+        });
     }
 
     // 通知录音取消
     private void notifyAudioRecordCancel(boolean lessThanMinDuration/*是否是因为不足最短录音时长而取消*/) {
+        Threads.postUi(() -> {
+            if (mOnAudioRecordListener != null) {
+                mOnAudioRecordListener.onAudioRecordCancel(lessThanMinDuration);
+            }
+        });
     }
 
     // 通知录音正常结束
     private void notifyAudioRecordCompletedSuccess(@NonNull final String audioRecorderFile, boolean reachMaxDuration/*是否是因为到达了最大时长而结束*/) {
+        Threads.postUi(() -> {
+            if (mOnAudioRecordListener != null) {
+                mOnAudioRecordListener.onAudioRecordCompletedSuccess(audioRecorderFile, reachMaxDuration);
+            }
+        });
     }
 
+    public interface OnAudioRecordListener {
+        void onAudioRecordStart();
 
+        void onAudioRecordProgress(long duration);
+
+        void onAudioRecordError();
+
+        void onAudioRecordCancel(boolean lessThanMinDuration);
+
+        void onAudioRecordCompletedSuccess(@NonNull final String audioRecorderFile, boolean reachMaxDuration);
+    }
+
+    public void setOnAudioRecordListener(@Nullable OnAudioRecordListener listener) {
+        mOnAudioRecordListener = new WeakOnAudioRecordListener(listener);
+    }
+
+    private static class WeakOnAudioRecordListener extends WeakReference<OnAudioRecordListener> implements OnAudioRecordListener {
+
+        public WeakOnAudioRecordListener(OnAudioRecordListener listener) {
+            super(listener);
+        }
+
+        @Override
+        public void onAudioRecordStart() {
+            final OnAudioRecordListener listener = get();
+            if (listener != null) {
+                listener.onAudioRecordStart();
+            }
+        }
+
+        @Override
+        public void onAudioRecordProgress(long duration) {
+            final OnAudioRecordListener listener = get();
+            if (listener != null) {
+                listener.onAudioRecordProgress(duration);
+            }
+        }
+
+        @Override
+        public void onAudioRecordError() {
+            final OnAudioRecordListener listener = get();
+            if (listener != null) {
+                listener.onAudioRecordError();
+            }
+        }
+
+        @Override
+        public void onAudioRecordCancel(boolean lessThanMinDuration) {
+            final OnAudioRecordListener listener = get();
+            if (listener != null) {
+                listener.onAudioRecordCancel(lessThanMinDuration);
+            }
+        }
+
+        @Override
+        public void onAudioRecordCompletedSuccess(@NonNull String audioRecorderFile, boolean reachMaxDuration) {
+            final OnAudioRecordListener listener = get();
+            if (listener != null) {
+                listener.onAudioRecordCompletedSuccess(audioRecorderFile, reachMaxDuration);
+            }
+        }
+    }
+
+    /**
+     * 获取音频文件的时长 ms
+     */
+    public long getAudioRecorderDuration(final String audioRecorderFile) {
+        try {
+            final MediaInfo mediaInfo = MediaUtil.decodeMediaInfo(Uri.fromFile(new File(audioRecorderFile)));
+            if (mediaInfo == null) {
+                return 0L;
+            }
+            return mediaInfo.duration;
+        } catch (Throwable e) {
+            SampleLog.e(e);
+            return 0L;
+        }
+    }
 
 }

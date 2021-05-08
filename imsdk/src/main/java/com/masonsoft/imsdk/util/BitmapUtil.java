@@ -27,7 +27,7 @@ public class BitmapUtil {
     private BitmapUtil() {
     }
 
-    @Nullable
+    @NonNull
     private static ImageInfo decodeImageInfoFromFile(@NonNull File file) throws Throwable {
         final String imageFilePath = file.getAbsolutePath();
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -78,9 +78,6 @@ public class BitmapUtil {
             if ("file".equalsIgnoreCase(scheme)) {
                 final String filePath = imageUriString.substring(7);
                 final ImageInfo imageInfo = decodeImageInfoFromFile(new File(filePath));
-                if (imageInfo == null) {
-                    return null;
-                }
                 imageInfo.uri = imageUri;
                 return imageInfo;
             }
@@ -98,9 +95,6 @@ public class BitmapUtil {
                     IOUtil.copy(is, tmpFile, null, null);
                     final String filePath = tmpFile.getAbsolutePath();
                     final ImageInfo imageInfo = decodeImageInfoFromFile(new File(filePath));
-                    if (imageInfo == null) {
-                        return null;
-                    }
                     imageInfo.uri = imageUri;
                     return imageInfo;
                 } finally {
@@ -110,9 +104,6 @@ public class BitmapUtil {
             } else {
                 // 猜测是一个文件地址
                 final ImageInfo imageInfo = decodeImageInfoFromFile(new File(imageUriString));
-                if (imageInfo == null) {
-                    return null;
-                }
                 imageInfo.uri = imageUri;
                 return imageInfo;
             }

@@ -87,9 +87,6 @@ public class MediaUtil {
             if ("file".equalsIgnoreCase(scheme)) {
                 final String filePath = imageUriString.substring(7);
                 final MediaInfo mediaInfo = decodeMediaInfoFromFile(new File(filePath));
-                if (mediaInfo == null) {
-                    return null;
-                }
                 mediaInfo.uri = mediaUri;
                 return mediaInfo;
             }
@@ -107,9 +104,6 @@ public class MediaUtil {
                     IOUtil.copy(is, tmpFile, null, null);
                     final String filePath = tmpFile.getAbsolutePath();
                     final MediaInfo mediaInfo = decodeMediaInfoFromFile(new File(filePath));
-                    if (mediaInfo == null) {
-                        return null;
-                    }
                     mediaInfo.uri = mediaUri;
                     return mediaInfo;
                 } finally {
@@ -119,9 +113,6 @@ public class MediaUtil {
             } else {
                 // 猜测是一个文件地址
                 final MediaInfo mediaInfo = decodeMediaInfoFromFile(new File(imageUriString));
-                if (mediaInfo == null) {
-                    return null;
-                }
                 mediaInfo.uri = mediaUri;
                 return mediaInfo;
             }
