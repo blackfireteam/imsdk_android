@@ -116,7 +116,20 @@
                 app:constraint_referenced_ids="keyboard_edit_text_container" />
 
             <ImageView
-                android:id="@+id/keyboard_type_voice"
+                android:id="@+id/keyboard_voice_system_soft_keyboard"
+                android:layout_width="48dp"
+                android:layout_height="55dp"
+                android:clickable="true"
+                android:contentDescription="@string/imsdk_sample_empty_text_hint"
+                android:focusable="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/imsdk_sample_ic_input_keyboard_selector"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/keyboard_voice"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/keyboard_voice"
                 android:layout_width="48dp"
                 android:layout_height="55dp"
                 android:clickable="true"
@@ -126,7 +139,7 @@
                 android:src="@drawable/imsdk_sample_ic_input_voice_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_edit_text_container"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toEndOf="@id/keyboard_voice_system_soft_keyboard" />
 
             <FrameLayout
                 android:id="@+id/keyboard_edit_text_container"
@@ -135,7 +148,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_emoji"
                 app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@id/keyboard_type_voice">
+                app:layout_constraintStart_toEndOf="@id/keyboard_voice">
 
                 <androidx.emoji.widget.EmojiAppCompatEditText
                     android:id="@+id/keyboard_edit_text"
@@ -153,7 +166,26 @@
                     android:textColor="#FF333333"
                     android:textColorHint="#FF999999"
                     android:textSize="15sp"
+                    android:visibility="visible"
                     tools:text="长文长文字长文字长文文" />
+
+                <TextView
+                    android:id="@+id/keyboard_voice_record_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/imsdk_sample_input_background"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:minHeight="35dp"
+                    android:padding="5dp"
+                    android:singleLine="true"
+                    android:text="@string/imsdk_sample_voice_record_text_input"
+                    android:textColor="#FF333333"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
             </FrameLayout>
 
             <ImageView

@@ -63,4 +63,5 @@
     <string name="imsdk_sample_tip_kicked">你的账号已经在其它地方登录</string>
     <string name="imsdk_sample_tip_message_delivered">已送达</string>
     <string name="imsdk_sample_tip_message_read">已读</string>
+    <string name="imsdk_sample_voice_record_text_input">按住 说话</string>
 </resources>

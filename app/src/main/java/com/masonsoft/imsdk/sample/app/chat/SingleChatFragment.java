@@ -206,6 +206,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
                     ViewUtil.setVisibilityIfChanged(binding.keyboardEmoji, View.VISIBLE);
                     ViewUtil.setVisibilityIfChanged(binding.keyboardEmojiSystemSoftKeyboard, View.GONE);
                 }
+
+                ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoice, View.VISIBLE);
+                ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoiceSystemSoftKeyboard, View.GONE);
+                ViewUtil.setVisibilityIfChanged(mBinding.keyboardEditText, View.VISIBLE);
+                ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoiceRecordText, View.GONE);
             }
 
             @Override
@@ -247,6 +252,38 @@ public class SingleChatFragment extends SystemInsetsFragment {
                             }
                         }});
         ViewUtil.onClick(mBinding.keyboardSubmit, v -> submitTextMessage());
+        ViewUtil.onClick(mBinding.keyboardVoice, v -> {
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+            if (mSoftKeyboardHelper == null) {
+                SampleLog.e(Constants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                return;
+            }
+
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoice, View.GONE);
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoiceSystemSoftKeyboard, View.VISIBLE);
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEditText, View.GONE);
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoiceRecordText, View.VISIBLE);
+            mSoftKeyboardHelper.requestHideAllSoftKeyboard();
+        });
+        ViewUtil.onClick(mBinding.keyboardVoiceSystemSoftKeyboard, v -> {
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+            if (mSoftKeyboardHelper == null) {
+                SampleLog.e(Constants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                return;
+            }
+
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoice, View.VISIBLE);
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoiceSystemSoftKeyboard, View.GONE);
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardEditText, View.VISIBLE);
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoiceRecordText, View.GONE);
+            mSoftKeyboardHelper.requestShowSystemSoftKeyboard();
+        });
         ViewUtil.onClick(mBinding.keyboardEmoji, v -> {
             if (mBinding == null) {
                 SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
@@ -317,6 +354,10 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
         });
 
+        ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoice, View.VISIBLE);
+        ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoiceSystemSoftKeyboard, View.GONE);
+        ViewUtil.setVisibilityIfChanged(mBinding.keyboardEditText, View.VISIBLE);
+        ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoiceRecordText, View.GONE);
         ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmoji, View.VISIBLE);
         ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmojiSystemSoftKeyboard, View.GONE);
 
