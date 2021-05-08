@@ -36,15 +36,16 @@ public class BitmapUtil {
         if (options.outWidth <= 0 || options.outHeight <= 0) {
             throw new IllegalStateException("out width:" + options.outWidth + " or height:" + options.outHeight + " invalid, imageFilePath:" + imageFilePath);
         }
-        final String mimeType = options.outMimeType;
-        if (TextUtils.isEmpty(mimeType)) {
-            throw new IllegalStateException("out mimeType:" + mimeType + " invalid, imageFilePath:" + imageFilePath);
+        final String mimeTypeOrigin = options.outMimeType;
+        if (TextUtils.isEmpty(mimeTypeOrigin)) {
+            throw new IllegalStateException("out mimeType:" + mimeTypeOrigin + " invalid, imageFilePath:" + imageFilePath);
         }
+        final String mimeType = mimeTypeOrigin.trim().toLowerCase();
         final ImageInfo target = new ImageInfo();
         target.width = options.outWidth;
         target.height = options.outHeight;
         target.length = file.length();
-        target.mimeType = mimeType.toLowerCase();
+        target.mimeType = mimeType;
 
         // 如果是 jpeg, 校验图片的旋转方向
         if (target.isJpeg()) {
