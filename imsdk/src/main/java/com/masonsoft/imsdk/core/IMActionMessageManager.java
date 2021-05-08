@@ -4,7 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.IMActionMessage;
+import com.masonsoft.imsdk.IMConversation;
 import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.core.db.Conversation;
+import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
@@ -30,6 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.TaskQueue;
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.Preconditions;
 
 /**
  * 指令消息发送队列，并处理对应的消息响应。
@@ -307,11 +311,13 @@ public class IMActionMessageManager {
                 if (actionType == IMActionMessage.ACTION_TYPE_REVOKE) {
                     // 撤回一条会话消息(聊天消息)
                     final IMMessage message = (IMMessage) mActionMessage.getActionObject();
+                    Preconditions.checkNotNull(message);
                     final Message dbMessage = MessageDatabaseProvider.getInstance().getMessage(
                             message._sessionUserId.get(),
                             message._conversationType.get(),
                             message._targetUserId.get(),
                             message.id.get());
+                    Preconditions.checkNotNull(dbMessage);
 
                     final ProtoMessage.Revoke revoke = ProtoMessage.Revoke.newBuilder()
                             .setSign(mSign)
@@ -331,6 +337,7 @@ public class IMActionMessageManager {
                 if (actionType == IMActionMessage.ACTION_TYPE_MARK_AS_READ) {
                     // 回执消息已读
                     final IMMessage message = (IMMessage) mActionMessage.getActionObject();
+                    Preconditions.checkNotNull(message);
                     final Message dbMessage = MessageDatabaseProvider.getInstance().getClosestLessThanTargetFromRemoteMessageIdWithSeq(
                             mSessionUserId,
                             message._conversationType.get(),
@@ -356,6 +363,30 @@ public class IMActionMessageManager {
                         mActionMessagePacket.getMessagePacketStateObservable().registerObserver(mActionMessagePacketStateObserver);
                         return markAsReadActionMessagePacket;
                     }
+                }
+
+                if (actionType == IMActionMessage.ACTION_TYPE_DELETE_CONVERSATION) {
+                    // 删除会话
+                    final IMConversation conversation = (IMConversation) mActionMessage.getActionObject();
+                    Preconditions.checkNotNull(conversation);
+                    final Conversation dbConversation = ConversationDatabaseProvider.getInstance().getConversation(
+                            mSessionUserId,
+                            conversation.id.get()
+                    );
+                    Preconditions.checkNotNull(dbConversation);
+
+                    final ProtoMessage.DelChat delChat = ProtoMessage.DelChat.newBuilder()
+                            .setSign(mSign)
+                            .setToUid(dbConversation.targetUserId.get())
+                            .build();
+                    final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(delChat);
+                    final DeleteConversationActionMessagePacket deleteConversationActionMessagePacket = new DeleteConversationActionMessagePacket(
+                            protoByteMessage,
+                            mSign
+                    );
+                    mActionMessagePacket = deleteConversationActionMessagePacket;
+                    mActionMessagePacket.getMessagePacketStateObservable().registerObserver(mActionMessagePacketStateObserver);
+                    return deleteConversationActionMessagePacket;
                 }
 
                 final Throwable e = new IllegalAccessError("unknown action type:" + actionType + " " + mActionMessage.getActionObject());
@@ -390,7 +421,7 @@ public class IMActionMessageManager {
             /**
              * 撤回指定消息
              */
-            private class RevokeActionMessagePacket extends ActionMessagePacket {
+            private static class RevokeActionMessagePacket extends ActionMessagePacket {
 
                 public RevokeActionMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
                     super(protoByteMessage, sign);
@@ -470,7 +501,7 @@ public class IMActionMessageManager {
             /**
              * 消息已读回执
              */
-            private class MarkAsReadActionMessagePacket extends ActionMessagePacket {
+            private static class MarkAsReadActionMessagePacket extends ActionMessagePacket {
 
                 public MarkAsReadActionMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
                     super(protoByteMessage, sign);
@@ -514,7 +545,7 @@ public class IMActionMessageManager {
                         }
                     }
 
-                    // 接收 LastReadMsg 消息
+                    // 接收 ChatItemUpdate 消息
                     if (protoMessageObject instanceof ProtoMessage.ChatItemUpdate) {
                         final ProtoMessage.ChatItemUpdate chatItemUpdate = (ProtoMessage.ChatItemUpdate) protoMessageObject;
 
@@ -548,6 +579,84 @@ public class IMActionMessageManager {
 
             }
 
+            /**
+             * 删除指定会话
+             */
+            private static class DeleteConversationActionMessagePacket extends ActionMessagePacket {
+
+                public DeleteConversationActionMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
+                    super(protoByteMessage, sign);
+                }
+
+                @Override
+                protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
+                    Threads.mustNotUi();
+
+                    final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
+                    if (protoMessageObject == null) {
+                        return false;
+                    }
+
+                    // 接收 Result 消息
+                    if (protoMessageObject instanceof ProtoMessage.Result) {
+                        final ProtoMessage.Result result = (ProtoMessage.Result) protoMessageObject;
+
+                        // 校验 sign 是否相等
+                        if (result.getSign() == getSign()) {
+                            synchronized (getStateLock()) {
+                                final int state = getState();
+                                if (state != STATE_WAIT_RESULT) {
+                                    IMLog.e(Objects.defaultObjectTag(this)
+                                            + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                                    return false;
+                                }
+
+                                if (result.getCode() != 0) {
+                                    setErrorCode((int) result.getCode());
+                                    setErrorMessage(result.getMsg());
+                                    IMLog.e(Objects.defaultObjectTag(this) +
+                                            " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
+                                } else {
+                                    final Throwable e = new IllegalArgumentException(Objects.defaultObjectTag(this) + " unexpected. result code is 0.");
+                                    IMLog.e(e);
+                                }
+                                moveToState(STATE_FAIL);
+                            }
+                            return true;
+                        }
+                    }
+
+                    // 接收 ChatItemUpdate 消息
+                    if (protoMessageObject instanceof ProtoMessage.ChatItemUpdate) {
+                        final ProtoMessage.ChatItemUpdate chatItemUpdate = (ProtoMessage.ChatItemUpdate) protoMessageObject;
+
+                        // 校验 sign 是否相等
+                        if (chatItemUpdate.getSign() == getSign()) {
+                            synchronized (getStateLock()) {
+                                final int state = getState();
+                                if (state != STATE_WAIT_RESULT) {
+                                    IMLog.e(Objects.defaultObjectTag(this)
+                                            + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                                    return false;
+                                }
+
+                                if (!doNotNullProcessConversationUpdateInternal(target)) {
+                                    final Throwable e = new IllegalAccessError("unexpected. doNotNullProcessConversationUpdateInternal return false. sign:" + getSign());
+                                    IMLog.e(e);
+                                }
+                                moveToState(STATE_SUCCESS);
+                            }
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                private boolean doNotNullProcessConversationUpdateInternal(@NonNull SessionProtoByteMessageWrapper target) {
+                    final TinyConversationUpdateProcessor proxy = new TinyConversationUpdateProcessor();
+                    return proxy.doProcess(target);
+                }
+            }
         }
 
         private class ActionMessageObjectWrapperTask implements Runnable {
