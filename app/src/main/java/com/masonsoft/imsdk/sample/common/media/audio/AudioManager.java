@@ -220,7 +220,15 @@ public class AudioManager {
         void onAudioRecordCompletedSuccess(@NonNull final String audioRecorderFile, boolean reachMaxDuration);
     }
 
-    public void setOnAudioRecordListener(@Nullable OnAudioRecordListener listener) {
+    @Nullable
+    public OnAudioRecordListener getAudioRecordListener() {
+        if (mOnAudioRecordListener instanceof WeakOnAudioRecordListener) {
+            return ((WeakOnAudioRecordListener) mOnAudioRecordListener).get();
+        }
+        return mOnAudioRecordListener;
+    }
+
+    public void setAudioRecordListener(@Nullable OnAudioRecordListener listener) {
         mOnAudioRecordListener = new WeakOnAudioRecordListener(listener);
     }
 
