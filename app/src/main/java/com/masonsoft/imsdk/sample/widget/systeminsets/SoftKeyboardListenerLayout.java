@@ -124,7 +124,7 @@ public class SoftKeyboardListenerLayout extends SystemInsetsFrameLayout {
 
     }
 
-    private List<OnDispatchTouchEventListener> mOnDispatchTouchEventListeners = new ArrayList<>();
+    private final List<OnDispatchTouchEventListener> mOnDispatchTouchEventListeners = new ArrayList<>();
 
     public void addOnDispatchTouchEventListener(OnDispatchTouchEventListener listener) {
         if (!mOnDispatchTouchEventListeners.contains(listener)) {
