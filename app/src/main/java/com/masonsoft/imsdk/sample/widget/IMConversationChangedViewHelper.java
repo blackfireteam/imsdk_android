@@ -23,8 +23,14 @@ public abstract class IMConversationChangedViewHelper {
 
     private final DisposableHolder mRequestHolder = new DisposableHolder();
 
+    // 是否使用 mSessionUserId + mConversationId 的形式来确认一个 conversation
+    // 否则使用 mSessionUserId + mConversationType + mTargetUserId 的形式来确认一个 conversation
+    private boolean mByConversationId = true;
+
     private long mSessionUserId = Long.MIN_VALUE / 2;
     private long mConversationId = Long.MIN_VALUE / 2;
+    private int mConversationType = Integer.MIN_VALUE / 2;
+    private long mTargetUserId = Long.MIN_VALUE / 2;
 
     public IMConversationChangedViewHelper() {
         ConversationObservable.DEFAULT.registerObserver(mConversationObserver);
@@ -32,9 +38,24 @@ public abstract class IMConversationChangedViewHelper {
 
     public void setConversation(long sessionUserId, long conversationId) {
         if (mSessionUserId != sessionUserId
-                || mConversationId != conversationId) {
+                || mConversationId != conversationId
+                || !mByConversationId) {
+            mByConversationId = true;
             mSessionUserId = sessionUserId;
             mConversationId = conversationId;
+            requestLoadData(true);
+        }
+    }
+
+    public void setConversationByTargetUserId(long sessionUserId, int conversationType, long targetUserId) {
+        if (mSessionUserId != sessionUserId
+                || mConversationType != conversationType
+                || mTargetUserId != targetUserId
+                || mByConversationId) {
+            mByConversationId = false;
+            mSessionUserId = sessionUserId;
+            mConversationType = conversationType;
+            mTargetUserId = targetUserId;
             requestLoadData(true);
         }
     }
@@ -44,7 +65,10 @@ public abstract class IMConversationChangedViewHelper {
         final StringBuilder builder = new StringBuilder();
         builder.append(Objects.defaultObjectTag(this));
         builder.append(" sessionUserId:").append(this.mSessionUserId);
+        builder.append(" byConversationId:").append(this.mByConversationId);
         builder.append(" conversationId:").append(this.mConversationId);
+        builder.append(" conversationType:").append(this.mConversationType);
+        builder.append(" targetUserId:").append(this.mTargetUserId);
         return builder.toString();
     }
 
@@ -56,6 +80,18 @@ public abstract class IMConversationChangedViewHelper {
         return mConversationId;
     }
 
+    public boolean isByConversationId() {
+        return mByConversationId;
+    }
+
+    public int getConversationType() {
+        return mConversationType;
+    }
+
+    public long getTargetUserId() {
+        return mTargetUserId;
+    }
+
     private void requestLoadData(boolean reset) {
         // abort last
         mRequestHolder.set(null);
@@ -65,10 +101,19 @@ public abstract class IMConversationChangedViewHelper {
         }
         mRequestHolder.set(Single.just("")
                 .map(input -> {
-                    final IMConversation conversation = IMConversationManager.getInstance().getConversation(
-                            mSessionUserId,
-                            mConversationId
-                    );
+                    final IMConversation conversation;
+                    if (mByConversationId) {
+                        conversation = IMConversationManager.getInstance().getConversation(
+                                mSessionUserId,
+                                mConversationId
+                        );
+                    } else {
+                        conversation = IMConversationManager.getInstance().getConversationByTargetUserId(
+                                mSessionUserId,
+                                mConversationType,
+                                mTargetUserId
+                        );
+                    }
                     return new ObjectWrapper(conversation);
                 })
                 .map(input -> {
@@ -94,27 +139,37 @@ public abstract class IMConversationChangedViewHelper {
     @SuppressWarnings("FieldCanBeLocal")
     private final ConversationObservable.ConversationObserver mConversationObserver = new ConversationObservable.ConversationObserver() {
 
-        private boolean notMatch(long sessionUserId, long conversationId) {
-            return !IMConstants.isIdMatch(mSessionUserId, sessionUserId)
-                    || !IMConstants.isIdMatch(mConversationId, conversationId);
+        private boolean notMatch(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+            if (mByConversationId) {
+                return !IMConstants.isIdMatch(mSessionUserId, sessionUserId)
+                        || !IMConstants.isIdMatch(mConversationId, conversationId);
+            } else {
+                return !IMConstants.isIdMatch(mSessionUserId, sessionUserId)
+                        || !IMConstants.isIdMatch(mConversationType, conversationType)
+                        || !IMConstants.isIdMatch(mTargetUserId, targetUserId);
+            }
         }
 
         @Override
         public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            if (notMatch(sessionUserId, conversationId)) {
+            if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
                 return;
             }
 
-            Threads.postUi(() -> onConversationChangedInternal(sessionUserId, conversationId));
+            Threads.postUi(() -> onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId));
         }
 
         @Override
         public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            Threads.postUi(() -> onConversationChangedInternal(sessionUserId, conversationId));
+            if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
+                return;
+            }
+
+            Threads.postUi(() -> onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId));
         }
 
-        private void onConversationChangedInternal(long sessionUserId, long conversationId) {
-            if (notMatch(sessionUserId, conversationId)) {
+        private void onConversationChangedInternal(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+            if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
                 return;
             }
 

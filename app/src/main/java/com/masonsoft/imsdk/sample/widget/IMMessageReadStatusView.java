@@ -77,6 +77,26 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
         }
     }
 
+    @Override
+    public void setMessage(@NonNull IMMessage message) {
+        super.setMessage(message);
+        mConversationChangedViewHelper.setConversationByTargetUserId(
+                getSessionUserId(),
+                getConversationType(),
+                getTargetUserId()
+        );
+    }
+
+    @Override
+    public void setMessage(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
+        super.setMessage(sessionUserId, conversationType, targetUserId, localMessageId);
+        mConversationChangedViewHelper.setConversationByTargetUserId(
+                getSessionUserId(),
+                getConversationType(),
+                getTargetUserId()
+        );
+    }
+
     @Nullable
     @Override
     protected IMConversation loadCustomObject() {
