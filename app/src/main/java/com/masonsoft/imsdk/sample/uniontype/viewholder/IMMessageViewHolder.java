@@ -520,7 +520,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                     }
                 }
 
-                IMChatMessageMenuDialog menuDialog = new IMChatMessageMenuDialog(
+                final IMChatMessageMenuDialog menuDialog = new IMChatMessageMenuDialog(
                         holderFinder.innerActivity,
                         holderFinder.innerActivity.findViewById(Window.ID_ANDROID_CONTENT),
                         anchorView,
@@ -535,7 +535,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                         // 撤回
                         revoke(holderFinder.holder);
                     } else {
-                        SampleLog.e("showMenu onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
+                        SampleLog.e("IMChatMessageMenuDialog onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
                                 menuId, menuText, menuView);
                     }
                 });

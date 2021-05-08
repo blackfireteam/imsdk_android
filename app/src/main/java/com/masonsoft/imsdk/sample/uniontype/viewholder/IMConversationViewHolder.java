@@ -2,17 +2,23 @@ package com.masonsoft.imsdk.sample.uniontype.viewholder;
 
 import android.app.Activity;
 import android.view.View;
-import android.view.ViewParent;
+import android.view.Window;
 
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.IMConversation;
+import com.masonsoft.imsdk.core.I18nResources;
+import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.chat.SingleChatActivity;
+import com.masonsoft.imsdk.sample.common.impopup.IMChatConversationMenuDialog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImConversationBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
@@ -67,19 +73,25 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
                 return false;
             }
 
-            // TODO FIXME
-            /*
-            View anchorView = itemView;
-            new IMChatConversationMenuDialog(innerActivity,
+            final int MENU_ID_DELETE = 1;
+
+            final List<String> menuList = new ArrayList<>();
+            final List<Integer> menuIdList = new ArrayList<>();
+            menuList.add(I18nResources.getString(R.string.imsdk_sample_menu_delete));
+            menuIdList.add(MENU_ID_DELETE);
+
+            final View anchorView = itemView;
+            final IMChatConversationMenuDialog menuDialog = new IMChatConversationMenuDialog(innerActivity,
                     innerActivity.findViewById(Window.ID_ANDROID_CONTENT),
                     anchorView,
                     0,
-                    new String[]{"删除"}) {
+                    menuList,
+                    menuIdList) {
                 @Override
                 protected void onShow() {
                     super.onShow();
                     anchorView.setBackgroundColor(0xfff2f4f5);
-                    requestParentDisallowInterceptTouchEvent(anchorView);
+                    ViewUtil.requestParentDisallowInterceptTouchEvent(anchorView);
                 }
 
                 @Override
@@ -87,26 +99,19 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
                     super.onHide();
                     anchorView.setBackground(null);
                 }
-            }.setOnIMMenuClickListener((menuText, menuIndex) -> {
-                if (menuIndex == 0) {
-                    Threads.postBackground(() -> ImManager.getInstance().deleteChatConversation(conversation));
+            };
+            menuDialog.setOnIMMenuClickListener((menuId, menuText, menuView) -> {
+                if (menuId == MENU_ID_DELETE) {
+                    // 删除
+                    IMMessageQueueManager.getInstance().enqueueDeleteConversationActionMessage(conversation);
                 } else {
-                    Timber.e("invalid menuIndex:%s, menuText:%s", menuIndex, menuText);
+                    SampleLog.e("IMChatConversationMenuDialog onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
+                            menuId, menuText, menuView);
                 }
-            }).show();
-            */
+            });
+            menuDialog.show();
             return true;
         });
-    }
-
-    public static void requestParentDisallowInterceptTouchEvent(View view) {
-        if (view == null) {
-            return;
-        }
-        ViewParent viewParent = view.getParent();
-        if (viewParent != null) {
-            viewParent.requestDisallowInterceptTouchEvent(true);
-        }
     }
 
 }
