@@ -9,6 +9,8 @@ import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageRevokeReceivedVi
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageRevokeSendViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageTextReceivedViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageTextSendViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVoiceReceivedViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVoiceSendViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePickerBucketViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePickerGridViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.ImagePickerPagerViewHolder;
@@ -30,6 +32,8 @@ public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
     public static final int UNION_TYPE_IMPL_IMAGE_PICKER_PAGER = sNextUnionType++; // 图片选择器 Pager 视图中的一个 item
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_RECEIVED = sNextUnionType++; // 聊天消息-接收的图片
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND = sNextUnionType++; // 聊天消息-发送的图片
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_VOICE_RECEIVED = sNextUnionType++; // 聊天消息-接收的语音
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND = sNextUnionType++; // 聊天消息-发送的语音
 
     public UnionTypeMapperImpl() {
         put(UNION_TYPE_IMPL_IM_HOME_SPARK, HomeSparkViewHolder::new);
@@ -44,6 +48,8 @@ public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
         put(UNION_TYPE_IMPL_IMAGE_PICKER_PAGER, ImagePickerPagerViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_RECEIVED, IMMessageImageReceivedViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND, IMMessageImageSendViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_VOICE_RECEIVED, IMMessageVoiceReceivedViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND, IMMessageVoiceSendViewHolder::new);
     }
 
 }
