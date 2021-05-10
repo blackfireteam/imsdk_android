@@ -64,9 +64,8 @@
     <string name="imsdk_sample_tip_message_delivered">已送达</string>
     <string name="imsdk_sample_tip_message_read">已读</string>
     <string name="imsdk_sample_voice_record_text_input">按住 说话</string>
-
-    <string name="down_cancle_send">手指上滑，取消发送</string>
-    <string name="say_time_short">说话时间太短</string>
-    <string name="record_fail">录音失败</string>
-    <string name="up_cancle_send">松开手指，取消发送</string>
+    <string name="imsdk_sample_voice_record_down_cancel_send">手指上滑，取消发送</string>
+    <string name="imsdk_sample_voice_record_say_time_short">说话时间太短</string>
+    <string name="imsdk_sample_voice_record_fail">录音失败</string>
+    <string name="imsdk_sample_voice_record_up_cancel_send">松开手指，取消发送</string>
 </resources>

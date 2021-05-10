@@ -562,7 +562,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             if (drawable instanceof AnimationDrawable) {
                 ((AnimationDrawable) drawable).start();
             }
-            mBinding.recordingVolumeTip.setText(R.string.down_cancle_send);
+            mBinding.recordingVolumeTip.setText(R.string.imsdk_sample_voice_record_down_cancel_send);
         }
 
         private void updateAudioRecording(boolean inside) {
@@ -585,10 +585,10 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 if (drawable instanceof AnimationDrawable) {
                     ((AnimationDrawable) drawable).start();
                 }
-                mBinding.recordingVolumeTip.setText(R.string.down_cancle_send);
+                mBinding.recordingVolumeTip.setText(R.string.imsdk_sample_voice_record_down_cancel_send);
             } else {
                 mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_sample_ic_volume_dialog_cancel);
-                mBinding.recordingVolumeTip.setText(R.string.up_cancle_send);
+                mBinding.recordingVolumeTip.setText(R.string.imsdk_sample_voice_record_up_cancel_send);
             }
         }
 
@@ -615,9 +615,9 @@ public class SingleChatFragment extends SystemInsetsFragment {
             if (tooShort || fail) {
                 mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_sample_ic_volume_dialog_length_short);
                 if (tooShort) {
-                    mBinding.recordingVolumeTip.setText(R.string.say_time_short);
+                    mBinding.recordingVolumeTip.setText(R.string.imsdk_sample_voice_record_say_time_short);
                 } else {
-                    mBinding.recordingVolumeTip.setText(R.string.record_fail);
+                    mBinding.recordingVolumeTip.setText(R.string.imsdk_sample_voice_record_fail);
                 }
 
                 final ImsdkSampleSingleChatFragmentBinding unsafeBinding = mBinding;
