@@ -33,7 +33,10 @@ public class MessageFactory {
         target.thumb.set(input.getThumb());
         target.width.set(input.getWidth());
         target.height.set(input.getHeight());
-        target.duration.set(input.getDuration());
+
+        // 将消息中的时长 秒 转换为毫秒
+        target.durationMs.set(input.getDuration() * 1000);
+
         target.lat.set(input.getLat());
         target.lng.set(input.getLng());
         target.zoom.set(input.getZoom());
@@ -69,7 +72,7 @@ public class MessageFactory {
         target.localThumbOrigin.apply(input.localThumbOrigin);
         target.width.apply(input.width);
         target.height.apply(input.height);
-        target.duration.apply(input.duration);
+        target.durationMs.apply(input.durationMs);
         target.lat.apply(input.lat);
         target.lng.apply(input.lng);
         target.zoom.apply(input.zoom);

@@ -78,21 +78,21 @@ public class IMMessageFactory {
      * 视频消息
      *
      * @param localVideoPath 视频文件的本地完整路径
-     * @param duration       视频时长，单位毫秒
+     * @param durationMs     视频时长，单位毫秒
      * @param width          视频宽度
      * @param height         视频高度
      */
     @NonNull
     public static IMMessage createVideoMessage(
             String localVideoPath,
-            long duration,
+            long durationMs,
             long width,
             long height,
             String localVideoThumbPath) {
         final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.VIDEO);
         target.body.set(localVideoPath);
-        target.duration.set(duration);
+        target.durationMs.set(durationMs);
         target.width.set(width);
         target.height.set(height);
         target.thumb.set(localVideoThumbPath);
@@ -129,7 +129,7 @@ public class IMMessageFactory {
         target.localThumbOrigin.apply(input.localThumbOrigin);
         target.width.apply(input.width);
         target.height.apply(input.height);
-        target.duration.apply(input.duration);
+        target.durationMs.apply(input.durationMs);
         target.lat.apply(input.lat);
         target.lng.apply(input.lng);
         target.zoom.apply(input.zoom);

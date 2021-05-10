@@ -193,7 +193,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
         }
 
         // 必须要有合法的时长参数
-        final StateProp<Long> duration = target.getIMMessage().duration;
+        final StateProp<Long> duration = target.getIMMessage().durationMs;
         if (duration.isUnset()
                 || duration.get() == null
                 || duration.get() <= 0) {

@@ -101,15 +101,11 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
     }
 
     private boolean validateDuration(@NonNull IMSessionMessage target) {
-        if (!IMConstants.SendMessageOption.Audio.DURATION_REQUIRED) {
-            return false;
-        }
-
-        // 必须要有合法的时长参数
-        final StateProp<Long> duration = target.getIMMessage().duration;
-        if (duration.isUnset()
-                || duration.get() == null
-                || duration.get() <= 0) {
+        final StateProp<Long> duration = target.getIMMessage().durationMs;
+        if (!duration.isUnset()
+                && duration.get() != null
+                && duration.get() > 0) {
+            // 已经设置了合法的时长
             target.getEnqueueCallback().onEnqueueFail(
                     target,
                     EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID,

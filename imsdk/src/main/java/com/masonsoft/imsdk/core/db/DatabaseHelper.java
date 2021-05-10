@@ -382,7 +382,7 @@ public final class DatabaseHelper {
          */
         @Remote("duration")
         @Local
-        String C_DURATION = "c_duration";
+        String C_DURATION_MS = "c_duration_ms";
 
         /**
          * 纬度
@@ -687,7 +687,7 @@ public final class DatabaseHelper {
                 ColumnsMessage.C_LOCAL_THUMB_ORIGIN + " text," +
                 ColumnsMessage.C_WIDTH + " integer not null default 0," +
                 ColumnsMessage.C_HEIGHT + " integer not null default 0," +
-                ColumnsMessage.C_DURATION + " integer not null default 0," +
+                ColumnsMessage.C_DURATION_MS + " integer not null default 0," +
                 ColumnsMessage.C_LAT + " double not null default 0," +
                 ColumnsMessage.C_LNG + " double not null default 0," +
                 ColumnsMessage.C_ZOOM + " integer not null default 0," +

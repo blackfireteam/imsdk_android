@@ -127,10 +127,10 @@ public class IMMessage {
     public final StateProp<Long> height = new StateProp<>();
 
     /**
-     * 消息内容：duration
+     * 消息内容：duration ms
      */
     @NonNull
-    public final StateProp<Long> duration = new StateProp<>();
+    public final StateProp<Long> durationMs = new StateProp<>();
 
     /**
      * 消息内容：lat
@@ -203,7 +203,7 @@ public class IMMessage {
         this.localThumbOrigin.apply(input.localThumbOrigin);
         this.width.apply(input.width);
         this.height.apply(input.height);
-        this.duration.apply(input.duration);
+        this.durationMs.apply(input.durationMs);
         this.lat.apply(input.lat);
         this.lng.apply(input.lng);
         this.zoom.apply(input.zoom);

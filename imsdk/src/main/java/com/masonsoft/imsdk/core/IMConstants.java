@@ -91,10 +91,6 @@ public final class IMConstants {
          */
         public static class Audio {
             /**
-             * 是否必须要 duration(语音时长) 参数
-             */
-            public static final boolean DURATION_REQUIRED = false;
-            /**
              * 语音文件大小的限制
              */
             public static final int MAX_FILE_SIZE = 28 * 1024 * 1024;

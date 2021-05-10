@@ -141,10 +141,10 @@ public class Message {
     public final StateProp<Long> height = new StateProp<>();
 
     /**
-     * @see ColumnsMessage#C_DURATION
+     * @see ColumnsMessage#C_DURATION_MS
      */
     @NonNull
-    public final StateProp<Long> duration = new StateProp<>();
+    public final StateProp<Long> durationMs = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_LAT
@@ -259,7 +259,7 @@ public class Message {
         this.localThumbOrigin.apply(input.localThumbOrigin);
         this.width.apply(input.width);
         this.height.apply(input.height);
-        this.duration.apply(input.duration);
+        this.durationMs.apply(input.durationMs);
         this.lat.apply(input.lat);
         this.lng.apply(input.lng);
         this.zoom.apply(input.zoom);
@@ -321,8 +321,8 @@ public class Message {
         if (!this.height.isUnset()) {
             target.put(ColumnsMessage.C_HEIGHT, this.height.get());
         }
-        if (!this.duration.isUnset()) {
-            target.put(ColumnsMessage.C_DURATION, this.duration.get());
+        if (!this.durationMs.isUnset()) {
+            target.put(ColumnsMessage.C_DURATION_MS, this.durationMs.get());
         }
         if (!this.lat.isUnset()) {
             target.put(ColumnsMessage.C_LAT, this.lat.get());
@@ -368,7 +368,7 @@ public class Message {
                     ColumnsMessage.C_LOCAL_THUMB_ORIGIN,
                     ColumnsMessage.C_WIDTH,
                     ColumnsMessage.C_HEIGHT,
-                    ColumnsMessage.C_DURATION,
+                    ColumnsMessage.C_DURATION_MS,
                     ColumnsMessage.C_LAT,
                     ColumnsMessage.C_LNG,
                     ColumnsMessage.C_ZOOM,
@@ -399,7 +399,7 @@ public class Message {
             target.localThumbOrigin.set(CursorUtil.getString(cursor, ++index));
             target.width.set(CursorUtil.getLong(cursor, ++index));
             target.height.set(CursorUtil.getLong(cursor, ++index));
-            target.duration.set(CursorUtil.getLong(cursor, ++index));
+            target.durationMs.set(CursorUtil.getLong(cursor, ++index));
             target.lat.set(CursorUtil.getDouble(cursor, ++index));
             target.lng.set(CursorUtil.getDouble(cursor, ++index));
             target.zoom.set(CursorUtil.getLong(cursor, ++index));
