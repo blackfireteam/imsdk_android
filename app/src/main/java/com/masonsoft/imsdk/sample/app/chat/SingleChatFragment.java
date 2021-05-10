@@ -70,6 +70,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
     @Nullable
     private SoftKeyboardHelper mSoftKeyboardHelper;
     private LocalEnqueueCallback mEnqueueCallback;
+    private VoiceRecordGestureHelper mVoiceRecordGestureHelper;
 
     private UnionTypeAdapter mDataAdapter;
     private SingleChatFragmentPresenter mPresenter;
@@ -222,6 +223,22 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 }
                 ViewUtil.setVisibilityIfChanged(binding.keyboardEmoji, View.VISIBLE);
                 ViewUtil.setVisibilityIfChanged(binding.keyboardEmojiSystemSoftKeyboard, View.GONE);
+            }
+        };
+        mVoiceRecordGestureHelper = new VoiceRecordGestureHelper(mBinding.keyboardVoiceRecordText) {
+            @Override
+            protected void onVoiceRecordGestureStart() {
+                SampleLog.v(Objects.defaultObjectTag(this) + " onVoiceRecordGestureStart");
+            }
+
+            @Override
+            protected void onVoiceRecordGestureMove(boolean inside) {
+                SampleLog.v(Objects.defaultObjectTag(this) + " onVoiceRecordGestureMove inside:%s", inside);
+            }
+
+            @Override
+            protected void onVoiceRecordGestureEnd(boolean inside) {
+                SampleLog.v(Objects.defaultObjectTag(this) + " onVoiceRecordGestureEnd inside:%s", inside);
             }
         };
 
