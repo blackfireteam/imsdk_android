@@ -2,7 +2,6 @@ package com.masonsoft.imsdk.sample.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,7 +12,7 @@ import com.google.android.exoplayer2.audio.AudioListener;
 import com.google.android.exoplayer2.util.Util;
 import com.masonsoft.imsdk.sample.common.media.player.MediaPlayerView;
 
-public class VoicePlayerView extends FrameLayout implements MediaPlayerView {
+public class VoicePlayerView extends ResizeVoiceView implements MediaPlayerView {
 
     public VoicePlayerView(@NonNull Context context) {
         this(context, null);
@@ -24,7 +23,8 @@ public class VoicePlayerView extends FrameLayout implements MediaPlayerView {
     }
 
     public VoicePlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
+        super(context, attrs, defStyleAttr);
+        initFromAttributes(context, attrs, defStyleAttr, 0);
     }
 
     public VoicePlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {

@@ -25,7 +25,8 @@ public class AspectRatioFrameLayout extends FrameLayout {
     }
 
     public AspectRatioFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
+        super(context, attrs, defStyleAttr);
+        initFromAttributes(context, attrs, defStyleAttr, 0);
     }
 
     public AspectRatioFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
