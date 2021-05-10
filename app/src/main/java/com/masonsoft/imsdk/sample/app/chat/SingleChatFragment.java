@@ -1,6 +1,8 @@
 package com.masonsoft.imsdk.sample.app.chat;
 
 import android.app.Activity;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -23,6 +25,7 @@ import com.masonsoft.imsdk.WeakEnqueueCallbackAdapter;
 import com.masonsoft.imsdk.core.IMConstants.ConversationType;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.Constants;
+import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
@@ -237,6 +240,9 @@ public class SingleChatFragment extends SystemInsetsFragment {
             @Override
             protected void onVoiceRecordGestureMove(boolean inside) {
                 SampleLog.v(Objects.defaultObjectTag(this) + " onVoiceRecordGestureMove inside:%s", inside);
+                if (mViewImpl != null) {
+                    mViewImpl.updateAudioRecording(inside);
+                }
             }
 
             @Override
@@ -497,27 +503,39 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         @Override
         public void onAudioRecordStart() {
-
+            SampleLog.v(Objects.defaultObjectTag(this) + " onAudioRecordStart");
+            if (mViewImpl != null) {
+                mViewImpl.showAudioRecording();
+            }
         }
 
         @Override
         public void onAudioRecordProgress(long duration) {
-
+            SampleLog.v(Objects.defaultObjectTag(this) + " onAudioRecordProgress duration:%s", duration);
         }
 
         @Override
         public void onAudioRecordError() {
-
+            SampleLog.v(Objects.defaultObjectTag(this) + " onAudioRecordError");
+            if (mViewImpl != null) {
+                mViewImpl.hideAudioRecoding(false, true);
+            }
         }
 
         @Override
         public void onAudioRecordCancel(boolean lessThanMinDuration) {
-
+            SampleLog.v(Objects.defaultObjectTag(this) + " onAudioRecordCancel lessThanMinDuration:%s", lessThanMinDuration);
+            if (mViewImpl != null) {
+                mViewImpl.hideAudioRecoding(lessThanMinDuration, false);
+            }
         }
 
         @Override
         public void onAudioRecordCompletedSuccess(@NonNull String audioRecorderFile, boolean reachMaxDuration) {
-
+            SampleLog.v(Objects.defaultObjectTag(this) + " onAudioRecordCompletedSuccess audioRecorderFile:%s, reachMaxDuration:%s", audioRecorderFile, reachMaxDuration);
+            if (mViewImpl != null) {
+                mViewImpl.hideAudioRecoding(false, false);
+            }
         }
     }
 
@@ -526,6 +544,88 @@ public class SingleChatFragment extends SystemInsetsFragment {
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
             super(adapter);
             setAlwaysHideNoMoreData(true);
+        }
+
+        private void showAudioRecording() {
+            if (getChildFragmentManager().isStateSaved()) {
+                SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+                return;
+            }
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            ViewUtil.setVisibilityIfChanged(mBinding.recordingVolumeLayer, View.VISIBLE);
+            mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_sample_recording_volume);
+            final Drawable drawable = mBinding.recordingVolumeIcon.getDrawable();
+            if (drawable instanceof AnimationDrawable) {
+                ((AnimationDrawable) drawable).start();
+            }
+            mBinding.recordingVolumeTip.setText(R.string.down_cancle_send);
+        }
+
+        private void updateAudioRecording(boolean inside) {
+            if (getChildFragmentManager().isStateSaved()) {
+                SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+                return;
+            }
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            if (inside) {
+                Drawable drawable = mBinding.recordingVolumeIcon.getDrawable();
+                if (!(drawable instanceof AnimationDrawable)) {
+                    mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_sample_recording_volume);
+                    drawable = mBinding.recordingVolumeIcon.getDrawable();
+                }
+
+                if (drawable instanceof AnimationDrawable) {
+                    ((AnimationDrawable) drawable).start();
+                }
+                mBinding.recordingVolumeTip.setText(R.string.down_cancle_send);
+            } else {
+                mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_sample_ic_volume_dialog_cancel);
+                mBinding.recordingVolumeTip.setText(R.string.up_cancle_send);
+            }
+        }
+
+        private void hideAudioRecoding(final boolean tooShort, final boolean fail) {
+            if (getChildFragmentManager().isStateSaved()) {
+                SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+                return;
+            }
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            if (mBinding.recordingVolumeLayer.getVisibility() == View.GONE) {
+                SampleLog.w("unexpected. hideAudioRecoding recordingVolumeLayer already gone");
+                return;
+            }
+
+            final Drawable drawable = mBinding.recordingVolumeIcon.getDrawable();
+            if (drawable instanceof AnimationDrawable) {
+                ((AnimationDrawable) drawable).stop();
+            }
+
+            if (tooShort || fail) {
+                mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_sample_ic_volume_dialog_length_short);
+                if (tooShort) {
+                    mBinding.recordingVolumeTip.setText(R.string.say_time_short);
+                } else {
+                    mBinding.recordingVolumeTip.setText(R.string.record_fail);
+                }
+
+                final ImsdkSampleSingleChatFragmentBinding unsafeBinding = mBinding;
+                unsafeBinding.getRoot().postDelayed(() -> ViewUtil.setVisibilityIfChanged(unsafeBinding.recordingVolumeLayer, View.GONE), 1000L);
+            } else {
+                final ImsdkSampleSingleChatFragmentBinding unsafeBinding = mBinding;
+                unsafeBinding.getRoot().postDelayed(() -> ViewUtil.setVisibilityIfChanged(unsafeBinding.recordingVolumeLayer, View.GONE), 500L);
+            }
         }
 
         public long getTargetUserId() {

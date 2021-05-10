@@ -285,6 +285,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:includeFontPadding="false"
-            android:textSize="12sp" />
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            tools:text="录音" />
     </LinearLayout>
 </com.masonsoft.imsdk.sample.widget.systeminsets.SoftKeyboardListenerLayout>
