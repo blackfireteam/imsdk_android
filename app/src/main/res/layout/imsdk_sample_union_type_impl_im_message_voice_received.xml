@@ -54,8 +54,8 @@
                 app:layout_flexGrow="0"
                 app:layout_flexShrink="0" />
 
-            <com.masonsoft.imsdk.sample.widget.ResizeVoiceView
-                android:id="@+id/resize_voice_view"
+            <com.masonsoft.imsdk.sample.widget.IMMessageVoiceView
+                android:id="@+id/voice_view"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:background="@drawable/imsdk_sample_chat_bubble_received"
@@ -84,7 +84,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="14sp"
                     tools:text="120''" />
-            </com.masonsoft.imsdk.sample.widget.ResizeVoiceView>
+            </com.masonsoft.imsdk.sample.widget.IMMessageVoiceView>
         </com.google.android.flexbox.FlexboxLayout>
     </com.masonsoft.imsdk.sample.widget.IMMessageRevokeStateFrameLayout>
 

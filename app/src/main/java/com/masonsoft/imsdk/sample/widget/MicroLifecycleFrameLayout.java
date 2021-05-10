@@ -82,23 +82,6 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
 
     protected void setContentView(@LayoutRes int layout) {
         mInflater.inflate(layout, this, true);
-        bindView();
-    }
-
-    private boolean mBindView;
-
-    @UiThread
-    public void bindView(boolean force) {
-        if (!mBindView || force) {
-            mBindView = true;
-            // TODO FIXME
-            // ButterKnife.bind(this);
-        }
-    }
-
-    @UiThread
-    public void bindView() {
-        bindView(false);
     }
 
     public void setDefaultManual(boolean defaultManual) {
