@@ -21,21 +21,21 @@ import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.Preconditions;
 
 /**
- * 音频的录音与播放
+ * 音频的录音
  */
-public class AudioManager {
+public class AudioRecordManager {
 
-    private static final Singleton<AudioManager> INSTANCE = new Singleton<AudioManager>() {
+    private static final Singleton<AudioRecordManager> INSTANCE = new Singleton<AudioRecordManager>() {
         @Override
-        protected AudioManager create() {
-            return new AudioManager();
+        protected AudioRecordManager create() {
+            return new AudioRecordManager();
         }
     };
 
     private static final long AUDIO_RECORD_MIN_DURATION = Constants.AUDIO_RECORD_MIN_DURATION;
     private static final long AUDIO_RECORD_MAX_DURATION = Constants.AUDIO_RECORD_MAX_DURATION;
 
-    public static AudioManager getInstance() {
+    public static AudioRecordManager getInstance() {
         return INSTANCE.get();
     }
 
@@ -47,7 +47,7 @@ public class AudioManager {
 
     private OnAudioRecordListener mOnAudioRecordListener;
 
-    private AudioManager() {
+    private AudioRecordManager() {
     }
 
     public void startAudioRecord() {
@@ -77,7 +77,7 @@ public class AudioManager {
                             }
                             if (mAudioRecorderFile != null) {
                                 final long timeNowMs = System.currentTimeMillis();
-                                AudioManager.this.notifyAudioRecordProgress(timeNowMs - mAudioRecordStartTimeMs);
+                                AudioRecordManager.this.notifyAudioRecordProgress(timeNowMs - mAudioRecordStartTimeMs);
                                 Threads.postUi(this, MathUtils.clamp(300 - (System.currentTimeMillis() - timeNowMs), 100, 300));
                             }
                         }

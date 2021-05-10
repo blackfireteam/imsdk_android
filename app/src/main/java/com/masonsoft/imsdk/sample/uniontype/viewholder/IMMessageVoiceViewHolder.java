@@ -54,10 +54,9 @@ public abstract class IMMessageVoiceViewHolder extends IMMessageViewHolder {
             return true;
         });
         ViewUtil.onClick(mResizeVoiceView, v -> {
-            final UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();
-            if (listener != null) {
-                listener.onItemClick(this);
-            }
+            // 播放语音内容
+            // TODO
+            // AudioManager.getInstance().cancelAudioRecord();
         });
     }
 
