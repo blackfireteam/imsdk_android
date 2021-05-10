@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.sample.uniontype.viewholder;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,12 +36,15 @@ public abstract class IMMessageVoiceViewHolder extends IMMessageViewHolder {
         mVoiceDurationText = itemView.findViewById(R.id.voice_duration_text);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
         super.onBindItemObject(position, itemObject);
         final IMMessage message = itemObject.object;
 
-        mResizeVoiceView.setDurationMs(message.durationMs.getOrDefault(0L));
+        final long durationMs = message.durationMs.getOrDefault(0L);
+        mResizeVoiceView.setDurationMs(durationMs);
+        mVoiceDurationText.setText(durationMs / 1000 + " ''");
 
         mResizeVoiceView.setOnLongClickListener(v -> {
             final UnionTypeViewHolderListeners.OnItemLongClickListener listener = itemObject.getExtHolderItemLongClick1();

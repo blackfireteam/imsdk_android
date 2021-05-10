@@ -298,6 +298,16 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                         dataObject);
             }
 
+            // 语音消息
+            if (msgType == IMConstants.MessageType.AUDIO) {
+                return received ? UnionTypeItemObject.valueOf(
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_VOICE_RECEIVED,
+                        dataObject)
+                        : UnionTypeItemObject.valueOf(
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND,
+                        dataObject);
+            }
+
             // TODO 其它类型的消息
 
             SampleLog.e("createDefault unknown message type: %s", dataObject.object);

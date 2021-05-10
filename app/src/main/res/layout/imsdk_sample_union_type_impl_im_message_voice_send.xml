@@ -64,7 +64,7 @@
                 <com.masonsoft.imsdk.sample.widget.ResizeVoiceView
                     android:id="@+id/resize_voice_view"
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
+                    android:layout_height="37dp"
                     android:background="@drawable/imsdk_sample_chat_bubble_send"
                     android:minWidth="100dp"
                     app:layout_flexGrow="0"
