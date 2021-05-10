@@ -227,6 +227,7 @@ public class IMSessionMessageUploadManager {
                 // 将消息预处理之后构建为 proto buf
                 final int messageType = message.messageType.get();
                 if (messageType == IMConstants.MessageType.TEXT) {
+                    // 文本消息
                     final ProtoMessage.ChatS chatS = ProtoMessage.ChatS.newBuilder()
                             .setSign(mSign)
                             .setType(messageType)
@@ -241,6 +242,7 @@ public class IMSessionMessageUploadManager {
                 }
 
                 if (messageType == IMConstants.MessageType.IMAGE) {
+                    // 图片消息
                     final String imageUrl = message.body.get();
                     if (!URLUtil.isNetworkUrl(imageUrl)) {
                         final String accessUrl = uploadFile(imageUrl, new Progress() {
@@ -278,6 +280,53 @@ public class IMSessionMessageUploadManager {
                             .setBody(message.body.get())
                             .setWidth(message.width.get())
                             .setHeight(message.height.get())
+                            .build();
+                    final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(chatS);
+                    final ChatSMessagePacket chatSMessagePacket = new ChatSMessagePacket(protoByteMessage, mSign);
+                    mChatSMessagePacket = chatSMessagePacket;
+                    mChatSMessagePacket.getMessagePacketStateObservable().registerObserver(mChatSMessagePacketStateObserver);
+                    return chatSMessagePacket;
+                }
+
+                if (messageType == IMConstants.MessageType.AUDIO) {
+                    // 语音消息
+                    final String audioUrl = message.body.get();
+                    if (!URLUtil.isNetworkUrl(audioUrl)) {
+                        final String accessUrl = uploadFile(audioUrl, new Progress() {
+                            @Override
+                            protected void onUpdate() {
+                                super.onUpdate();
+                                setSendProgress(getPercent() / 100f);
+                            }
+                        });
+                        // 备份原始地址
+                        message.localBodyOrigin.set(audioUrl);
+                        // 设置上传成功后的网络地址
+                        message.body.set(accessUrl);
+
+                        // 更新至数据库
+                        final Message messageUpdate = new Message();
+                        messageUpdate.localId.apply(message.localId);
+                        messageUpdate.body.apply(message.body);
+                        messageUpdate.localBodyOrigin.apply(message.localBodyOrigin);
+                        if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                mSessionUserId,
+                                mLocalSendingMessage.conversationType.get(),
+                                mLocalSendingMessage.targetUserId.get(),
+                                messageUpdate)) {
+                            IMLog.e(Objects.defaultObjectTag(this)
+                                    + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", mSign, messageUpdate);
+                            return null;
+                        }
+                    }
+
+                    final ProtoMessage.ChatS chatS = ProtoMessage.ChatS.newBuilder()
+                            .setSign(mSign)
+                            .setType(messageType)
+                            .setToUid(message.toUserId.get())
+                            .setBody(message.body.get())
+                            // 将时长的毫秒转换为秒(四舍五入)
+                            .setDuration((message.durationMs.get() + 500) / 1000)
                             .build();
                     final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(chatS);
                     final ChatSMessagePacket chatSMessagePacket = new ChatSMessagePacket(protoByteMessage, mSign);
