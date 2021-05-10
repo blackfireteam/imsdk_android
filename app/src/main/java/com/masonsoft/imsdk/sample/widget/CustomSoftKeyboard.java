@@ -63,7 +63,7 @@ public class CustomSoftKeyboard extends FrameLayout {
     private ImsdkSampleWidgetCustomSoftKeyboardBinding mBinding;
 
     private static final String[] IMAGE_PICKER_PERMISSION = {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
     private void initFromAttributes(

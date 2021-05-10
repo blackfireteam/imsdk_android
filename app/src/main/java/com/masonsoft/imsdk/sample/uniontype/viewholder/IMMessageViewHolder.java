@@ -98,8 +98,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
 
         //noinspection ResultOfMethodCallIgnored
         new RxPermissions((FragmentActivity) innerActivity)
-                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE)
+                .request(Manifest.permission.READ_EXTERNAL_STORAGE)
                 .subscribe(granted -> {
                     if (!granted) {
                         TipUtil.show(R.string.imsdk_sample_tip_require_permission_storage);

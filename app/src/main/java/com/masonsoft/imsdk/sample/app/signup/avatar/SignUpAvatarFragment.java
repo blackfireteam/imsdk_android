@@ -48,7 +48,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
 
     private final DisposableHolder mPermissionRequest = new DisposableHolder();
     private static final String[] IMAGE_PICKER_PERMISSION = {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
     @Nullable

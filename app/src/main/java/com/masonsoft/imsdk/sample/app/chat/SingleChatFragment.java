@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.sample.app.chat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,13 +43,16 @@ import com.masonsoft.imsdk.sample.util.EditTextUtil;
 import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.sample.widget.CustomSoftKeyboard;
 import com.masonsoft.imsdk.util.Objects;
+import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import java.util.Collection;
 import java.util.List;
 
 import io.github.idonans.core.AbortSignal;
 import io.github.idonans.core.FormValidator;
+import io.github.idonans.core.util.PermissionUtil;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
+import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
@@ -67,6 +72,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    private final DisposableHolder mPermissionRequest = new DisposableHolder();
+    private static final String[] VOICE_RECORD_PERMISSION = {
+            Manifest.permission.RECORD_AUDIO,
+    };
 
     private long mTargetUserId;
     @Nullable
@@ -234,7 +244,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
             @Override
             protected void onVoiceRecordGestureStart() {
                 SampleLog.v(Objects.defaultObjectTag(this) + " onVoiceRecordGestureStart");
-                AudioManager.getInstance().startAudioRecord();
+                if (hasVoiceRecordPermission()) {
+                    AudioManager.getInstance().startAudioRecord();
+                } else {
+                    requestVoiceRecordPermission();
+                }
             }
 
             @Override
@@ -397,6 +411,41 @@ public class SingleChatFragment extends SystemInsetsFragment {
         mPresenter.requestInit();
 
         return mBinding.getRoot();
+    }
+
+    private boolean hasVoiceRecordPermission() {
+        return PermissionUtil.isAllGranted(VOICE_RECORD_PERMISSION);
+    }
+
+    private void requestVoiceRecordPermission() {
+        SampleLog.v("requestVoiceRecordPermission");
+
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            return;
+        }
+
+        if (mBinding == null) {
+            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        //noinspection CastCanBeRemovedNarrowingVariableType
+        final RxPermissions rxPermissions = new RxPermissions((FragmentActivity) activity);
+        mPermissionRequest.set(
+                rxPermissions.request(VOICE_RECORD_PERMISSION)
+                        .subscribe(granted -> {
+                            if (granted) {
+                                onVoiceRecordPermissionGranted();
+                            } else {
+                                SampleLog.e(Constants.ErrorLog.PERMISSION_REQUIRED);
+                            }
+                        }));
+    }
+
+    private void onVoiceRecordPermissionGranted() {
+        SampleLog.v("onVoiceRecordPermissionGranted");
     }
 
     private void submitTextMessage() {
@@ -621,10 +670,10 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 }
 
                 final ImsdkSampleSingleChatFragmentBinding unsafeBinding = mBinding;
-                unsafeBinding.getRoot().postDelayed(() -> ViewUtil.setVisibilityIfChanged(unsafeBinding.recordingVolumeLayer, View.GONE), 1000L);
+                unsafeBinding.getRoot().postDelayed(() -> ViewUtil.setVisibilityIfChanged(unsafeBinding.recordingVolumeLayer, View.GONE), 800L);
             } else {
                 final ImsdkSampleSingleChatFragmentBinding unsafeBinding = mBinding;
-                unsafeBinding.getRoot().postDelayed(() -> ViewUtil.setVisibilityIfChanged(unsafeBinding.recordingVolumeLayer, View.GONE), 500L);
+                unsafeBinding.getRoot().postDelayed(() -> ViewUtil.setVisibilityIfChanged(unsafeBinding.recordingVolumeLayer, View.GONE), 300L);
             }
         }
 
