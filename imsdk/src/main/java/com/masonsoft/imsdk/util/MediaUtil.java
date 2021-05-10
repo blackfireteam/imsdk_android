@@ -29,7 +29,7 @@ public class MediaUtil {
     }
 
     @NonNull
-    public static MediaInfo decodeMediaInfoFromFile(@NonNull File file) throws Throwable {
+    private static MediaInfo decodeMediaInfoFromFile(@NonNull File file) throws Throwable {
         final MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
         try (FileInputStream fis = new FileInputStream(file)) {
             mediaMetadataRetriever.setDataSource(fis.getFD());

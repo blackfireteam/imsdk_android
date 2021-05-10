@@ -1,16 +1,20 @@
 package com.masonsoft.imsdk.core.processor;
 
+import android.net.Uri;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.EnqueueCallback;
+import com.masonsoft.imsdk.IMMessage;
 import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.lang.MediaInfo;
 import com.masonsoft.imsdk.lang.StateProp;
+import com.masonsoft.imsdk.util.MediaUtil;
 
 import java.io.File;
 
@@ -106,6 +110,23 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
                 && duration.get() != null
                 && duration.get() > 0) {
             // 已经设置了合法的时长
+            return false;
+            /*
+            target.getEnqueueCallback().onEnqueueFail(
+                    target,
+                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID,
+                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_duration_invalid)
+            );
+            return true;
+            */
+        }
+
+        // 从音频文件中获取时长信息
+        final IMMessage message = target.getIMMessage();
+        final String audioPath = message.body.get();
+        if (URLUtil.isNetworkUrl(audioPath)) {
+            // 文件本身是一个网络地址
+            // 网络地址无法获取时长信息
             target.getEnqueueCallback().onEnqueueFail(
                     target,
                     EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID,
@@ -113,6 +134,24 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
             );
             return true;
         }
+
+        long decodeDuration = 0L;
+        final MediaInfo mediaInfo = MediaUtil.decodeMediaInfo(Uri.parse(audioPath));
+        if (mediaInfo != null) {
+            decodeDuration = mediaInfo.duration;
+        }
+        if (decodeDuration <= 0) {
+            // 语音时长无效
+            target.getEnqueueCallback().onEnqueueFail(
+                    target,
+                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID,
+                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_duration_invalid)
+            );
+            return true;
+        }
+
+        // 应用时长信息变更
+        duration.set(decodeDuration);
 
         return false;
     }
