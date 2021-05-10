@@ -221,14 +221,14 @@ public class AudioManager {
     }
 
     @Nullable
-    public OnAudioRecordListener getAudioRecordListener() {
+    public OnAudioRecordListener getOnAudioRecordListener() {
         if (mOnAudioRecordListener instanceof WeakOnAudioRecordListener) {
             return ((WeakOnAudioRecordListener) mOnAudioRecordListener).get();
         }
         return mOnAudioRecordListener;
     }
 
-    public void setAudioRecordListener(@Nullable OnAudioRecordListener listener) {
+    public void setOnAudioRecordListener(@Nullable OnAudioRecordListener listener) {
         mOnAudioRecordListener = new WeakOnAudioRecordListener(listener);
     }
 

@@ -26,6 +26,7 @@ import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
+import com.masonsoft.imsdk.sample.common.media.audio.AudioManager;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManagerHost;
 import com.masonsoft.imsdk.sample.common.microlifecycle.VisibleRecyclerViewMicroLifecycleComponentManager;
@@ -71,6 +72,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
     private SoftKeyboardHelper mSoftKeyboardHelper;
     private LocalEnqueueCallback mEnqueueCallback;
     private VoiceRecordGestureHelper mVoiceRecordGestureHelper;
+    private final AudioManager.OnAudioRecordListener mOnAudioRecordListener = new OnAudioRecordListenerImpl();
 
     private UnionTypeAdapter mDataAdapter;
     private SingleChatFragmentPresenter mPresenter;
@@ -229,6 +231,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             @Override
             protected void onVoiceRecordGestureStart() {
                 SampleLog.v(Objects.defaultObjectTag(this) + " onVoiceRecordGestureStart");
+                AudioManager.getInstance().startAudioRecord();
             }
 
             @Override
@@ -239,6 +242,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
             @Override
             protected void onVoiceRecordGestureEnd(boolean inside) {
                 SampleLog.v(Objects.defaultObjectTag(this) + " onVoiceRecordGestureEnd inside:%s", inside);
+                if (inside) {
+                    AudioManager.getInstance().stopAudioRecord();
+                } else {
+                    AudioManager.getInstance().cancelAudioRecord();
+                }
             }
         };
 
@@ -371,6 +379,8 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
         });
 
+        AudioManager.getInstance().setOnAudioRecordListener(mOnAudioRecordListener);
+
         ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoice, View.VISIBLE);
         ViewUtil.setVisibilityIfChanged(mBinding.keyboardVoiceSystemSoftKeyboard, View.GONE);
         ViewUtil.setVisibilityIfChanged(mBinding.keyboardEditText, View.VISIBLE);
@@ -452,6 +462,10 @@ public class SingleChatFragment extends SystemInsetsFragment {
         clearPresenter();
         mBinding = null;
         mViewImpl = null;
+        if (AudioManager.getInstance().getOnAudioRecordListener() == mOnAudioRecordListener) {
+            AudioManager.getInstance().setOnAudioRecordListener(null);
+        }
+        mVoiceRecordGestureHelper = null;
     }
 
     private class UnionTypeAdapterImpl extends UnionTypeAdapter implements MicroLifecycleComponentManagerHost {
@@ -476,6 +490,34 @@ public class SingleChatFragment extends SystemInsetsFragment {
                     }
                 }
             }
+        }
+    }
+
+    private class OnAudioRecordListenerImpl implements AudioManager.OnAudioRecordListener {
+
+        @Override
+        public void onAudioRecordStart() {
+
+        }
+
+        @Override
+        public void onAudioRecordProgress(long duration) {
+
+        }
+
+        @Override
+        public void onAudioRecordError() {
+
+        }
+
+        @Override
+        public void onAudioRecordCancel(boolean lessThanMinDuration) {
+
+        }
+
+        @Override
+        public void onAudioRecordCompletedSuccess(@NonNull String audioRecorderFile, boolean reachMaxDuration) {
+
         }
     }
 
