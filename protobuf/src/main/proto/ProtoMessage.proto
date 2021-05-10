@@ -1,7 +1,7 @@
 syntax = "proto3";
 option java_package = "com.masonsoft.imsdk.core.proto";
 
-// 最近修改时间-2021-05-06 10:11:02
+// 最近修改时间-2021-05-08 10:11:02
 
 //0
 message Ping
@@ -119,7 +119,8 @@ message GetChatList
 //13
 message ChatItem
 {
-  int64 uid = 1;
+  int64 sign = 1;
+  int64 uid = 2;
   int64 msg_end = 3;
   int64 msg_last_read = 4;
   int64 show_msg_id = 5;
@@ -185,6 +186,12 @@ message Profile
 message ProfileList
 {
   repeated Profile profiles = 1;
+}
+//20
+message GetChat
+{
+  int64 sign = 1;
+  int64 uid = 2;
 }
 //50  for demo: 通知客户端用户上线事件
 message ProfileOnline

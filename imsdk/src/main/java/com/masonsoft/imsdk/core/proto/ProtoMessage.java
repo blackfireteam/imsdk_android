@@ -8778,7 +8778,12 @@ public final class ProtoMessage {
           com.google.protobuf.MessageLiteOrBuilder {
 
     /**
-     * <code>optional int64 uid = 1;</code>
+     * <code>optional int64 sign = 1;</code>
+     */
+    long getSign();
+
+    /**
+     * <code>optional int64 uid = 2;</code>
      */
     long getUid();
 
@@ -8902,23 +8907,46 @@ public final class ProtoMessage {
     private ChatItem() {
       showMsg_ = "";
     }
-    public static final int UID_FIELD_NUMBER = 1;
+    public static final int SIGN_FIELD_NUMBER = 1;
+    private long sign_;
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    public long getSign() {
+      return sign_;
+    }
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    private void setSign(long value) {
+
+      sign_ = value;
+    }
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    private void clearSign() {
+
+      sign_ = 0L;
+    }
+
+    public static final int UID_FIELD_NUMBER = 2;
     private long uid_;
     /**
-     * <code>optional int64 uid = 1;</code>
+     * <code>optional int64 uid = 2;</code>
      */
     public long getUid() {
       return uid_;
     }
     /**
-     * <code>optional int64 uid = 1;</code>
+     * <code>optional int64 uid = 2;</code>
      */
     private void setUid(long value) {
 
       uid_ = value;
     }
     /**
-     * <code>optional int64 uid = 1;</code>
+     * <code>optional int64 uid = 2;</code>
      */
     private void clearUid() {
 
@@ -9374,8 +9402,11 @@ public final class ProtoMessage {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
             throws java.io.IOException {
+      if (sign_ != 0L) {
+        output.writeInt64(1, sign_);
+      }
       if (uid_ != 0L) {
-        output.writeInt64(1, uid_);
+        output.writeInt64(2, uid_);
       }
       if (msgEnd_ != 0L) {
         output.writeInt64(3, msgEnd_);
@@ -9432,9 +9463,13 @@ public final class ProtoMessage {
       if (size != -1) return size;
 
       size = 0;
+      if (sign_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(1, sign_);
+      }
       if (uid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, uid_);
+                .computeInt64Size(2, uid_);
       }
       if (msgEnd_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -9591,13 +9626,36 @@ public final class ProtoMessage {
 
 
       /**
-       * <code>optional int64 uid = 1;</code>
+       * <code>optional int64 sign = 1;</code>
+       */
+      public long getSign() {
+        return instance.getSign();
+      }
+      /**
+       * <code>optional int64 sign = 1;</code>
+       */
+      public Builder setSign(long value) {
+        copyOnWrite();
+        instance.setSign(value);
+        return this;
+      }
+      /**
+       * <code>optional int64 sign = 1;</code>
+       */
+      public Builder clearSign() {
+        copyOnWrite();
+        instance.clearSign();
+        return this;
+      }
+
+      /**
+       * <code>optional int64 uid = 2;</code>
        */
       public long getUid() {
         return instance.getUid();
       }
       /**
-       * <code>optional int64 uid = 1;</code>
+       * <code>optional int64 uid = 2;</code>
        */
       public Builder setUid(long value) {
         copyOnWrite();
@@ -9605,7 +9663,7 @@ public final class ProtoMessage {
         return this;
       }
       /**
-       * <code>optional int64 uid = 1;</code>
+       * <code>optional int64 uid = 2;</code>
        */
       public Builder clearUid() {
         copyOnWrite();
@@ -10075,6 +10133,8 @@ public final class ProtoMessage {
         case VISIT: {
           Visitor visitor = (Visitor) arg0;
           com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem other = (com.masonsoft.imsdk.core.proto.ProtoMessage.ChatItem) arg1;
+          sign_ = visitor.visitLong(sign_ != 0L, sign_,
+                  other.sign_ != 0L, other.sign_);
           uid_ = visitor.visitLong(uid_ != 0L, uid_,
                   other.uid_ != 0L, other.uid_);
           msgEnd_ = visitor.visitLong(msgEnd_ != 0L, msgEnd_,
@@ -10134,6 +10194,11 @@ public final class ProtoMessage {
                   break;
                 }
                 case 8: {
+
+                  sign_ = input.readInt64();
+                  break;
+                }
+                case 16: {
 
                   uid_ = input.readInt64();
                   break;
@@ -14067,6 +14132,344 @@ public final class ProtoMessage {
     private static volatile com.google.protobuf.Parser<ProfileList> PARSER;
 
     public static com.google.protobuf.Parser<ProfileList> parser() {
+      return DEFAULT_INSTANCE.getParserForType();
+    }
+  }
+
+  public interface GetChatOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:GetChat)
+          com.google.protobuf.MessageLiteOrBuilder {
+
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    long getSign();
+
+    /**
+     * <code>optional int64 uid = 2;</code>
+     */
+    long getUid();
+  }
+  /**
+   * <pre>
+   *20
+   * </pre>
+   *
+   * Protobuf type {@code GetChat}
+   */
+  public  static final class GetChat extends
+          com.google.protobuf.GeneratedMessageLite<
+                  GetChat, GetChat.Builder> implements
+          // @@protoc_insertion_point(message_implements:GetChat)
+          GetChatOrBuilder {
+    private GetChat() {
+    }
+    public static final int SIGN_FIELD_NUMBER = 1;
+    private long sign_;
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    public long getSign() {
+      return sign_;
+    }
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    private void setSign(long value) {
+
+      sign_ = value;
+    }
+    /**
+     * <code>optional int64 sign = 1;</code>
+     */
+    private void clearSign() {
+
+      sign_ = 0L;
+    }
+
+    public static final int UID_FIELD_NUMBER = 2;
+    private long uid_;
+    /**
+     * <code>optional int64 uid = 2;</code>
+     */
+    public long getUid() {
+      return uid_;
+    }
+    /**
+     * <code>optional int64 uid = 2;</code>
+     */
+    private void setUid(long value) {
+
+      uid_ = value;
+    }
+    /**
+     * <code>optional int64 uid = 2;</code>
+     */
+    private void clearUid() {
+
+      uid_ = 0L;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
+      if (sign_ != 0L) {
+        output.writeInt64(1, sign_);
+      }
+      if (uid_ != 0L) {
+        output.writeInt64(2, uid_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (sign_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(1, sign_);
+      }
+      if (uid_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeInt64Size(2, uid_);
+      }
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, data);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, data);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, input);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, input);
+    }
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+              DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+
+    /**
+     * <pre>
+     *20
+     * </pre>
+     *
+     * Protobuf type {@code GetChat}
+     */
+    public static final class Builder extends
+            com.google.protobuf.GeneratedMessageLite.Builder<
+                    com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat, Builder> implements
+            // @@protoc_insertion_point(builder_implements:GetChat)
+            com.masonsoft.imsdk.core.proto.ProtoMessage.GetChatOrBuilder {
+      // Construct using com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat.newBuilder()
+      private Builder() {
+        super(DEFAULT_INSTANCE);
+      }
+
+
+      /**
+       * <code>optional int64 sign = 1;</code>
+       */
+      public long getSign() {
+        return instance.getSign();
+      }
+      /**
+       * <code>optional int64 sign = 1;</code>
+       */
+      public Builder setSign(long value) {
+        copyOnWrite();
+        instance.setSign(value);
+        return this;
+      }
+      /**
+       * <code>optional int64 sign = 1;</code>
+       */
+      public Builder clearSign() {
+        copyOnWrite();
+        instance.clearSign();
+        return this;
+      }
+
+      /**
+       * <code>optional int64 uid = 2;</code>
+       */
+      public long getUid() {
+        return instance.getUid();
+      }
+      /**
+       * <code>optional int64 uid = 2;</code>
+       */
+      public Builder setUid(long value) {
+        copyOnWrite();
+        instance.setUid(value);
+        return this;
+      }
+      /**
+       * <code>optional int64 uid = 2;</code>
+       */
+      public Builder clearUid() {
+        copyOnWrite();
+        instance.clearUid();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:GetChat)
+    }
+    protected final Object dynamicMethod(
+            com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
+            Object arg0, Object arg1) {
+      switch (method) {
+        case NEW_MUTABLE_INSTANCE: {
+          return new com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat();
+        }
+        case IS_INITIALIZED: {
+          return DEFAULT_INSTANCE;
+        }
+        case MAKE_IMMUTABLE: {
+          return null;
+        }
+        case NEW_BUILDER: {
+          return new Builder();
+        }
+        case VISIT: {
+          Visitor visitor = (Visitor) arg0;
+          com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat other = (com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat) arg1;
+          sign_ = visitor.visitLong(sign_ != 0L, sign_,
+                  other.sign_ != 0L, other.sign_);
+          uid_ = visitor.visitLong(uid_ != 0L, uid_,
+                  other.uid_ != 0L, other.uid_);
+          if (visitor == com.google.protobuf.GeneratedMessageLite.MergeFromVisitor
+                  .INSTANCE) {
+          }
+          return this;
+        }
+        case MERGE_FROM_STREAM: {
+          com.google.protobuf.CodedInputStream input =
+                  (com.google.protobuf.CodedInputStream) arg0;
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry =
+                  (com.google.protobuf.ExtensionRegistryLite) arg1;
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                default: {
+                  if (!input.skipField(tag)) {
+                    done = true;
+                  }
+                  break;
+                }
+                case 8: {
+
+                  sign_ = input.readInt64();
+                  break;
+                }
+                case 16: {
+
+                  uid_ = input.readInt64();
+                  break;
+                }
+              }
+            }
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw new RuntimeException(e.setUnfinishedMessage(this));
+          } catch (java.io.IOException e) {
+            throw new RuntimeException(
+                    new com.google.protobuf.InvalidProtocolBufferException(
+                            e.getMessage()).setUnfinishedMessage(this));
+          } finally {
+          }
+        }
+        case GET_DEFAULT_INSTANCE: {
+          return DEFAULT_INSTANCE;
+        }
+        case GET_PARSER: {
+          if (PARSER == null) {    synchronized (com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat.class) {
+            if (PARSER == null) {
+              PARSER = new DefaultInstanceBasedParser(DEFAULT_INSTANCE);
+            }
+          }
+          }
+          return PARSER;
+        }
+      }
+      throw new UnsupportedOperationException();
+    }
+
+
+    // @@protoc_insertion_point(class_scope:GetChat)
+    private static final com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new GetChat();
+      DEFAULT_INSTANCE.makeImmutable();
+    }
+
+    public static com.masonsoft.imsdk.core.proto.ProtoMessage.GetChat getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static volatile com.google.protobuf.Parser<GetChat> PARSER;
+
+    public static com.google.protobuf.Parser<GetChat> parser() {
       return DEFAULT_INSTANCE.getParserForType();
     }
   }
