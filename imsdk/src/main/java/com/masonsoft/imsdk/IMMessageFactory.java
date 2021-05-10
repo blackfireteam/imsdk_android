@@ -65,14 +65,12 @@ public class IMMessageFactory {
      * 语音消息
      *
      * @param localAudioPath 语音文件的本地完整路径
-     * @param duration       语音时长，单位毫秒
      */
     @NonNull
-    public static IMMessage createAudioMessage(String localAudioPath, long duration) {
+    public static IMMessage createAudioMessage(String localAudioPath) {
         final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.AUDIO);
         target.body.set(localAudioPath);
-        target.duration.set(duration);
         return target;
     }
 

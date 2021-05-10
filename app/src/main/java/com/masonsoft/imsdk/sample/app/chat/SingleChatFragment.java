@@ -479,9 +479,9 @@ public class SingleChatFragment extends SystemInsetsFragment {
         }
 
         for (ImageData.ImageInfo imageInfo : imageInfoList) {
-            final IMMessage imMessage = IMMessageFactory.createImageMessage(imageInfo.uri);
+            final IMMessage message = IMMessageFactory.createImageMessage(imageInfo.uri);
             IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
-                    imMessage,
+                    message,
                     mTargetUserId,
                     new EnqueueCallbackAdapter<IMSessionMessage>() {
                         @Override
@@ -492,6 +492,26 @@ public class SingleChatFragment extends SystemInsetsFragment {
                     }
             );
         }
+    }
+
+    private void submitVoiceMessage(final String voiceFilePath) {
+        final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+        if (binding == null) {
+            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+        final IMMessage message = IMMessageFactory.createAudioMessage(voiceFilePath);
+        IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
+                message,
+                mTargetUserId,
+                new EnqueueCallbackAdapter<IMSessionMessage>() {
+                    @Override
+                    public void onEnqueueFail(@NonNull IMSessionMessage imSessionMessage, int errorCode, String errorMessage) {
+                        super.onEnqueueFail(imSessionMessage, errorCode, errorMessage);
+                        TipUtil.show(errorMessage);
+                    }
+                }
+        );
     }
 
     private void showNewMessagesTipView() {
@@ -584,6 +604,9 @@ public class SingleChatFragment extends SystemInsetsFragment {
             SampleLog.v(Objects.defaultObjectTag(this) + " onAudioRecordCompletedSuccess audioRecorderFile:%s, reachMaxDuration:%s", audioRecorderFile, reachMaxDuration);
             if (mViewImpl != null) {
                 mViewImpl.hideAudioRecoding(false, false);
+
+                // 发送语音消息
+                submitVoiceMessage(audioRecorderFile);
             }
         }
     }
