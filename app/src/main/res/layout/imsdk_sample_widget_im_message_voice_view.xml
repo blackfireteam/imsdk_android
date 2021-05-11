@@ -7,5 +7,5 @@
         android:id="@+id/voice_player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:minWidth="100dp" />
+        android:minWidth="75dp" />
 </merge>

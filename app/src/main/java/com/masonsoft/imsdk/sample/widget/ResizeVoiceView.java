@@ -67,18 +67,18 @@ public class ResizeVoiceView extends FrameLayout {
         }
 
         if (requireMeasure) {
-            final float minPercent = 0.25f;
-            final float maxPercent = 0.50f;
+            final float minPercent = 0.15f;
+            final float maxPercent = 0.60f;
 
             float minSize = Math.max(getMinimumWidth(), DimenUtil.getSmallScreenWidth() * minPercent);
             minSize = Math.min(minSize, widthSize);
+            minSize = Math.max(minSize, getMinimumWidth());
             float maxSize = Math.max(minSize, DimenUtil.getSmallScreenWidth() * maxPercent);
 
             float durationPercent = mDurationMs * 1f / MAX_DURATION_MS;
             durationPercent = MathUtils.clamp(durationPercent, 0, 1);
 
             float bestWidth = minSize + (maxSize - minSize) * durationPercent;
-            bestWidth = Math.max(bestWidth, getMinimumWidth());
             widthMeasureSpec = MeasureSpec.makeMeasureSpec((int) bestWidth, MeasureSpec.EXACTLY);
         }
 
