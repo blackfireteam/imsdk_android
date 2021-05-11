@@ -1,6 +1,8 @@
 package com.masonsoft.imsdk.sample.uniontype.viewholder;
 
 import android.annotation.SuppressLint;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ import com.masonsoft.imsdk.sample.common.microlifecycle.real.RealHost;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.sample.widget.IMMessageVoiceView;
+import com.masonsoft.imsdk.sample.widget.VoicePlayerView;
 
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
@@ -63,6 +66,27 @@ public abstract class IMMessageVoiceViewHolder extends IMMessageViewHolder {
                 listener.onItemLongClick(this);
             }
             return true;
+        });
+        mVoiceView.setOnPlayerStateUpdateListener(new VoicePlayerView.OnPlayerStateUpdateListener() {
+            @Override
+            public void onPlayerPlayPauseUpdate(boolean shouldShowPauseButton) {
+                if (shouldShowPauseButton) {
+                    Drawable drawable = mVoiceImageFlag.getDrawable();
+                    if (!(drawable instanceof AnimationDrawable)) {
+                        mVoiceImageFlag.setImageResource(R.drawable.imsdk_sample_voice_message_playing_anim);
+                        drawable = mVoiceImageFlag.getDrawable();
+                    }
+                    if (drawable instanceof AnimationDrawable) {
+                        ((AnimationDrawable) drawable).start();
+                    }
+                } else {
+                    mVoiceImageFlag.setImageResource(R.drawable.imsdk_sample_voice_msg_playing_3);
+                }
+            }
+
+            @Override
+            public void onPlayerProgressUpdate(long position, long bufferedPosition, long duration) {
+            }
         });
 
         createLocalMicroLifecycle();

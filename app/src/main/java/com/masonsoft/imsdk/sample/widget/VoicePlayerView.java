@@ -144,10 +144,29 @@ public class VoicePlayerView extends ResizeVoiceView implements MediaPlayerView 
         }
     }
 
+    public interface OnPlayerStateUpdateListener {
+        void onPlayerPlayPauseUpdate(boolean shouldShowPauseButton);
+
+        void onPlayerProgressUpdate(long position, long bufferedPosition, long duration);
+    }
+
+    @Nullable
+    private OnPlayerStateUpdateListener mOnPlayerStateUpdateListener;
+
+    public void setOnPlayerStateUpdateListener(@Nullable OnPlayerStateUpdateListener listener) {
+        mOnPlayerStateUpdateListener = listener;
+    }
+
     protected void updatePlayPauseView(boolean shouldShowPauseButton) {
+        if (mOnPlayerStateUpdateListener != null) {
+            mOnPlayerStateUpdateListener.onPlayerPlayPauseUpdate(shouldShowPauseButton);
+        }
     }
 
     protected void updateProgressView(long position, long bufferedPosition, long duration) {
+        if (mOnPlayerStateUpdateListener != null) {
+            mOnPlayerStateUpdateListener.onPlayerProgressUpdate(position, bufferedPosition, duration);
+        }
     }
 
     private boolean shouldShowPauseButton() {

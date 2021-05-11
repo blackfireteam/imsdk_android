@@ -59,6 +59,10 @@ public class IMMessageVoiceView extends MicroLifecycleFrameLayout implements Rea
         setDefaultManual(true);
     }
 
+    public void setOnPlayerStateUpdateListener(@Nullable VoicePlayerView.OnPlayerStateUpdateListener listener) {
+        mVoicePlayerView.setOnPlayerStateUpdateListener(listener);
+    }
+
     @Override
     public void forcePause() {
         if (isResumed()) {
