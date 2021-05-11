@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
-import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
+import com.masonsoft.imsdk.sample.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImagePickerPagerBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 
@@ -24,12 +24,12 @@ public class ImagePickerPagerViewHolder extends UnionTypeViewHolder {
     @Override
     public void onBind(int position, @NonNull Object originObject) {
         //noinspection unchecked
-        final DataObject<ImageData.ImageInfo> itemObject = (DataObject<ImageData.ImageInfo>) originObject;
-        final ImageData.ImageInfo imageInfo = itemObject.object;
-        final ImageData imageData = itemObject.getExtObjectObject1(null);
+        final DataObject<MediaData.MediaInfo> itemObject = (DataObject<MediaData.MediaInfo>) originObject;
+        final MediaData.MediaInfo mediaInfo = itemObject.object;
+        final MediaData mediaData = itemObject.getExtObjectObject1(null);
 
-        SampleLog.v("ImagePickerPagerViewHolder onBind position:%s uri:%s", position, imageInfo.uri);
-        mBinding.image.setPhotoUri(imageInfo.uri);
+        SampleLog.v("ImagePickerPagerViewHolder onBind position:%s uri:%s", position, mediaInfo.uri);
+        mBinding.image.setPhotoUri(mediaInfo.uri);
 
         mBinding.image.setOnPhotoTapListener((view, x, y) -> {
             if (itemObject.getExtHolderItemClick1() != null) {

@@ -21,8 +21,8 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
-import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
-import com.masonsoft.imsdk.sample.common.imagepicker.ImagePickerDialog;
+import com.masonsoft.imsdk.sample.common.mediapicker.MediaData;
+import com.masonsoft.imsdk.sample.common.mediapicker.MediaPickerDialog;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentConfirmDialog;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentInputDialog;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleLoadingDialog;
@@ -142,14 +142,14 @@ public class MineFragment extends SystemInsetsFragment {
             return;
         }
 
-        final ImagePickerDialog dialog = new ImagePickerDialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
+        final MediaPickerDialog dialog = new MediaPickerDialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
         dialog.setOnImagePickListener(imageInfoList -> {
             if (imageInfoList.isEmpty()) {
                 return false;
             }
 
-            final ImageData.ImageInfo imageInfo = imageInfoList.get(0);
-            onPickAvatarResult(imageInfo.uri);
+            final MediaData.MediaInfo mediaInfo = imageInfoList.get(0);
+            onPickAvatarResult(mediaInfo.uri);
             return true;
         });
         dialog.show();

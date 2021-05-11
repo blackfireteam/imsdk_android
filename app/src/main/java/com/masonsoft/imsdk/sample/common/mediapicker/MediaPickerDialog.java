@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.common.imagepicker;
+package com.masonsoft.imsdk.sample.common.mediapicker;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -15,12 +15,13 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.core.I18nResources;
+import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
-import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonImagePickerDialogBinding;
-import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonImagePickerDialogBucketViewBinding;
-import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonImagePickerDialogPagerViewBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonMediaPickerDialogBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonMediaPickerDialogBucketViewBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleCommonMediaPickerDialogPagerViewBinding;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.widget.GridItemDecoration;
 
@@ -35,48 +36,48 @@ import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeItemObject;
 
-public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBackLayer.OnBackPressedListener {
+public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBackLayer.OnBackPressedListener {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = Constants.DEBUG_WIDGET;
 
     private final Activity mActivity;
     private final LayoutInflater mInflater;
-    private final ImsdkSampleCommonImagePickerDialogBinding mBinding;
+    private final ImsdkSampleCommonMediaPickerDialogBinding mBinding;
     private ViewDialog mViewDialog;
     public GridView mGridView;
     private BucketView mBucketView;
     private PagerView mPagerView;
 
     @Nullable
-    private UnionTypeImageData mUnionTypeImageData;
-    private ImageData.ImageLoader mImageLoader;
+    private UnionTypeMediaData mUnionTypeMediaData;
+    private MediaData.MediaLoader mMediaLoader;
 
-    public ImagePickerDialog(Activity activity, ViewGroup parentView) {
+    public MediaPickerDialog(Activity activity, ViewGroup parentView) {
         mActivity = activity;
         mInflater = activity.getLayoutInflater();
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.imsdk_sample_common_image_picker_dialog)
+                .setContentView(R.layout.imsdk_sample_common_media_picker_dialog)
                 .defaultAnimation()
                 .setOnBackPressedListener(this)
                 .setParentView(parentView)
                 .dimBackground(true)
                 .create();
         //noinspection ConstantConditions,ConstantConditions
-        mBinding = ImsdkSampleCommonImagePickerDialogBinding.bind(mViewDialog.getContentView());
+        mBinding = ImsdkSampleCommonMediaPickerDialogBinding.bind(mViewDialog.getContentView());
 
         mGridView = new GridView(mBinding);
         mBucketView = new BucketView(mBinding);
         mPagerView = new PagerView(mBinding);
 
-        mImageLoader = new ImageData.ImageLoader(this, mInnerImageSelector);
-        mImageLoader.start();
+        mMediaLoader = new MediaData.MediaLoader(this, mInnerMediaSelector);
+        mMediaLoader.start();
     }
 
-    private final ImageSelector mInnerImageSelector = new ImageSelector.SimpleImageSelector() {
+    private final MediaSelector mInnerMediaSelector = new MediaSelector.SimpleMediaSelector() {
         @Override
-        public boolean accept(@NonNull ImageData.ImageInfo info) {
-            if (mOutImageSelector != null) {
-                if (!mOutImageSelector.accept(info)) {
+        public boolean accept(@NonNull MediaData.MediaInfo info) {
+            if (mOutMediaSelector != null) {
+                if (!mOutMediaSelector.accept(info)) {
                     return false;
                 }
             }
@@ -84,63 +85,63 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
         }
 
         @Override
-        public boolean canSelect(@NonNull List<ImageData.ImageInfo> imageInfoListSelected, @NonNull ImageData.ImageInfo info) {
-            if (mOutImageSelector != null) {
-                if (!mOutImageSelector.canSelect(imageInfoListSelected, info)) {
+        public boolean canSelect(@NonNull List<MediaData.MediaInfo> mediaInfoListSelected, @NonNull MediaData.MediaInfo info) {
+            if (mOutMediaSelector != null) {
+                if (!mOutMediaSelector.canSelect(mediaInfoListSelected, info)) {
                     return false;
                 }
             }
-            return super.canSelect(imageInfoListSelected, info);
+            return super.canSelect(mediaInfoListSelected, info);
         }
 
         @Override
-        public boolean canDeselect(@NonNull List<ImageData.ImageInfo> imageInfoListSelected, int currentSelectedIndex, @NonNull ImageData.ImageInfo info) {
-            if (mOutImageSelector != null) {
-                if (!mOutImageSelector.canDeselect(imageInfoListSelected, currentSelectedIndex, info)) {
+        public boolean canDeselect(@NonNull List<MediaData.MediaInfo> mediaInfoListSelected, int currentSelectedIndex, @NonNull MediaData.MediaInfo info) {
+            if (mOutMediaSelector != null) {
+                if (!mOutMediaSelector.canDeselect(mediaInfoListSelected, currentSelectedIndex, info)) {
                     return false;
                 }
             }
-            return super.canDeselect(imageInfoListSelected, currentSelectedIndex, info);
+            return super.canDeselect(mediaInfoListSelected, currentSelectedIndex, info);
         }
 
         @Override
-        public boolean canFinishSelect(@NonNull List<ImageData.ImageInfo> imageInfoListSelected) {
-            if (mOutImageSelector != null) {
-                if (!mOutImageSelector.canFinishSelect(imageInfoListSelected)) {
+        public boolean canFinishSelect(@NonNull List<MediaData.MediaInfo> mediaInfoListSelected) {
+            if (mOutMediaSelector != null) {
+                if (!mOutMediaSelector.canFinishSelect(mediaInfoListSelected)) {
                     return false;
                 }
             }
-            return super.canFinishSelect(imageInfoListSelected);
+            return super.canFinishSelect(mediaInfoListSelected);
         }
     };
 
     @Nullable
-    private ImageSelector mOutImageSelector;
+    private MediaSelector mOutMediaSelector;
 
-    public void setImageSelector(@Nullable ImageSelector imageSelector) {
-        mOutImageSelector = imageSelector;
+    public void setMediaSelector(@Nullable MediaSelector mediaSelector) {
+        mOutMediaSelector = mediaSelector;
     }
 
-    private void notifyImageDataChanged() {
-        if (mUnionTypeImageData == null) {
-            SampleLog.e("notifyImageDataChanged mUnionTypeImageData is null");
+    private void notifyMediaDataChanged() {
+        if (mUnionTypeMediaData == null) {
+            SampleLog.e("notifyMediaDataChanged mUnionTypeMediaData is null");
             return;
         }
-        if (mUnionTypeImageData.imageData.bucketSelected != null) {
-            List<UnionTypeItemObject> gridItems = mUnionTypeImageData.unionTypeGridItemsMap.get(mUnionTypeImageData.imageData.bucketSelected);
+        if (mUnionTypeMediaData.mMediaData.bucketSelected != null) {
+            List<UnionTypeItemObject> gridItems = mUnionTypeMediaData.unionTypeGridItemsMap.get(mUnionTypeMediaData.mMediaData.bucketSelected);
             mGridView.mDataAdapter.setGroupItems(0, gridItems);
 
-            List<UnionTypeItemObject> pagerItems = mUnionTypeImageData.unionTypePagerItemsMap.get(mUnionTypeImageData.imageData.bucketSelected);
+            List<UnionTypeItemObject> pagerItems = mUnionTypeMediaData.unionTypePagerItemsMap.get(mUnionTypeMediaData.mMediaData.bucketSelected);
             mPagerView.mDataAdapter.setGroupItems(0, pagerItems);
             //noinspection ConstantConditions
-            mPagerView.mRecyclerView.getLayoutManager().scrollToPosition(mUnionTypeImageData.pagerPendingIndex);
+            mPagerView.mRecyclerView.getLayoutManager().scrollToPosition(mUnionTypeMediaData.pagerPendingIndex);
         }
-        mBucketView.mDataAdapter.setGroupItems(0, mUnionTypeImageData.unionTypeBucketItems);
+        mBucketView.mDataAdapter.setGroupItems(0, mUnionTypeMediaData.unionTypeBucketItems);
 
-        String bucketSelectedName = I18nResources.getString(R.string.imsdk_sample_custom_soft_keyboard_item_image);
-        if (mUnionTypeImageData.imageData.bucketSelected != null
-                && !mUnionTypeImageData.imageData.bucketSelected.allImageInfo) {
-            bucketSelectedName = mUnionTypeImageData.imageData.bucketSelected.bucketDisplayName;
+        String bucketSelectedName = I18nResources.getString(R.string.imsdk_sample_custom_soft_keyboard_item_media);
+        if (mUnionTypeMediaData.mMediaData.bucketSelected != null
+                && !mUnionTypeMediaData.mMediaData.bucketSelected.allMediaInfo) {
+            bucketSelectedName = mUnionTypeMediaData.mMediaData.bucketSelected.bucketDisplayName;
         }
         mGridView.mGridTopBarTitle.setText(bucketSelectedName);
         mGridView.updateConfirmNextStatus();
@@ -154,7 +155,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
 
         private final ItemClickUnionTypeAdapter mDataAdapter;
 
-        private GridView(ImsdkSampleCommonImagePickerDialogBinding parentBinding) {
+        private GridView(ImsdkSampleCommonMediaPickerDialogBinding parentBinding) {
             mGridTopBarClose = parentBinding.gridTopBarClose;
             mGridTopBarTitle = parentBinding.gridTopBarTitle;
             mRecyclerView = parentBinding.gridRecyclerView;
@@ -168,20 +169,20 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
             mDataAdapter.setHost(Host.Factory.create(mActivity, mRecyclerView, mDataAdapter));
             mDataAdapter.setUnionTypeMapper(new UnionTypeMapperImpl());
             mDataAdapter.setOnItemClickListener(viewHolder -> {
-                Preconditions.checkNotNull(mUnionTypeImageData);
+                Preconditions.checkNotNull(mUnionTypeMediaData);
                 final int position = viewHolder.getAdapterPosition();
-                mUnionTypeImageData.pagerPendingIndex = Math.max(position, 0);
-                notifyImageDataChanged();
+                mUnionTypeMediaData.pagerPendingIndex = Math.max(position, 0);
+                notifyMediaDataChanged();
                 mPagerView.show();
             });
 
             mRecyclerView.setAdapter(mDataAdapter);
 
             ViewUtil.onClick(mGridTopBarClose, v -> {
-                if (ImagePickerDialog.this.onBackPressed()) {
+                if (MediaPickerDialog.this.onBackPressed()) {
                     return;
                 }
-                ImagePickerDialog.this.hide();
+                MediaPickerDialog.this.hide();
             });
             ViewUtil.onClick(mGridTopBarTitle, v -> {
                 if (mBucketView.onBackPressed()) {
@@ -190,11 +191,11 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
                 mBucketView.show();
             });
             ViewUtil.onClick(mActionSubmit, v -> {
-                if (mUnionTypeImageData == null) {
+                if (mUnionTypeMediaData == null) {
                     SampleLog.e("mUnionTypeImageData is null");
                     return;
                 }
-                if (mUnionTypeImageData.imageData.imageInfoListSelected.isEmpty()) {
+                if (mUnionTypeMediaData.mMediaData.mMediaInfoListSelected.isEmpty()) {
                     SampleLog.e("mUnionTypeImageData.imageData.imageInfoListSelected.isEmpty()");
                     return;
                 }
@@ -203,8 +204,8 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
                     SampleLog.v("ignore. mOnImagePickListener is null.");
                     return;
                 }
-                if (mOnImagePickListener.onImagePick(mUnionTypeImageData.imageData.imageInfoListSelected)) {
-                    ImagePickerDialog.this.hide();
+                if (mOnImagePickListener.onImagePick(mUnionTypeMediaData.mMediaData.mMediaInfoListSelected)) {
+                    MediaPickerDialog.this.hide();
                 }
             });
         }
@@ -212,18 +213,18 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
         public void updateConfirmNextStatus() {
             boolean enable;
             int count;
-            if (mUnionTypeImageData == null) {
+            if (mUnionTypeMediaData == null) {
                 SampleLog.e("mUnionTypeImageData is null");
                 count = 0;
                 enable = false;
-            } else if (mInnerImageSelector.canFinishSelect(mUnionTypeImageData.imageData.imageInfoListSelected)) {
-                count = mUnionTypeImageData.imageData.imageInfoListSelected.size();
+            } else if (mInnerMediaSelector.canFinishSelect(mUnionTypeMediaData.mMediaData.mMediaInfoListSelected)) {
+                count = mUnionTypeMediaData.mMediaData.mMediaInfoListSelected.size();
                 enable = true;
             } else {
-                count = mUnionTypeImageData.imageData.imageInfoListSelected.size();
+                count = mUnionTypeMediaData.mMediaData.mMediaInfoListSelected.size();
                 enable = false;
             }
-            mActionSubmit.setText(I18nResources.getString(R.string.imsdk_sample_custom_soft_keyboard_item_image_picker_submit_format, count));
+            mActionSubmit.setText(I18nResources.getString(R.string.imsdk_sample_custom_soft_keyboard_item_media_picker_submit_format, count));
             mActionSubmit.setEnabled(enable);
         }
     }
@@ -233,18 +234,18 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
         private final RecyclerView mRecyclerView;
         private final ItemClickUnionTypeAdapter mDataAdapter;
 
-        private BucketView(ImsdkSampleCommonImagePickerDialogBinding parentBinding) {
+        private BucketView(ImsdkSampleCommonMediaPickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.bucketOverlayContainer;
             mBucketViewDialog = new ViewDialog.Builder(mActivity)
                     .setParentView(parentView)
-                    .setContentView(R.layout.imsdk_sample_common_image_picker_dialog_bucket_view)
+                    .setContentView(R.layout.imsdk_sample_common_media_picker_dialog_bucket_view)
                     .setContentViewShowAnimation(R.anim.backstack_slide_in_from_top)
                     .setContentViewHideAnimation(R.anim.backstack_slide_out_to_top)
                     .dimBackground(true)
                     .create();
             //noinspection ConstantConditions
-            final ImsdkSampleCommonImagePickerDialogBucketViewBinding binding =
-                    ImsdkSampleCommonImagePickerDialogBucketViewBinding.bind(mBucketViewDialog.getContentView());
+            final ImsdkSampleCommonMediaPickerDialogBucketViewBinding binding =
+                    ImsdkSampleCommonMediaPickerDialogBucketViewBinding.bind(mBucketViewDialog.getContentView());
             mRecyclerView = binding.recyclerView;
 
             mRecyclerView.setLayoutManager(
@@ -254,8 +255,8 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
             mDataAdapter.setHost(Host.Factory.create(mActivity, mRecyclerView, mDataAdapter));
             mDataAdapter.setUnionTypeMapper(new UnionTypeMapperImpl());
             mDataAdapter.setOnItemClickListener(viewHolder -> {
-                Preconditions.checkNotNull(mUnionTypeImageData);
-                int size = mUnionTypeImageData.imageData.allSubBuckets.size();
+                Preconditions.checkNotNull(mUnionTypeMediaData);
+                int size = mUnionTypeMediaData.mMediaData.allSubBuckets.size();
                 final int position = viewHolder.getAdapterPosition();
                 if ((position < 0 || position >= size)) {
                     SampleLog.e("BucketView onItemClick invalid position: %s, size:%s", position, size);
@@ -263,8 +264,8 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
                     return;
                 }
 
-                ImageData.ImageBucket imageBucket = mUnionTypeImageData.imageData.allSubBuckets.get(position);
-                if (ObjectsCompat.equals(mUnionTypeImageData.imageData.bucketSelected, imageBucket)) {
+                MediaData.MediaBucket mediaBucket = mUnionTypeMediaData.mMediaData.allSubBuckets.get(position);
+                if (ObjectsCompat.equals(mUnionTypeMediaData.mMediaData.bucketSelected, mediaBucket)) {
                     if (DEBUG) {
                         SampleLog.v("BucketView onItemClick ignore. same as last bucket selected");
                     }
@@ -273,8 +274,8 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
                 }
 
                 BucketView.this.hide();
-                mUnionTypeImageData.imageData.bucketSelected = imageBucket;
-                notifyImageDataChanged();
+                mUnionTypeMediaData.mMediaData.bucketSelected = mediaBucket;
+                notifyMediaDataChanged();
             });
 
             mRecyclerView.setAdapter(mDataAdapter);
@@ -301,18 +302,18 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
 
         private final ViewDialog mPagerViewDialog;
         @SuppressWarnings("FieldCanBeLocal")
-        private final ImsdkSampleCommonImagePickerDialogPagerViewBinding mBinding;
+        private final ImsdkSampleCommonMediaPickerDialogPagerViewBinding mBinding;
         private final RecyclerView mRecyclerView;
         private final ItemClickUnionTypeAdapter mDataAdapter;
 
-        private PagerView(ImsdkSampleCommonImagePickerDialogBinding parentBinding) {
+        private PagerView(ImsdkSampleCommonMediaPickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.pagerOverlayContainer;
             mPagerViewDialog = new ViewDialog.Builder(mActivity)
                     .setParentView(parentView)
-                    .setContentView(R.layout.imsdk_sample_common_image_picker_dialog_pager_view)
+                    .setContentView(R.layout.imsdk_sample_common_media_picker_dialog_pager_view)
                     .create();
             //noinspection ConstantConditions
-            mBinding = ImsdkSampleCommonImagePickerDialogPagerViewBinding.bind(mPagerViewDialog.getContentView());
+            mBinding = ImsdkSampleCommonMediaPickerDialogPagerViewBinding.bind(mPagerViewDialog.getContentView());
             mRecyclerView = mBinding.recyclerView;
             mRecyclerView.setLayoutManager(
                     new LinearLayoutManager(mRecyclerView.getContext(), RecyclerView.HORIZONTAL, false));
@@ -350,19 +351,19 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
 
     public void hide() {
         mViewDialog.hide(false);
-        mImageLoader.close();
+        mMediaLoader.close();
     }
 
     @Override
-    public void onLoadFinish(@NonNull ImageData imageData) {
+    public void onLoadFinish(@NonNull MediaData mediaData) {
         if (DEBUG) {
-            SampleLog.v("onLoadFinish buckets:%s, images:%s", imageData.allSubBuckets.size(), imageData.allImageInfoListMap.size());
+            SampleLog.v("onLoadFinish buckets:%s, images:%s", mediaData.allSubBuckets.size(), mediaData.allMediaInfoListMap.size());
         }
-        imageData.bucketSelected = imageData.allImageInfoListBucket;
-        UnionTypeImageData unionTypeImageData = new UnionTypeImageData(this, imageData);
+        mediaData.bucketSelected = mediaData.allMediaInfoListBucket;
+        UnionTypeMediaData unionTypeMediaData = new UnionTypeMediaData(this, mediaData);
         Threads.runOnUi(() -> {
-            mUnionTypeImageData = unionTypeImageData;
-            notifyImageDataChanged();
+            mUnionTypeMediaData = unionTypeMediaData;
+            notifyMediaDataChanged();
         });
     }
 
@@ -383,7 +384,7 @@ public class ImagePickerDialog implements ImageData.ImageLoaderCallback, ViewBac
         /**
          * 关闭 ImagePicker，返回 true.
          */
-        boolean onImagePick(@NonNull List<ImageData.ImageInfo> imageInfoList);
+        boolean onImagePick(@NonNull List<MediaData.MediaInfo> mediaInfoList);
     }
 
     private OnImagePickListener mOnImagePickListener;

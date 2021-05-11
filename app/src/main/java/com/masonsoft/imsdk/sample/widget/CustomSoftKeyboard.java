@@ -22,8 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
-import com.masonsoft.imsdk.sample.common.imagepicker.ImagePickerDialog;
+import com.masonsoft.imsdk.sample.common.mediapicker.MediaData;
+import com.masonsoft.imsdk.sample.common.mediapicker.MediaPickerDialog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardBinding;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerMoreItemViewBinding;
@@ -138,7 +138,7 @@ public class CustomSoftKeyboard extends FrameLayout {
 
         void onDeleteOne();
 
-        void onImagePicked(@NonNull List<ImageData.ImageInfo> imageInfoList);
+        void onImagePicked(@NonNull List<MediaData.MediaInfo> mediaInfoList);
     }
 
     private OnInputListener mOnInputListener;
@@ -280,7 +280,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             binding.getRoot().setLayoutParams(lp);
 
             binding.itemImage.setImageResource(R.drawable.imsdk_sample_ic_input_more_item_image);
-            binding.itemName.setText(R.string.imsdk_sample_custom_soft_keyboard_item_image);
+            binding.itemName.setText(R.string.imsdk_sample_custom_soft_keyboard_item_media);
             mBinding.gridLayout.addView(binding.getRoot());
 
             ViewUtil.onClick(binding.getRoot(), v -> {
@@ -329,15 +329,15 @@ public class CustomSoftKeyboard extends FrameLayout {
             return;
         }
 
-        final ImagePickerDialog imagePickerDialog = new ImagePickerDialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
-        imagePickerDialog.setOnImagePickListener(imageInfoList -> {
+        final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
+        mediaPickerDialog.setOnImagePickListener(imageInfoList -> {
             if (imageInfoList.isEmpty()) {
                 return false;
             }
 
-            for (ImageData.ImageInfo imageInfo : imageInfoList) {
-                if (!imageInfo.isImageMimeType()) {
-                    Throwable e = new Throwable("unknown mime type:" + imageInfo.mimeType + ", uri:" + imageInfo.uri);
+            for (MediaData.MediaInfo mediaInfo : imageInfoList) {
+                if (!mediaInfo.isImageMimeType()) {
+                    Throwable e = new Throwable("unknown mime type:" + mediaInfo.mimeType + ", uri:" + mediaInfo.uri);
                     SampleLog.e(e);
                     return false;
                 }
@@ -349,7 +349,7 @@ public class CustomSoftKeyboard extends FrameLayout {
 
             return true;
         });
-        imagePickerDialog.show();
+        mediaPickerDialog.show();
     }
 
 }

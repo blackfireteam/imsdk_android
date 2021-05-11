@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
-import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
+import com.masonsoft.imsdk.sample.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImagePickerBucketBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 
@@ -24,20 +24,20 @@ public class ImagePickerBucketViewHolder extends UnionTypeViewHolder {
     @Override
     public void onBind(int position, @NonNull Object originObject) {
         //noinspection unchecked
-        final DataObject<ImageData.ImageBucket> itemObject = (DataObject<ImageData.ImageBucket>) originObject;
+        final DataObject<MediaData.MediaBucket> itemObject = (DataObject<MediaData.MediaBucket>) originObject;
         //
-        final ImageData.ImageBucket imageBucket = itemObject.object;
-        final ImageData imageData = itemObject.getExtObjectObject1(null);
+        final MediaData.MediaBucket mediaBucket = itemObject.object;
+        final MediaData mediaData = itemObject.getExtObjectObject1(null);
         String url = null;
-        if (imageBucket.cover != null) {
-            url = imageBucket.cover.uri.toString();
+        if (mediaBucket.cover != null) {
+            url = mediaBucket.cover.uri.toString();
         }
         mBinding.image.setUrl(url);
-        mBinding.count.setText(String.valueOf(imageBucket.imageInfoList.size()));
-        if (imageBucket.allImageInfo) {
-            mBinding.title.setText(R.string.imsdk_sample_custom_soft_keyboard_item_image_bucket_all);
+        mBinding.count.setText(String.valueOf(mediaBucket.mediaInfoList.size()));
+        if (mediaBucket.allMediaInfo) {
+            mBinding.title.setText(R.string.imsdk_sample_custom_soft_keyboard_item_media_bucket_all);
         } else {
-            mBinding.title.setText(imageBucket.bucketDisplayName);
+            mBinding.title.setText(mediaBucket.bucketDisplayName);
         }
         ViewUtil.onClick(itemView, v -> {
             if (itemObject.getExtHolderItemClick1() != null) {

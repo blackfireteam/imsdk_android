@@ -22,9 +22,9 @@ import com.masonsoft.imsdk.sample.app.signin.SignInViewPresenter;
 import com.masonsoft.imsdk.sample.app.signup.SignUpArgument;
 import com.masonsoft.imsdk.sample.app.signup.SignUpFragment;
 import com.masonsoft.imsdk.sample.app.signup.SignUpView;
-import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
-import com.masonsoft.imsdk.sample.common.imagepicker.ImagePickerDialog;
-import com.masonsoft.imsdk.sample.common.imagepicker.ImageSelector;
+import com.masonsoft.imsdk.sample.common.mediapicker.MediaData;
+import com.masonsoft.imsdk.sample.common.mediapicker.MediaPickerDialog;
+import com.masonsoft.imsdk.sample.common.mediapicker.MediaSelector;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignUpAvatarFragmentBinding;
 import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
@@ -134,18 +134,18 @@ public class SignUpAvatarFragment extends SignUpFragment {
             return;
         }
 
-        final ImagePickerDialog imagePickerDialog = new ImagePickerDialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
-        imagePickerDialog.setImageSelector(new ImageSelector.SimpleImageSelector());
-        imagePickerDialog.setOnImagePickListener(imageInfoList -> {
+        final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
+        mediaPickerDialog.setMediaSelector(new MediaSelector.SimpleMediaSelector());
+        mediaPickerDialog.setOnImagePickListener(imageInfoList -> {
             if (imageInfoList.isEmpty()) {
                 return false;
             }
 
-            final ImageData.ImageInfo imageInfo = imageInfoList.get(0);
-            onPickAvatarResult(imageInfo.uri);
+            final MediaData.MediaInfo mediaInfo = imageInfoList.get(0);
+            onPickAvatarResult(mediaInfo.uri);
             return true;
         });
-        imagePickerDialog.show();
+        mediaPickerDialog.show();
     }
 
     private void onPickAvatarResult(final Uri uri) {

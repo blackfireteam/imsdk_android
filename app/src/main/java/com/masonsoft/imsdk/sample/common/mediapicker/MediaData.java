@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.common.imagepicker;
+package com.masonsoft.imsdk.sample.common.mediapicker;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -31,45 +31,45 @@ import io.github.idonans.core.util.HumanUtil;
 import io.github.idonans.core.util.IOUtil;
 import io.github.idonans.core.util.Preconditions;
 
-public class ImageData {
+public class MediaData {
 
     private static final boolean USE_CONTENT_URI = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
     @NonNull
-    public final ImageBucket allImageInfoListBucket;
+    public final MediaBucket allMediaInfoListBucket;
 
     @NonNull
-    public final List<ImageBucket> allSubBuckets;
+    public final List<MediaBucket> allSubBuckets;
 
     @NonNull
-    public final Map<Uri, ImageInfo> allImageInfoListMap;
+    public final Map<Uri, MediaInfo> allMediaInfoListMap;
 
-    public ImageBucket bucketSelected;
-
-    @NonNull
-    public final List<ImageInfo> imageInfoListSelected = new ArrayList<>();
+    public MediaBucket bucketSelected;
 
     @NonNull
-    public final ImageSelector imageSelector;
+    public final List<MediaInfo> mMediaInfoListSelected = new ArrayList<>();
 
-    public ImageData(@NonNull ImageBucket allImageInfoListBucket, @NonNull List<ImageBucket> allSubBuckets, @NonNull Map<Uri, ImageInfo> allImageInfoListMap, @NonNull ImageSelector imageSelector) {
-        this.allImageInfoListBucket = allImageInfoListBucket;
+    @NonNull
+    public final MediaSelector mMediaSelector;
+
+    public MediaData(@NonNull MediaBucket allMediaInfoListBucket, @NonNull List<MediaBucket> allSubBuckets, @NonNull Map<Uri, MediaInfo> allMediaInfoListMap, @NonNull MediaSelector mediaSelector) {
+        this.allMediaInfoListBucket = allMediaInfoListBucket;
         this.allSubBuckets = allSubBuckets;
-        this.allImageInfoListMap = allImageInfoListMap;
-        this.imageSelector = imageSelector;
+        this.allMediaInfoListMap = allMediaInfoListMap;
+        this.mMediaSelector = mediaSelector;
     }
 
     /**
-     * 获取选择图片的选中顺序，如果没有选中返回 -1.
+     * 获取选择 media 的选中顺序，如果没有选中返回 -1.
      *
-     * @param imageInfo
+     * @param mediaInfo
      * @return
      */
-    public int indexOfSelected(ImageInfo imageInfo) {
-        return imageInfoListSelected.indexOf(imageInfo);
+    public int indexOfSelected(MediaInfo mediaInfo) {
+        return mMediaInfoListSelected.indexOf(mediaInfo);
     }
 
-    public static class ImageInfo {
+    public static class MediaInfo {
         @NonNull
         public Uri uri;
         public long size;
@@ -80,7 +80,7 @@ public class ImageData {
         public long addTime;
         public int id;
         @NonNull
-        public ImageBucket imageBucket;
+        public MediaBucket mMediaBucket;
 
         private String bucketId;
         private String bucketDisplayName;
@@ -104,8 +104,8 @@ public class ImageData {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            ImageInfo imageInfo = (ImageInfo) o;
-            return Objects.equals(uri, imageInfo.uri);
+            MediaInfo mediaInfo = (MediaInfo) o;
+            return Objects.equals(uri, mediaInfo.uri);
         }
 
         @Override
@@ -117,7 +117,7 @@ public class ImageData {
         public String toShortString() {
             //noinspection StringBufferReplaceableByString
             final StringBuilder builder = new StringBuilder();
-            builder.append("ImageInfo");
+            builder.append(com.masonsoft.imsdk.util.Objects.defaultObjectTag(this));
             builder.append(" uri:").append(this.uri);
             builder.append(" size:").append(this.size).append(" ").append(HumanUtil.getHumanSizeFromByte(this.size));
             builder.append(" width:").append(this.width);
@@ -138,48 +138,48 @@ public class ImageData {
         }
     }
 
-    public static class ImageBucket {
+    public static class MediaBucket {
         /**
          * 是否是总的那个 bucket, 包含了所有的图片
          */
-        public boolean allImageInfo;
+        public boolean allMediaInfo;
         public String bucketDisplayName;
         public String bucketId;
         @Nullable
-        public ImageInfo cover;
+        public MediaInfo cover;
 
         @NonNull
-        public final List<ImageInfo> imageInfoList = new ArrayList<>();
+        public final List<MediaInfo> mediaInfoList = new ArrayList<>();
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            ImageBucket that = (ImageBucket) o;
-            return allImageInfo == that.allImageInfo &&
+            MediaBucket that = (MediaBucket) o;
+            return allMediaInfo == that.allMediaInfo &&
                     ObjectsCompat.equals(bucketId, that.bucketId);
         }
 
         @Override
         public int hashCode() {
-            return ObjectsCompat.hash(allImageInfo, bucketId);
+            return ObjectsCompat.hash(allMediaInfo, bucketId);
         }
     }
 
-    public interface ImageLoaderCallback {
-        void onLoadFinish(@NonNull ImageData imageData);
+    public interface MediaLoaderCallback {
+        void onLoadFinish(@NonNull MediaData mediaData);
     }
 
-    public static class ImageLoader extends WeakAbortSignal implements Runnable, Closeable {
+    public static class MediaLoader extends WeakAbortSignal implements Runnable, Closeable {
 
-        private final ImageSelector mImageSelector;
+        private final MediaSelector mMediaSelector;
 
-        public ImageLoader(ImageLoaderCallback callback, ImageSelector imageSelector) {
+        public MediaLoader(MediaLoaderCallback callback, MediaSelector mediaSelector) {
             super(callback);
-            if (imageSelector == null) {
-                imageSelector = new ImageSelector.SimpleImageSelector();
+            if (mediaSelector == null) {
+                mediaSelector = new MediaSelector.SimpleMediaSelector();
             }
-            mImageSelector = imageSelector;
+            mMediaSelector = mediaSelector;
         }
 
         public void start() {
@@ -187,8 +187,8 @@ public class ImageData {
         }
 
         @Nullable
-        private ImageLoaderCallback getCallback() {
-            ImageLoaderCallback callback = (ImageLoaderCallback) getObject();
+        private MediaLoaderCallback getCallback() {
+            MediaLoaderCallback callback = (MediaLoaderCallback) getObject();
             if (isAbort()) {
                 return null;
             }
@@ -197,13 +197,13 @@ public class ImageData {
 
         @Override
         public void run() {
-            final ImageBucket allImageInfoBucket = new ImageBucket();
-            allImageInfoBucket.allImageInfo = true;
+            final MediaBucket allMediaInfoBucket = new MediaBucket();
+            allMediaInfoBucket.allMediaInfo = true;
 
-            final List<ImageBucket> allBuckets = new ArrayList<>();
-            allBuckets.add(allImageInfoBucket);
+            final List<MediaBucket> allBuckets = new ArrayList<>();
+            allBuckets.add(allMediaInfoBucket);
 
-            final Map<Uri, ImageInfo> allImageInfoMap = new HashMap<>();
+            final Map<Uri, MediaInfo> allMediaInfoMap = new HashMap<>();
 
             Cursor cursor = null;
             try {
@@ -217,46 +217,46 @@ public class ImageData {
                 for (cursor.moveToLast(); !cursor.isBeforeFirst(); cursor.moveToPrevious()) {
                     AbortUtil.throwIfAbort(this);
 
-                    ImageInfo itemImageInfo = cursorToImageInfo(cursor);
-                    if (itemImageInfo == null) {
+                    MediaInfo itemMediaInfo = cursorToMediaInfo(cursor);
+                    if (itemMediaInfo == null) {
                         continue;
                     }
 
-                    if (!mImageSelector.accept(itemImageInfo)) {
+                    if (!mMediaSelector.accept(itemMediaInfo)) {
                         continue;
                     }
 
-                    if (allImageInfoBucket.cover == null) {
-                        allImageInfoBucket.cover = itemImageInfo;
+                    if (allMediaInfoBucket.cover == null) {
+                        allMediaInfoBucket.cover = itemMediaInfo;
                     }
-                    allImageInfoBucket.imageInfoList.add(itemImageInfo);
-                    allImageInfoMap.put(itemImageInfo.uri, itemImageInfo);
+                    allMediaInfoBucket.mediaInfoList.add(itemMediaInfo);
+                    allMediaInfoMap.put(itemMediaInfo.uri, itemMediaInfo);
 
-                    ImageBucket newBucket = createImageBucket(itemImageInfo);
-                    ImageBucket oldBucket = queryOldImageBucket(allBuckets, newBucket);
-                    ImageBucket targetBucket;
+                    MediaBucket newBucket = createMediaBucket(itemMediaInfo);
+                    MediaBucket oldBucket = queryOldMediaBucket(allBuckets, newBucket);
+                    MediaBucket targetBucket;
                     if (oldBucket != null) {
                         // update old bucket
-                        oldBucket.imageInfoList.add(itemImageInfo);
+                        oldBucket.mediaInfoList.add(itemMediaInfo);
                         targetBucket = oldBucket;
                     } else {
                         // add new bucket;
                         allBuckets.add(newBucket);
                         targetBucket = newBucket;
                     }
-                    itemImageInfo.imageBucket = targetBucket;
+                    itemMediaInfo.mMediaBucket = targetBucket;
                 }
 
                 AbortUtil.throwIfAbort(this);
-                ImageLoaderCallback callback = getCallback();
+                MediaLoaderCallback callback = getCallback();
                 if (callback != null) {
-                    callback.onLoadFinish(new ImageData(allImageInfoBucket, allBuckets, allImageInfoMap, mImageSelector));
+                    callback.onLoadFinish(new MediaData(allMediaInfoBucket, allBuckets, allMediaInfoMap, mMediaSelector));
                 }
             } catch (Throwable e) {
                 SampleLog.e(e);
-                ImageLoaderCallback callback = getCallback();
+                MediaLoaderCallback callback = getCallback();
                 if (callback != null) {
-                    callback.onLoadFinish(new ImageData(allImageInfoBucket, allBuckets, allImageInfoMap, mImageSelector));
+                    callback.onLoadFinish(new MediaData(allMediaInfoBucket, allBuckets, allMediaInfoMap, mMediaSelector));
                 }
             } finally {
                 IOUtil.closeQuietly(cursor);
@@ -264,8 +264,8 @@ public class ImageData {
         }
 
         @Nullable
-        private ImageBucket queryOldImageBucket(List<ImageBucket> allSubBuckets, ImageBucket query) {
-            for (ImageBucket oldBucket : allSubBuckets) {
+        private MediaBucket queryOldMediaBucket(List<MediaBucket> allSubBuckets, MediaBucket query) {
+            for (MediaBucket oldBucket : allSubBuckets) {
                 if (ObjectsCompat.equals(oldBucket, query)) {
                     return oldBucket;
                 }
@@ -274,12 +274,12 @@ public class ImageData {
         }
 
         @NonNull
-        private ImageBucket createImageBucket(ImageInfo imageInfo) {
-            ImageBucket target = new ImageBucket();
-            target.cover = imageInfo;
-            target.imageInfoList.add(imageInfo);
-            target.bucketId = imageInfo.bucketId;
-            target.bucketDisplayName = imageInfo.bucketDisplayName;
+        private MediaBucket createMediaBucket(MediaInfo mediaInfo) {
+            MediaBucket target = new MediaBucket();
+            target.cover = mediaInfo;
+            target.mediaInfoList.add(mediaInfo);
+            target.bucketId = mediaInfo.bucketId;
+            target.bucketDisplayName = mediaInfo.bucketDisplayName;
             return target;
         }
 
@@ -324,8 +324,8 @@ public class ImageData {
         }
 
         @Nullable
-        private ImageInfo cursorToImageInfo(Cursor cursor) {
-            ImageInfo target = new ImageInfo();
+        private MediaInfo cursorToMediaInfo(Cursor cursor) {
+            MediaInfo target = new MediaInfo();
             int index = -1;
             target.size = cursor.getLong(++index);
             target.width = cursor.getInt(++index);
@@ -359,7 +359,7 @@ public class ImageData {
                 target.uri = Uri.fromFile(new File(path));
             }
 
-            IMLog.v("cursorToImageInfo USE_CONTENT_URI:%s -> %s", USE_CONTENT_URI, target);
+            IMLog.v("cursorToMediaInfo USE_CONTENT_URI:%s -> %s", USE_CONTENT_URI, target);
 
             if (TextUtils.isEmpty(target.mimeType)) {
                 SampleLog.v("invalid mimeType:%s", target.mimeType);

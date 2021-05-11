@@ -41,7 +41,7 @@
                 android:paddingStart="60dp"
                 android:paddingEnd="60dp"
                 android:singleLine="true"
-                android:text="@string/imsdk_sample_custom_soft_keyboard_item_image"
+                android:text="@string/imsdk_sample_custom_soft_keyboard_item_media"
                 android:textColor="#333333"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -59,7 +59,7 @@
                 android:includeFontPadding="false"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="@string/imsdk_sample_custom_soft_keyboard_item_image_picker_submit_0"
+                android:text="@string/imsdk_sample_custom_soft_keyboard_item_media_picker_submit_0"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
         </FrameLayout>

@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
-import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
-import com.masonsoft.imsdk.sample.common.imagepicker.UnionTypeImageData;
+import com.masonsoft.imsdk.sample.common.mediapicker.MediaData;
+import com.masonsoft.imsdk.sample.common.mediapicker.UnionTypeMediaData;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImagePickerGridBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 
@@ -25,13 +25,13 @@ public class ImagePickerGridViewHolder extends UnionTypeViewHolder {
     @Override
     public void onBind(int position, @NonNull Object originObject) {
         //noinspection unchecked
-        final DataObject<ImageData.ImageInfo> itemObject = (DataObject<ImageData.ImageInfo>) originObject;
-        ImageData.ImageInfo imageInfo = itemObject.object;
-        ImageData imageData = itemObject.getExtObjectObject1(null);
-        UnionTypeImageData unionTypeImageData = itemObject.getExtObjectObject2(null);
+        final DataObject<MediaData.MediaInfo> itemObject = (DataObject<MediaData.MediaInfo>) originObject;
+        MediaData.MediaInfo mediaInfo = itemObject.object;
+        MediaData mediaData = itemObject.getExtObjectObject1(null);
+        UnionTypeMediaData unionTypeMediaData = itemObject.getExtObjectObject2(null);
 
-        mBinding.image.setUrl(imageInfo.uri.toString());
-        int selectedIndex = imageData.indexOfSelected(imageInfo);
+        mBinding.image.setUrl(mediaInfo.uri.toString());
+        int selectedIndex = mediaData.indexOfSelected(mediaInfo);
         if (selectedIndex >= 0) {
             mBinding.flagSelect.setSelected(true);
             mBinding.flagSelectText.setText(String.valueOf(selectedIndex + 1));
@@ -41,21 +41,21 @@ public class ImagePickerGridViewHolder extends UnionTypeViewHolder {
         }
 
         ViewUtil.onClick(mBinding.flagSelect, v -> {
-            int currentSelectedIndex = imageData.indexOfSelected(imageInfo);
+            int currentSelectedIndex = mediaData.indexOfSelected(mediaInfo);
             if (currentSelectedIndex >= 0) {
                 // 取消选中
-                if (imageData.imageSelector.canDeselect(imageData.imageInfoListSelected, currentSelectedIndex, imageInfo)) {
-                    imageData.imageInfoListSelected.remove(imageInfo);
+                if (mediaData.mMediaSelector.canDeselect(mediaData.mMediaInfoListSelected, currentSelectedIndex, mediaInfo)) {
+                    mediaData.mMediaInfoListSelected.remove(mediaInfo);
                 }
             } else {
                 // 选中
-                if (imageData.imageSelector.canSelect(imageData.imageInfoListSelected, imageInfo)) {
-                    imageData.imageInfoListSelected.add(imageInfo);
+                if (mediaData.mMediaSelector.canSelect(mediaData.mMediaInfoListSelected, mediaInfo)) {
+                    mediaData.mMediaInfoListSelected.add(mediaInfo);
                 }
             }
             host.getAdapter().notifyDataSetChanged();
-            if (unionTypeImageData != null) {
-                unionTypeImageData.childClick();
+            if (unionTypeMediaData != null) {
+                unionTypeMediaData.childClick();
             }
         });
         ViewUtil.onClick(itemView, v -> {

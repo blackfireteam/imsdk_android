@@ -30,7 +30,7 @@ import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
-import com.masonsoft.imsdk.sample.common.imagepicker.ImageData;
+import com.masonsoft.imsdk.sample.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.sample.common.media.audio.AudioRecordManager;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManagerHost;
@@ -384,8 +384,8 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
 
             @Override
-            public void onImagePicked(@NonNull List<ImageData.ImageInfo> imageInfoList) {
-                SampleLog.v("onImagePicked size:%s", imageInfoList.size());
+            public void onImagePicked(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
+                SampleLog.v("onImagePicked size:%s", mediaInfoList.size());
                 if (mBinding == null) {
                     SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
                     return;
@@ -395,7 +395,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                     return;
                 }
                 mSoftKeyboardHelper.requestHideAllSoftKeyboard();
-                submitImageMessage(imageInfoList);
+                submitImageMessage(mediaInfoList);
             }
         });
 
@@ -471,15 +471,15 @@ public class SingleChatFragment extends SystemInsetsFragment {
         );
     }
 
-    private void submitImageMessage(@NonNull List<ImageData.ImageInfo> imageInfoList) {
+    private void submitImageMessage(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
         final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
         if (binding == null) {
             SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 
-        for (ImageData.ImageInfo imageInfo : imageInfoList) {
-            final IMMessage message = IMMessageFactory.createImageMessage(imageInfo.uri);
+        for (MediaData.MediaInfo mediaInfo : mediaInfoList) {
+            final IMMessage message = IMMessageFactory.createImageMessage(mediaInfo.uri);
             IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
                     message,
                     mTargetUserId,
