@@ -132,6 +132,10 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
             // 发送失败
             ViewUtil.setVisibilityIfChanged(mSendFailView, View.VISIBLE);
             ViewUtil.setVisibilityIfChanged(mSendingView, View.GONE);
+        } else {
+            // 发送成功
+            ViewUtil.setVisibilityIfChanged(mSendFailView, View.GONE);
+            ViewUtil.setVisibilityIfChanged(mSendingView, View.GONE);
         }
     }
 
