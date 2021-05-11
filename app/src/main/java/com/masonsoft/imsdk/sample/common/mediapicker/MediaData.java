@@ -224,7 +224,7 @@ public class MediaData {
                                 String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
                                 String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
                         },
-                        MediaStore.MediaColumns.DATE_ADDED + " desc");
+                        MediaStore.MediaColumns._ID + " asc");
                 com.google.common.base.Preconditions.checkNotNull(cursor);
 
                 for (cursor.moveToLast(); !cursor.isBeforeFirst(); cursor.moveToPrevious()) {
