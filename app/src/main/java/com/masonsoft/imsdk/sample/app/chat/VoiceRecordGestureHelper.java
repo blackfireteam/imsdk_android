@@ -43,6 +43,7 @@ public class VoiceRecordGestureHelper {
                     IOUtil.closeQuietly(mGestureInfo);
                 }
                 mGestureInfo = new GestureInfo(v, event);
+                v.setPressed(true);
             }
 
             if (action == MotionEvent.ACTION_MOVE) {
@@ -56,6 +57,7 @@ public class VoiceRecordGestureHelper {
                 if (mGestureInfo != null) {
                     IOUtil.closeQuietly(mGestureInfo);
                     mGestureInfo = null;
+                    v.setPressed(false);
                 }
             }
 
