@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk.sample.uniontype.viewholder;
 
+import android.view.View;
+
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.sample.R;
@@ -10,6 +12,7 @@ import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplMediaPicke
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.util.Objects;
 
+import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
 
@@ -30,6 +33,14 @@ public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
         final MediaData mediaData = itemObject.getExtObjectObject1(null);
 
         SampleLog.v(Objects.defaultObjectTag(this) + " onBind position:%s uri:%s", position, mediaInfo.uri);
+
+        if (mediaInfo.isVideoMimeType()) {
+            ViewUtil.setVisibilityIfChanged(mBinding.videoFlag, View.VISIBLE);
+            mBinding.durationText.setText(formatDuration(mediaInfo.durationMs));
+        } else {
+            ViewUtil.setVisibilityIfChanged(mBinding.videoFlag, View.GONE);
+            mBinding.durationText.setText(null);
+        }
         mBinding.image.setPhotoUri(mediaInfo.uri);
 
         mBinding.image.setOnPhotoTapListener((view, x, y) -> {
@@ -44,6 +55,13 @@ public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
                 }
             }
         });
+    }
+
+    private String formatDuration(long durationMs) {
+        final long durationS = (long) Math.ceil(durationMs / 1000f);
+        final long min = durationS / 60;
+        final long s = durationS % 60;
+        return min + ":" + s;
     }
 
 }

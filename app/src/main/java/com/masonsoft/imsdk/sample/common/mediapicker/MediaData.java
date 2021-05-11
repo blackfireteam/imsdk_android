@@ -73,7 +73,7 @@ public class MediaData {
         @NonNull
         public Uri uri;
         public long size;
-        public long duration;
+        public long durationMs;
         public int width;
         public int height;
         public String mimeType;

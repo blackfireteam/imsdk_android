@@ -61,16 +61,16 @@ public interface MediaSelector {
                 if (info.size <= 0
                         || info.width <= 0
                         || info.height <= 0
-                        || info.duration <= 0) {
+                        || info.durationMs <= 0) {
                     TipUtil.show(R.string.imsdk_sample_tip_video_invalid);
                     return false;
                 }
-                if (info.duration < Constants.SELECTOR_MIN_VIDEO_DURATION) {
+                if (info.durationMs < Constants.SELECTOR_MIN_VIDEO_DURATION) {
                     TipUtil.show(R.string.imsdk_sample_tip_video_too_short);
                     return false;
                 }
                 if (info.size > Constants.SELECTOR_MAX_VIDEO_SIZE
-                        || info.duration > Constants.SELECTOR_MAX_VIDEO_DURATION) {
+                        || info.durationMs > Constants.SELECTOR_MAX_VIDEO_DURATION) {
                     TipUtil.show(R.string.imsdk_sample_tip_video_too_large);
                     return false;
                 }

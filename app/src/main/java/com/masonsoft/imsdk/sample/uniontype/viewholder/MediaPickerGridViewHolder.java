@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk.sample.uniontype.viewholder;
 
+import android.view.View;
+
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.sample.R;
@@ -30,6 +32,13 @@ public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
         MediaData mediaData = itemObject.getExtObjectObject1(null);
         UnionTypeMediaData unionTypeMediaData = itemObject.getExtObjectObject2(null);
 
+        if (mediaInfo.isVideoMimeType()) {
+            ViewUtil.setVisibilityIfChanged(mBinding.videoFlag, View.VISIBLE);
+            mBinding.durationText.setText(formatDuration(mediaInfo.durationMs));
+        } else {
+            ViewUtil.setVisibilityIfChanged(mBinding.videoFlag, View.GONE);
+            mBinding.durationText.setText(null);
+        }
         mBinding.image.setUrl(mediaInfo.uri.toString());
         int selectedIndex = mediaData.indexOfSelected(mediaInfo);
         if (selectedIndex >= 0) {
@@ -69,6 +78,13 @@ public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
                 }
             }
         });
+    }
+
+    private String formatDuration(long durationMs) {
+        final long durationS = (long) Math.ceil(durationMs / 1000f);
+        final long min = durationS / 60;
+        final long s = durationS % 60;
+        return min + ":" + s;
     }
 
 }
