@@ -27,6 +27,8 @@
     <string name="msimsdk_enqueue_callback_error_video_message_video_thumb_path_unset">视频封面地址未设置</string>
     <string name="msimsdk_enqueue_callback_error_video_message_video_thumb_path_invalid">视频封面地址不正确</string>
     <string name="msimsdk_enqueue_callback_error_video_message_video_thumb_file_size_too_large">视频封面文件大小不能超过 %1$s</string>
+    <string name="msimsdk_enqueue_callback_error_video_message_video_width_or_height_invalid">视频宽度或高度不正确</string>
+    <string name="msimsdk_enqueue_callback_error_video_message_video_format_not_support">视频格式不支持</string>
     <string name="msimsdk_enqueue_callback_error_unknown">未知错误</string>
     <string name="msimsdk_general_error_message_success">成功</string>
     <string name="msimsdk_general_error_message_unknown">未知错误</string>

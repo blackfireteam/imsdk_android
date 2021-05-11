@@ -165,6 +165,16 @@ public interface EnqueueCallback<T extends EnqueueMessage> {
      */
     int ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FILE_SIZE_TOO_LARGE = 406;
 
+    /**
+     * 视频消息，视频宽度或者高度不合法
+     */
+    int ERROR_CODE_VIDEO_MESSAGE_VIDEO_WIDTH_OR_HEIGHT_INVALID = 407;
+
+    /**
+     * 视频格式不支持
+     */
+    int ERROR_CODE_VIDEO_MESSAGE_VIDEO_FORMAT_NOT_SUPPORT = 408;
+
     //////////////////////////////////////////
     //////////////////////////////////////////
     ///////////////////////////////////////////////////////////

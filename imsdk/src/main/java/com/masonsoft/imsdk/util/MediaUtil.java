@@ -41,6 +41,7 @@ public class MediaUtil {
             final String mimeType = mimeTypeOrigin.trim().toLowerCase();
             final MediaInfo mediaInfo = new MediaInfo();
             mediaInfo.mimeType = mimeType;
+            mediaInfo.length = file.length();
             if (mimeType.startsWith("video/")) {
                 // 视频
                 final String width = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);

@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.core.processor;
 
+import android.net.Uri;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
@@ -10,7 +11,9 @@ import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.lang.MediaInfo;
 import com.masonsoft.imsdk.lang.StateProp;
+import com.masonsoft.imsdk.util.MediaUtil;
 
 import java.io.File;
 
@@ -70,34 +73,49 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
             return true;
         }
 
-        // 是否验证本地视频地址
-        boolean validateLocalVideoPath;
-        if (URLUtil.isNetworkUrl(videoPath)) {
-            // 文件本身是一个网络地址
-            validateLocalVideoPath = false;
-        } else {
-            validateLocalVideoPath = true;
-            if (videoPath.startsWith("file://")) {
-                videoPath = videoPath.substring(7);
+        final Uri videoUri = Uri.parse(videoPath);
 
-                // 应用文件地址变更
-                body.set(videoPath);
-            }
+        // 是否需要解码视频尺寸信息
+        boolean requireDecodeVideoSize = true;
+
+        final StateProp<Long> width = target.getIMMessage().width;
+        final StateProp<Long> height = target.getIMMessage().height;
+        if (!width.isUnset() && width.get() != null && width.get() > 0
+                && !height.isUnset() && height.get() != null && height.get() > 0) {
+            // 已经设置了合法的宽高值
+            requireDecodeVideoSize = false;
         }
 
-        if (validateLocalVideoPath) {
-            // 校验视频文件是否存在并且文件的大小的是否合法
-            final File videoFile = new File(videoPath);
-            if (!videoFile.exists() || !videoFile.isFile()) {
+        if (URLUtil.isNetworkUrl(videoPath)) {
+            // 视频本身是一个网络地址
+            if (requireDecodeVideoSize) {
+                // 网络地址的视频没有设置合法的宽高值，直接报错
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_INVALID,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_path_invalid)
+                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_WIDTH_OR_HEIGHT_INVALID,
+                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_width_or_height_invalid)
                 );
                 return true;
             }
+        } else {
+            // 分析视频信息
+            final MediaInfo mediaInfo = MediaUtil.decodeMediaInfo(videoUri);
+            if (mediaInfo == null || !mediaInfo.isVideo()) {
+                // 解码视频信息失败, 通常来说都是由于视频格式不支持导致(或者视频 Uri 指向的不是一个真实的视频)
+                target.getEnqueueCallback().onEnqueueFail(
+                        target,
+                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_FORMAT_NOT_SUPPORT,
+                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_format_not_support)
+                );
+                return true;
+            }
+
+            width.set((long) mediaInfo.getViewWidth());
+            height.set((long) mediaInfo.getViewHeight());
+
+            // 校验视频文件的大小的是否合法
             if (IMConstants.SendMessageOption.Video.MAX_FILE_SIZE > 0
-                    && videoFile.length() > IMConstants.SendMessageOption.Video.MAX_FILE_SIZE) {
+                    && mediaInfo.length > IMConstants.SendMessageOption.Video.MAX_FILE_SIZE) {
                 // 视频文件太大
                 final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Video.MAX_FILE_SIZE);
                 target.getEnqueueCallback().onEnqueueFail(

@@ -24,6 +24,10 @@ public class MediaInfo {
      */
     public Uri uri;
     /**
+     * 媒体对应的文件内容的长度
+     */
+    public long length;
+    /**
      * 媒体内容的时长, 音频或视频的时长 ms
      */
     public long duration;
