@@ -14,6 +14,7 @@ import androidx.core.util.ObjectsCompat;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.util.CursorUtil;
 
 import java.io.Closeable;
 import java.io.File;
@@ -29,7 +30,6 @@ import io.github.idonans.core.util.AbortUtil;
 import io.github.idonans.core.util.ContextUtil;
 import io.github.idonans.core.util.HumanUtil;
 import io.github.idonans.core.util.IOUtil;
-import io.github.idonans.core.util.Preconditions;
 
 public class MediaData {
 
@@ -178,6 +178,7 @@ public class MediaData {
     public static class MediaLoader extends WeakAbortSignal implements Runnable, Closeable {
 
         private final MediaSelector mMediaSelector;
+        private final Uri mMediaUri = MediaStore.Files.getContentUri("external");
 
         public MediaLoader(MediaLoaderCallback callback, MediaSelector mediaSelector) {
             super(callback);
@@ -214,10 +215,17 @@ public class MediaData {
             try {
                 AbortUtil.throwIfAbort(this);
 
-                Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                 ContentResolver contentResolver = ContextUtil.getContext().getContentResolver();
-                cursor = contentResolver.query(uri, allColumns(), null, null, null);
-                Preconditions.checkNotNull(cursor);
+                cursor = contentResolver.query(
+                        mMediaUri,
+                        allColumns(),
+                        MediaStore.Files.FileColumns.MEDIA_TYPE + " in (?,?)",
+                        new String[]{
+                                String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
+                                String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
+                        },
+                        MediaStore.MediaColumns.DATE_ADDED + " desc");
+                com.google.common.base.Preconditions.checkNotNull(cursor);
 
                 for (cursor.moveToLast(); !cursor.isBeforeFirst(); cursor.moveToPrevious()) {
                     AbortUtil.throwIfAbort(this);
@@ -294,17 +302,18 @@ public class MediaData {
                 return new String[]{
                         //////////////////////////////////////////////////////
                         //////////////////////////////////////////////////////
-                        MediaStore.Images.Media.SIZE,           //图片的大小，long型  132492
-                        MediaStore.Images.Media.WIDTH,          //图片的宽度，int型  1920
-                        MediaStore.Images.Media.HEIGHT,         //图片的高度，int型  1080
-                        MediaStore.Images.Media.MIME_TYPE,      //图片的类型     image/jpeg
-                        MediaStore.Images.Media.TITLE,
-                        MediaStore.Images.Media.DATE_ADDED,    //添加时间
-                        MediaStore.Images.Media._ID,      //id
+                        MediaStore.MediaColumns.SIZE,           // 媒体的大小，long型  132492
+                        MediaStore.MediaColumns.WIDTH,          // 媒体的宽度，int型  1920, 仅当媒体格式是图片或者视频时有效
+                        MediaStore.MediaColumns.HEIGHT,         // 媒体的高度，int型  1080, 仅当媒体格式是图片或者视频时有效
+                        MediaStore.MediaColumns.MIME_TYPE,      // 媒体的类型     image/jpeg
+                        MediaStore.MediaColumns.TITLE,
+                        MediaStore.MediaColumns.DATE_ADDED,     // 添加时间
+                        MediaStore.MediaColumns._ID,            // id
+                        MediaStore.MediaColumns.DURATION,       // video duration
                         //////////////////////////////////////////////////////
                         //////////////////////////////////////////////////////
-                        MediaStore.Images.Media.BUCKET_ID,
-                        MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+                        MediaStore.MediaColumns.BUCKET_ID,
+                        MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
                         //////////////////////////////////////////////////////
                         //////////////////////////////////////////////////////
                 };
@@ -312,16 +321,17 @@ public class MediaData {
                 return new String[]{
                         //////////////////////////////////////////////////////
                         //////////////////////////////////////////////////////
-                        MediaStore.Images.Media.SIZE,           //图片的大小，long型  132492
-                        MediaStore.Images.Media.WIDTH,          //图片的宽度，int型  1920
-                        MediaStore.Images.Media.HEIGHT,         //图片的高度，int型  1080
-                        MediaStore.Images.Media.MIME_TYPE,      //图片的类型     image/jpeg
-                        MediaStore.Images.Media.TITLE,
-                        MediaStore.Images.Media.DATE_ADDED,    //添加时间
-                        MediaStore.Images.Media._ID,      //id
+                        MediaStore.MediaColumns.SIZE,           // 媒体的大小，long型  132492
+                        MediaStore.MediaColumns.WIDTH,          // 媒体的宽度，int型  1920, 仅当媒体格式是图片或者视频时有效
+                        MediaStore.MediaColumns.HEIGHT,         // 媒体的高度，int型  1080, 仅当媒体格式是图片或者视频时有效
+                        MediaStore.MediaColumns.MIME_TYPE,      // 媒体的类型     image/jpeg
+                        MediaStore.MediaColumns.TITLE,
+                        MediaStore.MediaColumns.DATE_ADDED,     // 添加时间
+                        MediaStore.MediaColumns._ID,            // id
+                        MediaStore.MediaColumns.DURATION,       // video duration
                         //////////////////////////////////////////////////////
                         //////////////////////////////////////////////////////
-                        MediaStore.Images.Media.DATA,           // 图片的真实路径  /storage/emulated/0/pp/downloader/wallpaper/aaa.jpg
+                        MediaStore.MediaColumns.DATA,           // 媒体的真实路径  /storage/emulated/0/pp/downloader/wallpaper/aaa.jpg
                         //////////////////////////////////////////////////////
                         //////////////////////////////////////////////////////
                 };
@@ -332,34 +342,37 @@ public class MediaData {
         private MediaInfo cursorToMediaInfo(Cursor cursor) {
             MediaInfo target = new MediaInfo();
             int index = -1;
-            target.size = cursor.getLong(++index);
-            target.width = cursor.getInt(++index);
-            target.height = cursor.getInt(++index);
-            target.mimeType = cursor.getString(++index);
+            target.size = CursorUtil.getLong(cursor, ++index);
+            target.width = CursorUtil.getInt(cursor, ++index);
+            target.height = CursorUtil.getInt(cursor, ++index);
+            target.mimeType = CursorUtil.getString(cursor, ++index);
             if (target.mimeType != null) {
                 target.mimeType = target.mimeType.trim().toLowerCase();
             }
-            target.title = cursor.getString(++index);
-            target.addTime = cursor.getLong(++index);
-            target.id = cursor.getInt(++index);
+            target.title = CursorUtil.getString(cursor, ++index);
+            target.addTime = CursorUtil.getLong(cursor, ++index);
+            target.id = CursorUtil.getInt(cursor, ++index);
+            target.durationMs = CursorUtil.getLong(cursor, ++index);
 
             if (USE_CONTENT_URI) {
-                target.bucketId = cursor.getString(++index);
-                target.bucketDisplayName = cursor.getString(++index);
-                target.uri = MediaStore.Images.Media
-                        .EXTERNAL_CONTENT_URI
+                target.bucketId = CursorUtil.getString(cursor, ++index);
+                target.bucketDisplayName = CursorUtil.getString(cursor, ++index);
+                target.uri = mMediaUri
                         .buildUpon()
                         .appendPath(String.valueOf(target.id))
                         .build();
             } else {
-                final String path = cursor.getString(++index);
+                final String path = CursorUtil.getString(cursor, ++index);
                 if (TextUtils.isEmpty(path)) {
                     SampleLog.v("invalid path:%s, target:%s", path, target);
                     return null;
                 }
                 final File dir = new File(path).getParentFile();
-                Preconditions.checkNotNull(dir);
-                target.bucketId = dir.getAbsolutePath();
+                if (dir == null) {
+                    target.bucketId = "";
+                } else {
+                    target.bucketId = dir.getAbsolutePath();
+                }
                 target.bucketDisplayName = dir.getName();
                 target.uri = Uri.fromFile(new File(path));
             }
