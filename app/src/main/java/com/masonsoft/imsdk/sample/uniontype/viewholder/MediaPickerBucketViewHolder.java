@@ -5,20 +5,20 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.sample.common.mediapicker.MediaData;
-import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImagePickerBucketBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplMediaPickerBucketBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
 
-public class ImagePickerBucketViewHolder extends UnionTypeViewHolder {
+public class MediaPickerBucketViewHolder extends UnionTypeViewHolder {
 
-    private final ImsdkSampleUnionTypeImplImagePickerBucketBinding mBinding;
+    private final ImsdkSampleUnionTypeImplMediaPickerBucketBinding mBinding;
 
-    public ImagePickerBucketViewHolder(@NonNull Host host) {
-        super(host, R.layout.imsdk_sample_union_type_impl_image_picker_bucket);
-        mBinding = ImsdkSampleUnionTypeImplImagePickerBucketBinding.bind(itemView);
+    public MediaPickerBucketViewHolder(@NonNull Host host) {
+        super(host, R.layout.imsdk_sample_union_type_impl_media_picker_bucket);
+        mBinding = ImsdkSampleUnionTypeImplMediaPickerBucketBinding.bind(itemView);
     }
 
     @Override
@@ -41,13 +41,13 @@ public class ImagePickerBucketViewHolder extends UnionTypeViewHolder {
         }
         ViewUtil.onClick(itemView, v -> {
             if (itemObject.getExtHolderItemClick1() != null) {
-                itemObject.getExtHolderItemClick1().onItemClick(ImagePickerBucketViewHolder.this);
+                itemObject.getExtHolderItemClick1().onItemClick(MediaPickerBucketViewHolder.this);
             }
 
             if (host.getAdapter() instanceof ItemClickUnionTypeAdapter) {
                 ItemClickUnionTypeAdapter adapter = (ItemClickUnionTypeAdapter) host.getAdapter();
                 if (adapter.getOnItemClickListener() != null) {
-                    adapter.getOnItemClickListener().onItemClick(ImagePickerBucketViewHolder.this);
+                    adapter.getOnItemClickListener().onItemClick(MediaPickerBucketViewHolder.this);
                 }
             }
         });

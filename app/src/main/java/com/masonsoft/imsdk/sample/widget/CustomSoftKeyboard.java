@@ -138,7 +138,7 @@ public class CustomSoftKeyboard extends FrameLayout {
 
         void onDeleteOne();
 
-        void onImagePicked(@NonNull List<MediaData.MediaInfo> mediaInfoList);
+        void onMediaPicked(@NonNull List<MediaData.MediaInfo> mediaInfoList);
     }
 
     private OnInputListener mOnInputListener;
@@ -279,12 +279,12 @@ public class CustomSoftKeyboard extends FrameLayout {
             lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
             binding.getRoot().setLayoutParams(lp);
 
-            binding.itemImage.setImageResource(R.drawable.imsdk_sample_ic_input_more_item_image);
+            binding.itemMedia.setImageResource(R.drawable.imsdk_sample_ic_input_more_item_media);
             binding.itemName.setText(R.string.imsdk_sample_custom_soft_keyboard_item_media);
             mBinding.gridLayout.addView(binding.getRoot());
 
             ViewUtil.onClick(binding.getRoot(), v -> {
-                requestImagePickerPermission();
+                requestMediaPickerPermission();
             });
         }
 
@@ -303,7 +303,7 @@ public class CustomSoftKeyboard extends FrameLayout {
 
     }
 
-    private void requestImagePickerPermission() {
+    private void requestMediaPickerPermission() {
         final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
         if (activity == null) {
             SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
@@ -315,14 +315,14 @@ public class CustomSoftKeyboard extends FrameLayout {
                 rxPermissions.request(IMAGE_PICKER_PERMISSION)
                         .subscribe(granted -> {
                             if (granted) {
-                                onImagePickerPermissionGranted();
+                                onMediaPickerPermissionGranted();
                             } else {
                                 SampleLog.e(Constants.ErrorLog.PERMISSION_REQUIRED);
                             }
                         }));
     }
 
-    private void onImagePickerPermissionGranted() {
+    private void onMediaPickerPermissionGranted() {
         final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
         if (activity == null) {
             SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
@@ -330,12 +330,12 @@ public class CustomSoftKeyboard extends FrameLayout {
         }
 
         final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
-        mediaPickerDialog.setOnImagePickListener(imageInfoList -> {
-            if (imageInfoList.isEmpty()) {
+        mediaPickerDialog.setOnMediaPickListener(mediaInfoList -> {
+            if (mediaInfoList.isEmpty()) {
                 return false;
             }
 
-            for (MediaData.MediaInfo mediaInfo : imageInfoList) {
+            for (MediaData.MediaInfo mediaInfo : mediaInfoList) {
                 if (!mediaInfo.isImageMimeType()) {
                     Throwable e = new Throwable("unknown mime type:" + mediaInfo.mimeType + ", uri:" + mediaInfo.uri);
                     SampleLog.e(e);
@@ -344,7 +344,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             }
 
             if (mOnInputListener != null) {
-                mOnInputListener.onImagePicked(imageInfoList);
+                mOnInputListener.onMediaPicked(mediaInfoList);
             }
 
             return true;

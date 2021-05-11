@@ -47,16 +47,16 @@ public class MediaData {
     public MediaBucket bucketSelected;
 
     @NonNull
-    public final List<MediaInfo> mMediaInfoListSelected = new ArrayList<>();
+    public final List<MediaInfo> mediaInfoListSelected = new ArrayList<>();
 
     @NonNull
-    public final MediaSelector mMediaSelector;
+    public final MediaSelector mediaSelector;
 
     public MediaData(@NonNull MediaBucket allMediaInfoListBucket, @NonNull List<MediaBucket> allSubBuckets, @NonNull Map<Uri, MediaInfo> allMediaInfoListMap, @NonNull MediaSelector mediaSelector) {
         this.allMediaInfoListBucket = allMediaInfoListBucket;
         this.allSubBuckets = allSubBuckets;
         this.allMediaInfoListMap = allMediaInfoListMap;
-        this.mMediaSelector = mediaSelector;
+        this.mediaSelector = mediaSelector;
     }
 
     /**
@@ -66,13 +66,14 @@ public class MediaData {
      * @return
      */
     public int indexOfSelected(MediaInfo mediaInfo) {
-        return mMediaInfoListSelected.indexOf(mediaInfo);
+        return mediaInfoListSelected.indexOf(mediaInfo);
     }
 
     public static class MediaInfo {
         @NonNull
         public Uri uri;
         public long size;
+        public long duration;
         public int width;
         public int height;
         public String mimeType;
@@ -87,6 +88,10 @@ public class MediaData {
 
         public boolean isImageMimeType() {
             return this.mimeType != null && this.mimeType.startsWith("image/");
+        }
+
+        public boolean isVideoMimeType() {
+            return this.mimeType != null && this.mimeType.startsWith("video/");
         }
 
         /**

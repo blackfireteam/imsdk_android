@@ -30,6 +30,10 @@
     <string name="imsdk_sample_tip_download_fail">下载失败</string>
     <string name="imsdk_sample_tip_image_invalid">图片无效</string>
     <string name="imsdk_sample_tip_image_too_large">图片太大</string>
+    <string name="imsdk_sample_tip_video_invalid">视频无效</string>
+    <string name="imsdk_sample_tip_video_too_short">视频太短</string>
+    <string name="imsdk_sample_tip_video_too_large">视频太大</string>
+    <string name="imsdk_sample_tip_only_allow_image_or_video">仅支持图片或者视频</string>
     <string name="imsdk_sample_custom_soft_keyboard_item_media">相册</string>
     <string name="imsdk_sample_custom_soft_keyboard_item_media_bucket_all">图片和视频</string>
     <string name="imsdk_sample_custom_soft_keyboard_item_media_picker_submit_format">确定(%1$s)</string>

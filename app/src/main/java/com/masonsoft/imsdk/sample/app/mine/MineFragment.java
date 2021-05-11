@@ -143,7 +143,7 @@ public class MineFragment extends SystemInsetsFragment {
         }
 
         final MediaPickerDialog dialog = new MediaPickerDialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
-        dialog.setOnImagePickListener(imageInfoList -> {
+        dialog.setOnMediaPickListener(imageInfoList -> {
             if (imageInfoList.isEmpty()) {
                 return false;
             }

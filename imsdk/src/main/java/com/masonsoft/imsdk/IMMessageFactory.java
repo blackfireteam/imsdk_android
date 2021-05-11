@@ -77,6 +77,19 @@ public class IMMessageFactory {
     /**
      * 视频消息
      *
+     * @param videoUrl 视频 Uri
+     */
+    @NonNull
+    public static IMMessage createVideoMessage(Uri videoUrl) {
+        final IMMessage target = new IMMessage();
+        target.type.set(IMConstants.MessageType.VIDEO);
+        target.body.set(videoUrl.toString());
+        return target;
+    }
+
+    /**
+     * 视频消息
+     *
      * @param localVideoPath 视频文件的本地完整路径
      * @param durationMs     视频时长，单位毫秒
      * @param width          视频宽度

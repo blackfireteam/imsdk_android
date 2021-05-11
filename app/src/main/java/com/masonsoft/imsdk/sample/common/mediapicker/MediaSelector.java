@@ -44,19 +44,41 @@ public interface MediaSelector {
 
         @Override
         public boolean canSelect(@NonNull List<MediaData.MediaInfo> mediaInfoListSelected, @NonNull MediaData.MediaInfo info) {
-            if (!info.isImageMimeType()) {
-                TipUtil.show(R.string.imsdk_sample_tip_image_invalid);
+            if (info.isImageMimeType()) {
+                // 图片
+                if (info.size <= 0 || info.width <= 0 || info.height <= 0) {
+                    TipUtil.show(R.string.imsdk_sample_tip_image_invalid);
+                    return false;
+                }
+                if (info.isImageMemorySizeTooLarge()
+                        || info.size > Constants.SELECTOR_MAX_IMAGE_FILE_SIZE) {
+                    TipUtil.show(R.string.imsdk_sample_tip_image_too_large);
+                    return false;
+                }
+                return true;
+            } else if (info.isVideoMimeType()) {
+                // 视频
+                if (info.size <= 0
+                        || info.width <= 0
+                        || info.height <= 0
+                        || info.duration <= 0) {
+                    TipUtil.show(R.string.imsdk_sample_tip_video_invalid);
+                    return false;
+                }
+                if (info.duration < Constants.SELECTOR_MIN_VIDEO_DURATION) {
+                    TipUtil.show(R.string.imsdk_sample_tip_video_too_short);
+                    return false;
+                }
+                if (info.size > Constants.SELECTOR_MAX_VIDEO_SIZE
+                        || info.duration > Constants.SELECTOR_MAX_VIDEO_DURATION) {
+                    TipUtil.show(R.string.imsdk_sample_tip_video_too_large);
+                    return false;
+                }
+                return true;
+            } else {
+                TipUtil.show(R.string.imsdk_sample_tip_only_allow_image_or_video);
                 return false;
             }
-            if (info.isImageMemorySizeTooLarge()) {
-                TipUtil.show(R.string.imsdk_sample_tip_image_too_large);
-                return false;
-            }
-            if (info.size > Constants.SELECTOR_MAX_IMAGE_FILE_SIZE) {
-                TipUtil.show(R.string.imsdk_sample_tip_image_too_large);
-                return false;
-            }
-            return true;
         }
 
         @Override

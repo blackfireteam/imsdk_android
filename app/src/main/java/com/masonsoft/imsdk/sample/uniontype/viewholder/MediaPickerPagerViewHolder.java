@@ -6,19 +6,20 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.sample.common.mediapicker.MediaData;
-import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImagePickerPagerBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplMediaPickerPagerBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
+import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
 
-public class ImagePickerPagerViewHolder extends UnionTypeViewHolder {
+public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
 
-    private final ImsdkSampleUnionTypeImplImagePickerPagerBinding mBinding;
+    private final ImsdkSampleUnionTypeImplMediaPickerPagerBinding mBinding;
 
-    public ImagePickerPagerViewHolder(@NonNull Host host) {
-        super(host, R.layout.imsdk_sample_union_type_impl_image_picker_pager);
-        mBinding = ImsdkSampleUnionTypeImplImagePickerPagerBinding.bind(itemView);
+    public MediaPickerPagerViewHolder(@NonNull Host host) {
+        super(host, R.layout.imsdk_sample_union_type_impl_media_picker_pager);
+        mBinding = ImsdkSampleUnionTypeImplMediaPickerPagerBinding.bind(itemView);
     }
 
     @Override
@@ -28,18 +29,18 @@ public class ImagePickerPagerViewHolder extends UnionTypeViewHolder {
         final MediaData.MediaInfo mediaInfo = itemObject.object;
         final MediaData mediaData = itemObject.getExtObjectObject1(null);
 
-        SampleLog.v("ImagePickerPagerViewHolder onBind position:%s uri:%s", position, mediaInfo.uri);
+        SampleLog.v(Objects.defaultObjectTag(this) + " onBind position:%s uri:%s", position, mediaInfo.uri);
         mBinding.image.setPhotoUri(mediaInfo.uri);
 
         mBinding.image.setOnPhotoTapListener((view, x, y) -> {
             if (itemObject.getExtHolderItemClick1() != null) {
-                itemObject.getExtHolderItemClick1().onItemClick(ImagePickerPagerViewHolder.this);
+                itemObject.getExtHolderItemClick1().onItemClick(MediaPickerPagerViewHolder.this);
             }
 
             if (host.getAdapter() instanceof ItemClickUnionTypeAdapter) {
                 final ItemClickUnionTypeAdapter adapter = (ItemClickUnionTypeAdapter) host.getAdapter();
                 if (adapter.getOnItemClickListener() != null) {
-                    adapter.getOnItemClickListener().onItemClick(ImagePickerPagerViewHolder.this);
+                    adapter.getOnItemClickListener().onItemClick(MediaPickerPagerViewHolder.this);
                 }
             }
         });

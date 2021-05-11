@@ -127,11 +127,11 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             SampleLog.e("notifyMediaDataChanged mUnionTypeMediaData is null");
             return;
         }
-        if (mUnionTypeMediaData.mMediaData.bucketSelected != null) {
-            List<UnionTypeItemObject> gridItems = mUnionTypeMediaData.unionTypeGridItemsMap.get(mUnionTypeMediaData.mMediaData.bucketSelected);
+        if (mUnionTypeMediaData.mediaData.bucketSelected != null) {
+            List<UnionTypeItemObject> gridItems = mUnionTypeMediaData.unionTypeGridItemsMap.get(mUnionTypeMediaData.mediaData.bucketSelected);
             mGridView.mDataAdapter.setGroupItems(0, gridItems);
 
-            List<UnionTypeItemObject> pagerItems = mUnionTypeMediaData.unionTypePagerItemsMap.get(mUnionTypeMediaData.mMediaData.bucketSelected);
+            List<UnionTypeItemObject> pagerItems = mUnionTypeMediaData.unionTypePagerItemsMap.get(mUnionTypeMediaData.mediaData.bucketSelected);
             mPagerView.mDataAdapter.setGroupItems(0, pagerItems);
             //noinspection ConstantConditions
             mPagerView.mRecyclerView.getLayoutManager().scrollToPosition(mUnionTypeMediaData.pagerPendingIndex);
@@ -139,9 +139,9 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         mBucketView.mDataAdapter.setGroupItems(0, mUnionTypeMediaData.unionTypeBucketItems);
 
         String bucketSelectedName = I18nResources.getString(R.string.imsdk_sample_custom_soft_keyboard_item_media);
-        if (mUnionTypeMediaData.mMediaData.bucketSelected != null
-                && !mUnionTypeMediaData.mMediaData.bucketSelected.allMediaInfo) {
-            bucketSelectedName = mUnionTypeMediaData.mMediaData.bucketSelected.bucketDisplayName;
+        if (mUnionTypeMediaData.mediaData.bucketSelected != null
+                && !mUnionTypeMediaData.mediaData.bucketSelected.allMediaInfo) {
+            bucketSelectedName = mUnionTypeMediaData.mediaData.bucketSelected.bucketDisplayName;
         }
         mGridView.mGridTopBarTitle.setText(bucketSelectedName);
         mGridView.updateConfirmNextStatus();
@@ -192,19 +192,19 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             });
             ViewUtil.onClick(mActionSubmit, v -> {
                 if (mUnionTypeMediaData == null) {
-                    SampleLog.e("mUnionTypeImageData is null");
+                    SampleLog.e("mUnionTypeMediaData is null");
                     return;
                 }
-                if (mUnionTypeMediaData.mMediaData.mMediaInfoListSelected.isEmpty()) {
-                    SampleLog.e("mUnionTypeImageData.imageData.imageInfoListSelected.isEmpty()");
+                if (mUnionTypeMediaData.mediaData.mediaInfoListSelected.isEmpty()) {
+                    SampleLog.e("mUnionTypeMediaData.mediaData.mediaInfoListSelected.isEmpty()");
                     return;
                 }
 
-                if (mOnImagePickListener == null) {
-                    SampleLog.v("ignore. mOnImagePickListener is null.");
+                if (mOnMediaPickListener == null) {
+                    SampleLog.v("ignore. mOnMediaPickListener is null.");
                     return;
                 }
-                if (mOnImagePickListener.onImagePick(mUnionTypeMediaData.mMediaData.mMediaInfoListSelected)) {
+                if (mOnMediaPickListener.onMediaPick(mUnionTypeMediaData.mediaData.mediaInfoListSelected)) {
                     MediaPickerDialog.this.hide();
                 }
             });
@@ -214,14 +214,14 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             boolean enable;
             int count;
             if (mUnionTypeMediaData == null) {
-                SampleLog.e("mUnionTypeImageData is null");
+                SampleLog.e("mUnionTypeMediaData is null");
                 count = 0;
                 enable = false;
-            } else if (mInnerMediaSelector.canFinishSelect(mUnionTypeMediaData.mMediaData.mMediaInfoListSelected)) {
-                count = mUnionTypeMediaData.mMediaData.mMediaInfoListSelected.size();
+            } else if (mInnerMediaSelector.canFinishSelect(mUnionTypeMediaData.mediaData.mediaInfoListSelected)) {
+                count = mUnionTypeMediaData.mediaData.mediaInfoListSelected.size();
                 enable = true;
             } else {
-                count = mUnionTypeMediaData.mMediaData.mMediaInfoListSelected.size();
+                count = mUnionTypeMediaData.mediaData.mediaInfoListSelected.size();
                 enable = false;
             }
             mActionSubmit.setText(I18nResources.getString(R.string.imsdk_sample_custom_soft_keyboard_item_media_picker_submit_format, count));
@@ -256,7 +256,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             mDataAdapter.setUnionTypeMapper(new UnionTypeMapperImpl());
             mDataAdapter.setOnItemClickListener(viewHolder -> {
                 Preconditions.checkNotNull(mUnionTypeMediaData);
-                int size = mUnionTypeMediaData.mMediaData.allSubBuckets.size();
+                int size = mUnionTypeMediaData.mediaData.allSubBuckets.size();
                 final int position = viewHolder.getAdapterPosition();
                 if ((position < 0 || position >= size)) {
                     SampleLog.e("BucketView onItemClick invalid position: %s, size:%s", position, size);
@@ -264,8 +264,8 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                     return;
                 }
 
-                MediaData.MediaBucket mediaBucket = mUnionTypeMediaData.mMediaData.allSubBuckets.get(position);
-                if (ObjectsCompat.equals(mUnionTypeMediaData.mMediaData.bucketSelected, mediaBucket)) {
+                MediaData.MediaBucket mediaBucket = mUnionTypeMediaData.mediaData.allSubBuckets.get(position);
+                if (ObjectsCompat.equals(mUnionTypeMediaData.mediaData.bucketSelected, mediaBucket)) {
                     if (DEBUG) {
                         SampleLog.v("BucketView onItemClick ignore. same as last bucket selected");
                     }
@@ -274,7 +274,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                 }
 
                 BucketView.this.hide();
-                mUnionTypeMediaData.mMediaData.bucketSelected = mediaBucket;
+                mUnionTypeMediaData.mediaData.bucketSelected = mediaBucket;
                 notifyMediaDataChanged();
             });
 
@@ -357,7 +357,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
     @Override
     public void onLoadFinish(@NonNull MediaData mediaData) {
         if (DEBUG) {
-            SampleLog.v("onLoadFinish buckets:%s, images:%s", mediaData.allSubBuckets.size(), mediaData.allMediaInfoListMap.size());
+            SampleLog.v("onLoadFinish buckets:%s, media info list map size:%s", mediaData.allSubBuckets.size(), mediaData.allMediaInfoListMap.size());
         }
         mediaData.bucketSelected = mediaData.allMediaInfoListBucket;
         UnionTypeMediaData unionTypeMediaData = new UnionTypeMediaData(this, mediaData);
@@ -380,17 +380,17 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         return false;
     }
 
-    public interface OnImagePickListener {
+    public interface OnMediaPickListener {
         /**
-         * 关闭 ImagePicker，返回 true.
+         * 关闭 MediaPicker，返回 true.
          */
-        boolean onImagePick(@NonNull List<MediaData.MediaInfo> mediaInfoList);
+        boolean onMediaPick(@NonNull List<MediaData.MediaInfo> mediaInfoList);
     }
 
-    private OnImagePickListener mOnImagePickListener;
+    private OnMediaPickListener mOnMediaPickListener;
 
-    public void setOnImagePickListener(OnImagePickListener onImagePickListener) {
-        mOnImagePickListener = onImagePickListener;
+    public void setOnMediaPickListener(OnMediaPickListener listener) {
+        mOnMediaPickListener = listener;
     }
 
 }

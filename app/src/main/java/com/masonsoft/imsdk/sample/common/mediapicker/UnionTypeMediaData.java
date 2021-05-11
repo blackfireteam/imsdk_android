@@ -15,7 +15,7 @@ import io.github.idonans.uniontype.UnionTypeItemObject;
 public class UnionTypeMediaData {
 
     @NonNull
-    final MediaData mMediaData;
+    final MediaData mediaData;
     @NonNull
     final Map<MediaData.MediaBucket, List<UnionTypeItemObject>> unionTypeGridItemsMap;
     @NonNull
@@ -26,38 +26,38 @@ public class UnionTypeMediaData {
     public int pagerPendingIndex;
     MediaPickerDialog dialog;
 
-    UnionTypeMediaData(MediaPickerDialog dialog, MediaData mediaData) {
+    UnionTypeMediaData(MediaPickerDialog dialog, @NonNull MediaData mediaData) {
         this.dialog = dialog;
-        this.mMediaData = mediaData;
+        this.mediaData = mediaData;
 
         this.unionTypeGridItemsMap = new HashMap<>();
         this.unionTypePagerItemsMap = new HashMap<>();
-        this.unionTypeBucketItems = new ArrayList<>(this.mMediaData.allSubBuckets.size());
+        this.unionTypeBucketItems = new ArrayList<>(this.mediaData.allSubBuckets.size());
 
-        for (MediaData.MediaBucket bucket : this.mMediaData.allSubBuckets) {
+        for (MediaData.MediaBucket bucket : this.mediaData.allSubBuckets) {
             List<UnionTypeItemObject> gridItems = new ArrayList<>(bucket.mediaInfoList.size());
             List<UnionTypeItemObject> pagerItems = new ArrayList<>(bucket.mediaInfoList.size());
 
             for (MediaData.MediaInfo mediaInfo : bucket.mediaInfoList) {
                 gridItems.add(UnionTypeItemObject.valueOf(
-                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IMAGE_PICKER_GRID,
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_MEDIA_PICKER_GRID,
                         new DataObject<>(mediaInfo)
-                                .putExtObjectObject1(this.mMediaData)
+                                .putExtObjectObject1(this.mediaData)
                                 .putExtObjectObject2(UnionTypeMediaData.this)));
 
                 pagerItems.add(UnionTypeItemObject.valueOf(
-                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IMAGE_PICKER_PAGER,
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_MEDIA_PICKER_PAGER,
                         new DataObject<>(mediaInfo)
-                                .putExtObjectObject1(this.mMediaData)
+                                .putExtObjectObject1(this.mediaData)
                                 .putExtObjectObject2(UnionTypeMediaData.this)));
             }
 
             this.unionTypeGridItemsMap.put(bucket, gridItems);
             this.unionTypePagerItemsMap.put(bucket, pagerItems);
             unionTypeBucketItems.add(UnionTypeItemObject.valueOf(
-                    UnionTypeMapperImpl.UNION_TYPE_IMPL_IMAGE_PICKER_BUCKET,
+                    UnionTypeMapperImpl.UNION_TYPE_IMPL_MEDIA_PICKER_BUCKET,
                     new DataObject<>(bucket)
-                            .putExtObjectObject1(this.mMediaData)
+                            .putExtObjectObject1(this.mediaData)
                             .putExtObjectObject2(UnionTypeMediaData.this)));
         }
     }

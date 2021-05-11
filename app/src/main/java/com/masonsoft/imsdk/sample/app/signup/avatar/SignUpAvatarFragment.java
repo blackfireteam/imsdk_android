@@ -136,7 +136,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
 
         final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
         mediaPickerDialog.setMediaSelector(new MediaSelector.SimpleMediaSelector());
-        mediaPickerDialog.setOnImagePickListener(imageInfoList -> {
+        mediaPickerDialog.setOnMediaPickListener(imageInfoList -> {
             if (imageInfoList.isEmpty()) {
                 return false;
             }

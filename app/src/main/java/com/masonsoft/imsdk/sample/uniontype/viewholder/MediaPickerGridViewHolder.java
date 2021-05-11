@@ -6,20 +6,20 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.sample.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.sample.common.mediapicker.UnionTypeMediaData;
-import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplImagePickerGridBinding;
+import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplMediaPickerGridBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
 
-public class ImagePickerGridViewHolder extends UnionTypeViewHolder {
+public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
 
-    private final ImsdkSampleUnionTypeImplImagePickerGridBinding mBinding;
+    private final ImsdkSampleUnionTypeImplMediaPickerGridBinding mBinding;
 
-    public ImagePickerGridViewHolder(@NonNull Host host) {
-        super(host, R.layout.imsdk_sample_union_type_impl_image_picker_grid);
-        mBinding = ImsdkSampleUnionTypeImplImagePickerGridBinding.bind(itemView);
+    public MediaPickerGridViewHolder(@NonNull Host host) {
+        super(host, R.layout.imsdk_sample_union_type_impl_media_picker_grid);
+        mBinding = ImsdkSampleUnionTypeImplMediaPickerGridBinding.bind(itemView);
     }
 
     @Override
@@ -44,13 +44,13 @@ public class ImagePickerGridViewHolder extends UnionTypeViewHolder {
             int currentSelectedIndex = mediaData.indexOfSelected(mediaInfo);
             if (currentSelectedIndex >= 0) {
                 // 取消选中
-                if (mediaData.mMediaSelector.canDeselect(mediaData.mMediaInfoListSelected, currentSelectedIndex, mediaInfo)) {
-                    mediaData.mMediaInfoListSelected.remove(mediaInfo);
+                if (mediaData.mediaSelector.canDeselect(mediaData.mediaInfoListSelected, currentSelectedIndex, mediaInfo)) {
+                    mediaData.mediaInfoListSelected.remove(mediaInfo);
                 }
             } else {
                 // 选中
-                if (mediaData.mMediaSelector.canSelect(mediaData.mMediaInfoListSelected, mediaInfo)) {
-                    mediaData.mMediaInfoListSelected.add(mediaInfo);
+                if (mediaData.mediaSelector.canSelect(mediaData.mediaInfoListSelected, mediaInfo)) {
+                    mediaData.mediaInfoListSelected.add(mediaInfo);
                 }
             }
             host.getAdapter().notifyDataSetChanged();
@@ -60,12 +60,12 @@ public class ImagePickerGridViewHolder extends UnionTypeViewHolder {
         });
         ViewUtil.onClick(itemView, v -> {
             if (itemObject.getExtHolderItemClick1() != null) {
-                itemObject.getExtHolderItemClick1().onItemClick(ImagePickerGridViewHolder.this);
+                itemObject.getExtHolderItemClick1().onItemClick(MediaPickerGridViewHolder.this);
             }
             if (host.getAdapter() instanceof ItemClickUnionTypeAdapter) {
                 final ItemClickUnionTypeAdapter adapter = (ItemClickUnionTypeAdapter) host.getAdapter();
                 if (adapter.getOnItemClickListener() != null) {
-                    adapter.getOnItemClickListener().onItemClick(ImagePickerGridViewHolder.this);
+                    adapter.getOnItemClickListener().onItemClick(MediaPickerGridViewHolder.this);
                 }
             }
         });
