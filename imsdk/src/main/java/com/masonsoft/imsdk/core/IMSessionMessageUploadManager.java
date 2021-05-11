@@ -335,6 +335,91 @@ public class IMSessionMessageUploadManager {
                     return chatSMessagePacket;
                 }
 
+                if (messageType == IMConstants.MessageType.VIDEO) {
+                    // 视频消息
+                    {
+                        // 上传视频内容
+                        final String videoUrl = message.body.get();
+                        if (!URLUtil.isNetworkUrl(videoUrl)) {
+                            final String accessUrl = uploadFile(videoUrl, new Progress() {
+                                @Override
+                                protected void onUpdate() {
+                                    super.onUpdate();
+                                    setSendProgress((getPercent() / 100f) * 0.8f/*上传视频内容占整体上传进度的 80% */);
+                                }
+                            });
+                            // 备份原始地址
+                            message.localBodyOrigin.set(videoUrl);
+                            // 设置上传成功后的网络地址
+                            message.body.set(accessUrl);
+
+                            // 更新至数据库
+                            final Message messageUpdate = new Message();
+                            messageUpdate.localId.apply(message.localId);
+                            messageUpdate.body.apply(message.body);
+                            messageUpdate.localBodyOrigin.apply(message.localBodyOrigin);
+                            if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                    mSessionUserId,
+                                    mLocalSendingMessage.conversationType.get(),
+                                    mLocalSendingMessage.targetUserId.get(),
+                                    messageUpdate)) {
+                                IMLog.e(Objects.defaultObjectTag(this)
+                                        + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", mSign, messageUpdate);
+                                return null;
+                            }
+                        }
+                    }
+                    {
+                        // 上传封面内容
+                        final String thumbUrl = message.thumb.get();
+                        if (!URLUtil.isNetworkUrl(thumbUrl)) {
+                            final String accessUrl = uploadFile(thumbUrl, new Progress() {
+                                @Override
+                                protected void onUpdate() {
+                                    super.onUpdate();
+                                    setSendProgress(0.8f + (getPercent() / 100f) * 0.2f/*上传封面内容占整体上传进度的 20% */);
+                                }
+                            });
+                            // 备份原始地址
+                            message.localThumbOrigin.set(thumbUrl);
+                            // 设置上传成功后的网络地址
+                            message.thumb.set(accessUrl);
+
+                            // 更新至数据库
+                            final Message messageUpdate = new Message();
+                            messageUpdate.localId.apply(message.localId);
+                            messageUpdate.thumb.apply(message.thumb);
+                            messageUpdate.localThumbOrigin.apply(message.localThumbOrigin);
+                            if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                    mSessionUserId,
+                                    mLocalSendingMessage.conversationType.get(),
+                                    mLocalSendingMessage.targetUserId.get(),
+                                    messageUpdate)) {
+                                IMLog.e(Objects.defaultObjectTag(this)
+                                        + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", mSign, messageUpdate);
+                                return null;
+                            }
+                        }
+                    }
+
+                    final ProtoMessage.ChatS chatS = ProtoMessage.ChatS.newBuilder()
+                            .setSign(mSign)
+                            .setType(messageType)
+                            .setToUid(message.toUserId.get())
+                            .setBody(message.body.get())
+                            // 将时长的毫秒转换为秒(四舍五入)
+                            .setDuration((message.durationMs.get() + 500) / 1000)
+                            .setWidth(message.width.get())
+                            .setHeight(message.height.get())
+                            .setThumb(message.thumb.get())
+                            .build();
+                    final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(chatS);
+                    final ChatSMessagePacket chatSMessagePacket = new ChatSMessagePacket(protoByteMessage, mSign);
+                    mChatSMessagePacket = chatSMessagePacket;
+                    mChatSMessagePacket.getMessagePacketStateObservable().registerObserver(mChatSMessagePacketStateObserver);
+                    return chatSMessagePacket;
+                }
+
                 final Throwable e = new IllegalAccessError("unknown message type:" + messageType + " " + message);
                 IMLog.e(e);
                 return null;
