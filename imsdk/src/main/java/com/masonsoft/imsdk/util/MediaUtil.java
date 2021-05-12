@@ -48,11 +48,11 @@ public class MediaUtil {
                 Preconditions.checkNotNull(width);
                 final String height = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
                 Preconditions.checkNotNull(height);
-                final String duration = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                Preconditions.checkNotNull(duration);
+                final String durationMs = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                Preconditions.checkNotNull(durationMs);
                 mediaInfo.width = Integer.parseInt(width);
                 mediaInfo.height = Integer.parseInt(height);
-                mediaInfo.duration = Integer.parseInt(duration);
+                mediaInfo.durationMs = Integer.parseInt(durationMs);
                 final String rotate = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
                 if (!TextUtils.isEmpty(rotate)) {
                     mediaInfo.rotate = Integer.parseInt(rotate);
@@ -61,7 +61,7 @@ public class MediaUtil {
                 // 音频
                 final String duration = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
                 Preconditions.checkNotNull(duration);
-                mediaInfo.duration = Integer.parseInt(duration);
+                mediaInfo.durationMs = Integer.parseInt(duration);
             } else {
                 throw new IllegalStateException("out mimeType:" + mimeType + " invalid, media file path:" + file.getAbsolutePath());
             }

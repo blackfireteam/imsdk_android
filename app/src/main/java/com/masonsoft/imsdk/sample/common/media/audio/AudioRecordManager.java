@@ -282,13 +282,13 @@ public class AudioRecordManager {
     /**
      * 获取音频文件的时长 ms
      */
-    public long getAudioRecorderDuration(final String audioRecorderFile) {
+    public long getAudioRecorderDurationMs(final String audioRecorderFile) {
         try {
             final MediaInfo mediaInfo = MediaUtil.decodeMediaInfo(Uri.fromFile(new File(audioRecorderFile)));
             if (mediaInfo == null) {
                 return 0L;
             }
-            return mediaInfo.duration;
+            return mediaInfo.durationMs;
         } catch (Throwable e) {
             SampleLog.e(e);
             return 0L;

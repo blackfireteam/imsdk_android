@@ -101,14 +101,6 @@ public final class IMConstants {
          */
         public static class Video {
             /**
-             * 是否必须要 thumb(视频封面图) 参数
-             */
-            public static final boolean THUMB_REQUIRED = false;
-            /**
-             * 是否必须要 duration(视频时长) 参数
-             */
-            public static final boolean DURATION_REQUIRED = false;
-            /**
              * 视频文件大小的限制
              */
             public static final int MAX_FILE_SIZE = 100 * 1024 * 1024;

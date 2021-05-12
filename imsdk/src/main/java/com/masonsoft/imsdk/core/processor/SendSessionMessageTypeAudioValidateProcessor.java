@@ -138,7 +138,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
         long decodeDuration = 0L;
         final MediaInfo mediaInfo = MediaUtil.decodeMediaInfo(Uri.parse(audioPath));
         if (mediaInfo != null) {
-            decodeDuration = mediaInfo.duration;
+            decodeDuration = mediaInfo.durationMs;
         }
         if (decodeDuration <= 0) {
             // 语音时长无效

@@ -11,11 +11,11 @@ import com.masonsoft.imsdk.IMSessionMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.lang.ImageInfo;
 import com.masonsoft.imsdk.lang.MediaInfo;
 import com.masonsoft.imsdk.lang.StateProp;
+import com.masonsoft.imsdk.util.BitmapUtil;
 import com.masonsoft.imsdk.util.MediaUtil;
-
-import java.io.File;
 
 import io.github.idonans.core.util.HumanUtil;
 
@@ -112,6 +112,8 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
 
             width.set((long) mediaInfo.getViewWidth());
             height.set((long) mediaInfo.getViewHeight());
+            // 回写 duration
+            target.getIMMessage().durationMs.set(mediaInfo.durationMs);
 
             // 校验视频文件的大小的是否合法
             if (IMConstants.SendMessageOption.Video.MAX_FILE_SIZE > 0
@@ -131,10 +133,6 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
     }
 
     private boolean validateThumb(@NonNull IMSessionMessage target) {
-        if (!IMConstants.SendMessageOption.Video.THUMB_REQUIRED) {
-            return false;
-        }
-
         final StateProp<String> thumb = target.getIMMessage().thumb;
 
         if (thumb.isUnset()) {
@@ -162,35 +160,24 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
             return true;
         }
 
-
-        // 是否验证本地封面地址
-        boolean validateLocalThumbPath;
         if (URLUtil.isNetworkUrl(thumbPath)) {
             // 文件本身是一个网络地址
-            validateLocalThumbPath = false;
+            return false;
         } else {
-            validateLocalThumbPath = true;
-            if (thumbPath.startsWith("file://")) {
-                thumbPath = thumbPath.substring(7);
-
-                // 应用文件地址变更
-                thumb.set(thumbPath);
-            }
-        }
-
-        if (validateLocalThumbPath) {
-            // 校验封面文件是否存在并且文件的大小的是否合法
-            final File thumbFile = new File(thumbPath);
-            if (!thumbFile.exists() || !thumbFile.isFile()) {
+            // 分析封面图片信息
+            final ImageInfo imageInfo = BitmapUtil.decodeImageInfo(Uri.parse(thumbPath));
+            if (imageInfo == null) {
+                // 解码图片信息失败, 通常来说都是由于图片格式不支持导致(或者图片 Uri 指向的不是一张真实的图片)
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_INVALID,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_thumb_path_invalid)
+                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FORMAT_NOT_SUPPORT,
+                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_thumb_format_not_support)
                 );
                 return true;
             }
+
             if (IMConstants.SendMessageOption.Video.MAX_THUMB_FILE_SIZE > 0
-                    && thumbFile.length() > IMConstants.SendMessageOption.Video.MAX_THUMB_FILE_SIZE) {
+                    && imageInfo.length > IMConstants.SendMessageOption.Video.MAX_THUMB_FILE_SIZE) {
                 // 封面文件太大
                 final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Video.MAX_THUMB_FILE_SIZE);
                 target.getEnqueueCallback().onEnqueueFail(
@@ -206,10 +193,6 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
     }
 
     private boolean validateDuration(@NonNull IMSessionMessage target) {
-        if (!IMConstants.SendMessageOption.Video.DURATION_REQUIRED) {
-            return false;
-        }
-
         // 必须要有合法的时长参数
         final StateProp<Long> duration = target.getIMMessage().durationMs;
         if (duration.isUnset()

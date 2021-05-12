@@ -30,7 +30,7 @@ public class MediaInfo {
     /**
      * 媒体内容的时长, 音频或视频的时长 ms
      */
-    public long duration;
+    public long durationMs;
     /**
      * 视频的旋转角度(视频可能有旋转角度)，取值范围 [0, 90, 180, 270]
      */

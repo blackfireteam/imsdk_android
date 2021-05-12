@@ -175,6 +175,11 @@ public interface EnqueueCallback<T extends EnqueueMessage> {
      */
     int ERROR_CODE_VIDEO_MESSAGE_VIDEO_FORMAT_NOT_SUPPORT = 408;
 
+    /**
+     * 视频封面图格式不支持
+     */
+    int ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FORMAT_NOT_SUPPORT = 409;
+
     //////////////////////////////////////////
     //////////////////////////////////////////
     ///////////////////////////////////////////////////////////
