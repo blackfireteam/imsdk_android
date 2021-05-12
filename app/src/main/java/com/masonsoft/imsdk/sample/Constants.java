@@ -53,7 +53,7 @@ public class Constants {
     /**
      * 视频选择中允许的最长时长 ms (video.duration)
      */
-    public static final long SELECTOR_MAX_VIDEO_DURATION = TimeUnit.SECONDS.toMillis(30);
+    public static final long SELECTOR_MAX_VIDEO_DURATION = TimeUnit.MINUTES.toMillis(10);
     /**
      * 视频选择中允许的最短时长 ms (video.duration)
      */
