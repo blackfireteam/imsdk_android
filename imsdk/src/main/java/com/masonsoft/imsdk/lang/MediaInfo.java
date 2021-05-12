@@ -35,6 +35,10 @@ public class MediaInfo {
      * 视频的旋转角度(视频可能有旋转角度)，取值范围 [0, 90, 180, 270]
      */
     public int rotate;
+    /**
+     * 缩略图文件，如解码出的视频的缩略图
+     */
+    public String thumbFilePath;
 
     /**
      * 视觉上的视频宽度

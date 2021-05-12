@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.util;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -12,7 +13,9 @@ import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.lang.ImageInfo;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import io.github.idonans.core.manager.TmpFileManager;
 import io.github.idonans.core.util.ContextUtil;
@@ -109,6 +112,46 @@ public class BitmapUtil {
             }
         } catch (Throwable e) {
             IMLog.e(e);
+        }
+        return null;
+    }
+
+    /**
+     * 将图片保存至临时文件
+     */
+    @Nullable
+    public static String saveToTmpFile(Bitmap bitmap) {
+        return saveToTmpFile(bitmap, false);
+    }
+
+    /**
+     * 将图片保存至临时文件
+     */
+    @Nullable
+    public static String saveToTmpFile(Bitmap bitmap, boolean png) {
+        boolean success = false;
+        File file = null;
+        try {
+            file = TmpFileManager.getInstance().createNewTmpFileQuietly("__tmp_bitmap_", png ? ".png" : ".jpeg");
+            if (file == null) {
+                return null;
+            }
+
+            try (OutputStream os = new FileOutputStream(file)) {
+                if (bitmap.compress(
+                        png ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG,
+                        85,
+                        os)) {
+                    success = true;
+                    return file.getAbsolutePath();
+                }
+            }
+        } catch (Throwable e) {
+            IMLog.e(e);
+        } finally {
+            if (!success) {
+                FileUtil.deleteFileQuietly(file);
+            }
         }
         return null;
     }

@@ -115,7 +115,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
             // 回写 duration
             target.getIMMessage().durationMs.set(mediaInfo.durationMs);
 
-            // 校验视频文件的大小的是否合法
+            // 校验视频文件的大小是否合法
             if (IMConstants.SendMessageOption.Video.MAX_FILE_SIZE > 0
                     && mediaInfo.length > IMConstants.SendMessageOption.Video.MAX_FILE_SIZE) {
                 // 视频文件太大

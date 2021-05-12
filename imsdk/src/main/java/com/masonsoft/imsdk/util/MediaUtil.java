@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.util;
 
+import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -56,6 +57,14 @@ public class MediaUtil {
                 final String rotate = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
                 if (!TextUtils.isEmpty(rotate)) {
                     mediaInfo.rotate = Integer.parseInt(rotate);
+                }
+                // 解码视频封面
+                final Bitmap thumb = mediaMetadataRetriever.getFrameAtTime();
+                if (thumb != null) {
+                    final String thumbFilePath = BitmapUtil.saveToTmpFile(thumb);
+                    if (thumbFilePath != null) {
+                        mediaInfo.thumbFilePath = thumbFilePath;
+                    }
                 }
             } else if (mimeType.startsWith("audio/")) {
                 // 音频
