@@ -35,8 +35,7 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
     }
 
     public IMMessageSendStatusTextView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public IMMessageSendStatusTextView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {

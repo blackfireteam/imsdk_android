@@ -29,8 +29,7 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
     }
 
     public IMMessageReadStatusView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public IMMessageReadStatusView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {

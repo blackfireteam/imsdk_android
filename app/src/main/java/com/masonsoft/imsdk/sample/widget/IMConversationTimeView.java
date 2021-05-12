@@ -28,8 +28,7 @@ public class IMConversationTimeView extends IMConversationDynamicFrameLayout {
     }
 
     public IMConversationTimeView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public IMConversationTimeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {

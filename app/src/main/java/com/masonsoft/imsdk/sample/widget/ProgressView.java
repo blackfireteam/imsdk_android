@@ -26,8 +26,7 @@ public class ProgressView extends View {
     }
 
     public ProgressView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, R.style.ProgressView);
+        this(context, attrs, defStyleAttr, R.style.ProgressView);
     }
 
     public ProgressView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {

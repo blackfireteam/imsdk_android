@@ -25,8 +25,7 @@ public class ResizeVoiceView extends FrameLayout {
     }
 
     public ResizeVoiceView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public ResizeVoiceView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {

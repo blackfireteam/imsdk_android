@@ -35,8 +35,7 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
     }
 
     public IMConversationUnreadCountView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public IMConversationUnreadCountView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {

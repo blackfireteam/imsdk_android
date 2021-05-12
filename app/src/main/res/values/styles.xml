@@ -2,7 +2,7 @@
 <resources>
 
     <style name="UserCacheAvatar">
-        <item name="roundSize">6dp</item>
+        <item name="roundAsCircle">true</item>
         <item name="smallCache">true</item>
     </style>
 

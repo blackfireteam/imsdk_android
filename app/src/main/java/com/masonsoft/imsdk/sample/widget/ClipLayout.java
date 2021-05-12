@@ -26,8 +26,7 @@ public class ClipLayout extends FrameLayout {
     }
 
     public ClipLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public ClipLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {

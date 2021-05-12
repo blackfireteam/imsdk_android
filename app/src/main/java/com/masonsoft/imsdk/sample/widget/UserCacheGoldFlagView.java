@@ -24,8 +24,7 @@ public class UserCacheGoldFlagView extends UserCacheDynamicImageView {
     }
 
     public UserCacheGoldFlagView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public UserCacheGoldFlagView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {

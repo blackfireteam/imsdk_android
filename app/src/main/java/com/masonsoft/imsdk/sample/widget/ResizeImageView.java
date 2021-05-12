@@ -22,8 +22,7 @@ public class ResizeImageView extends FrameLayout {
     }
 
     public ResizeImageView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public ResizeImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
