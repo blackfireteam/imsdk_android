@@ -112,8 +112,16 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
 
             width.set((long) mediaInfo.getViewWidth());
             height.set((long) mediaInfo.getViewHeight());
-            // 回写 duration
-            target.getIMMessage().durationMs.set(mediaInfo.durationMs);
+
+            if (target.getIMMessage().durationMs.isUnset()) {
+                // 回写 duration
+                target.getIMMessage().durationMs.set(mediaInfo.durationMs);
+            }
+
+            if (target.getIMMessage().thumb.isUnset()) {
+                // 回写缩略图
+                target.getIMMessage().thumb.set(mediaInfo.thumbFilePath);
+            }
 
             // 校验视频文件的大小是否合法
             if (IMConstants.SendMessageOption.Video.MAX_FILE_SIZE > 0
