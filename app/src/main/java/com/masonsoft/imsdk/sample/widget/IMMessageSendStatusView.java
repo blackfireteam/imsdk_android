@@ -10,11 +10,15 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.EnqueueCallbackAdapter;
 import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.IMSessionMessage;
+import com.masonsoft.imsdk.WeakEnqueueCallbackAdapter;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.sample.util.TipUtil;
 
 import io.github.idonans.lang.util.ViewUtil;
 
@@ -78,11 +82,18 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
             if (message != null
                     && !message.sendState.isUnset()) {
                 if (message.sendState.get() == IMConstants.SendStatus.FAIL) {
-                    IMMessageQueueManager.getInstance().enqueueResendSessionMessage(message);
+                    IMMessageQueueManager.getInstance().enqueueResendSessionMessage(message, new WeakEnqueueCallbackAdapter<>(mEnqueueCallback, true));
                 }
             }
         });
     }
+
+    private final EnqueueCallbackAdapter<IMSessionMessage> mEnqueueCallback = new EnqueueCallbackAdapter<IMSessionMessage>() {
+        @Override
+        public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, int errorCode, String errorMessage) {
+            TipUtil.showOrDefault(errorMessage);
+        }
+    };
 
     @Override
     protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {

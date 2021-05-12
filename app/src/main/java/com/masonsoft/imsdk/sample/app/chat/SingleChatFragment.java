@@ -50,6 +50,7 @@ import java.util.List;
 
 import io.github.idonans.core.AbortSignal;
 import io.github.idonans.core.FormValidator;
+import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.PermissionUtil;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.lang.DisposableHolder;
@@ -100,6 +101,14 @@ public class SingleChatFragment extends SystemInsetsFragment {
         if (args != null) {
             mTargetUserId = args.getLong(Constants.ExtrasKey.TARGET_USER_ID, mTargetUserId);
         }
+    }
+
+    private static void smoothScrollToPosition(RecyclerView recyclerView, int position) {
+        recyclerView.smoothScrollToPosition(position);
+    }
+
+    private static void scrollToPosition(RecyclerView recyclerView, int position) {
+        recyclerView.scrollToPosition(position);
     }
 
     @Nullable
@@ -176,7 +185,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                     return;
                 }
 
-                binding.recyclerView.post(() -> {
+                Threads.postUi(() -> {
                     int count = mDataAdapter.getItemCount();
                     if (count > 0) {
                         final int firstPosition = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
@@ -191,7 +200,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                         SampleLog.v("onSoftKeyboardLayoutShown scrollWithAnimation:%s, firstPosition:%s, count:%s",
                                 scrollWithAnimation, firstPosition, count);
                         if (scrollWithAnimation) {
-                            binding.recyclerView.smoothScrollToPosition(count - 1);
+                            smoothScrollToPosition(binding.recyclerView, count - 1);
                         } else {
                             binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                                 @Override
@@ -199,10 +208,10 @@ public class SingleChatFragment extends SystemInsetsFragment {
                                     super.onScrolled(recyclerView, dx, dy);
                                     binding.recyclerView.removeOnScrollListener(this);
                                     SampleLog.v("onSoftKeyboardLayoutShown scrollWithAnimation:false addOnScrollListener onScrolled");
-                                    binding.recyclerView.smoothScrollToPosition(count - 1);
+                                    smoothScrollToPosition(binding.recyclerView, count - 1);
                                 }
                             });
-                            binding.recyclerView.scrollToPosition(archPosition);
+                            scrollToPosition(binding.recyclerView, archPosition);
                         }
                     }
                 });
@@ -727,11 +736,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
 
             if (!items.isEmpty()) {
-                binding.recyclerView.post(() -> {
+                Threads.postUi(() -> {
                     if (mDataAdapter != null) {
                         int count = mDataAdapter.getItemCount();
                         if (count > 0) {
-                            binding.recyclerView.scrollToPosition(count - 1);
+                            scrollToPosition(binding.recyclerView, count - 1);
                             sendMarkAsRead();
                         }
                     }
@@ -757,7 +766,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
 
             if (!items.isEmpty()) {
-                binding.recyclerView.post(() -> {
+                Threads.postUi(() -> {
                     if (mDataAdapter != null) {
                         int count = mDataAdapter.getItemCount();
                         if (count > 0) {
@@ -768,7 +777,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                                 autoScroll = true;
                             }
                             if (autoScroll) {
-                                binding.recyclerView.smoothScrollToPosition(count - 1);
+                                scrollToPosition(binding.recyclerView, count - 1);
                                 sendMarkAsRead();
                             } else {
                                 // 显示向下的箭头
@@ -780,7 +789,6 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
         }
 
-        // TODO
         public Activity getActivity() {
             return SingleChatFragment.this.getActivity();
         }
