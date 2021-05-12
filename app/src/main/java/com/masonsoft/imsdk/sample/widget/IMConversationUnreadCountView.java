@@ -75,7 +75,7 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
         mBackgroundPaint.setStyle(Paint.Style.FILL);
         mBackgroundPaint.setStrokeCap(Paint.Cap.ROUND);
         mBackgroundPaint.setStrokeJoin(Paint.Join.ROUND);
-        mBackgroundPaint.setColor(0xFFFF566F);
+        mBackgroundPaint.setColor(0xFFFF3333);
 
         mTextPaint = new Paint();
         mTextPaint.setAntiAlias(true);

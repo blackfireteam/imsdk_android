@@ -18,11 +18,13 @@ import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleConversationFragmentBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
+import com.masonsoft.imsdk.sample.widget.DividerItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.Collection;
 import java.util.List;
 
+import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
@@ -61,6 +63,14 @@ public class ConversationFragment extends SystemInsetsFragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(null);
         recyclerView.setHasFixedSize(true);
+
+        recyclerView.addItemDecoration(new DividerItemDecoration(
+                DividerItemDecoration.VERTICAL,
+                DividerItemDecoration.SHOW_DIVIDER_MIDDLE,
+                0xFFe1e1e1,
+                DimenUtil.dp2px(1),
+                DimenUtil.dp2px(1)
+        ));
 
         UnionTypeAdapter adapter = new UnionTypeAdapter();
         adapter.setHost(Host.Factory.create(this, recyclerView, adapter));

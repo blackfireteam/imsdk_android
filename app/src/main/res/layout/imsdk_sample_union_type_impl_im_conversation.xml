@@ -8,8 +8,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="102dp"
-        android:padding="15dp">
+        android:layout_height="92dp"
+        android:paddingStart="15dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="10dp">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/h_line_1"
