@@ -99,6 +99,13 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         }
     };
 
+    private final UnionTypeViewHolderListeners.OnItemClickListener mOnHolderItemClickListener = viewHolder -> {
+        SingleChatFragment.ViewImpl view = getView();
+        if (view != null) {
+            IMMessageViewHolder.Helper.showPreview(viewHolder, view.getTargetUserId());
+        }
+    };
+
     private final UnionTypeViewHolderListeners.OnItemLongClickListener mOnHolderItemLongClickListener = viewHolder -> {
         SingleChatFragment.ViewImpl view = getView();
         if (view != null) {
@@ -112,6 +119,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
             return null;
         }
         final DataObject<IMMessage> dataObject = new DataObject<>(imMessage)
+                .putExtHolderItemClick1(mOnHolderItemClickListener)
                 .putExtHolderItemLongClick1(mOnHolderItemLongClickListener);
         return IMMessageViewHolder.Helper.createDefault(dataObject, mSessionUserId);
     }

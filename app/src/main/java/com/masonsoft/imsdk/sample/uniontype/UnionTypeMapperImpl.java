@@ -13,6 +13,8 @@ import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVideoReceivedVie
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVideoSendViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVoiceReceivedViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVoiceSendViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.ImMessagePreviewImageViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.ImMessagePreviewVideoViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.MediaPickerBucketViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.MediaPickerGridViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.MediaPickerPagerViewHolder;
@@ -38,6 +40,8 @@ public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND = sNextUnionType++; // 聊天消息-发送的语音
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_RECEIVED = sNextUnionType++; // 聊天消息-接收的视频
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_SEND = sNextUnionType++; // 聊天消息-发送的视频
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE = sNextUnionType++; // 聊天消息-横向全屏预览-图片
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO = sNextUnionType++; // 聊天消息-横向全屏预览-视频
 
     public UnionTypeMapperImpl() {
         put(UNION_TYPE_IMPL_IM_HOME_SPARK, HomeSparkViewHolder::new);
@@ -56,6 +60,8 @@ public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
         put(UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND, IMMessageVoiceSendViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_RECEIVED, IMMessageVideoReceivedViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_SEND, IMMessageVideoSendViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE, ImMessagePreviewImageViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO, ImMessagePreviewVideoViewHolder::new);
     }
 
 }

@@ -27,6 +27,7 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.TopActivity;
 import com.masonsoft.imsdk.sample.common.impopup.IMChatMessageMenuDialog;
+import com.masonsoft.imsdk.sample.common.impreview.IMImageOrVideoPreviewDialog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.util.ClipboardUtil;
@@ -342,12 +343,21 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             final boolean received = dataObject.object.toUserId.get() == sessionUserId;
             final long msgType = dataObject.object.type.get();
 
-            // 文本消息
-            // TODO
+            // 视频消息
+            if (msgType == IMConstants.MessageType.VIDEO) {
+                return UnionTypeItemObject.valueOf(
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO,
+                        dataObject);
+            }
 
-            // TODO 其它类型的消息
+            // 图片消息
+            if (msgType == IMConstants.MessageType.IMAGE) {
+                return UnionTypeItemObject.valueOf(
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE,
+                        dataObject);
+            }
 
-            SampleLog.e("createDefault unknown message type %s", dataObject.object);
+            SampleLog.e("createPreviewDefault unknown message type %s", dataObject.object);
             return null;
         }
 
@@ -455,11 +465,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             public boolean received;
         }
 
-        public interface DefaultPreviewAction {
-            boolean onDefaultPreviewAction(@NonNull UnionTypeViewHolder holder, long targetUserId, @NonNull HolderFinder finder);
-        }
-
-        public static void showPreview(UnionTypeViewHolder holder, long targetUserId, @Nullable DefaultPreviewAction defaultPreviewAction) {
+        public static void showPreview(UnionTypeViewHolder holder, long targetUserId) {
             final HolderFinder holderFinder = getHolderFinder(holder);
             if (holderFinder == null) {
                 SampleLog.e("showPreview holderFinder is null");
@@ -471,9 +477,20 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 return;
             }
             final long type = holderFinder.message.type.get();
+            if (type == IMConstants.MessageType.IMAGE
+                    || type == IMConstants.MessageType.VIDEO) {
+                // 图片或者视频
+                new IMImageOrVideoPreviewDialog(
+                        holderFinder.lifecycle,
+                        holderFinder.innerActivity,
+                        holderFinder.innerActivity.findViewById(Window.ID_ANDROID_CONTENT),
+                        holderFinder.message,
+                        targetUserId
+                ).show();
+                return;
+            }
 
-            // TODO
-            SampleLog.e("imMessage type is unknown %s", holderFinder.message);
+            SampleLog.e("showPreview other message type %s", holderFinder.message);
         }
 
         private static void clearHolderFinderTag(UnionTypeViewHolder holder) {
