@@ -19,7 +19,8 @@
         <com.masonsoft.imsdk.sample.widget.UserCacheAvatar
             android:id="@+id/avatar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:roundAsCircle="false" />
 
         <LinearLayout
             android:layout_width="match_parent"
