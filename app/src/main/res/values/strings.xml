@@ -72,4 +72,5 @@
     <string name="imsdk_sample_voice_record_say_time_short">说话时间太短</string>
     <string name="imsdk_sample_voice_record_fail">录音失败</string>
     <string name="imsdk_sample_voice_record_up_cancel_send">松开手指，取消发送</string>
+    <string name="imsdk_sample_im_message_wink_text">“WINK”\nGreat profile, let's talk!</string>
 </resources>
