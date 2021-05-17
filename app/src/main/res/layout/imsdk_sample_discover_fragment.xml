@@ -11,7 +11,26 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:systemInsetPaddingTop="all"
-        app:systemInsetPaddingTopNotConsume="true" />
+        app:systemInsetPaddingTopNotConsume="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/imsdk_sample_main_top_bar_height"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="@string/imsdk_sample_tab_discover_title"
+            android:textColor="#ff282828"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_gravity="bottom"
+            android:background="@color/imsdk_sample_color_divider_line" />
+    </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
