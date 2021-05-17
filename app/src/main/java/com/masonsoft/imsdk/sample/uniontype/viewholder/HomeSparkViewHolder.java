@@ -5,6 +5,10 @@ import android.app.Activity;
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.EnqueueCallbackAdapter;
+import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.IMMessageFactory;
+import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -88,8 +92,8 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
                 return;
             }
 
-            // TODO FIXME
-            // send wink message ?
+            // send wink message
+            sendWinkMessage(spark.userId);
         });
         ViewUtil.onClick(mBinding.actionChat, v -> {
             final Activity innerActivity = host.getActivity();
@@ -105,6 +109,15 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
             SingleChatActivity.start(innerActivity, spark.userId);
         });
+    }
+
+    private void sendWinkMessage(long targetUserId) {
+        final IMMessage imMessage = IMMessageFactory.createWinkMessage();
+        IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
+                imMessage,
+                targetUserId,
+                new EnqueueCallbackAdapter<>()
+        );
     }
 
     private static class ExtraUiData {

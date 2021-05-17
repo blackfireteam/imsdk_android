@@ -420,6 +420,20 @@ public class IMSessionMessageUploadManager {
                     return chatSMessagePacket;
                 }
 
+                if (messageType == IMConstants.MessageType.WINK) {
+                    // wink 消息
+                    final ProtoMessage.ChatS chatS = ProtoMessage.ChatS.newBuilder()
+                            .setSign(mSign)
+                            .setType(messageType)
+                            .setToUid(message.toUserId.get())
+                            .build();
+                    final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(chatS);
+                    final ChatSMessagePacket chatSMessagePacket = new ChatSMessagePacket(protoByteMessage, mSign);
+                    mChatSMessagePacket = chatSMessagePacket;
+                    mChatSMessagePacket.getMessagePacketStateObservable().registerObserver(mChatSMessagePacketStateObserver);
+                    return chatSMessagePacket;
+                }
+
                 final Throwable e = new IllegalAccessError("unknown message type:" + messageType + " " + message);
                 IMLog.e(e);
                 return null;
