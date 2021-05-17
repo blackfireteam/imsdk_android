@@ -13,8 +13,8 @@ import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVideoReceivedVie
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVideoSendViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVoiceReceivedViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVoiceSendViewHolder;
-import com.masonsoft.imsdk.sample.uniontype.viewholder.ImMessagePreviewImageViewHolder;
-import com.masonsoft.imsdk.sample.uniontype.viewholder.ImMessagePreviewVideoViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessagePreviewImageViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessagePreviewVideoViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.MediaPickerBucketViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.MediaPickerGridViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.MediaPickerPagerViewHolder;
@@ -60,8 +60,8 @@ public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
         put(UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND, IMMessageVoiceSendViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_RECEIVED, IMMessageVideoReceivedViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_SEND, IMMessageVideoSendViewHolder::new);
-        put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE, ImMessagePreviewImageViewHolder::new);
-        put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO, ImMessagePreviewVideoViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE, IMMessagePreviewImageViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO, IMMessagePreviewVideoViewHolder::new);
     }
 
 }

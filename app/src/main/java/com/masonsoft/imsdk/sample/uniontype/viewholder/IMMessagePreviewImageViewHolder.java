@@ -12,12 +12,12 @@ import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
 import io.github.idonans.uniontype.Host;
 import me.relex.photodraweeview.PhotoDraweeView;
 
-public class ImMessagePreviewImageViewHolder extends IMMessageViewHolder {
+public class IMMessagePreviewImageViewHolder extends IMMessageViewHolder {
 
     private final PhotoDraweeView mImage;
 
-    public ImMessagePreviewImageViewHolder(@NonNull Host host) {
-        super(host, R.layout.union_type_app_impl_im_message_preview_image);
+    public IMMessagePreviewImageViewHolder(@NonNull Host host) {
+        super(host, R.layout.imsdk_sample_union_type_impl_im_message_preview_image);
         mImage = itemView.findViewById(R.id.image);
     }
 

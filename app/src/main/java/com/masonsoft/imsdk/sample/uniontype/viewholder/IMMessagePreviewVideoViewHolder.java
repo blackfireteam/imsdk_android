@@ -11,20 +11,20 @@ import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentM
 import com.masonsoft.imsdk.sample.common.microlifecycle.RecyclerViewMicroLifecycleComponentManager;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
-import com.masonsoft.imsdk.sample.widget.ImMessagePreviewVideoView;
+import com.masonsoft.imsdk.sample.widget.IMMessagePreviewVideoView;
 
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
 
-public class ImMessagePreviewVideoViewHolder extends IMMessageViewHolder {
+public class IMMessagePreviewVideoViewHolder extends IMMessageViewHolder {
 
-    private final ImMessagePreviewVideoView mPreviewVideoView;
+    private final IMMessagePreviewVideoView mPreviewVideoView;
 
     @Nullable
     private LocalMicroLifecycle mLocalMicroLifecycle;
 
-    public ImMessagePreviewVideoViewHolder(@NonNull Host host) {
-        super(host, R.layout.union_type_app_impl_im_message_preview_video);
+    public IMMessagePreviewVideoViewHolder(@NonNull Host host) {
+        super(host, R.layout.imsdk_sample_union_type_impl_im_message_preview_video);
         mPreviewVideoView = itemView.findViewById(R.id.preview_video_view);
     }
 
@@ -79,7 +79,7 @@ public class ImMessagePreviewVideoViewHolder extends IMMessageViewHolder {
         @Nullable
         @Override
         public RecyclerView.ViewHolder getViewHolder() {
-            return ImMessagePreviewVideoViewHolder.this;
+            return IMMessagePreviewVideoViewHolder.this;
         }
 
         @Override

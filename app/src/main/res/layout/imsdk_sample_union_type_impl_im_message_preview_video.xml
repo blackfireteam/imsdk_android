@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="#ff333333">
 
-    <com.masonsoft.imsdk.sample.widget.ImMessagePreviewVideoView
+    <com.masonsoft.imsdk.sample.widget.IMMessagePreviewVideoView
         android:id="@+id/preview_video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

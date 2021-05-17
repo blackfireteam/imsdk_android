@@ -15,21 +15,21 @@ import com.masonsoft.imsdk.sample.common.media.player.MediaPlayerView;
 
 import io.github.idonans.lang.util.ViewUtil;
 
-public class ImMessagePreviewVideoView extends MicroLifecycleFrameLayout {
+public class IMMessagePreviewVideoView extends MicroLifecycleFrameLayout {
 
-    public ImMessagePreviewVideoView(Context context) {
+    public IMMessagePreviewVideoView(Context context) {
         this(context, null);
     }
 
-    public ImMessagePreviewVideoView(Context context, AttributeSet attrs) {
+    public IMMessagePreviewVideoView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ImMessagePreviewVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IMMessagePreviewVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public ImMessagePreviewVideoView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public IMMessagePreviewVideoView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -67,7 +67,7 @@ public class ImMessagePreviewVideoView extends MicroLifecycleFrameLayout {
     };
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        setContentView(R.layout.widget_im_message_preview_video_view);
+        setContentView(R.layout.imsdk_sample_widget_im_message_preview_video_view);
         mActionClose = findViewById(R.id.action_close);
         mExoPlayInterceptView = findViewById(R.id.exo_play_intercept_view);
         mExoPauseInterceptView = findViewById(R.id.exo_pause_intercept_view);
