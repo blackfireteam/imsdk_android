@@ -15,6 +15,7 @@ import com.masonsoft.imsdk.core.db.DatabaseHelper;
 import com.masonsoft.imsdk.core.db.DatabaseProvider;
 import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
+import com.masonsoft.imsdk.core.observable.FetchConversationListObservable;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.user.UserInfoSyncManager;
 import com.masonsoft.imsdk.util.Objects;
@@ -56,6 +57,7 @@ public class ReceivedProtoMessageConversationListProcessor extends ReceivedProto
         if (updateTime > 0) {
             // 会话获取结束
             target.getSessionTcpClient().setFetchConversationListFinish(updateTime);
+            FetchConversationListObservable.DEFAULT.notifyConversationListFetchedSuccess();
         }
         return true;
     }

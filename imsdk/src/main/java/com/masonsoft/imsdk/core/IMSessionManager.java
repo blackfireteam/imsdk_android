@@ -8,13 +8,17 @@ import androidx.annotation.WorkerThread;
 import androidx.collection.LruCache;
 
 import com.masonsoft.imsdk.core.message.packet.FetchConversationListMessagePacket;
+import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignInMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignOutMessagePacket;
 import com.masonsoft.imsdk.core.observable.ClockObservable;
+import com.masonsoft.imsdk.core.observable.FetchConversationListObservable;
+import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.observable.SessionObservable;
 import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
+import com.masonsoft.imsdk.lang.GeneralErrorCode;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.util.Objects;
 
@@ -651,6 +655,47 @@ public class IMSessionManager {
         @Nullable
         private SessionTcpClient mSessionTcpClient;
         private FetchConversationListMessagePacket mFetchConversationListMessagePacket;
+        @NonNull
+        private final MessagePacketStateObservable.MessagePacketStateObserver mFetchConversationListMessagePacketStateObserver = new MessagePacketStateObservable.MessagePacketStateObserver() {
+            @Override
+            public void onStateChanged(MessagePacket packet, int oldState, int newState) {
+                if (mFetchConversationListMessagePacket != packet) {
+                    final Throwable e = new IllegalAccessError("invalid packet:" + Objects.defaultObjectTag(packet)
+                            + ", mFetchConversationListMessagePacket:" + Objects.defaultObjectTag(mFetchConversationListMessagePacket));
+                    IMLog.e(e);
+                    return;
+                }
+
+                final FetchConversationListMessagePacket fetchConversationListMessagePacket = (FetchConversationListMessagePacket) packet;
+                if (newState == MessagePacket.STATE_FAIL) {
+                    // 发送失败
+                    IMLog.v("onStateChanged STATE_FAIL fetchConversationListMessagePacket errorCode:%s, errorMessage:%s, timeout:%s",
+                            fetchConversationListMessagePacket.getErrorCode(), fetchConversationListMessagePacket.getErrorMessage(), fetchConversationListMessagePacket.isTimeoutTriggered());
+                    int errorCode = fetchConversationListMessagePacket.getErrorCode();
+                    String errorMessage = fetchConversationListMessagePacket.getErrorMessage();
+                    if (errorCode == 0) {
+                        if (fetchConversationListMessagePacket.isTimeoutTriggered()) {
+                            errorCode = GeneralErrorCode.ERROR_CODE_MESSAGE_PACKET_SEND_TIMEOUT;
+                            errorMessage = GeneralErrorCode.findDefaultErrorMessage(errorCode);
+                        }
+                    }
+                    if (errorCode == 0) {
+                        errorCode = GeneralErrorCode.ERROR_CODE_UNKNOWN;
+                        errorMessage = GeneralErrorCode.findDefaultErrorMessage(errorCode);
+                    }
+
+                    FetchConversationListObservable.DEFAULT.notifyConversationListFetchedError(errorCode, errorMessage);
+                } else if (newState == MessagePacket.STATE_SUCCESS) {
+                    // 发送成功
+                    if (fetchConversationListMessagePacket.isEmptyConversationList()) {
+                        // 会话列表没有变动或者为空
+                        FetchConversationListObservable.DEFAULT.notifyConversationListFetchedSuccess();
+                    }
+                } else if (newState == MessagePacket.STATE_GOING) {
+                    FetchConversationListObservable.DEFAULT.notifyConversationListFetchedLoading();
+                }
+            }
+        };
 
         private SessionTcpClientProxy(@NonNull Session session) {
             IMLog.v(Objects.defaultObjectTag(this) + " SessionTcpClientProxy init");
@@ -750,6 +795,7 @@ public class IMSessionManager {
                     } else {
                         // 读取会话列表
                         mFetchConversationListMessagePacket = FetchConversationListMessagePacket.create(getConversationListLastSyncTimeBySessionUserId(sessionUserId));
+                        mFetchConversationListMessagePacket.getMessagePacketStateObservable().registerObserver(mFetchConversationListMessagePacketStateObserver);
                         sessionTcpClient.sendMessagePacketQuietly(mFetchConversationListMessagePacket);
                     }
                 }

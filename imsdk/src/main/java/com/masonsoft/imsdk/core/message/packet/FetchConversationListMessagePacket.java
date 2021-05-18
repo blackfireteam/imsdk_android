@@ -18,8 +18,14 @@ import io.github.idonans.core.thread.Threads;
  */
 public class FetchConversationListMessagePacket extends NotNullTimeoutMessagePacket {
 
+    private boolean mEmpty;
+
     private FetchConversationListMessagePacket(ProtoByteMessage protoByteMessage, long sign) {
         super(protoByteMessage, sign);
+    }
+
+    public boolean isEmptyConversationList() {
+        return mEmpty;
     }
 
     @Override
@@ -49,6 +55,7 @@ public class FetchConversationListMessagePacket extends NotNullTimeoutMessagePac
                     final long code = result.getCode();
                     if (code == 12) {
                         // 会话列表为空
+                        mEmpty = true;
                         IMLog.v(Objects.defaultObjectTag(FetchConversationListMessagePacket.this) + " conversation list is empty");
                         moveToState(STATE_SUCCESS);
                     } else if (code != 0) {
