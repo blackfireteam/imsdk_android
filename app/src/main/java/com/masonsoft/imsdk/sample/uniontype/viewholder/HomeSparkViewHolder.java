@@ -76,6 +76,9 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         mBinding.username.setTargetUserId(spark.userId);
         updateLikeAndDislike(0, false);
 
+        final ExtraUiData extraUiData = ExtraUiData.valueOf(itemObject);
+        mBinding.actionLike.setSelected(extraUiData.mSendCustomLikedMessage);
+
         ViewUtil.onClick(itemView, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
@@ -85,15 +88,20 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
             SampleLog.v(Objects.defaultObjectTag(this) + " item click spark:%s", spark);
         });
-        ViewUtil.onClick(mBinding.actionWink, v -> {
+        ViewUtil.onClick(mBinding.actionLike, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
                 SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
 
-            // send wink message
-            sendWinkMessage(spark.userId);
+            if (!extraUiData.mSendCustomLikedMessage) {
+                extraUiData.mSendCustomLikedMessage = true;
+                mBinding.actionLike.setSelected(true);
+
+                // send like message
+                sendLikeMessage(spark.userId);
+            }
         });
         ViewUtil.onClick(mBinding.actionChat, v -> {
             final Activity innerActivity = host.getActivity();
@@ -111,7 +119,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         });
     }
 
-    private void sendWinkMessage(long targetUserId) {
+    private void sendLikeMessage(long targetUserId) {
         final IMMessage imMessage = CustomIMMessageFactory.createCustomMessageLike();
         IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
                 imMessage,
@@ -128,6 +136,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
          * (0, 1] 喜欢<br>
          */
         private float mLikeAndDislikeProgress;
+        private boolean mSendCustomLikedMessage;
 
         private static ExtraUiData valueOf(DataObject<?> dataObject) {
             ExtraUiData extraUiData = dataObject.getExtObject(KEY_UI_DATA, null);

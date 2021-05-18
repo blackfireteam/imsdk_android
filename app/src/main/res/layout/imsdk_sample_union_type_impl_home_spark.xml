@@ -53,19 +53,19 @@
             android:textColor="@android:color/white"
             android:textSize="22sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/action_wink"
+            app:layout_constraintBottom_toTopOf="@id/action_like"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="home spark" />
 
         <ImageView
-            android:id="@+id/action_wink"
+            android:id="@+id/action_like"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="20dp"
             android:contentDescription="@string/imsdk_sample_empty_text_hint"
             android:scaleType="centerInside"
-            android:src="@drawable/imsdk_sample_ic_wink_selector"
+            android:src="@drawable/imsdk_sample_ic_like_selector"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -79,6 +79,6 @@
             android:scaleType="centerInside"
             android:src="@drawable/imsdk_sample_ic_chat"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/action_wink" />
+            app:layout_constraintStart_toEndOf="@id/action_like" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
