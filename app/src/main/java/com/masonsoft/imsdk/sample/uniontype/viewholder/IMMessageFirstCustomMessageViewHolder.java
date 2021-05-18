@@ -16,16 +16,16 @@ import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
 
 import io.github.idonans.uniontype.Host;
 
-public abstract class IMMessageWinkViewHolder extends IMMessageViewHolder {
+public abstract class IMMessageFirstCustomMessageViewHolder extends IMMessageViewHolder {
 
     private final TextView mMessageText;
 
-    public IMMessageWinkViewHolder(@NonNull Host host, int layout) {
+    public IMMessageFirstCustomMessageViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
         mMessageText = itemView.findViewById(R.id.message_text);
     }
 
-    public IMMessageWinkViewHolder(@NonNull Host host, @NonNull View itemView) {
+    public IMMessageFirstCustomMessageViewHolder(@NonNull Host host, @NonNull View itemView) {
         super(host, itemView);
         mMessageText = itemView.findViewById(R.id.message_text);
     }
@@ -35,12 +35,15 @@ public abstract class IMMessageWinkViewHolder extends IMMessageViewHolder {
     protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
         super.onBindItemObject(position, itemObject);
 
+        final IMMessage message = itemObject.object;
+        mMessageText.setText(message.body.getOrDefault(null));
+
         GestureDetectorCompat gestureDetectorCompat = new GestureDetectorCompat(mMessageText.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 final UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();
                 if (listener != null) {
-                    listener.onItemClick(IMMessageWinkViewHolder.this);
+                    listener.onItemClick(IMMessageFirstCustomMessageViewHolder.this);
                 }
                 return true;
             }

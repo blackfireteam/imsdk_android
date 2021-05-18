@@ -72,7 +72,6 @@
                     android:paddingTop="10dp"
                     android:paddingEnd="12dp"
                     android:paddingBottom="10dp"
-                    android:text="@string/imsdk_sample_im_message_wink_text"
                     android:textColor="@android:color/white"
                     android:textSize="15sp"
                     app:layout_flexGrow="0"

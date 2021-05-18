@@ -319,13 +319,13 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                         dataObject);
             }
 
-            // wink 消息
-            if (msgType == IMConstants.MessageType.WINK) {
+            // 自定义消息
+            if (msgType == IMConstants.MessageType.FIRST_CUSTOM_MESSAGE) {
                 return received ? UnionTypeItemObject.valueOf(
-                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_WINK_RECEIVED,
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED,
                         dataObject)
                         : UnionTypeItemObject.valueOf(
-                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_WINK_SEND,
+                        UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_SEND,
                         dataObject);
             }
 

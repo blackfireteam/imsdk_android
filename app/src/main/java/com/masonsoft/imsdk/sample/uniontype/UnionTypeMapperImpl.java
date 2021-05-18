@@ -3,6 +3,8 @@ package com.masonsoft.imsdk.sample.uniontype;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.DiscoverUserViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.HomeSparkViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMConversationViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageFirstCustomMessageReceivedViewHolder;
+import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageFirstCustomMessageSendViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageImageReceivedViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageImageSendViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessagePreviewImageViewHolder;
@@ -15,8 +17,6 @@ import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVideoReceivedVie
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVideoSendViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVoiceReceivedViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageVoiceSendViewHolder;
-import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageWinkReceivedViewHolder;
-import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageWinkSendViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.MediaPickerBucketViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.MediaPickerGridViewHolder;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.MediaPickerPagerViewHolder;
@@ -44,8 +44,8 @@ public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_SEND = sNextUnionType++; // 聊天消息-发送的视频
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE = sNextUnionType++; // 聊天消息-横向全屏预览-图片
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO = sNextUnionType++; // 聊天消息-横向全屏预览-视频
-    public static final int UNION_TYPE_IMPL_IM_MESSAGE_WINK_RECEIVED = sNextUnionType++; // 聊天消息-接收的 wink
-    public static final int UNION_TYPE_IMPL_IM_MESSAGE_WINK_SEND = sNextUnionType++; // 聊天消息-发送的 wink
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED = sNextUnionType++; // 聊天消息-接收的自定义消息
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_SEND = sNextUnionType++; // 聊天消息-发送的自定义消息
 
     public UnionTypeMapperImpl() {
         put(UNION_TYPE_IMPL_IM_HOME_SPARK, HomeSparkViewHolder::new);
@@ -66,8 +66,8 @@ public class UnionTypeMapperImpl extends UnionTypeLoadingStatus {
         put(UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_SEND, IMMessageVideoSendViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE, IMMessagePreviewImageViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO, IMMessagePreviewVideoViewHolder::new);
-        put(UNION_TYPE_IMPL_IM_MESSAGE_WINK_RECEIVED, IMMessageWinkReceivedViewHolder::new);
-        put(UNION_TYPE_IMPL_IM_MESSAGE_WINK_SEND, IMMessageWinkSendViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED, IMMessageFirstCustomMessageReceivedViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_SEND, IMMessageFirstCustomMessageSendViewHolder::new);
     }
 
 }

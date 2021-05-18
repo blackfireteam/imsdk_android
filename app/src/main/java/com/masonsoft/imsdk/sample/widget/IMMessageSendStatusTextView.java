@@ -97,8 +97,9 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
             }
         }
 
+        final int type = message.type.getOrDefault(-1);
         String msgText;
-        switch (message.type.getOrDefault(-1)) {
+        switch (type) {
             case IMConstants.MessageType.IMAGE:
                 msgText = "[图片]";
                 break;
@@ -120,6 +121,11 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
             default:
                 msgText = message.body.getOrDefault(null);
         }
+
+        if (IMConstants.MessageType.isCustomMessage(type)) {
+            msgText = "[自定义消息]";
+        }
+
         if (msgText != null) {
             msgText = msgText.trim();
             builder.append(msgText);
