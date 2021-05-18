@@ -420,12 +420,14 @@ public class IMSessionMessageUploadManager {
                     return chatSMessagePacket;
                 }
 
-                if (messageType == IMConstants.MessageType.WINK) {
-                    // wink 消息
+                if (IMConstants.MessageType.isCustomMessage(messageType)
+                        && !IMConstants.MessageType.isActionMessage(messageType)) {
+                    // 自定义非指令消息
                     final ProtoMessage.ChatS chatS = ProtoMessage.ChatS.newBuilder()
                             .setSign(mSign)
                             .setType(messageType)
                             .setToUid(message.toUserId.get())
+                            .setBody(message.body.getOrDefault(null))
                             .build();
                     final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(chatS);
                     final ChatSMessagePacket chatSMessagePacket = new ChatSMessagePacket(protoByteMessage, mSign);
@@ -862,7 +864,7 @@ public class IMSessionMessageUploadManager {
                         }
 
                         IMLog.v("found new idle localSendingMessage %s", localSendingMessage);
-                        final long sign = SignGenerator.next();
+                        final long sign = SignGenerator.nextSign();
                         final SessionMessageObjectWrapper wrapper = new SessionMessageObjectWrapper(
                                 mSessionUserId,
                                 sign,

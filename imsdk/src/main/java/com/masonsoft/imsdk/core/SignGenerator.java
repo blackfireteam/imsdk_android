@@ -19,9 +19,16 @@ public class SignGenerator {
     }
 
     /**
-     * 获取下一个唯一的本地 Sign
+     * 获取下一个唯一的 sign 值
      */
-    public static long next() {
+    public static long nextSign() {
+        return nextMicroSeconds() * 10 + 1;
+    }
+
+    /**
+     * 获取下一个唯一的微秒值
+     */
+    public static long nextMicroSeconds() {
         synchronized (LOCK) {
             while (true) {
                 final long diffMicroseconds = SystemClock.elapsedRealtimeNanos() / 1000 - TIME_DIFF_START_MICROSECONDS;
@@ -32,11 +39,11 @@ public class SignGenerator {
                 }
                 if (timeMicroSeconds < sLastTimeMicroSeconds) {
                     IMLog.w(
-                            new IllegalAccessError("SignGenerator#next timeMicroSeconds is less than sLastTimeMicroSeconds"),
+                            new IllegalAccessError("SignGenerator#nextMicroSeconds timeMicroSeconds is less than sLastTimeMicroSeconds"),
                             "timeMicroSeconds:%s, sLastTimeMicroSeconds:%s",
                             timeMicroSeconds, sLastTimeMicroSeconds);
                 } else {
-                    IMLog.v("fetch SignGenerator#next too closely");
+                    IMLog.v("fetch SignGenerator#nextMicroSeconds too closely");
                 }
             }
         }
