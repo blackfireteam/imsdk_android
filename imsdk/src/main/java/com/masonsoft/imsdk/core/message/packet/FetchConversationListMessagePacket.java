@@ -77,7 +77,7 @@ public class FetchConversationListMessagePacket extends NotNullTimeoutMessagePac
     }
 
     public static FetchConversationListMessagePacket create(final long updateTime) {
-        final long sign = SignGenerator.next();
+        final long sign = SignGenerator.nextSign();
         return new FetchConversationListMessagePacket(
                 ProtoByteMessage.Type.encode(ProtoMessage.GetChatList.newBuilder()
                         .setSign(sign)

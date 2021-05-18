@@ -76,7 +76,7 @@ public class SignOutMessagePacket extends NotNullTimeoutMessagePacket {
     }
 
     public static SignOutMessagePacket create() {
-        final long sign = SignGenerator.next();
+        final long sign = SignGenerator.nextSign();
         return new SignOutMessagePacket(
                 ProtoByteMessage.Type.encode(
                         ProtoMessage.ImLogout.newBuilder()

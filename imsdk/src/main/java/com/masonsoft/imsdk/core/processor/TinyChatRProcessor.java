@@ -41,7 +41,7 @@ public class TinyChatRProcessor extends ReceivedProtoMessageProtoTypeProcessor<P
         final Message message = MessageFactory.create(target);
         // 接收到新消息
         // 设置新消息的 seq
-        message.localSeq.set(Sequence.create(SignGenerator.next()));
+        message.localSeq.set(Sequence.create(SignGenerator.nextMicroSeconds()));
         // 设置新消息的显示时间为当前时间
         message.localTimeMs.set(System.currentTimeMillis());
 

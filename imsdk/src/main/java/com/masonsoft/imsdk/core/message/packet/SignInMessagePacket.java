@@ -85,7 +85,7 @@ public class SignInMessagePacket extends NotNullTimeoutMessagePacket {
     }
 
     public static SignInMessagePacket create(final String token) {
-        final long sign = SignGenerator.next();
+        final long sign = SignGenerator.nextSign();
         return new SignInMessagePacket(
                 ProtoByteMessage.Type.encode(ProtoMessage.ImLogin.newBuilder()
                         .setSign(sign)

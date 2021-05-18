@@ -187,7 +187,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
             // 新消息清空 localId
             dbMessageInsert.localId.clear();
             // 设置新消息的 seq
-            dbMessageInsert.localSeq.set(Sequence.create(SignGenerator.next()));
+            dbMessageInsert.localSeq.set(Sequence.create(SignGenerator.nextMicroSeconds()));
             // 设置新消息的显示时间为当前时间
             dbMessageInsert.localTimeMs.set(System.currentTimeMillis());
             // 清空 remote 相关内容

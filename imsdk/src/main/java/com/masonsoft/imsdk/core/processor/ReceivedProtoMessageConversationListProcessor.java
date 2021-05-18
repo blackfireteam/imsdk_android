@@ -124,7 +124,7 @@ public class ReceivedProtoMessageConversationListProcessor extends ReceivedProto
             if (!conversation.localId.isUnset()) {
                 FetchMessageHistoryManager.getInstance().enqueueFetchMessageHistory(
                         sessionUserId,
-                        SignGenerator.next(),
+                        SignGenerator.nextSign(),
                         conversation.localConversationType.get(),
                         conversation.targetUserId.get(),
                         0,

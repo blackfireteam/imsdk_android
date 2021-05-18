@@ -78,7 +78,7 @@ public abstract class MessagePacket implements Processor<SessionProtoByteMessage
     private String mErrorMessage;
 
     public MessagePacket(@NonNull final ProtoByteMessage protoByteMessage) {
-        this(protoByteMessage, SignGenerator.next());
+        this(protoByteMessage, SignGenerator.nextSign());
     }
 
     public MessagePacket(@NonNull final ProtoByteMessage protoByteMessage, final long sign) {

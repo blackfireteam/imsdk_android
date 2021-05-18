@@ -80,7 +80,7 @@ public class TinyConversationUpdateProcessor extends ReceivedProtoMessageProtoTy
             // 获取会话的最后一页消息
             FetchMessageHistoryManager.getInstance().enqueueFetchMessageHistory(
                     sessionUserId,
-                    SignGenerator.next(),
+                    SignGenerator.nextSign(),
                     conversationType,
                     targetUserId,
                     0,
