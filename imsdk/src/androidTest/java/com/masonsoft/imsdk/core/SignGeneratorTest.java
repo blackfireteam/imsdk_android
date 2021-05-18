@@ -19,7 +19,7 @@ public class SignGeneratorTest {
 
         final long timeStart = System.nanoTime();
         for (int i = 0; i < count; i++) {
-            SignGenerator.next();
+            SignGenerator.nextSign();
         }
         final long timeEnd = System.nanoTime();
         final long timeConsumed = timeEnd - timeStart;

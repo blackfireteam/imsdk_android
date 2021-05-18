@@ -198,7 +198,7 @@ public class DefaultApi {
     public static List<Spark> getSparks() {
         final SingleSubject<List<Spark>> subject = SingleSubject.create();
         final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        final long originSign = SignGenerator.next();
+        final long originSign = SignGenerator.nextSign();
         final FetchSparkMessagePacket messagePacket = FetchSparkMessagePacket.create(originSign);
         final OtherMessage otherMessage = new OtherMessage(sessionUserId, messagePacket, new EnqueueCallbackAdapter<OtherMessage>() {
             @Override

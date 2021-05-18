@@ -14,10 +14,10 @@ public class SequenceTest {
     @Test
     public void testSequence() {
         for (int i = 0; i < 10; i++) {
-            final long sign = SignGenerator.next();
-            final long seq = Sequence.create(sign);
+            final long microSeconds = SignGenerator.nextMicroSeconds();
+            final long seq = Sequence.create(microSeconds);
             System.out.println("===========================================");
-            System.out.println("sign:" + Long.toBinaryString(sign));
+            System.out.println("microSeconds:" + Long.toBinaryString(microSeconds));
             System.out.println("seq:" + Long.toBinaryString(seq));
         }
     }

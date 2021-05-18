@@ -29,7 +29,7 @@ public class IMActionMessage implements EnqueueMessage {
     @Nullable
     private final Object mActionObject;
 
-    private final long mSign = SignGenerator.next();
+    private final long mSign = SignGenerator.nextSign();
 
     @NonNull
     private final EnqueueCallback<IMActionMessage> mEnqueueCallback;

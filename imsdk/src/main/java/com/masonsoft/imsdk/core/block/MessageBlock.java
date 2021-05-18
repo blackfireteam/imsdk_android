@@ -34,7 +34,7 @@ public class MessageBlock {
             return preBlockId;
         }
 
-        return SignGenerator.next();
+        return SignGenerator.nextMicroSeconds();
     }
 
     /**

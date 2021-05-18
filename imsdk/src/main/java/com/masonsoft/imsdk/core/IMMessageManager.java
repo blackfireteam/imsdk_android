@@ -270,7 +270,7 @@ public class IMMessageManager {
                     // 需要从服务器加载更多消息
                     result.hasMore = true;
 
-                    final long sign = SignGenerator.next();
+                    final long sign = SignGenerator.nextSign();
                     IMLog.v(Objects.defaultObjectTag(this) + " requireLoadMoreFromRemote start fetchWithBlockOrTimeout." +
                                     " targetBlockId:%s with sessionUserId:%s, seq:%s, limit:%s, conversationType:%s, targetUserId:%s, queryHistory:%s, sign:%s",
                             targetBlockId, sessionUserId, seq, limit, conversationType, targetUserId, queryHistory, sign);

@@ -37,7 +37,7 @@ public class ConversationFactory {
             target.localSeq.set(Sequence.create(showMessageTime));
         } else {
             // 设置一个较小的 seq
-            target.localSeq.set(Sequence.create(SignGenerator.next() - NEW_SEQ_DIFF));
+            target.localSeq.set(Sequence.create(SignGenerator.nextMicroSeconds() - NEW_SEQ_DIFF));
         }
 
         return target;
@@ -51,7 +51,7 @@ public class ConversationFactory {
         target.localConversationType.set(conversationType);
         target.targetUserId.set(targetUserId);
         target.localTimeMs.set(System.currentTimeMillis());
-        target.localSeq.set(Sequence.create(SignGenerator.next()));
+        target.localSeq.set(Sequence.create(SignGenerator.nextMicroSeconds()));
         return target;
     }
 
