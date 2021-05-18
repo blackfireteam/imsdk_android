@@ -18,15 +18,6 @@ public class IMMessageFactory {
     }
 
     /**
-     * wink 消息
-     */
-    public static IMMessage createWinkMessage() {
-        final IMMessage target = new IMMessage();
-        target.type.set(IMConstants.MessageType.WINK);
-        return target;
-    }
-
-    /**
      * 文本消息
      */
     @NonNull

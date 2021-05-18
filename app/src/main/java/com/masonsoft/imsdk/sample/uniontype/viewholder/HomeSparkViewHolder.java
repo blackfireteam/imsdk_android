@@ -7,9 +7,9 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.EnqueueCallbackAdapter;
 import com.masonsoft.imsdk.IMMessage;
-import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.Constants;
+import com.masonsoft.imsdk.sample.CustomIMMessageFactory;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.chat.SingleChatActivity;
@@ -112,7 +112,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
     }
 
     private void sendWinkMessage(long targetUserId) {
-        final IMMessage imMessage = IMMessageFactory.createWinkMessage();
+        final IMMessage imMessage = CustomIMMessageFactory.createCustomMessageLike();
         IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
                 imMessage,
                 targetUserId,

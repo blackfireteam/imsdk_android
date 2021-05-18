@@ -300,11 +300,18 @@ public final class IMConstants {
         // 100-199 应用方自定义消息类型（可见）
         // 200-255 应用方自定义消息类型（不可见）
 
+        public static final int FIRST_CUSTOM_MESSAGE = 100;
+        public static final int FIRST_CUSTOM_ACTION_MESSAGE = 200;
+
         /**
          * 判断指定类型的消息是否是指令消息，指令消息 UI 不可见
          */
         public static boolean isActionMessage(int type) {
             return (type >= 64 && type <= 99) || (type >= 200 && type <= 255);
+        }
+
+        public static boolean isCustomMessage(int type) {
+            return type >= 100 && type <= 255;
         }
     }
 
