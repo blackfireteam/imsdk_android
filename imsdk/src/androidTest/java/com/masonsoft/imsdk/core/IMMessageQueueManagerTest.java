@@ -5,10 +5,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.masonsoft.imsdk.EnqueueCallback;
-import com.masonsoft.imsdk.EnqueueMessage;
-import com.masonsoft.imsdk.IMMessage;
-import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.core.session.Session;
 
 import org.junit.Test;

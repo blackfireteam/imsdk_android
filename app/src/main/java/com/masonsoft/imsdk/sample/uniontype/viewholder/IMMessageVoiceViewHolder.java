@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManagerHost;

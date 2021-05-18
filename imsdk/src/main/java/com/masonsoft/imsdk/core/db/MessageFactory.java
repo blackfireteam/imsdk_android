@@ -2,7 +2,7 @@ package com.masonsoft.imsdk.core.db;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 

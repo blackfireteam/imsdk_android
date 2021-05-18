@@ -1,8 +1,7 @@
-package com.masonsoft.imsdk;
+package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.util.Objects;

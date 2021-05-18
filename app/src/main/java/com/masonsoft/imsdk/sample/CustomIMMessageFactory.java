@@ -1,7 +1,7 @@
 package com.masonsoft.imsdk.sample;
 
 import com.google.gson.Gson;
-import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 
 import java.util.HashMap;

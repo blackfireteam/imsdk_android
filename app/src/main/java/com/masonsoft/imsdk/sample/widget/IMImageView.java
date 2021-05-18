@@ -3,7 +3,7 @@ package com.masonsoft.imsdk.sample.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;

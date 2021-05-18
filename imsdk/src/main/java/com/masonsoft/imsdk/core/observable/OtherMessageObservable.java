@@ -2,7 +2,7 @@ package com.masonsoft.imsdk.core.observable;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.OtherMessage;
+import com.masonsoft.imsdk.core.OtherMessage;
 import com.masonsoft.imsdk.util.WeakObservable;
 
 /**

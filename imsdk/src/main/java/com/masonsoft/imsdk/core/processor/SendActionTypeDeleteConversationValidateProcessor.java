@@ -2,9 +2,9 @@ package com.masonsoft.imsdk.core.processor;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.EnqueueCallback;
-import com.masonsoft.imsdk.IMActionMessage;
-import com.masonsoft.imsdk.IMConversation;
+import com.masonsoft.imsdk.core.EnqueueCallback;
+import com.masonsoft.imsdk.core.IMActionMessage;
+import com.masonsoft.imsdk.core.IMConversation;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMActionMessageManager;

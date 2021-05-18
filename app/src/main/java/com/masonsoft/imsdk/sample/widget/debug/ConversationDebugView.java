@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.IMConversation;
+import com.masonsoft.imsdk.core.IMConversation;
 import com.masonsoft.imsdk.sample.widget.IMConversationChangedViewHelper;
 
 public class ConversationDebugView extends DebugTextView {

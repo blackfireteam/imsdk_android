@@ -10,10 +10,10 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.EnqueueCallbackAdapter;
-import com.masonsoft.imsdk.IMMessage;
-import com.masonsoft.imsdk.IMSessionMessage;
-import com.masonsoft.imsdk.WeakEnqueueCallbackAdapter;
+import com.masonsoft.imsdk.core.EnqueueCallbackAdapter;
+import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.core.IMSessionMessage;
+import com.masonsoft.imsdk.core.WeakEnqueueCallbackAdapter;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.R;

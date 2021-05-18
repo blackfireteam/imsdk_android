@@ -1,12 +1,10 @@
-package com.masonsoft.imsdk;
+package com.masonsoft.imsdk.core;
 
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMConstants;
-import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.db.LocalSendingMessage;
 import com.masonsoft.imsdk.core.db.Message;
 

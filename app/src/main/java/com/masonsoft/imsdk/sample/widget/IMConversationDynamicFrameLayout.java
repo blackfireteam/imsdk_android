@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import com.masonsoft.imsdk.IMConversation;
+import com.masonsoft.imsdk.core.IMConversation;
 import com.masonsoft.imsdk.sample.Constants;
 
 import io.github.idonans.appcontext.AppContext;

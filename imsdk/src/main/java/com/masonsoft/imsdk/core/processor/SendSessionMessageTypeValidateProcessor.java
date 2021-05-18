@@ -3,7 +3,7 @@ package com.masonsoft.imsdk.core.processor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.IMSessionMessage;
+import com.masonsoft.imsdk.core.IMSessionMessage;
 import com.masonsoft.imsdk.core.IMConstants.MessageType;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.RuntimeMode;

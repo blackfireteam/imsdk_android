@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.common.media.player.MediaPlayerDelegate;
 import com.masonsoft.imsdk.sample.common.media.player.MediaPlayerView;

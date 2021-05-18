@@ -6,7 +6,7 @@ import android.view.Window;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.IMConversation;
+import com.masonsoft.imsdk.core.IMConversation;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.Constants;

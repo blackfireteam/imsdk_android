@@ -4,7 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.core.util.Pair;
 
-import com.masonsoft.imsdk.IMConversation;
+import com.masonsoft.imsdk.core.IMConversation;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.core.observable.ConversationObservable;

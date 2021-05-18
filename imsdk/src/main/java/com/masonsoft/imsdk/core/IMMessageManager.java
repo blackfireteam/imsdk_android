@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import com.masonsoft.imsdk.IMMessage;
-import com.masonsoft.imsdk.IMMessageFactory;
 import com.masonsoft.imsdk.core.db.Conversation;
 import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
 import com.masonsoft.imsdk.core.db.LocalSendingMessage;

@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk;
+package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

@@ -3,7 +3,7 @@ package com.masonsoft.imsdk.core.processor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.IMActionMessage;
+import com.masonsoft.imsdk.core.IMActionMessage;
 
 /**
  * @since 1.0

@@ -6,8 +6,8 @@ import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.EnqueueCallback;
-import com.masonsoft.imsdk.IMSessionMessage;
+import com.masonsoft.imsdk.core.EnqueueCallback;
+import com.masonsoft.imsdk.core.IMSessionMessage;
 import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;

@@ -18,12 +18,12 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.masonsoft.imsdk.EnqueueCallback;
-import com.masonsoft.imsdk.EnqueueCallbackAdapter;
-import com.masonsoft.imsdk.IMMessage;
-import com.masonsoft.imsdk.IMMessageFactory;
-import com.masonsoft.imsdk.IMSessionMessage;
-import com.masonsoft.imsdk.WeakEnqueueCallbackAdapter;
+import com.masonsoft.imsdk.core.EnqueueCallback;
+import com.masonsoft.imsdk.core.EnqueueCallbackAdapter;
+import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.core.IMMessageFactory;
+import com.masonsoft.imsdk.core.IMSessionMessage;
+import com.masonsoft.imsdk.core.WeakEnqueueCallbackAdapter;
 import com.masonsoft.imsdk.core.IMConstants.ConversationType;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.Constants;

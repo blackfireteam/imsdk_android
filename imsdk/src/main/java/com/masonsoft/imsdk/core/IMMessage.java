@@ -1,9 +1,8 @@
-package com.masonsoft.imsdk;
+package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.annotation.LogicField;
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMConstants.MessageType;
 import com.masonsoft.imsdk.lang.StateProp;
 import com.masonsoft.imsdk.util.Objects;

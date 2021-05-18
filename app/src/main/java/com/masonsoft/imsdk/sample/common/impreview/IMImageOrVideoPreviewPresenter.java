@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.google.common.collect.Lists;
-import com.masonsoft.imsdk.IMMessage;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMMessageManager;

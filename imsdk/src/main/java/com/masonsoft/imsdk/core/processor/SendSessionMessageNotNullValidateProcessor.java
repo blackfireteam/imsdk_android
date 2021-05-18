@@ -1,6 +1,6 @@
 package com.masonsoft.imsdk.core.processor;
 
-import com.masonsoft.imsdk.IMSessionMessage;
+import com.masonsoft.imsdk.core.IMSessionMessage;
 import com.masonsoft.imsdk.lang.NotNullProcessor;
 
 /**

@@ -1,9 +1,8 @@
-package com.masonsoft.imsdk;
+package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.util.Objects;
 
 /**

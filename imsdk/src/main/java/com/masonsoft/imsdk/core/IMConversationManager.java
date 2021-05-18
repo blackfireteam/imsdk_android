@@ -3,8 +3,6 @@ package com.masonsoft.imsdk.core;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.IMConversation;
-import com.masonsoft.imsdk.IMConversationFactory;
 import com.masonsoft.imsdk.core.db.Conversation;
 import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
 import com.masonsoft.imsdk.core.db.ConversationFactory;

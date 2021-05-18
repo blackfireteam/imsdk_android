@@ -3,7 +3,6 @@ package com.masonsoft.imsdk.core;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.OtherMessage;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.TimeoutMessagePacket;

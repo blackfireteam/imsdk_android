@@ -1,8 +1,6 @@
-package com.masonsoft.imsdk;
+package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
-
-import com.masonsoft.imsdk.core.IMLog;
 
 public class EnqueueCallbackAdapter<T extends EnqueueMessage> implements EnqueueCallback<T> {
 
