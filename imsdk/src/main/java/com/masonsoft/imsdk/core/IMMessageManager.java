@@ -118,6 +118,111 @@ public class IMMessageManager {
                                                 final boolean queryHistory) {
         Threads.mustNotUi();
 
+        final TinyPage<IMMessage> page = pageQueryMessageInternal(
+                sessionUserId,
+                seq,
+                limit,
+                conversationType,
+                targetUserId,
+                queryHistory
+        );
+        final TinyPage<IMMessage> pageFilter = filter(page);
+        if (pageFilter.generalResult != null) {
+            // 同步远程消息时的发生异常
+            return pageFilter;
+        }
+
+        if (!pageFilter.hasMore) {
+            // 没有更多消息了
+            return pageFilter;
+        }
+
+        int oldPageItemsSize = 0;
+        if (page.items != null) {
+            oldPageItemsSize = page.items.size();
+        }
+        final int filterItemsSize = pageFilter.items.size();
+        if (filterItemsSize == oldPageItemsSize) {
+            // 没有指令消息
+            return pageFilter;
+        }
+
+        // 需要读取更多的非指令消息以满足当前页容量
+        //noinspection ConstantConditions
+        final long lastSeq = page.items.get(page.items.size() - 1).seq.getOrDefault(-1L);
+        if (lastSeq <= 0) {
+            return pageFilter;
+        }
+        final int nextPageLimit = oldPageItemsSize - filterItemsSize;
+        if (nextPageLimit <= 0) {
+            // unexpected
+            return pageFilter;
+        }
+        final TinyPage<IMMessage> nextPage = pageQueryMessage(
+                sessionUserId,
+                lastSeq,
+                nextPageLimit,
+                conversationType,
+                targetUserId,
+                queryHistory
+        );
+
+        // merge pageFilter nextPage
+        final TinyPage<IMMessage> merge = merge(pageFilter, nextPage);
+        IMLog.v("pageQueryMessage merge:%s", merge);
+        return merge;
+    }
+
+    /**
+     * 去除指令消息
+     */
+    @NonNull
+    private TinyPage<IMMessage> filter(@NonNull TinyPage<IMMessage> input) {
+        final TinyPage<IMMessage> page = new TinyPage<>();
+        page.hasMore = input.hasMore;
+        page.generalResult = input.generalResult;
+        page.items = new ArrayList<>();
+        if (input.items != null) {
+            for (IMMessage message : input.items) {
+                if (!message.type.isUnset()) {
+                    final int type = message.type.get();
+                    if (!IMConstants.MessageType.isActionMessage(type)) {
+                        page.items.add(message);
+                    }
+                }
+            }
+        }
+        return page;
+    }
+
+    /**
+     * 合并分页内容
+     */
+    @NonNull
+    private TinyPage<IMMessage> merge(@NonNull TinyPage<IMMessage> page1, @NonNull TinyPage<IMMessage> page2) {
+        final TinyPage<IMMessage> page = new TinyPage<>();
+        page.hasMore = page2.hasMore;
+        page.generalResult = page2.generalResult;
+        page.items = new ArrayList<>();
+        if (page1.items != null) {
+            page.items.addAll(page1.items);
+        }
+        if (page2.items != null) {
+            page.items.addAll(page2.items);
+        }
+        return page;
+    }
+
+    @WorkerThread
+    @NonNull
+    private TinyPage<IMMessage> pageQueryMessageInternal(final long sessionUserId,
+                                                         final long seq,
+                                                         final int limit,
+                                                         final int conversationType,
+                                                         final long targetUserId,
+                                                         final boolean queryHistory) {
+        Threads.mustNotUi();
+
         if (seq == 0) {
             // 读取第一页消息时，尝试同步用户信息
             UserInfoSyncManager.getInstance().enqueueSyncUserInfo(sessionUserId);
