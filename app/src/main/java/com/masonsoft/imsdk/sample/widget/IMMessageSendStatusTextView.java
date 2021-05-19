@@ -16,8 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 
-import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.util.Objects;
@@ -119,13 +119,14 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
                 msgText = "[已撤回]";
                 break;
             default:
-                msgText = message.body.getOrDefault(null);
+                msgText = "[default]type:" + type + ", body:" + message.body.getOrDefault(null);
         }
 
         if (IMConstants.MessageType.isCustomMessage(type)) {
             msgText = "[自定义消息]";
         }
 
+        //noinspection ConstantConditions
         if (msgText != null) {
             msgText = msgText.trim();
             builder.append(msgText);

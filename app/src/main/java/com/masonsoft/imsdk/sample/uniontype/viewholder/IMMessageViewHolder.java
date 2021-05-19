@@ -16,9 +16,9 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 
-import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
@@ -329,10 +329,13 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                         dataObject);
             }
 
-            // TODO 其它类型的消息
-
-            SampleLog.e("createDefault unknown message type: %s", dataObject.object);
-            return null;
+            // fallback
+            return received ? UnionTypeItemObject.valueOf(
+                    UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_RECEIVED,
+                    dataObject)
+                    : UnionTypeItemObject.valueOf(
+                    UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_SEND,
+                    dataObject);
         }
 
         /**
@@ -634,7 +637,6 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 return true;
             }
 
-            // TODO
             SampleLog.e("imMessage type is unknown %s", holderFinder.message);
             return false;
         }
