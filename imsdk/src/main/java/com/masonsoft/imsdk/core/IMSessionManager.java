@@ -20,6 +20,7 @@ import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.GeneralErrorCode;
 import com.masonsoft.imsdk.lang.GeneralResult;
+import com.masonsoft.imsdk.user.UserInfoSyncManager;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.concurrent.TimeUnit;
@@ -793,6 +794,8 @@ public class IMSessionManager {
                         // 退出登录
                         sessionTcpClient.signOut();
                     } else {
+                        // 获取当前登录用户的 profile
+                        UserInfoSyncManager.getInstance().enqueueSyncUserInfo(sessionUserId);
                         // 读取会话列表
                         mFetchConversationListMessagePacket = FetchConversationListMessagePacket.create(getConversationListLastSyncTimeBySessionUserId(sessionUserId));
                         mFetchConversationListMessagePacket.getMessagePacketStateObservable().registerObserver(mFetchConversationListMessagePacketStateObserver);
