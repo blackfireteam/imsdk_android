@@ -267,11 +267,6 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             final boolean received = dataObject.object.toUserId.get() == sessionUserId;
             final int msgType = dataObject.object.type.get();
 
-            if (IMConstants.MessageType.isActionMessage(msgType)) {
-                // 指令消息不展示
-                return null;
-            }
-
             // 已撤回的消息
             if (msgType == IMConstants.MessageType.REVOKED) {
                 return received
