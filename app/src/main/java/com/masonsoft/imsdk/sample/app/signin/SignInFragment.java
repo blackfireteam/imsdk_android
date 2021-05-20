@@ -229,7 +229,6 @@ public class SignInFragment extends SystemInsetsFragment {
         );
         dialog.setOnBtnRightClickListener(() -> {
             if (mView != null) {
-                showSignInLoadingDialog();
                 mView.onRequestSignUp(userId);
             }
         });
