@@ -100,6 +100,9 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
         final int type = message.type.getOrDefault(-1);
         String msgText;
         switch (type) {
+            case IMConstants.MessageType.TEXT:
+                msgText = message.body.getOrDefault(null);
+                break;
             case IMConstants.MessageType.IMAGE:
                 msgText = "[图片]";
                 break;
@@ -126,7 +129,6 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
             msgText = "[自定义消息]";
         }
 
-        //noinspection ConstantConditions
         if (msgText != null) {
             msgText = msgText.trim();
             builder.append(msgText);
