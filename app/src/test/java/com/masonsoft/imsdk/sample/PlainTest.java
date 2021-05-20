@@ -74,6 +74,47 @@ public class PlainTest {
 
         System.out.println("1000w 的二进制：");
         println(1000 * 10 * 1000);
+
+        System.out.println("毫秒的二进制：");
+        println(System.currentTimeMillis() * 10);
+
+        System.out.println("万分之一秒的二进制：");
+        println(System.currentTimeMillis() * 10);
+
+        System.out.println("十万分之一秒的二进制：");
+        println(System.currentTimeMillis() * 100);
+
+        System.out.println("百万分之一秒的二进制：");
+        println(System.currentTimeMillis() * 1000);
+
+        test2();
+        test3();
+    }
+
+    private void test2() throws ParseException {
+        System.out.println("test2 =========================");
+        final long timeStart = new SimpleDateFormat("yyyy-MM-dd").parse("2021-05-01").getTime() * 1000;
+        System.out.println("timeStart 百万分之一秒的二进制：");
+        println(timeStart);
+        final long timeMax = new SimpleDateFormat("yyyy-MM-dd").parse("2121-05-01").getTime() * 1000;
+        System.out.println("timeMax 百万分之一秒的二进制：");
+        println(timeMax);
+        final long timeDiff = timeMax - timeStart;
+        System.out.println("timeDiff 百万分之一秒的二进制：");
+        println(timeDiff);
+    }
+
+    private void test3() throws ParseException {
+        System.out.println("test3 =========================");
+        final long timeStart = new SimpleDateFormat("yyyy-MM-dd").parse("2021-05-01").getTime();
+        System.out.println("timeStart 毫秒的二进制：");
+        println(timeStart);
+        final long timeMax = new SimpleDateFormat("yyyy-MM-dd").parse("2121-05-01").getTime();
+        System.out.println("timeMax 毫秒的二进制：");
+        println(timeMax);
+        final long timeDiff = timeMax - timeStart;
+        System.out.println("timeDiff 毫秒的二进制：");
+        println(timeDiff);
     }
 
     private void println(long input) {
