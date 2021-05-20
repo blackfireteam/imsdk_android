@@ -18,6 +18,7 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentConfirmDialog;
+import com.masonsoft.imsdk.sample.common.simpledialog.SimpleLoadingDialog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
 import com.masonsoft.imsdk.sample.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
@@ -47,6 +48,39 @@ public class SignInFragment extends SystemInsetsFragment {
     private ImsdkSampleSignInFragmentBinding mBinding;
     private ViewImpl mView;
     private SignInFragmentPresenter mPresenter;
+    @Nullable
+    private SimpleLoadingDialog mSignInLoadingDialog;
+
+    private void showSignInLoadingDialog() {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+        if (mSignInLoadingDialog == null) {
+            mSignInLoadingDialog = new SimpleLoadingDialog(activity);
+        }
+        mSignInLoadingDialog.show();
+    }
+
+    private void hideSignInLoadingDialog() {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+        if (mSignInLoadingDialog != null) {
+            mSignInLoadingDialog.hide();
+        }
+    }
 
     @Nullable
     @Override
@@ -171,6 +205,7 @@ public class SignInFragment extends SystemInsetsFragment {
                 settings.apiServer,
                 settings.imServer);
 
+        showSignInLoadingDialog();
         mPresenter.requestToken(phoneAsLong);
     }
 
@@ -186,6 +221,7 @@ public class SignInFragment extends SystemInsetsFragment {
             return;
         }
 
+        hideSignInLoadingDialog();
         SystemUtil.hideSoftKeyboard(mBinding.editText);
         final SimpleContentConfirmDialog dialog = new SimpleContentConfirmDialog(
                 activity,
@@ -193,6 +229,7 @@ public class SignInFragment extends SystemInsetsFragment {
         );
         dialog.setOnBtnRightClickListener(() -> {
             if (mView != null) {
+                showSignInLoadingDialog();
                 mView.onRequestSignUp(userId);
             }
         });
@@ -214,6 +251,18 @@ public class SignInFragment extends SystemInsetsFragment {
         }
 
         @Override
+        public void onTcpSignInFail(Throwable e) {
+            super.onTcpSignInFail(e);
+            hideSignInLoadingDialog();
+        }
+
+        @Override
+        public void onFetchTokenFail(Throwable e, long userId) {
+            super.onFetchTokenFail(e, userId);
+            hideSignInLoadingDialog();
+        }
+
+        @Override
         public void onFetchTokenFail(long userId, int code, String message) {
             SampleLog.v(Objects.defaultObjectTag(this) + " onFetchTokenFail userId:%s, code:%s, message:%s", userId, code, message);
 
@@ -229,6 +278,7 @@ public class SignInFragment extends SystemInsetsFragment {
                 return;
             }
 
+            hideSignInLoadingDialog();
             TipUtil.showOrDefault(message);
         }
     }
