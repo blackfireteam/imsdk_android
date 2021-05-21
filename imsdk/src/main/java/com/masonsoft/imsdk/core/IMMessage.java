@@ -44,6 +44,12 @@ public class IMMessage {
     public final StateProp<Long> id = new StateProp<>();
 
     /**
+     * 服务器消息 id
+     */
+    @NonNull
+    public final StateProp<Long> serverMessageId = new StateProp<>();
+
+    /**
      * 本地记录的 lastModify, 毫秒
      */
     public final StateProp<Long> lastModifyMs = new StateProp<>();
@@ -189,6 +195,7 @@ public class IMMessage {
         this._conversationType.apply(input._conversationType);
         this._targetUserId.apply(input._targetUserId);
         this.id.apply(input.id);
+        this.serverMessageId.apply(input.serverMessageId);
         this.lastModifyMs.apply(input.lastModifyMs);
         this.seq.apply(input.seq);
         this.fromUserId.apply(input.fromUserId);
@@ -235,6 +242,11 @@ public class IMMessage {
             builder.append(" id:unset");
         } else {
             builder.append(" id:").append(this.id.get());
+        }
+        if (this.serverMessageId.isUnset()) {
+            builder.append(" serverMessageId:unset");
+        } else {
+            builder.append(" serverMessageId:").append(this.serverMessageId.get());
         }
         if (this.seq.isUnset()) {
             builder.append(" seq:unset");

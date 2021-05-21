@@ -2,8 +2,8 @@ package com.masonsoft.imsdk.core.db;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 
 /**
@@ -59,6 +59,7 @@ public class MessageFactory {
         target._conversationType.apply(input._conversationType);
         target._targetUserId.apply(input._targetUserId);
         target.localId.apply(input.id);
+        target.remoteMessageId.apply(input.serverMessageId);
         target.localLastModifyMs.apply(input.lastModifyMs);
         target.localSeq.apply(input.seq);
         target.fromUserId.apply(input.fromUserId);

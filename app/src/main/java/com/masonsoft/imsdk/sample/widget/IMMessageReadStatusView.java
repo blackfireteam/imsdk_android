@@ -10,10 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.masonsoft.imsdk.core.IMConversation;
-import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMConversation;
 import com.masonsoft.imsdk.core.IMConversationManager;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -123,8 +123,9 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
             messageSendStatus = message.sendState.get();
         }
 
-        if (!conversation.messageLastRead.isUnset()) {
-            read = message.id.get() <= conversation.messageLastRead.get();
+        if (!conversation.messageLastRead.isUnset()
+                && !message.serverMessageId.isUnset()) {
+            read = message.serverMessageId.get() <= conversation.messageLastRead.get();
         }
 
         if (messageSendStatus == IMConstants.SendStatus.SUCCESS) {

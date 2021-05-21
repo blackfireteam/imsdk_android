@@ -127,6 +127,7 @@ public class IMMessageFactory {
         target._conversationType.apply(input._conversationType);
         target._targetUserId.apply(input._targetUserId);
         target.id.apply(input.localId);
+        target.serverMessageId.apply(input.remoteMessageId);
         target.lastModifyMs.apply(input.localLastModifyMs);
         target.seq.apply(input.localSeq);
         target.fromUserId.apply(input.fromUserId);
