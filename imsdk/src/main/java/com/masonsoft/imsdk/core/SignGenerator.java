@@ -22,7 +22,7 @@ public class SignGenerator {
      * 获取下一个唯一的 sign 值
      */
     public static long nextSign() {
-        return nextMicroSeconds() * 10 + 1;
+        return nextMicroSeconds();
     }
 
     /**
