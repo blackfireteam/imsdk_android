@@ -118,6 +118,7 @@ public class PlainTest {
     }
 
     private void println(long input) {
+        System.out.println("[10进制]" + input);
         println(Long.toBinaryString(input));
     }
 
