@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.I18nResources;
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.R;
@@ -247,6 +248,12 @@ public class SignInFragment extends SystemInsetsFragment {
         @Override
         protected SignInViewPresenter<?> getPresenter() {
             return SignInFragment.this.mPresenter;
+        }
+
+        @Override
+        public void onTcpSignInFail(GeneralResult result) {
+            super.onTcpSignInFail(result);
+            hideSignInLoadingDialog();
         }
 
         @Override
