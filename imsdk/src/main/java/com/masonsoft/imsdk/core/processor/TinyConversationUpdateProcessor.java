@@ -50,6 +50,12 @@ public class TinyConversationUpdateProcessor extends ReceivedProtoMessageProtoTy
             IMLog.w("conversation is not exists. ignore chat item update. sessionUserId:%s, targetUserId:%s", sessionUserId, targetUserId);
             return true;
         }
+
+        {
+            final long messageTime = protoMessageObject.getUpdateTime();
+            target.getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
+        }
+
         final Conversation conversationUpdate = new Conversation();
         conversationUpdate.localId.set(dbConversation.localId.get());
         boolean fetchMessageHistory = false;

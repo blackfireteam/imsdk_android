@@ -553,6 +553,12 @@ public class IMSessionMessageUploadManager {
                                     return true;
                                 }
 
+                                {
+                                    //noinspection UnnecessaryLocalVariable
+                                    final long messageTime = msgTime;
+                                    target.getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
+                                }
+
                                 final Message messageUpdate = new Message();
                                 messageUpdate.localId.set(message.localId.get());
                                 messageUpdate.remoteMessageId.set(msgId);
