@@ -8,6 +8,7 @@ import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.FileUploadProvider;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMSessionManager;
+import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.api.DefaultApi;
 import com.masonsoft.imsdk.sample.widget.SessionUserIdChangedViewHelper;
@@ -296,6 +297,11 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                         return;
                     }
 
+                    // clear settings token
+                    final LocalSettingsManager.Settings settings = LocalSettingsManager.getInstance().getSettings();
+                    settings.imToken = null;
+                    LocalSettingsManager.getInstance().setSettings(settings);
+
                     if (result.isSuccess()) {
                         view.onSignOutSuccess();
                     } else {
@@ -311,6 +317,11 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                     if (view == null) {
                         return;
                     }
+
+                    // clear settings token
+                    final LocalSettingsManager.Settings settings = LocalSettingsManager.getInstance().getSettings();
+                    settings.imToken = null;
+                    LocalSettingsManager.getInstance().setSettings(settings);
 
                     view.onSignOutFail(e);
                 }));
