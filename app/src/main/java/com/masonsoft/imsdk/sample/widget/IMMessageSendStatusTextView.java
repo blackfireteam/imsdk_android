@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -62,7 +61,6 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
         mTextView.setTextSize(13);
         mTextView.setTextColor(0xFF999999);
         mTextView.setGravity(Gravity.CENTER_VERTICAL);
-        mTextView.setEllipsize(TextUtils.TruncateAt.END);
         addView(mTextView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
