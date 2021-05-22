@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -11,11 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.EnqueueCallbackAdapter;
+import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.IMSessionMessage;
 import com.masonsoft.imsdk.core.WeakEnqueueCallbackAdapter;
-import com.masonsoft.imsdk.core.IMConstants;
-import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.util.TipUtil;
@@ -42,7 +44,7 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
     }
 
     private ImageView mSendFailView;
-    private ProgressBar mSendingView;
+    private ViewGroup mSendingView;
 
     private long mMessageSendTimeMs = 0L;
     private int mMessageSendStatus = -1;
@@ -65,8 +67,10 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
         }
 
         {
-            mSendingView = new ProgressBar(context);
-            mSendingView.setIndeterminate(true);
+            final ProgressBar progressBar = new ProgressBar(context);
+            mSendingView = new FrameLayout(context);
+            mSendingView.addView(progressBar);
+
             LayoutParams layoutParams = generateDefaultLayoutParams();
             layoutParams.width = LayoutParams.WRAP_CONTENT;
             layoutParams.height = LayoutParams.WRAP_CONTENT;
