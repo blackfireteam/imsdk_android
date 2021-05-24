@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.core.observable.KickedObservable;
+import com.masonsoft.imsdk.core.observable.TokenOfflineObservable;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.common.TopActivity;
@@ -40,7 +40,35 @@ public class IMKickedManager {
     private boolean mAttached;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final KickedObservable.KickedObserver mKickedObserver = (session, errorCode) -> {
+    private final TokenOfflineObservable.TokenOfflineObserver mTokenOfflineObserver = new TokenOfflineObservable.TokenOfflineObserver() {
+        @Override
+        public void onConnecting(@NonNull Session session) {
+
+        }
+
+        @Override
+        public void onConnectSuccess(@NonNull Session session) {
+
+        }
+
+        @Override
+        public void onConnectFailed(@NonNull Session session, int errorCode, String errorMessage) {
+
+        }
+
+        @Override
+        public void onKickedOffline(@NonNull Session session, int errorCode, String errorMessage) {
+
+        }
+
+        @Override
+        public void onTokenExpired(@NonNull Session session, int errorCode, String errorMessage) {
+
+        }
+    };
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private final TokenOfflineObservable.TokenOfflineObserver mTokenOfflineObserver = (session, errorCode) -> {
         mLastKickedSession = session;
         mLastKickedErrorCode = errorCode;
 
@@ -73,7 +101,7 @@ public class IMKickedManager {
     }
 
     private IMKickedManager() {
-        KickedObservable.DEFAULT.registerObserver(mKickedObserver);
+        TokenOfflineObservable.DEFAULT.registerObserver(mTokenOfflineObserver);
     }
 
     public void start() {

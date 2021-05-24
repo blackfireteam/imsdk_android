@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import io.github.idonans.core.Singleton;
 
@@ -21,7 +22,16 @@ public class MSIMManager {
         return INSTANCE.get();
     }
 
+    private String mAppId;
+    @NonNull
+    private MSIMSdkListener mSdkListener = new MSIMSdkListenerAdapter();
+
     private MSIMManager() {
+    }
+
+    public void initSdk(String appId, @Nullable MSIMSdkListener listener) {
+        mAppId = appId;
+        mSdkListener = new MSIMSdkListenerProxy(listener);
     }
 
     @NonNull
@@ -33,5 +43,7 @@ public class MSIMManager {
     public MSIMConversationManager getConversationManager() {
         return MSIMConversationManager.getInstance();
     }
+
+
 
 }

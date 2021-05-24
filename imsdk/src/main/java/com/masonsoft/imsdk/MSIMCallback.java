@@ -5,7 +5,7 @@ package com.masonsoft.imsdk;
  */
 public interface MSIMCallback {
 
-    void onError(int code, String desc);
+    void onError(int errorCode, String errorMessage);
 
     void onSuccess();
 

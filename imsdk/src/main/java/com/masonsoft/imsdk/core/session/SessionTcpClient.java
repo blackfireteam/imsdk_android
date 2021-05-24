@@ -15,7 +15,7 @@ import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.PingMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignInMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignOutMessagePacket;
-import com.masonsoft.imsdk.core.observable.KickedObservable;
+import com.masonsoft.imsdk.core.observable.TokenOfflineObservable;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.observable.SessionObservable;
 import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
@@ -87,11 +87,12 @@ public class SessionTcpClient extends NettyTcpClient {
             final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
             if (protoMessageObject instanceof ProtoMessage.Result) {
                 final long code = ((ProtoMessage.Result) protoMessageObject).getCode();
+                final String message = ((ProtoMessage.Result) protoMessageObject).getMsg();
                 if (code == 2008) {
                     // 当前长连接被踢下线
                     // 断开长连接
                     IMSessionManager.getInstance().setSession(null);
-                    KickedObservable.DEFAULT.notifyKicked(mSession, (int) code);
+                    TokenOfflineObservable.DEFAULT.notifyKickedOffline(mSession, (int) code, message);
                     return true;
                 }
             }
@@ -116,11 +117,12 @@ public class SessionTcpClient extends NettyTcpClient {
             if (newState == MessagePacket.STATE_FAIL) {
                 // 登录失败
                 final int errorCode = packet.getErrorCode();
+                final String errorMessage = packet.getErrorMessage();
                 if (errorCode == 4) {
                     // token 非法
                     // 断开长连接
                     IMSessionManager.getInstance().setSession(null);
-                    KickedObservable.DEFAULT.notifyKicked(mSession, errorCode);
+                    TokenOfflineObservable.DEFAULT.notifyTokenExpired(mSession, errorCode, errorMessage);
                 }
             }
 
