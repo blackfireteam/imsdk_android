@@ -94,6 +94,14 @@ public final class DatabaseHelper {
         String C_REMOTE_MSG_END = "c_remote_msg_end";
 
         /**
+         * 修正的会话中的第一条服务器消息 id
+         *
+         * @since db version 1
+         */
+        @Local
+        String C_LOCAL_FIXED_MSG_START = "c_local_fixed_msg_start";
+
+        /**
          * 最后一条已读消息 id(这条消息可能并没有存储在本地)。
          *
          * @since db version 1
@@ -575,6 +583,7 @@ public final class DatabaseHelper {
                 ColumnsConversation.C_LOCAL_CONVERSATION_TYPE + " integer not null," +
                 ColumnsConversation.C_TARGET_USER_ID + " integer not null," +
                 ColumnsConversation.C_REMOTE_MSG_END + " integer not null default 0," +
+                ColumnsConversation.C_LOCAL_FIXED_MSG_START + " integer not null default 0," +
                 ColumnsConversation.C_MSG_LAST_READ + " integer not null default 0," +
                 ColumnsConversation.C_REMOTE_SHOW_MSG_ID + " integer not null default 0," +
                 ColumnsConversation.C_LOCAL_SHOW_MSG_ID + " integer not null default 0," +
