@@ -116,6 +116,26 @@ public class IMMessageManager {
                                                 final int conversationType,
                                                 final long targetUserId,
                                                 final boolean queryHistory) {
+        return pageQueryMessage(
+                sessionUserId,
+                seq,
+                limit,
+                conversationType,
+                targetUserId,
+                queryHistory,
+                null
+        );
+    }
+
+    @WorkerThread
+    @NonNull
+    private TinyPage<IMMessage> pageQueryMessage(final long sessionUserId,
+                                                 final long seq,
+                                                 final int limit,
+                                                 final int conversationType,
+                                                 final long targetUserId,
+                                                 final boolean queryHistory,
+                                                 @Nullable final String lastLoopInvokeCondition) {
         Threads.mustNotUi();
 
         final TinyPage<IMMessage> page = pageQueryMessageInternal(
@@ -124,7 +144,8 @@ public class IMMessageManager {
                 limit,
                 conversationType,
                 targetUserId,
-                queryHistory
+                queryHistory,
+                lastLoopInvokeCondition
         );
         final TinyPage<IMMessage> pageFilter = filter(page);
         if (pageFilter.generalResult != null) {
@@ -148,7 +169,6 @@ public class IMMessageManager {
         }
 
         // 需要读取更多的非指令消息以满足当前页容量
-        //noinspection ConstantConditions
         final long lastSeq = page.items.get(page.items.size() - 1).seq.getOrDefault(-1L);
         if (lastSeq <= 0) {
             return pageFilter;
@@ -164,7 +184,8 @@ public class IMMessageManager {
                 nextPageLimit,
                 conversationType,
                 targetUserId,
-                queryHistory
+                queryHistory,
+                lastLoopInvokeCondition
         );
 
         // merge pageFilter nextPage
@@ -220,7 +241,8 @@ public class IMMessageManager {
                                                          final int limit,
                                                          final int conversationType,
                                                          final long targetUserId,
-                                                         final boolean queryHistory) {
+                                                         final boolean queryHistory,
+                                                         @Nullable String lastLoopInvokeCondition) {
         Threads.mustNotUi();
 
         if (seq == 0) {
@@ -281,94 +303,128 @@ public class IMMessageManager {
                         targetUserId);
             } else {
                 boolean requireLoadMoreFromRemote = false;
-                if (queryHistory) {
-                    if (targetBlockId > 0) {
-                        // 检查 block start 是否到达了 conversation message start
-                        final Message blockStartMessage = MessageDatabaseProvider.getInstance().getMinRemoteMessageIdWithBlockId(
-                                sessionUserId,
-                                conversationType,
-                                targetUserId,
-                                targetBlockId
-                        );
-                        if (blockStartMessage != null) {
-                            final long blockStartRemoteMessageId = blockStartMessage.remoteMessageId.get();
-                            if (blockStartRemoteMessageId > 1) {
-                                // 还有更多历史消息没有加载
-                                requireLoadMoreFromRemote = true;
-                            }
-                        } else {
-                            // unexpected. block id 逻辑错误
-                            //noinspection ConstantConditions
-                            IMLog.e(new IllegalArgumentException("unexpected. block start message id null."),
-                                    "sessionUserId:%s, conversationType:%s, targetUserId:%s, targetBlockId:%s, queryHistory:%s",
-                                    sessionUserId, conversationType, targetUserId, targetBlockId, queryHistory);
-                        }
-                    } else {
-                        // 检查整体 message start 是否到达了 conversation message start
-                        final long conversationRemoteMessageEnd = conversation.remoteMessageEnd.get();
-                        final Message globalStartMessage = MessageDatabaseProvider.getInstance().getMinRemoteMessageId(
-                                sessionUserId,
-                                conversationType,
-                                targetUserId
-                        );
-                        if (globalStartMessage == null) {
-                            if (conversationRemoteMessageEnd > 0) {
-                                // 本地没有消息，但是服务器有消息没有加载
-                                requireLoadMoreFromRemote = true;
-                            }
-                        } else {
-                            final long globalStartRemoteMessageId = globalStartMessage.remoteMessageId.get();
-                            if (globalStartRemoteMessageId > 1) {
-                                // 还有更多历史消息没有加载
-                                requireLoadMoreFromRemote = true;
-                            }
-                        }
-                    }
+                @Nullable final Message blockStartMessage;
+                @Nullable final Message blockEndMessage;
+                if (targetBlockId > 0) {
+                    blockStartMessage = MessageDatabaseProvider.getInstance().getMinRemoteMessageIdWithBlockId(
+                            sessionUserId,
+                            conversationType,
+                            targetUserId,
+                            targetBlockId
+                    );
+                    blockEndMessage = MessageDatabaseProvider.getInstance().getMaxRemoteMessageIdWithBlockId(
+                            sessionUserId,
+                            conversationType,
+                            targetUserId,
+                            targetBlockId
+                    );
                 } else {
-                    if (targetBlockId > 0) {
-                        // 检查 block end 是否到达了 conversation message end
-                        final Message blockEndMessage = MessageDatabaseProvider.getInstance().getMaxRemoteMessageIdWithBlockId(
-                                sessionUserId,
-                                conversationType,
-                                targetUserId,
-                                targetBlockId
-                        );
-                        if (blockEndMessage != null) {
-                            final long blockEndRemoteMessageId = blockEndMessage.remoteMessageId.get();
-                            final long conversationRemoteMessageEnd = conversation.remoteMessageEnd.get();
-                            if (blockEndRemoteMessageId < conversationRemoteMessageEnd) {
-                                // 还有更多新消息没有加载
-                                requireLoadMoreFromRemote = true;
+                    blockStartMessage = null;
+                    blockEndMessage = null;
+                }
+                @Nullable final Message globalStartMessage = MessageDatabaseProvider.getInstance().getMinRemoteMessageId(
+                        sessionUserId,
+                        conversationType,
+                        targetUserId
+                );
+                @Nullable final Message globalEndMessage = MessageDatabaseProvider.getInstance().getMaxRemoteMessageId(
+                        sessionUserId,
+                        conversationType,
+                        targetUserId
+                );
+                final String loopInvokeCondition;
+                {
+                    final StringBuilder builder = new StringBuilder();
+                    builder.append("_sessionUserId:").append(sessionUserId);
+                    builder.append("_targetUserId:").append(targetUserId);
+                    builder.append("_seq:").append(seq);
+                    builder.append("_targetBlockId:").append(targetBlockId);
+                    if (blockStartMessage != null) {
+                        builder.append("_blockStartMessage:").append(blockStartMessage.localId.get());
+                    }
+                    if (blockEndMessage != null) {
+                        builder.append("_blockEndMessage:").append(blockEndMessage.localId.get());
+                    }
+                    if (globalStartMessage != null) {
+                        builder.append("_globalStartMessage:").append(globalStartMessage.localId.get());
+                    }
+                    if (globalEndMessage != null) {
+                        builder.append("_globalEndMessage:").append(globalEndMessage.localId.get());
+                    }
+                    loopInvokeCondition = builder.toString();
+                }
+                if (loopInvokeCondition.equals(lastLoopInvokeCondition)) {
+                    // loop
+                    IMLog.v("abort loop call. loopInvokeCondition:%s", loopInvokeCondition);
+                } else {
+                    lastLoopInvokeCondition = loopInvokeCondition;
+
+                    if (queryHistory) {
+                        if (targetBlockId > 0) {
+                            // 检查 block start 是否到达了 conversation message start
+                            if (blockStartMessage != null) {
+                                final long blockStartRemoteMessageId = blockStartMessage.remoteMessageId.get();
+                                if (blockStartRemoteMessageId > 1) {
+                                    // 还有更多历史消息没有加载
+                                    requireLoadMoreFromRemote = true;
+                                }
+                            } else {
+                                // unexpected. block id 逻辑错误
+                                IMLog.e(new IllegalArgumentException("unexpected. block start message id null."),
+                                        "sessionUserId:%s, conversationType:%s, targetUserId:%s, targetBlockId:%s, queryHistory:%s",
+                                        sessionUserId, conversationType, targetUserId, targetBlockId, queryHistory);
                             }
                         } else {
-                            // unexpected. block id 逻辑错误
-                            //noinspection ConstantConditions
-                            IMLog.e(new IllegalArgumentException("unexpected. block end message id null."),
-                                    "sessionUserId:%s, conversationType:%s, targetUserId:%s, targetBlockId:%s, queryHistory:%s",
-                                    sessionUserId, conversationType, targetUserId, targetBlockId, queryHistory);
+                            // 检查整体 message start 是否到达了 conversation message start
+                            final long conversationRemoteMessageEnd = conversation.remoteMessageEnd.get();
+                            if (globalStartMessage == null) {
+                                if (conversationRemoteMessageEnd > 0) {
+                                    // 本地没有消息，但是服务器有消息没有加载
+                                    requireLoadMoreFromRemote = true;
+                                }
+                            } else {
+                                final long globalStartRemoteMessageId = globalStartMessage.remoteMessageId.get();
+                                if (globalStartRemoteMessageId > 1) {
+                                    // 还有更多历史消息没有加载
+                                    requireLoadMoreFromRemote = true;
+                                }
+                            }
                         }
                     } else {
-                        // 检查整体 message end 是否到达了 conversation message end
-                        final long conversationRemoteMessageEnd = conversation.remoteMessageEnd.get();
-                        final Message globalEndMessage = MessageDatabaseProvider.getInstance().getMaxRemoteMessageId(
-                                sessionUserId,
-                                conversationType,
-                                targetUserId
-                        );
-                        if (globalEndMessage == null) {
-                            if (conversationRemoteMessageEnd > 0) {
-                                // 本地没有消息，但是服务器有消息没有加载
-                                requireLoadMoreFromRemote = true;
+                        if (targetBlockId > 0) {
+                            // 检查 block end 是否到达了 conversation message end
+                            if (blockEndMessage != null) {
+                                final long blockEndRemoteMessageId = blockEndMessage.remoteMessageId.get();
+                                final long conversationRemoteMessageEnd = conversation.remoteMessageEnd.get();
+                                if (blockEndRemoteMessageId < conversationRemoteMessageEnd) {
+                                    // 还有更多新消息没有加载
+                                    requireLoadMoreFromRemote = true;
+                                }
+                            } else {
+                                // unexpected. block id 逻辑错误
+                                IMLog.e(new IllegalArgumentException("unexpected. block end message id null."),
+                                        "sessionUserId:%s, conversationType:%s, targetUserId:%s, targetBlockId:%s, queryHistory:%s",
+                                        sessionUserId, conversationType, targetUserId, targetBlockId, queryHistory);
                             }
                         } else {
-                            final long globalEndRemoteMessageId = globalEndMessage.remoteMessageId.get();
-                            if (globalEndRemoteMessageId < conversationRemoteMessageEnd) {
-                                // 还有更多新消息没有加载
-                                requireLoadMoreFromRemote = true;
+                            // 检查整体 message end 是否到达了 conversation message end
+                            final long conversationRemoteMessageEnd = conversation.remoteMessageEnd.get();
+                            if (globalEndMessage == null) {
+                                if (conversationRemoteMessageEnd > 0) {
+                                    // 本地没有消息，但是服务器有消息没有加载
+                                    requireLoadMoreFromRemote = true;
+                                }
+                            } else {
+                                final long globalEndRemoteMessageId = globalEndMessage.remoteMessageId.get();
+                                if (globalEndRemoteMessageId < conversationRemoteMessageEnd) {
+                                    // 还有更多新消息没有加载
+                                    requireLoadMoreFromRemote = true;
+                                }
                             }
                         }
                     }
                 }
+
                 if (requireLoadMoreFromRemote) {
                     // 需要从服务器加载更多消息
                     result.hasMore = true;
@@ -389,7 +445,7 @@ public class IMMessageManager {
                                     " targetBlockId:%s with sessionUserId:%s, seq:%s, limit:%s, conversationType:%s, targetUserId:%s, queryHistory:%s, sign:%s",
                             generalResult, targetBlockId, sessionUserId, seq, limit, conversationType, targetUserId, queryHistory, sign);
                     if (generalResult.isSuccess()) {
-                        return pageQueryMessage(sessionUserId, seq, limit, conversationType, targetUserId, queryHistory);
+                        return pageQueryMessageInternal(sessionUserId, seq, limit, conversationType, targetUserId, queryHistory, lastLoopInvokeCondition);
                     } else {
                         result.generalResult = generalResult;
                     }
