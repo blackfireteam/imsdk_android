@@ -16,7 +16,7 @@ public class MSIMSdkListenerAdapter implements MSIMSdkListener {
     }
 
     @Override
-    public void onConnectFailed(int errorCode, String errorMessage) {
+    public void onConnectClosed() {
         // ignore
     }
 

@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.masonsoft.imsdk.sample.Constants;
-import com.masonsoft.imsdk.sample.IMKickedManager;
+import com.masonsoft.imsdk.sample.IMTokenOfflineManager;
 import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
 import com.masonsoft.imsdk.sample.app.signin.SignInActivity;
 
@@ -45,14 +45,14 @@ public class MainActivity extends FragmentDelegateActivity {
             return;
         }
 
-        IMKickedManager.getInstance().attach();
+        IMTokenOfflineManager.getInstance().attach();
         setFragmentDelegate(FRAGMENT_TAG_MAIN, MainFragment::newInstance);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        IMKickedManager.getInstance().detach();
+        IMTokenOfflineManager.getInstance().detach();
     }
 
 }

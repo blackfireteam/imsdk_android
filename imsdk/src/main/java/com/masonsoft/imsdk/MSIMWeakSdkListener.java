@@ -34,10 +34,10 @@ public class MSIMWeakSdkListener implements MSIMSdkListener {
     }
 
     @Override
-    public void onConnectFailed(int errorCode, String errorMessage) {
+    public void onConnectClosed() {
         final MSIMSdkListener out = mOutRef.get();
         if (out != null) {
-            out.onConnectFailed(errorCode, errorMessage);
+            out.onConnectClosed();
         }
     }
 

@@ -29,9 +29,9 @@ public class MSIMSdkListenerProxy implements MSIMSdkListener {
     }
 
     @Override
-    public void onConnectFailed(int errorCode, String errorMessage) {
+    public void onConnectClosed() {
         if (mOut != null) {
-            mOut.onConnectFailed(errorCode, errorMessage);
+            mOut.onConnectClosed();
         }
     }
 

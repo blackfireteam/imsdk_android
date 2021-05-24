@@ -66,7 +66,8 @@
     <string name="imsdk_sample_tip_action_general_success">操作成功</string>
     <string name="imsdk_sample_button_text_sign_out">退出登录</string>
     <string name="imsdk_sample_sign_out_confirm_text">退出登录？</string>
-    <string name="imsdk_sample_tip_kicked">你的账号已经在其它地方登录</string>
+    <string name="imsdk_sample_tip_kicked_offline">你的账号已经在其它地方登录</string>
+    <string name="imsdk_sample_tip_token_expired">你的登录信息已过期</string>
     <string name="imsdk_sample_tip_message_delivered">已送达</string>
     <string name="imsdk_sample_tip_message_read">已读</string>
     <string name="imsdk_sample_voice_record_text_input">按住 说话</string>
