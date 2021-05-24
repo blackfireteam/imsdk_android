@@ -112,7 +112,9 @@ public abstract class MessagePacket implements Processor<SessionProtoByteMessage
     }
 
     public int getState() {
-        return mState;
+        synchronized (mStateLock) {
+            return mState;
+        }
     }
 
     /**

@@ -73,6 +73,7 @@ public class IMSessionManager {
     private SessionTcpClientProxy mSessionTcpClientProxy;
 
     private IMSessionManager() {
+        Threads.postBackground(() -> IMManager.getInstance().start());
     }
 
     private static String createConversationListLastSyncTimeBySessionUserIdPrefix(final long sessionUserId) {

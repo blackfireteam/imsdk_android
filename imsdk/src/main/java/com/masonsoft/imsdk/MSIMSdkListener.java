@@ -9,7 +9,7 @@ public interface MSIMSdkListener {
 
     void onConnectSuccess();
 
-    void onConnectFailed(int errorCode, String errorMessage);
+    void onConnectClosed();
 
     void onSigningIn();
 
