@@ -2,6 +2,7 @@ package com.masonsoft.imsdk;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
@@ -125,6 +126,22 @@ public class MSIMManager {
         });
     }
 
+    @WorkerThread
+    @NonNull
+    public GeneralResult signInWithBlock(String token, String tcpServerAndPort) {
+        resetSignInOrSignOutTag();
+        final Session session = Session.create(token, tcpServerAndPort);
+        IMSessionManager.getInstance().setSession(session);
+        final GeneralResult result = IMSessionManager.getInstance().getSessionUserIdWithBlockOrTimeout();
+        if (result.isSuccess()) {
+            return result;
+        }
+        if (result.other != null) {
+            return result.other;
+        }
+        return result;
+    }
+
     public void signOut(MSIMCallback callback) {
         final Object signInOrSignOutTag = resetSignInOrSignOutTag();
         final MSIMCallback proxy = new MSIMCallbackProxy(callback);
@@ -146,6 +163,20 @@ public class MSIMManager {
                 }
             }
         });
+    }
+
+    @WorkerThread
+    @NonNull
+    public GeneralResult signOutWithBlock() {
+        resetSignInOrSignOutTag();
+        final GeneralResult result = IMSessionManager.getInstance().signOutWithBlockOrTimeout();
+        if (result.isSuccess()) {
+            return result;
+        }
+        if (result.other != null) {
+            return result.other;
+        }
+        return result;
     }
 
     @NonNull

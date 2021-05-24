@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.FileUploadProvider;
 import com.masonsoft.imsdk.core.IMConstants;
@@ -288,7 +289,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
 
     public void requestSignOut() {
         mRequestHolder.set(Single.just("")
-                .map(input -> IMSessionManager.getInstance().signOutWithBlockOrTimeout())
+                .map(input -> MSIMManager.getInstance().signOutWithBlock())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {

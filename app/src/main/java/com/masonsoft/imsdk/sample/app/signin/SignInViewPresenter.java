@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.sample.app.signin;
 
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -56,10 +57,8 @@ public abstract class SignInViewPresenter<T extends SignInView> extends DynamicP
                     final LocalSettingsManager.Settings settings = LocalSettingsManager.getInstance().getSettings();
                     settings.imToken = token;
                     LocalSettingsManager.getInstance().setSettings(settings);
-                    IMSessionManager.getInstance().setSession(settings.createSession());
-                    return input;
+                    return MSIMManager.getInstance().signInWithBlock(settings.imToken, settings.imServer);
                 })
-                .map(input -> IMSessionManager.getInstance().getSessionUserIdWithBlockOrTimeout())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
