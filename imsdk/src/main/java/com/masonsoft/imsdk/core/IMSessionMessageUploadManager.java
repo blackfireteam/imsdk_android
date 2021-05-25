@@ -100,7 +100,7 @@ public class IMSessionMessageUploadManager {
         private class SessionMessageObjectWrapper {
             private final long mSessionUserId;
             private final long mSign;
-            private final long mAbortId;
+            private final long mAbortId = SignGenerator.nextSign();
             @NonNull
             private LocalSendingMessage mLocalSendingMessage;
             @Nullable
@@ -168,10 +168,9 @@ public class IMSessionMessageUploadManager {
             //////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////
 
-            public SessionMessageObjectWrapper(long sessionUserId, long sign, long abortId, @NonNull LocalSendingMessage localSendingMessage) {
+            public SessionMessageObjectWrapper(long sessionUserId, long sign, @NonNull LocalSendingMessage localSendingMessage) {
                 this.mSessionUserId = sessionUserId;
                 this.mSign = sign;
-                this.mAbortId = abortId;
                 this.mLocalSendingMessage = localSendingMessage;
             }
 
@@ -870,19 +869,24 @@ public class IMSessionMessageUploadManager {
                         }
 
                         IMLog.v("found new idle localSendingMessage %s", localSendingMessage);
-                        final long sign = SignGenerator.nextSign();
-                        final SessionMessageObjectWrapper wrapper = new SessionMessageObjectWrapper(
-                                mSessionUserId,
-                                sign,
-                                sign,
-                                localSendingMessage
-                        );
-                        wrapper.mMessage = MessageDatabaseProvider.getInstance().getMessage(
+                        final Message message = MessageDatabaseProvider.getInstance().getMessage(
                                 mSessionUserId,
                                 localSendingMessage.conversationType.get(),
                                 localSendingMessage.targetUserId.get(),
                                 localSendingMessage.messageLocalId.get()
                         );
+                        final long sign;
+                        if (message == null) {
+                            sign = SignGenerator.nextSign();
+                        } else {
+                            sign = message.sign.getOrDefault(SignGenerator.nextSign());
+                        }
+                        final SessionMessageObjectWrapper wrapper = new SessionMessageObjectWrapper(
+                                mSessionUserId,
+                                sign,
+                                localSendingMessage
+                        );
+                        wrapper.mMessage = message;
                         wrapper.bindAbortId();
 
                         final SessionMessageObjectWrapperTask task = new SessionMessageObjectWrapperTask(wrapper) {
