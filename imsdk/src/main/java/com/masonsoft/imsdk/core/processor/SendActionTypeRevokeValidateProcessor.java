@@ -2,13 +2,13 @@ package com.masonsoft.imsdk.core.processor;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.EnqueueCallback;
-import com.masonsoft.imsdk.core.IMActionMessage;
-import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.R;
+import com.masonsoft.imsdk.core.EnqueueCallback;
 import com.masonsoft.imsdk.core.I18nResources;
+import com.masonsoft.imsdk.core.IMActionMessage;
 import com.masonsoft.imsdk.core.IMActionMessageManager;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 
@@ -82,6 +82,9 @@ public class SendActionTypeRevokeValidateProcessor extends SendActionTypeValidat
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_message_already_revoke));
             return true;
         }
+
+        // 提示成功入队
+        target.getEnqueueCallback().onEnqueueSuccess(target);
 
         // 派发到指令发送队列
         IMActionMessageManager.getInstance().enqueueActionMessage(

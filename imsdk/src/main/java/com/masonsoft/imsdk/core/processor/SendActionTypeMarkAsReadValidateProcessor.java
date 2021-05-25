@@ -2,14 +2,11 @@ package com.masonsoft.imsdk.core.processor;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.EnqueueCallback;
-import com.masonsoft.imsdk.core.IMActionMessage;
-import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.R;
+import com.masonsoft.imsdk.core.EnqueueCallback;
 import com.masonsoft.imsdk.core.I18nResources;
+import com.masonsoft.imsdk.core.IMActionMessage;
 import com.masonsoft.imsdk.core.IMActionMessageManager;
-import com.masonsoft.imsdk.core.db.Message;
-import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 
 /**
  * 回执消息已读
@@ -25,35 +22,21 @@ public class SendActionTypeMarkAsReadValidateProcessor extends SendActionTypeVal
     @Override
     protected boolean doActionTypeProcess(@NonNull IMActionMessage target, int actionType) {
         final Object actionObject = target.getActionObject();
-        if (!(actionObject instanceof IMMessage)) {
+        if (!(actionObject instanceof Long)) {
             return false;
         }
 
-        final IMMessage message = (IMMessage) actionObject;
-        if (message.id.isUnset()
-                || message.id.get() == null
-                || message.id.get() <= 0) {
-            // 消息没有入库，不支持回执消息已读
+        final long targetUserId = (long) actionObject;
+        if (targetUserId <= 0) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_ID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_id));
+                    EnqueueCallback.ERROR_CODE_INVALID_TO_USER_ID,
+                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_to_user_id));
             return true;
         }
 
-        final Message dbMessage = MessageDatabaseProvider.getInstance().getMessage(
-                message._sessionUserId.get(),
-                message._conversationType.get(),
-                message._targetUserId.get(),
-                message.id.get());
-        if (dbMessage == null) {
-            // 消息没有找到
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
-                    EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_ID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_id));
-            return true;
-        }
+        // 提示成功入队
+        target.getEnqueueCallback().onEnqueueSuccess(target);
 
         // 派发到指令发送队列
         IMActionMessageManager.getInstance().enqueueActionMessage(

@@ -2,12 +2,12 @@ package com.masonsoft.imsdk.core.processor;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.EnqueueCallback;
-import com.masonsoft.imsdk.core.IMActionMessage;
-import com.masonsoft.imsdk.core.IMConversation;
 import com.masonsoft.imsdk.R;
+import com.masonsoft.imsdk.core.EnqueueCallback;
 import com.masonsoft.imsdk.core.I18nResources;
+import com.masonsoft.imsdk.core.IMActionMessage;
 import com.masonsoft.imsdk.core.IMActionMessageManager;
+import com.masonsoft.imsdk.core.IMConversation;
 import com.masonsoft.imsdk.core.db.Conversation;
 import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
 
@@ -52,6 +52,9 @@ public class SendActionTypeDeleteConversationValidateProcessor extends SendActio
                     I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_conversation_id));
             return true;
         }
+
+        // 提示成功入队
+        target.getEnqueueCallback().onEnqueueSuccess(target);
 
         // 派发到指令发送队列
         IMActionMessageManager.getInstance().enqueueActionMessage(

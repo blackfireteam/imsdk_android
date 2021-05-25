@@ -200,8 +200,8 @@ public class IMMessageQueueManager {
     /**
      * 回执消息已读
      */
-    public void enqueueMarkAsReadActionMessage(@NonNull IMMessage message) {
-        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_MARK_AS_READ, message);
+    public void enqueueMarkAsReadActionMessage(long targetUserId) {
+        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_MARK_AS_READ, targetUserId);
     }
 
     /**

@@ -20,12 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.core.EnqueueCallback;
 import com.masonsoft.imsdk.core.EnqueueCallbackAdapter;
+import com.masonsoft.imsdk.core.IMConstants.ConversationType;
 import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMMessageFactory;
+import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.IMSessionMessage;
 import com.masonsoft.imsdk.core.WeakEnqueueCallbackAdapter;
-import com.masonsoft.imsdk.core.IMConstants.ConversationType;
-import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -36,7 +36,6 @@ import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentM
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManagerHost;
 import com.masonsoft.imsdk.sample.common.microlifecycle.VisibleRecyclerViewMicroLifecycleComponentManager;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSingleChatFragmentBinding;
-import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.util.ActivityUtil;
 import com.masonsoft.imsdk.sample.util.EditTextUtil;
@@ -566,20 +565,8 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
     private void sendMarkAsRead() {
         SampleLog.v(Objects.defaultObjectTag(this) + " sendMarkAsRead");
-        if (mDataAdapter != null) {
-            final List<UnionTypeItemObject> items = mDataAdapter.getData().getGroupItems(ViewImpl.GROUP_DEFAULT);
-            if (items != null && items.size() > 0) {
-                final UnionTypeItemObject lastItem = items.get(items.size() - 1);
-                if (lastItem.itemObject instanceof DataObject) {
-                    final DataObject<?> dataObject = (DataObject<?>) lastItem.itemObject;
-                    if (dataObject.object instanceof IMMessage) {
-                        final IMMessage message = (IMMessage) dataObject.object;
-                        SampleLog.v(Objects.defaultObjectTag(this) + " sendMarkAsRead message:%s", message);
-                        IMMessageQueueManager.getInstance().enqueueMarkAsReadActionMessage(message);
-                    }
-                }
-            }
-        }
+        SampleLog.v(Objects.defaultObjectTag(this) + " sendMarkAsRead targetUserId:%s", mTargetUserId);
+        IMMessageQueueManager.getInstance().enqueueMarkAsReadActionMessage(mTargetUserId);
     }
 
     private class OnAudioRecordListenerImpl implements AudioRecordManager.OnAudioRecordListener {

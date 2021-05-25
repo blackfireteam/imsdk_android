@@ -333,33 +333,20 @@ public class IMActionMessageManager {
 
                 if (actionType == IMActionMessage.ACTION_TYPE_MARK_AS_READ) {
                     // 回执消息已读
-                    final IMMessage message = (IMMessage) mActionMessage.getActionObject();
-                    Preconditions.checkNotNull(message);
-                    final Message dbMessage = MessageDatabaseProvider.getInstance().getClosestLessThanTargetFromRemoteMessageIdWithSeq(
-                            mSessionUserId,
-                            message._conversationType.get(),
-                            message._targetUserId.get(),
-                            message.seq.get()
+                    final long targetUserId = (long) mActionMessage.getActionObject();
+                    Preconditions.checkArgument(targetUserId > 0);
+                    final ProtoMessage.MsgRead msgRead = ProtoMessage.MsgRead.newBuilder()
+                            .setSign(mSign)
+                            .setToUid(targetUserId)
+                            .build();
+                    final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(msgRead);
+                    final MarkAsReadActionMessagePacket markAsReadActionMessagePacket = new MarkAsReadActionMessagePacket(
+                            protoByteMessage,
+                            mSign
                     );
-                    if (dbMessage == null) {
-                        // 本地没有对方发送的消息
-                        setError(GeneralErrorCode.ERROR_CODE_TARGET_MESSAGE_NOT_FOUND);
-                        return null;
-                    } else {
-                        final ProtoMessage.MsgRead msgRead = ProtoMessage.MsgRead.newBuilder()
-                                .setSign(mSign)
-                                .setToUid(dbMessage._targetUserId.get())
-                                .setMsgId(dbMessage.remoteMessageId.get())
-                                .build();
-                        final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(msgRead);
-                        final MarkAsReadActionMessagePacket markAsReadActionMessagePacket = new MarkAsReadActionMessagePacket(
-                                protoByteMessage,
-                                mSign
-                        );
-                        mActionMessagePacket = markAsReadActionMessagePacket;
-                        mActionMessagePacket.getMessagePacketStateObservable().registerObserver(mActionMessagePacketStateObserver);
-                        return markAsReadActionMessagePacket;
-                    }
+                    mActionMessagePacket = markAsReadActionMessagePacket;
+                    mActionMessagePacket.getMessagePacketStateObservable().registerObserver(mActionMessagePacketStateObserver);
+                    return markAsReadActionMessagePacket;
                 }
 
                 if (actionType == IMActionMessage.ACTION_TYPE_DELETE_CONVERSATION) {
