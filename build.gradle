@@ -19,4 +19,4 @@ task clean(type: Delete) {
 }
 
 // maven center publish
-// ./gradlew :core:clean :core:build :core:uploadArchives
+// ./gradlew :imsdk:clean :imsdk:build :imsdk:uploadArchives
