@@ -421,6 +421,12 @@ public class SingleChatFragment extends SystemInsetsFragment {
         return mBinding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        sendMarkAsRead();
+    }
+
     private boolean hasVoiceRecordPermission() {
         return PermissionUtil.isAllGranted(VOICE_RECORD_PERMISSION);
     }
@@ -564,7 +570,6 @@ public class SingleChatFragment extends SystemInsetsFragment {
     }
 
     private void sendMarkAsRead() {
-        SampleLog.v(Objects.defaultObjectTag(this) + " sendMarkAsRead");
         SampleLog.v(Objects.defaultObjectTag(this) + " sendMarkAsRead targetUserId:%s", mTargetUserId);
         IMMessageQueueManager.getInstance().enqueueMarkAsReadActionMessage(mTargetUserId);
     }
