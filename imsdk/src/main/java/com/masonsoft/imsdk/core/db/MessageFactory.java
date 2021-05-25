@@ -17,6 +17,13 @@ public class MessageFactory {
     @NonNull
     public static Message create(@NonNull ProtoMessage.ChatR input) {
         final Message target = new Message();
+
+        // 如果服务器返回的消息中有明确的 sign 值, 才使用
+        final long sign = input.getSign();
+        if (sign != 0) {
+            target.sign.set(sign);
+        }
+
         target.localSeq.set(Sequence.create(input.getMsgTime()));
         target.fromUserId.set(input.getFromUid());
         target.toUserId.set(input.getToUid());
@@ -59,6 +66,7 @@ public class MessageFactory {
         target._conversationType.apply(input._conversationType);
         target._targetUserId.apply(input._targetUserId);
         target.localId.apply(input.id);
+        target.sign.apply(input.sign);
         target.remoteMessageId.apply(input.serverMessageId);
         target.localLastModifyMs.apply(input.lastModifyMs);
         target.localSeq.apply(input.seq);
