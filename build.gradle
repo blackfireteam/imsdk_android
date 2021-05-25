@@ -17,3 +17,6 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+// maven center publish
+// ./gradlew :core:clean :core:build :core:uploadArchives
