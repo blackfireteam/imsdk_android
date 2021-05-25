@@ -62,6 +62,11 @@ public interface EnqueueCallback<T extends EnqueueMessage> {
      */
     int ERROR_CODE_INVALID_CONVERSATION_ID = 10;
 
+    /**
+     * 非法的消息 sign.
+     */
+    int ERROR_CODE_INVALID_MESSAGE_SIGN = 11;
+
     //////////////////////////////////////////
     //////////////////////////////////////////
     /**

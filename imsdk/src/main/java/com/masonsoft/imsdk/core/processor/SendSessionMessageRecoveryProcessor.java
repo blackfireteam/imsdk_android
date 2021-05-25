@@ -2,11 +2,11 @@ package com.masonsoft.imsdk.core.processor;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.EnqueueCallback;
+import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMSessionMessage;
-import com.masonsoft.imsdk.R;
-import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.lang.StateProp;
 
 /**
@@ -45,6 +45,10 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
             return true;
         }
 
+        if (validateSign(target)) {
+            return true;
+        }
+
         return validateOthers(target);
     }
 
@@ -63,9 +67,9 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
 
         if (target.isResend()) {
             // 重新发送的消息，消息的发送者需要一致
-            final IMMessage imMessage = target.getIMMessage();
-            if (imMessage.fromUserId.isUnset()
-                    || imMessage.fromUserId.get() != target.getSessionUserId()) {
+            final IMMessage message = target.getIMMessage();
+            if (message.fromUserId.isUnset()
+                    || message.fromUserId.get() != target.getSessionUserId()) {
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
                         EnqueueCallback.ERROR_CODE_INVALID_FROM_USER_ID,
@@ -87,8 +91,8 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
     private boolean validateToUser(@NonNull IMSessionMessage target) {
         if (target.isResend()) {
             // 重新发送的消息，恢复消息接收者 id
-            final IMMessage imMessage = target.getIMMessage();
-            final StateProp<Long> toUserId = imMessage.toUserId;
+            final IMMessage message = target.getIMMessage();
+            final StateProp<Long> toUserId = message.toUserId;
             if (toUserId.isUnset()
                     || toUserId.get() == null
                     || toUserId.get() <= 0) {
@@ -121,10 +125,10 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
      * 验证 id
      */
     private boolean validateId(@NonNull IMSessionMessage target) {
-        final IMMessage imMessage = target.getIMMessage();
+        final IMMessage message = target.getIMMessage();
         if (target.isResend()) {
             // 重新发送的消息需要有正确的 id
-            final StateProp<Long> id = imMessage.id;
+            final StateProp<Long> id = message.id;
             if (id.isUnset()
                     || id.get() == null
                     || id.get() <= 0) {
@@ -137,7 +141,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
             }
         } else {
             // 新消息重置 id
-            imMessage.id.clear();
+            message.id.clear();
         }
 
         return false;
@@ -147,10 +151,10 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
      * 验证 seq
      */
     private boolean validateSeq(@NonNull IMSessionMessage target) {
-        final IMMessage imMessage = target.getIMMessage();
+        final IMMessage message = target.getIMMessage();
         if (target.isResend()) {
             // 重新发送的消息需要有正确的 seq
-            final StateProp<Long> seq = imMessage.seq;
+            final StateProp<Long> seq = message.seq;
             if (seq.isUnset()
                     || seq.get() == null
                     || seq.get() <= 0) {
@@ -163,7 +167,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
             }
         } else {
             // 新消息重置 seq
-            imMessage.seq.clear();
+            message.seq.clear();
         }
 
         return false;
@@ -173,10 +177,10 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
      * 验证 timeMs
      */
     private boolean validateTimeMs(@NonNull IMSessionMessage target) {
-        final IMMessage imMessage = target.getIMMessage();
+        final IMMessage message = target.getIMMessage();
         if (target.isResend()) {
             // 重新发送的消息需要有正确的时间
-            final StateProp<Long> timeMs = imMessage.timeMs;
+            final StateProp<Long> timeMs = message.timeMs;
             if (timeMs.isUnset()
                     || timeMs.get() == null
                     || timeMs.get() <= 0) {
@@ -189,7 +193,25 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
             }
         } else {
             // 新消息重置 timeMs
-            imMessage.timeMs.clear();
+            message.timeMs.clear();
+        }
+
+        return false;
+    }
+
+    /**
+     * 校验 sign
+     */
+    private boolean validateSign(@NonNull IMSessionMessage target) {
+        final IMMessage message = target.getIMMessage();
+        final long sign = message.sign.getOrDefault(0L);
+        if (sign == 0) {
+            target.getEnqueueCallback().onEnqueueFail(
+                    target,
+                    EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SIGN,
+                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_sign)
+            );
+            return true;
         }
 
         return false;
@@ -199,15 +221,15 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
      * 验证其它字段
      */
     private boolean validateOthers(@NonNull IMSessionMessage target) {
-        final IMMessage imMessage = target.getIMMessage();
+        final IMMessage message = target.getIMMessage();
         // 重置发送状态
-        imMessage.sendState.clear();
+        message.sendState.clear();
         // 重置发送进度
-        imMessage.sendProgress.clear();
+        message.sendProgress.clear();
 
         // 重置错误码 与 错误提示信息
-        imMessage.errorCode.clear();
-        imMessage.errorMessage.clear();
+        message.errorCode.clear();
+        message.errorMessage.clear();
 
         return false;
     }
