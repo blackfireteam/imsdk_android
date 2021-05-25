@@ -44,6 +44,12 @@ public class IMMessage {
     public final StateProp<Long> id = new StateProp<>();
 
     /**
+     * 消息 sign
+     */
+    @NonNull
+    public final StateProp<Long> sign = new StateProp<>();
+
+    /**
      * 服务器消息 id
      */
     @NonNull
@@ -195,6 +201,7 @@ public class IMMessage {
         this._conversationType.apply(input._conversationType);
         this._targetUserId.apply(input._targetUserId);
         this.id.apply(input.id);
+        this.sign.apply(input.sign);
         this.serverMessageId.apply(input.serverMessageId);
         this.lastModifyMs.apply(input.lastModifyMs);
         this.seq.apply(input.seq);
@@ -242,6 +249,11 @@ public class IMMessage {
             builder.append(" id:unset");
         } else {
             builder.append(" id:").append(this.id.get());
+        }
+        if (this.sign.isUnset()) {
+            builder.append(" sign:unset");
+        } else {
+            builder.append(" sign:").append(this.sign.get());
         }
         if (this.serverMessageId.isUnset()) {
             builder.append(" serverMessageId:unset");

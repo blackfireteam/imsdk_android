@@ -1,8 +1,10 @@
 package com.masonsoft.imsdk.sample;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
-import com.masonsoft.imsdk.core.IMMessage;
-import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.MSIMMessage;
+import com.masonsoft.imsdk.MSIMMessageFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,16 +14,13 @@ public class CustomIMMessageFactory {
     /**
      * 自定义消息(喜欢)
      */
-    public static IMMessage createCustomMessageLike() {
-        final IMMessage target = new IMMessage();
-        target.type.set(IMConstants.MessageType.FIRST_CUSTOM_MESSAGE);
-
-        final Map<String, Object> body = new HashMap<>();
-        body.put("type", 1);
-        body.put("desc", "like");
-        target.body.set(new Gson().toJson(body));
-
-        return target;
+    @NonNull
+    public static MSIMMessage createCustomMessageLike() {
+        final Map<String, Object> data = new HashMap<>();
+        data.put("type", 1);
+        data.put("desc", "like");
+        final String text = new Gson().toJson(data);
+        return MSIMMessageFactory.createCustomMessage(text);
     }
 
 }

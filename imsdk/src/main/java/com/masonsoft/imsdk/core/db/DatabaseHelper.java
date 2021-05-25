@@ -238,6 +238,10 @@ public final class DatabaseHelper {
         @Local
         String C_LOCAL_ID = "c_local_id";
 
+        @Remote("sign")
+        @Local
+        String C_SIGN = "c_sign";
+
         /**
          * 本地最后修改时间, 毫秒
          */
@@ -671,6 +675,7 @@ public final class DatabaseHelper {
     private String getSQLCreateTableMessage(String tableNameMessage) {
         return "create table if not exists " + tableNameMessage + " (" +
                 ColumnsMessage.C_LOCAL_ID + " integer primary key autoincrement not null," +
+                ColumnsMessage.C_SIGN + " integer," +
                 ColumnsMessage.C_LOCAL_LAST_MODIFY_MS + " integer not null," +
                 ColumnsMessage.C_LOCAL_SEQ + " integer not null," +
                 ColumnsMessage.C_FROM_USER_ID + " integer not null," +
@@ -702,6 +707,7 @@ public final class DatabaseHelper {
     @NonNull
     private String[] getSQLIndexTableMessage(String tableNameMessage) {
         return new String[]{
+                "create unique index if not exists " + tableNameMessage + "_index_unique_sign_fui on " + tableNameMessage + "(" + ColumnsMessage.C_SIGN + "," + ColumnsMessage.C_FROM_USER_ID + ")",
                 "create index if not exists " + tableNameMessage + "_index_local_seq on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_SEQ + ")",
                 "create index if not exists " + tableNameMessage + "_index_from_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_FROM_USER_ID + ")",
                 "create index if not exists " + tableNameMessage + "_index_to_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_TO_USER_ID + ")",
