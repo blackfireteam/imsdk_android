@@ -120,6 +120,17 @@ public class IMMessageFactory {
         return target;
     }
 
+    /**
+     * 自定义消息
+     */
+    @NonNull
+    public static IMMessage createCustomMessage(String text) {
+        final IMMessage target = new IMMessage();
+        target.type.set(IMConstants.MessageType.FIRST_CUSTOM_MESSAGE);
+        target.body.set(text);
+        return target;
+    }
+
     @NonNull
     public static IMMessage create(@NonNull Message input) {
         final IMMessage target = new IMMessage();
