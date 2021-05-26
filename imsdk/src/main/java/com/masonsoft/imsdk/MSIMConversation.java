@@ -66,7 +66,19 @@ public class MSIMConversation {
     }
 
     public boolean isDelete() {
-        return mConversation.delete.getOrDefault(IMConstants.FALSE) == IMConstants.TRUE;
+        return isDelete(false);
+    }
+
+    public boolean isDelete(boolean defaultValue) {
+        if (mConversation.delete.isUnset()) {
+            return defaultValue;
+        }
+
+        final Integer delete = mConversation.delete.get();
+        if (delete == null) {
+            return defaultValue;
+        }
+        return delete == IMConstants.TRUE;
     }
 
     @NonNull

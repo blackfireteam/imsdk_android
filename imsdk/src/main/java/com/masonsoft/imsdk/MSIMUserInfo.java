@@ -1,17 +1,22 @@
 package com.masonsoft.imsdk;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.user.UserInfo;
 
 public class MSIMUserInfo {
 
-    @Nullable
-    private UserInfo mUserInfo;
+    @NonNull
+    private final UserInfo mUserInfo;
 
-    void setUserInfo(@Nullable UserInfo userInfo) {
+    MSIMUserInfo(@NonNull UserInfo userInfo) {
         mUserInfo = userInfo;
+    }
+
+    @NonNull
+    UserInfo getUserInfo() {
+        return mUserInfo;
     }
 
     public long getUserId() {
@@ -19,9 +24,6 @@ public class MSIMUserInfo {
     }
 
     public long getUserId(long defaultValue) {
-        if (mUserInfo == null) {
-            return defaultValue;
-        }
         return mUserInfo.uid.getOrDefault(defaultValue);
     }
 
@@ -30,9 +32,6 @@ public class MSIMUserInfo {
     }
 
     public String getNickname(String defaultValue) {
-        if (mUserInfo == null) {
-            return defaultValue;
-        }
         return mUserInfo.nickname.getOrDefault(defaultValue);
     }
 
@@ -41,20 +40,14 @@ public class MSIMUserInfo {
     }
 
     public String getAvatar(String defaultValue) {
-        if (mUserInfo == null) {
-            return defaultValue;
-        }
         return mUserInfo.avatar.getOrDefault(defaultValue);
     }
 
-    public boolean hasGold() {
-        return hasGold(false);
+    public boolean isGold() {
+        return isGold(false);
     }
 
-    public boolean hasGold(boolean defaultValue) {
-        if (mUserInfo == null) {
-            return defaultValue;
-        }
+    public boolean isGold(boolean defaultValue) {
         if (mUserInfo.gold.isUnset()) {
             return defaultValue;
         }
@@ -65,15 +58,12 @@ public class MSIMUserInfo {
         return gold == IMConstants.TRUE;
     }
 
-    public boolean hasVerified() {
-        return hasVerified(false);
+    public boolean isVerified() {
+        return isVerified(false);
     }
 
-    public boolean hasVerified(boolean defaultValue) {
-        if (mUserInfo == null) {
-            return defaultValue;
-        }
-        if (mUserInfo.gold.isUnset()) {
+    public boolean isVerified(boolean defaultValue) {
+        if (mUserInfo.verified.isUnset()) {
             return defaultValue;
         }
         final Integer verified = mUserInfo.verified.get();
