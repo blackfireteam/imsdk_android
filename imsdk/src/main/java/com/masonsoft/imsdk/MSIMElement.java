@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk;
 
+import androidx.annotation.NonNull;
+
 import com.masonsoft.imsdk.core.IMMessage;
 
 /**
@@ -7,12 +9,14 @@ import com.masonsoft.imsdk.core.IMMessage;
  */
 public abstract class MSIMElement {
 
-    private IMMessage mMessage;
+    @NonNull
+    private final IMMessage mMessage;
 
-    void setMessage(IMMessage message) {
+    MSIMElement(@NonNull IMMessage message) {
         mMessage = message;
     }
 
+    @NonNull
     IMMessage getMessage() {
         return mMessage;
     }

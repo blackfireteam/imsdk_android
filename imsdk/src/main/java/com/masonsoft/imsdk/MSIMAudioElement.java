@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk;
 
+import androidx.annotation.NonNull;
+
 import com.masonsoft.imsdk.core.IMMessage;
 
 /**
@@ -7,17 +9,16 @@ import com.masonsoft.imsdk.core.IMMessage;
  */
 public class MSIMAudioElement extends MSIMElement {
 
+    MSIMAudioElement(@NonNull IMMessage message) {
+        super(message);
+    }
+
     public String getPath() {
         return getPath(null);
     }
 
     public String getPath(String defaultValue) {
-        final IMMessage message = getMessage();
-        if (message == null) {
-            return defaultValue;
-        }
-
-        return message.localBodyOrigin.getOrDefault(defaultValue);
+        return getMessage().localBodyOrigin.getOrDefault(defaultValue);
     }
 
     public String getUrl() {
@@ -25,11 +26,7 @@ public class MSIMAudioElement extends MSIMElement {
     }
 
     public String getUrl(String defaultValue) {
-        final IMMessage message = getMessage();
-        if (message == null) {
-            return defaultValue;
-        }
-        return message.body.getOrDefault(defaultValue);
+        return getMessage().body.getOrDefault(defaultValue);
     }
 
     public long getDurationMilliseconds() {
@@ -37,11 +34,7 @@ public class MSIMAudioElement extends MSIMElement {
     }
 
     public long getDurationMilliseconds(long defaultValue) {
-        final IMMessage message = getMessage();
-        if (message == null) {
-            return defaultValue;
-        }
-        return message.durationMs.getOrDefault(defaultValue);
+        return getMessage().durationMs.getOrDefault(defaultValue);
     }
 
 }

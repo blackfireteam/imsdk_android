@@ -118,25 +118,25 @@ public class IMMessageQueueManager {
     /**
      * 本地重发一个失败的消息
      */
-    public void enqueueResendSessionMessage(@NonNull IMMessage imMessage) {
-        this.enqueueResendSessionMessage(imMessage, null);
+    public void enqueueResendSessionMessage(@NonNull IMMessage message) {
+        this.enqueueResendSessionMessage(message, null);
     }
 
     /**
      * 本地重发一个失败的消息
      */
-    public void enqueueResendSessionMessage(@NonNull IMMessage imMessage, @Nullable IMCallback<GeneralResult> enqueueCallback) {
-        this.enqueueSendSessionMessage(imMessage, 0, true, enqueueCallback);
+    public void enqueueResendSessionMessage(@NonNull IMMessage message, @Nullable IMCallback<GeneralResult> enqueueCallback) {
+        this.enqueueSendSessionMessage(message, 0, true, enqueueCallback);
     }
 
     /**
      * 本地发送新消息
      */
-    public void enqueueSendSessionMessage(@NonNull IMMessage imMessage, long toUserId, @Nullable IMCallback<GeneralResult> enqueueCallback) {
-        this.enqueueSendSessionMessage(imMessage, toUserId, false, enqueueCallback);
+    public void enqueueSendSessionMessage(@NonNull IMMessage message, long toUserId, @Nullable IMCallback<GeneralResult> enqueueCallback) {
+        this.enqueueSendSessionMessage(message, toUserId, false, enqueueCallback);
     }
 
-    private void enqueueSendSessionMessage(@NonNull IMMessage imMessage, long toUserId, boolean resend, @Nullable IMCallback<GeneralResult> enqueueCallback) {
+    private void enqueueSendSessionMessage(@NonNull IMMessage message, long toUserId, boolean resend, @Nullable IMCallback<GeneralResult> enqueueCallback) {
         // sessionUserId 可能是无效值
         final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
         mSendSessionMessageQueue.enqueue(
@@ -145,7 +145,7 @@ public class IMMessageQueueManager {
                                 sessionUserId,
                                 toUserId,
                                 resend,
-                                IMMessageFactory.copy(imMessage),
+                                IMMessageFactory.copy(message),
                                 enqueueCallback
                         )
                 )
@@ -192,22 +192,22 @@ public class IMMessageQueueManager {
     /**
      * 撤回指定会话消息(聊天消息)
      */
-    public void enqueueRevokeActionMessage(@NonNull IMMessage message) {
-        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_REVOKE, message);
+    public void enqueueRevokeActionMessage(@NonNull IMMessage message, @Nullable IMCallback<GeneralResult> enqueueCallback) {
+        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_REVOKE, message, enqueueCallback);
     }
 
     /**
      * 回执消息已读
      */
-    public void enqueueMarkAsReadActionMessage(long targetUserId) {
-        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_MARK_AS_READ, targetUserId);
+    public void enqueueMarkAsReadActionMessage(long targetUserId, @Nullable IMCallback<GeneralResult> enqueueCallback) {
+        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_MARK_AS_READ, targetUserId, enqueueCallback);
     }
 
     /**
      * 删除会话
      */
-    public void enqueueDeleteConversationActionMessage(@NonNull IMConversation conversation) {
-        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_DELETE_CONVERSATION, conversation);
+    public void enqueueDeleteConversationActionMessage(@NonNull IMConversation conversation, @Nullable IMCallback<GeneralResult> enqueueCallback) {
+        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_DELETE_CONVERSATION, conversation, enqueueCallback);
     }
 
     /**

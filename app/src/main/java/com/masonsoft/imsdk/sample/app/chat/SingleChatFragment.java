@@ -19,11 +19,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.MSIMCallback;
+import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.MSIMMessage;
+import com.masonsoft.imsdk.MSIMMessageFactory;
 import com.masonsoft.imsdk.MSIMWeakCallback;
 import com.masonsoft.imsdk.core.IMConstants.ConversationType;
-import com.masonsoft.imsdk.core.IMMessage;
-import com.masonsoft.imsdk.core.IMMessageFactory;
-import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
@@ -474,11 +474,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
             return;
         }
 
+        mEnqueueCallback = new LocalEnqueueCallback(true);
         final String text = editable.toString().trim();
-        final IMMessage imMessage = IMMessageFactory.createTextMessage(text);
-        mEnqueueCallback = new LocalEnqueueCallback();
-        IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
-                imMessage,
+        final MSIMMessage message = MSIMMessageFactory.createTextMessage(text);
+        MSIMManager.getInstance().getMessageManager().sendMessage(
+                message,
                 mTargetUserId,
                 new MSIMWeakCallback<>(mEnqueueCallback, true)
         );
@@ -492,39 +492,34 @@ public class SingleChatFragment extends SystemInsetsFragment {
         }
 
         for (MediaData.MediaInfo mediaInfo : mediaInfoList) {
-            final IMMessage message;
+            mEnqueueCallback = new LocalEnqueueCallback(false);
+            final MSIMMessage message;
             if (mediaInfo.isVideoMimeType()) {
-                message = IMMessageFactory.createVideoMessage(mediaInfo.uri);
+                message = MSIMMessageFactory.createVideoMessage(mediaInfo.uri);
             } else {
-                message = IMMessageFactory.createImageMessage(mediaInfo.uri);
+                message = MSIMMessageFactory.createImageMessage(mediaInfo.uri);
             }
-            IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
+            MSIMManager.getInstance().getMessageManager().sendMessage(
                     message,
                     mTargetUserId,
-                    result -> {
-                        if (!result.isSuccess()) {
-                            TipUtil.showOrDefault(result.message);
-                        }
-                    }
+                    new MSIMWeakCallback<>(mEnqueueCallback, true)
             );
         }
     }
 
-    private void submitVoiceMessage(final String voiceFilePath) {
+    private void submitAudioMessage(final String audioFilePath) {
         final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
         if (binding == null) {
             SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
             return;
         }
-        final IMMessage message = IMMessageFactory.createAudioMessage(voiceFilePath);
-        IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
+
+        mEnqueueCallback = new LocalEnqueueCallback(true);
+        final MSIMMessage message = MSIMMessageFactory.createAudioMessage(audioFilePath);
+        MSIMManager.getInstance().getMessageManager().sendMessage(
                 message,
                 mTargetUserId,
-                result -> {
-                    if (!result.isSuccess()) {
-                        TipUtil.showOrDefault(result.message);
-                    }
-                }
+                new MSIMWeakCallback<>(mEnqueueCallback, true)
         );
     }
 
@@ -566,7 +561,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
     private void sendMarkAsRead() {
         SampleLog.v(Objects.defaultObjectTag(this) + " sendMarkAsRead targetUserId:%s", mTargetUserId);
-        IMMessageQueueManager.getInstance().enqueueMarkAsReadActionMessage(mTargetUserId);
+        MSIMManager.getInstance().getMessageManager().markAsRead(mTargetUserId);
     }
 
     private class OnAudioRecordListenerImpl implements AudioRecordManager.OnAudioRecordListener {
@@ -607,7 +602,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 mViewImpl.hideAudioRecoding(false, false);
 
                 // 发送语音消息
-                submitVoiceMessage(audioRecorderFile);
+                submitAudioMessage(audioRecorderFile);
             }
         }
     }
@@ -783,6 +778,12 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
     private class LocalEnqueueCallback implements MSIMCallback<GeneralResult>, AbortSignal {
 
+        private boolean mClearEditTextWhenSuccess;
+
+        private LocalEnqueueCallback(boolean clearEditTextWhenSuccess) {
+            this.mClearEditTextWhenSuccess = clearEditTextWhenSuccess;
+        }
+
         @Override
         public void onCallback(@NonNull GeneralResult result) {
             if (isAbort()) {
@@ -796,8 +797,10 @@ public class SingleChatFragment extends SystemInsetsFragment {
             SampleLog.v("onCallback %s", result);
 
             if (result.isSuccess()) {
-                // 消息发送成功之后，清空输入框
-                binding.keyboardEditText.setText(null);
+                if (mClearEditTextWhenSuccess) {
+                    // 消息发送成功之后，清空输入框
+                    binding.keyboardEditText.setText(null);
+                }
             } else {
                 TipUtil.showOrDefault(result.message);
             }
@@ -808,5 +811,6 @@ public class SingleChatFragment extends SystemInsetsFragment {
             return mEnqueueCallback != this;
         }
     }
+
 
 }

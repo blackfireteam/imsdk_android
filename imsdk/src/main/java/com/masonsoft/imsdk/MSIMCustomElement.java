@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk;
 
+import androidx.annotation.NonNull;
+
 import com.masonsoft.imsdk.core.IMMessage;
 
 /**
@@ -7,16 +9,16 @@ import com.masonsoft.imsdk.core.IMMessage;
  */
 public class MSIMCustomElement extends MSIMElement {
 
+    MSIMCustomElement(@NonNull IMMessage message) {
+        super(message);
+    }
+
     public String getText() {
         return getText(null);
     }
 
     public String getText(String defaultValue) {
-        final IMMessage message = getMessage();
-        if (message == null) {
-            return defaultValue;
-        }
-        return message.body.getOrDefault(defaultValue);
+        return getMessage().body.getOrDefault(defaultValue);
     }
 
 }

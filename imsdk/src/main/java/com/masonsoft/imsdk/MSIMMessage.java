@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.IMMessage;
@@ -9,14 +10,14 @@ import com.masonsoft.imsdk.core.IMMessage;
  */
 public class MSIMMessage {
 
-    @Nullable
-    private IMMessage mMessage;
+    @NonNull
+    private final IMMessage mMessage;
 
-    void setMessage(@Nullable IMMessage message) {
+    MSIMMessage(@NonNull IMMessage message) {
         mMessage = message;
     }
 
-    @Nullable
+    @NonNull
     IMMessage getMessage() {
         return mMessage;
     }
@@ -26,9 +27,6 @@ public class MSIMMessage {
     }
 
     public long getMessageId(long defaultValue) {
-        if (mMessage == null) {
-            return defaultValue;
-        }
         return mMessage.id.getOrDefault(defaultValue);
     }
 
@@ -43,9 +41,6 @@ public class MSIMMessage {
      * @see MSIMConstants.MessageType
      */
     public int getMessageType(int defaultValue) {
-        if (mMessage == null) {
-            return defaultValue;
-        }
         return mMessage.type.getOrDefault(defaultValue);
     }
 
@@ -60,14 +55,11 @@ public class MSIMMessage {
         return messageType == MSIMConstants.MessageType.REVOKED;
     }
 
-    public long getTimeMilliseconds() {
-        return getTimeMilliseconds(0L);
+    public long getTimeMs() {
+        return getTimeMs(0L);
     }
 
-    public long getTimeMilliseconds(long defaultValue) {
-        if (mMessage == null) {
-            return defaultValue;
-        }
+    public long getTimeMs(long defaultValue) {
         return mMessage.timeMs.getOrDefault(defaultValue);
     }
 
@@ -76,9 +68,6 @@ public class MSIMMessage {
     }
 
     public long getSender(long defaultValue) {
-        if (mMessage == null) {
-            return defaultValue;
-        }
         return mMessage.fromUserId.getOrDefault(defaultValue);
     }
 
@@ -87,9 +76,6 @@ public class MSIMMessage {
     }
 
     public long getReceiver(long defaultValue) {
-        if (mMessage == null) {
-            return defaultValue;
-        }
         return mMessage.toUserId.getOrDefault(defaultValue);
     }
 
@@ -104,9 +90,6 @@ public class MSIMMessage {
      * @see MSIMConstants.SendStatus
      */
     public int getSendStatus(int defaultValue) {
-        if (mMessage == null) {
-            return defaultValue;
-        }
         return mMessage.sendState.getOrDefault(defaultValue);
     }
 
@@ -114,9 +97,7 @@ public class MSIMMessage {
     public MSIMTextElement getTextElement() {
         final int messageType = getMessageType(-1);
         if (messageType == MSIMConstants.MessageType.TEXT) {
-            MSIMTextElement element = new MSIMTextElement();
-            element.setMessage(mMessage);
-            return element;
+            return new MSIMTextElement(mMessage);
         }
         return null;
     }
@@ -125,9 +106,7 @@ public class MSIMMessage {
     public MSIMImageElement getImageElement() {
         final int messageType = getMessageType(-1);
         if (messageType == MSIMConstants.MessageType.IMAGE) {
-            MSIMImageElement element = new MSIMImageElement();
-            element.setMessage(mMessage);
-            return element;
+            return new MSIMImageElement(mMessage);
         }
         return null;
     }
@@ -136,9 +115,7 @@ public class MSIMMessage {
     public MSIMAudioElement getAudioElement() {
         final int messageType = getMessageType(-1);
         if (messageType == MSIMConstants.MessageType.AUDIO) {
-            MSIMAudioElement element = new MSIMAudioElement();
-            element.setMessage(mMessage);
-            return element;
+            return new MSIMAudioElement(mMessage);
         }
         return null;
     }
@@ -147,9 +124,7 @@ public class MSIMMessage {
     public MSIMVideoElement getVideoElement() {
         final int messageType = getMessageType(-1);
         if (messageType == MSIMConstants.MessageType.VIDEO) {
-            MSIMVideoElement element = new MSIMVideoElement();
-            element.setMessage(mMessage);
-            return element;
+            return new MSIMVideoElement(mMessage);
         }
         return null;
     }
@@ -158,9 +133,7 @@ public class MSIMMessage {
     public MSIMCustomElement getCustomElement() {
         final int messageType = getMessageType(-1);
         if (messageType == MSIMConstants.MessageType.FIRST_CUSTOM_MESSAGE) {
-            MSIMCustomElement element = new MSIMCustomElement();
-            element.setMessage(mMessage);
-            return element;
+            return new MSIMCustomElement(mMessage);
         }
         return null;
     }

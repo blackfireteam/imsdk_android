@@ -6,9 +6,9 @@ import android.view.Window;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.IMConversation;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.core.IMMessageQueueManager;
+import com.masonsoft.imsdk.core.IMConversation;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -103,7 +103,7 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
             menuDialog.setOnIMMenuClickListener((menuId, menuText, menuView) -> {
                 if (menuId == MENU_ID_DELETE) {
                     // 删除
-                    IMMessageQueueManager.getInstance().enqueueDeleteConversationActionMessage(conversation);
+                    MSIMManager.getInstance().getConversationManager().deleteConversation(conversation);
                 } else {
                     SampleLog.e("IMChatConversationMenuDialog onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
                             menuId, menuText, menuView);
