@@ -149,4 +149,15 @@ public class MSIMMessage {
         return null;
     }
 
+    @Nullable
+    public MSIMCustomElement getCustomElement() {
+        final int messageType = getMessageType(-1);
+        if (messageType == MSIMConstants.MessageType.FIRST_CUSTOM_MESSAGE) {
+            MSIMCustomElement element = new MSIMCustomElement();
+            element.setMessage(mMessage);
+            return element;
+        }
+        return null;
+    }
+
 }
