@@ -20,6 +20,17 @@ public class GeneralResult extends GeneralErrorCode {
     }
 
     @NonNull
+    public GeneralResult getCause() {
+        if (isSuccess()) {
+            return this;
+        }
+        if (other != null) {
+            return other;
+        }
+        return this;
+    }
+
+    @NonNull
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
         builder.append(Objects.defaultObjectTag(this));

@@ -155,6 +155,7 @@ public class IMSessionManager {
      * 尽可能获取一个可用的登录用户 id，如果长连接上的登录用户信息暂时暂时无效，则会先 block, 直到登录成功或者超时.
      */
     @WorkerThread
+    @NonNull
     public GeneralResult getSessionUserIdWithBlockOrTimeout() {
         final long sessionUserId = mSessionUserId;
         if (sessionUserId > 0) {
@@ -223,6 +224,7 @@ public class IMSessionManager {
      * 尽可能从长连接上发送退出登录的消息，如果长连接暂时无效，则会先 block, 直到成功发送退出消息或者超时.
      */
     @WorkerThread
+    @NonNull
     public GeneralResult signOutWithBlockOrTimeout() {
         return this.signOutWithBlockOrTimeout(true);
     }
@@ -231,6 +233,7 @@ public class IMSessionManager {
      * 尽可能从长连接上发送退出登录的消息，如果长连接暂时无效，则会先 block, 直到成功发送退出消息或者超时.
      */
     @WorkerThread
+    @NonNull
     public GeneralResult signOutWithBlockOrTimeout(boolean alwaysClearToken) {
         final Session session = mSession;
         if (session == null) {

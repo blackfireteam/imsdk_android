@@ -1,12 +1,12 @@
 package com.masonsoft.imsdk;
 
+import androidx.annotation.NonNull;
+
 /**
  * @since 1.0
  */
-public interface MSIMCallback {
+public interface MSIMCallback<T> {
 
-    void onError(int errorCode, String errorMessage);
-
-    void onSuccess();
+    void onCallback(@NonNull T payload);
 
 }

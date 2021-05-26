@@ -7,6 +7,7 @@ import androidx.annotation.UiThread;
 
 import com.masonsoft.imsdk.MSIMSdkListener;
 import com.masonsoft.imsdk.core.I18nResources;
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.common.TopActivity;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentNoticeDialog;
@@ -63,8 +64,8 @@ public class IMTokenOfflineManager {
         }
 
         @Override
-        public void onSignInFail(int errorCode, String errorMessage) {
-            SampleLog.v("onSignInFail errorCode:%s, errorMessage:%s", errorCode, errorMessage);
+        public void onSignInFail(@NonNull GeneralResult result) {
+            SampleLog.v("onSignInFail result:%s", result);
         }
 
         @Override
@@ -90,8 +91,8 @@ public class IMTokenOfflineManager {
         }
 
         @Override
-        public void onSignOutFail(int errorCode, String errorMessage) {
-            SampleLog.v("onSignOutFail errorCode:%s, errorMessage:%s", errorCode, errorMessage);
+        public void onSignOutFail(@NonNull GeneralResult result) {
+            SampleLog.v("onSignOutFail result:%s", result);
         }
     };
 

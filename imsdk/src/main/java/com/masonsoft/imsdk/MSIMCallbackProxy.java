@@ -1,30 +1,24 @@
 package com.masonsoft.imsdk;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
  * @since 1.0
  */
-public class MSIMCallbackProxy implements MSIMCallback {
+public class MSIMCallbackProxy<T> implements MSIMCallback<T> {
 
     @Nullable
-    private final MSIMCallback mOut;
+    private final MSIMCallback<T> mOut;
 
-    public MSIMCallbackProxy(@Nullable MSIMCallback callback) {
+    public MSIMCallbackProxy(@Nullable MSIMCallback<T> callback) {
         mOut = callback;
     }
 
     @Override
-    public void onError(int errorCode, String errorMessage) {
+    public void onCallback(@NonNull T payload) {
         if (mOut != null) {
-            mOut.onError(errorCode, errorMessage);
-        }
-    }
-
-    @Override
-    public void onSuccess() {
-        if (mOut != null) {
-            mOut.onSuccess();
+            mOut.onCallback(payload);
         }
     }
 

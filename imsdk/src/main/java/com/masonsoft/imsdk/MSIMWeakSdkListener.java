@@ -3,6 +3,8 @@ package com.masonsoft.imsdk;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.lang.GeneralResult;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -58,10 +60,10 @@ public class MSIMWeakSdkListener implements MSIMSdkListener {
     }
 
     @Override
-    public void onSignInFail(int errorCode, String errorMessage) {
+    public void onSignInFail(@NonNull GeneralResult result) {
         final MSIMSdkListener out = mOutRef.get();
         if (out != null) {
-            out.onSignInFail(errorCode, errorMessage);
+            out.onSignInFail(result);
         }
     }
 
@@ -98,10 +100,10 @@ public class MSIMWeakSdkListener implements MSIMSdkListener {
     }
 
     @Override
-    public void onSignOutFail(int errorCode, String errorMessage) {
+    public void onSignOutFail(@NonNull GeneralResult result) {
         final MSIMSdkListener out = mOutRef.get();
         if (out != null) {
-            out.onSignOutFail(errorCode, errorMessage);
+            out.onSignOutFail(result);
         }
     }
 

@@ -71,7 +71,7 @@ public class MSIMManager {
             } else if (state == MessagePacket.STATE_SUCCESS) {
                 mSdkListener.onSignInSuccess();
             } else if (state == MessagePacket.STATE_FAIL) {
-                mSdkListener.onSignInFail(messagePacket.getErrorCode(), messagePacket.getErrorMessage());
+                mSdkListener.onSignInFail(GeneralResult.valueOf(messagePacket.getErrorCode(), messagePacket.getErrorMessage()));
             }
         }
 
@@ -83,7 +83,7 @@ public class MSIMManager {
             } else if (state == MessagePacket.STATE_SUCCESS) {
                 mSdkListener.onSignOutSuccess();
             } else if (state == MessagePacket.STATE_FAIL) {
-                mSdkListener.onSignOutFail(messagePacket.getErrorCode(), messagePacket.getErrorMessage());
+                mSdkListener.onSignOutFail(GeneralResult.valueOf(messagePacket.getErrorCode(), messagePacket.getErrorMessage()));
             }
         }
     };
@@ -100,9 +100,9 @@ public class MSIMManager {
         mSdkListener = new MSIMSdkListenerProxy(listener);
     }
 
-    public void signIn(String token, String tcpServerAndPort, MSIMCallback callback) {
+    public void signIn(@NonNull String token, @NonNull String tcpServerAndPort, @Nullable MSIMCallback<GeneralResult> callback) {
         final Object signInOrSignOutTag = resetSignInOrSignOutTag();
-        final MSIMCallback proxy = new MSIMCallbackProxy(callback);
+        final MSIMCallback<GeneralResult> proxy = new MSIMCallbackProxy<>(callback);
         final Session session = Session.create(token, tcpServerAndPort);
         IMSessionManager.getInstance().setSession(session);
         Threads.postBackground(() -> {
@@ -110,41 +110,26 @@ public class MSIMManager {
                 return;
             }
             final GeneralResult result = IMSessionManager.getInstance().getSessionUserIdWithBlockOrTimeout();
-            final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
             if (isSignInOrSignOutTagChanged(signInOrSignOutTag)) {
                 return;
             }
-            if (sessionUserId > 0) {
-                proxy.onSuccess();
-            } else {
-                if (result.other != null) {
-                    proxy.onError(result.other.code, result.other.message);
-                } else {
-                    proxy.onError(result.code, result.message);
-                }
-            }
+            proxy.onCallback(result.getCause());
         });
     }
 
     @WorkerThread
     @NonNull
-    public GeneralResult signInWithBlock(String token, String tcpServerAndPort) {
+    public GeneralResult signInWithBlock(@NonNull String token, @NonNull String tcpServerAndPort) {
         resetSignInOrSignOutTag();
         final Session session = Session.create(token, tcpServerAndPort);
         IMSessionManager.getInstance().setSession(session);
         final GeneralResult result = IMSessionManager.getInstance().getSessionUserIdWithBlockOrTimeout();
-        if (result.isSuccess()) {
-            return result;
-        }
-        if (result.other != null) {
-            return result.other;
-        }
-        return result;
+        return result.getCause();
     }
 
-    public void signOut(MSIMCallback callback) {
+    public void signOut(@Nullable MSIMCallback<GeneralResult> callback) {
         final Object signInOrSignOutTag = resetSignInOrSignOutTag();
-        final MSIMCallback proxy = new MSIMCallbackProxy(callback);
+        final MSIMCallback<GeneralResult> proxy = new MSIMCallbackProxy<>(callback);
         Threads.postBackground(() -> {
             if (isSignInOrSignOutTagChanged(signInOrSignOutTag)) {
                 return;
@@ -153,15 +138,7 @@ public class MSIMManager {
             if (isSignInOrSignOutTagChanged(signInOrSignOutTag)) {
                 return;
             }
-            if (result.isSuccess()) {
-                proxy.onSuccess();
-            } else {
-                if (result.other != null) {
-                    proxy.onError(result.other.code, result.other.message);
-                } else {
-                    proxy.onError(result.code, result.message);
-                }
-            }
+            proxy.onCallback(result.getCause());
         });
     }
 
@@ -170,13 +147,7 @@ public class MSIMManager {
     public GeneralResult signOutWithBlock() {
         resetSignInOrSignOutTag();
         final GeneralResult result = IMSessionManager.getInstance().signOutWithBlockOrTimeout();
-        if (result.isSuccess()) {
-            return result;
-        }
-        if (result.other != null) {
-            return result.other;
-        }
-        return result;
+        return result.getCause();
     }
 
     @NonNull

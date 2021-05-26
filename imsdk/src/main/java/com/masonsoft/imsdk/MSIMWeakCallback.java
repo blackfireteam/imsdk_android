@@ -8,28 +8,20 @@ import java.lang.ref.WeakReference;
 /**
  * @since 1.0
  */
-public class MSIMWeakCallback implements MSIMCallback {
+public class MSIMWeakCallback<T> implements MSIMCallback<T> {
 
     @NonNull
-    private final WeakReference<MSIMCallback> mOutRef;
+    private final WeakReference<MSIMCallback<T>> mOutRef;
 
-    public MSIMWeakCallback(@Nullable MSIMCallback callback) {
+    public MSIMWeakCallback(@Nullable MSIMCallback<T> callback) {
         mOutRef = new WeakReference<>(callback);
     }
 
     @Override
-    public void onError(int errorCode, String errorMessage) {
-        final MSIMCallback out = mOutRef.get();
+    public void onCallback(@NonNull T payload) {
+        final MSIMCallback<T> out = mOutRef.get();
         if (out != null) {
-            out.onError(errorCode, errorMessage);
-        }
-    }
-
-    @Override
-    public void onSuccess() {
-        final MSIMCallback out = mOutRef.get();
-        if (out != null) {
-            out.onSuccess();
+            out.onCallback(payload);
         }
     }
 

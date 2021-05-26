@@ -1,5 +1,9 @@
 package com.masonsoft.imsdk;
 
+import androidx.annotation.NonNull;
+
+import com.masonsoft.imsdk.lang.GeneralResult;
+
 /**
  * @since 1.0
  */
@@ -15,7 +19,7 @@ public interface MSIMSdkListener {
 
     void onSignInSuccess();
 
-    void onSignInFail(int errorCode, String errorMessage);
+    void onSignInFail(@NonNull GeneralResult result);
 
     void onKickedOffline();
 
@@ -25,6 +29,6 @@ public interface MSIMSdkListener {
 
     void onSignOutSuccess();
 
-    void onSignOutFail(int errorCode, String errorMessage);
+    void onSignOutFail(@NonNull GeneralResult result);
 
 }

@@ -1,6 +1,9 @@
 package com.masonsoft.imsdk;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.masonsoft.imsdk.lang.GeneralResult;
 
 /**
  * @since 1.0
@@ -50,9 +53,9 @@ public class MSIMSdkListenerProxy implements MSIMSdkListener {
     }
 
     @Override
-    public void onSignInFail(int errorCode, String errorMessage) {
+    public void onSignInFail(@NonNull GeneralResult result) {
         if (mOut != null) {
-            mOut.onSignInFail(errorCode, errorMessage);
+            mOut.onSignInFail(result);
         }
     }
 
@@ -85,9 +88,9 @@ public class MSIMSdkListenerProxy implements MSIMSdkListener {
     }
 
     @Override
-    public void onSignOutFail(int errorCode, String errorMessage) {
+    public void onSignOutFail(@NonNull GeneralResult result) {
         if (mOut != null) {
-            mOut.onSignOutFail(errorCode, errorMessage);
+            mOut.onSignOutFail(result);
         }
     }
 
