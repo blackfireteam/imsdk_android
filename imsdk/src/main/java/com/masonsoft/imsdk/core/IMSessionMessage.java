@@ -9,7 +9,7 @@ import com.masonsoft.imsdk.util.Objects;
 /**
  * 会话消息(聊天消息)
  */
-public class IMSessionMessage implements EnqueueMessage {
+public class IMSessionMessage {
 
     private final long mSessionUserId;
     private long mToUserId;

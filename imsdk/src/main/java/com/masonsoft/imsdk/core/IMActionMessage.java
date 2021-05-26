@@ -9,7 +9,7 @@ import com.masonsoft.imsdk.util.Objects;
 /**
  * 指令消息
  */
-public class IMActionMessage implements EnqueueMessage {
+public class IMActionMessage {
 
     /**
      * 撤回一条会话消息(聊天消息)

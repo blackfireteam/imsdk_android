@@ -9,7 +9,7 @@ import com.masonsoft.imsdk.util.Objects;
 /**
  * 其它消息
  */
-public class OtherMessage implements EnqueueMessage {
+public class OtherMessage {
 
     private final long mSessionUserId;
     private final MessagePacket mMessagePacket;
