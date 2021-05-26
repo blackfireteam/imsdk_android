@@ -3,6 +3,8 @@ package com.masonsoft.imsdk.core;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.lang.GeneralResult;
+
 import io.github.idonans.core.WeakAbortSignal;
 import io.github.idonans.core.thread.Threads;
 
@@ -38,11 +40,11 @@ public class WeakEnqueueCallbackAdapter<T extends EnqueueMessage> extends WeakAb
     }
 
     @Override
-    public void onEnqueueFail(@NonNull T enqueueMessage, int errorCode, String errorMessage) {
+    public void onEnqueueFail(@NonNull T enqueueMessage, @NonNull GeneralResult result) {
         final Runnable runnable = () -> {
             final EnqueueCallback<T> callback = getEnqueueCallback();
             if (callback != null) {
-                callback.onEnqueueFail(enqueueMessage, errorCode, errorMessage);
+                callback.onEnqueueFail(enqueueMessage, result);
             }
         };
         if (mRunOnUiThread) {

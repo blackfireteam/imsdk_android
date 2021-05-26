@@ -2,15 +2,13 @@ package com.masonsoft.imsdk.core.processor;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.R;
-import com.masonsoft.imsdk.core.EnqueueCallback;
-import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMActionMessage;
 import com.masonsoft.imsdk.core.IMActionMessageManager;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
+import com.masonsoft.imsdk.lang.GeneralResult;
 
 /**
  * 撤回消息
@@ -37,8 +35,8 @@ public class SendActionTypeRevokeValidateProcessor extends SendActionTypeValidat
             // 消息没有入库，不支持撤回
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_ID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_id));
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_ID)
+            );
             return true;
         }
 
@@ -51,8 +49,8 @@ public class SendActionTypeRevokeValidateProcessor extends SendActionTypeValidat
             // 消息没有找到
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_ID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_id));
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_ID)
+            );
             return true;
         }
 
@@ -60,8 +58,8 @@ public class SendActionTypeRevokeValidateProcessor extends SendActionTypeValidat
             // 不是自己发送的消息，不能撤回
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_INVALID_FROM_USER_ID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_from_user_id));
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_FROM_USER_ID)
+            );
             return true;
         }
 
@@ -69,8 +67,8 @@ public class SendActionTypeRevokeValidateProcessor extends SendActionTypeValidat
             // 消息没有发送成功，不能撤回
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_ID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_id));
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_ID)
+            );
             return true;
         }
 
@@ -78,8 +76,8 @@ public class SendActionTypeRevokeValidateProcessor extends SendActionTypeValidat
             // 消息已撤回
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_MESSAGE_ALREADY_REVOKE,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_message_already_revoke));
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_MESSAGE_ALREADY_REVOKE)
+            );
             return true;
         }
 

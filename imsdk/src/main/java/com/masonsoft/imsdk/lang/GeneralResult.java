@@ -15,6 +15,9 @@ public class GeneralResult extends GeneralErrorCode {
     @Nullable
     public GeneralResult other;
 
+    @Nullable
+    public Object payload;
+
     public boolean isSuccess() {
         return this.code == CODE_SUCCESS;
     }
@@ -30,12 +33,18 @@ public class GeneralResult extends GeneralErrorCode {
         return this;
     }
 
+    public GeneralResult withPayload(@Nullable Object payload) {
+        this.payload = payload;
+        return this;
+    }
+
     @NonNull
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
         builder.append(Objects.defaultObjectTag(this));
         builder.append(" code:").append(this.code);
         builder.append(" message:").append(this.message);
+        builder.append(" payload:").append(this.payload);
         if (this.other == null) {
             builder.append(" other:null");
         } else {

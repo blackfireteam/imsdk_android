@@ -2,7 +2,6 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.R;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.processor.InternalReceivedProtoMessageProtoTypeProcessor;
 import com.masonsoft.imsdk.core.processor.InternalSendSessionMessageTypeValidateProcessor;
@@ -13,6 +12,7 @@ import com.masonsoft.imsdk.core.processor.SendActionTypeMarkAsReadValidateProces
 import com.masonsoft.imsdk.core.processor.SendActionTypeRevokeValidateProcessor;
 import com.masonsoft.imsdk.core.processor.SendSessionMessageRecoveryProcessor;
 import com.masonsoft.imsdk.core.processor.SendSessionMessageWriteDatabaseProcessor;
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.MultiProcessor;
 
 import io.github.idonans.core.Singleton;
@@ -169,8 +169,7 @@ public class IMMessageQueueManager {
 
                     mIMSessionMessage.getEnqueueCallback().onEnqueueFail(
                             mIMSessionMessage,
-                            EnqueueCallback.ERROR_CODE_UNKNOWN,
-                            I18nResources.getString(R.string.msimsdk_enqueue_callback_error_unknown)
+                            GeneralResult.valueOf(GeneralResult.ERROR_CODE_UNKNOWN)
                     );
                 }
             } catch (Throwable e) {
@@ -179,8 +178,7 @@ public class IMMessageQueueManager {
 
                 mIMSessionMessage.getEnqueueCallback().onEnqueueFail(
                         mIMSessionMessage,
-                        EnqueueCallback.ERROR_CODE_UNKNOWN,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_unknown)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_UNKNOWN)
                 );
             }
         }
@@ -251,8 +249,7 @@ public class IMMessageQueueManager {
 
                     mActionMessage.getEnqueueCallback().onEnqueueFail(
                             mActionMessage,
-                            EnqueueCallback.ERROR_CODE_UNKNOWN,
-                            I18nResources.getString(R.string.msimsdk_enqueue_callback_error_unknown)
+                            GeneralResult.valueOf(GeneralResult.ERROR_CODE_UNKNOWN)
                     );
                 }
             } catch (Throwable e) {
@@ -261,8 +258,7 @@ public class IMMessageQueueManager {
 
                 mActionMessage.getEnqueueCallback().onEnqueueFail(
                         mActionMessage,
-                        EnqueueCallback.ERROR_CODE_UNKNOWN,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_unknown)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_UNKNOWN)
                 );
             }
         }

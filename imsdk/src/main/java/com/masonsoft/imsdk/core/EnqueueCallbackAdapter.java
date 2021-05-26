@@ -2,6 +2,8 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.lang.GeneralResult;
+
 @Deprecated
 public class EnqueueCallbackAdapter<T extends EnqueueMessage> implements EnqueueCallback<T> {
 
@@ -11,8 +13,8 @@ public class EnqueueCallbackAdapter<T extends EnqueueMessage> implements Enqueue
     }
 
     @Override
-    public void onEnqueueFail(@NonNull T enqueueMessage, int errorCode, String errorMessage) {
-        IMLog.v("onEnqueueFail errorCode:%s, errorMessage:%s, %s", errorCode, errorMessage, enqueueMessage);
+    public void onEnqueueFail(@NonNull T enqueueMessage, @NonNull GeneralResult result) {
+        IMLog.v("onEnqueueFail result:%s, %s", result, enqueueMessage);
     }
 
 }

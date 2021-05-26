@@ -6,12 +6,10 @@ import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.EnqueueCallback;
+import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMSessionMessage;
-import com.masonsoft.imsdk.R;
-import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.MediaInfo;
 import com.masonsoft.imsdk.lang.StateProp;
 import com.masonsoft.imsdk.util.MediaUtil;
@@ -45,8 +43,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
         if (audio.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_UNSET,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_path_unset)
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_UNSET)
             );
             return true;
         }
@@ -61,8 +58,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
         if (TextUtils.isEmpty(audioPath)) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_INVALID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_path_invalid)
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_INVALID)
             );
             return true;
         }
@@ -84,8 +80,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
         if (!audioFile.exists() || !audioFile.isFile()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_INVALID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_path_invalid)
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_INVALID)
             );
             return true;
         }
@@ -95,8 +90,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
             final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Audio.MAX_FILE_SIZE);
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_FILE_SIZE_TOO_LARGE,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_file_size_too_large, maxFileSizeAsHumanString)
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_AUDIO_MESSAGE_AUDIO_FILE_SIZE_TOO_LARGE)
             );
             return true;
         }
@@ -129,8 +123,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
             // 网络地址无法获取时长信息
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_duration_invalid)
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID)
             );
             return true;
         }
@@ -144,8 +137,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
             // 语音时长无效
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_duration_invalid)
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID)
             );
             return true;
         }
