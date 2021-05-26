@@ -199,21 +199,14 @@ public class IMMessageManager {
      */
     @NonNull
     private TinyPage<IMMessage> filter(@NonNull TinyPage<IMMessage> input) {
-        final TinyPage<IMMessage> page = new TinyPage<>();
-        page.hasMore = input.hasMore;
-        page.generalResult = input.generalResult;
-        page.items = new ArrayList<>();
-        if (input.items != null) {
-            for (IMMessage message : input.items) {
-                if (!message.type.isUnset()) {
-                    final int type = message.type.get();
-                    if (!IMConstants.MessageType.isActionMessage(type)) {
-                        page.items.add(message);
-                    }
-                }
+        return input.filter(message -> {
+            if (!message.type.isUnset()) {
+                final int type = message.type.get();
+                return !IMConstants.MessageType.isActionMessage(type);
             }
-        }
-        return page;
+
+            return false;
+        });
     }
 
     /**

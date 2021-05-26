@@ -2,10 +2,13 @@ package com.masonsoft.imsdk.core.db;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.arch.core.util.Function;
+import androidx.core.util.Predicate;
 
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.util.Objects;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +44,40 @@ public class TinyPage<T> {
     @NonNull
     public String toString() {
         return this.toShortString();
+    }
+
+    @NonNull
+    public <P> TinyPage<P> transform(Function<T, P> f) {
+        final TinyPage<P> target = new TinyPage<>();
+        target.items = new ArrayList<>();
+        target.hasMore = this.hasMore;
+        target.generalResult = this.generalResult;
+
+        if (this.items != null) {
+            for (T item : this.items) {
+                target.items.add(f.apply(item));
+            }
+        }
+
+        return target;
+    }
+
+    @NonNull
+    public TinyPage<T> filter(Predicate<T> p) {
+        final TinyPage<T> target = new TinyPage<>();
+        target.items = new ArrayList<>();
+        target.hasMore = this.hasMore;
+        target.generalResult = this.generalResult;
+
+        if (this.items != null) {
+            for (T item : this.items) {
+                if (p.test(item)) {
+                    target.items.add(item);
+                }
+            }
+        }
+
+        return target;
     }
 
 }
