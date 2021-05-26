@@ -41,9 +41,9 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
     private boolean validateAudio(@NonNull IMSessionMessage target) {
         final StateProp<String> audio = target.getMessage().body;
         if (audio.isUnset()) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_UNSET)
+                            .withPayload(target)
             );
             return true;
         }
@@ -56,9 +56,9 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
             audio.set(audioPath);
         }
         if (TextUtils.isEmpty(audioPath)) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_INVALID)
+                            .withPayload(target)
             );
             return true;
         }
@@ -78,9 +78,9 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
         // 校验语音文件是否存在并且文件的大小的是否合法
         final File audioFile = new File(audioPath);
         if (!audioFile.exists() || !audioFile.isFile()) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_AUDIO_MESSAGE_AUDIO_PATH_INVALID)
+                            .withPayload(target)
             );
             return true;
         }
@@ -88,9 +88,9 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
                 && audioFile.length() > IMConstants.SendMessageOption.Audio.MAX_FILE_SIZE) {
             // 语音文件太大
             final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Audio.MAX_FILE_SIZE);
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_AUDIO_MESSAGE_AUDIO_FILE_SIZE_TOO_LARGE)
+                            .withPayload(target)
             );
             return true;
         }
@@ -105,14 +105,6 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
                 && duration.get() > 0) {
             // 已经设置了合法的时长
             return false;
-            /*
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
-                    EnqueueCallback.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_audio_message_audio_duration_invalid)
-            );
-            return true;
-            */
         }
 
         // 从音频文件中获取时长信息
@@ -121,9 +113,9 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
         if (URLUtil.isNetworkUrl(audioPath)) {
             // 文件本身是一个网络地址
             // 网络地址无法获取时长信息
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID)
+                            .withPayload(target)
             );
             return true;
         }
@@ -135,9 +127,9 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
         }
         if (decodeDuration <= 0) {
             // 语音时长无效
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_AUDIO_MESSAGE_AUDIO_DURATION_INVALID)
+                            .withPayload(target)
             );
             return true;
         }

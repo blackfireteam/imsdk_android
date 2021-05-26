@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.processor.InternalReceivedProtoMessageProtoTypeProcessor;
@@ -118,24 +119,24 @@ public class IMMessageQueueManager {
      * 本地重发一个失败的消息
      */
     public void enqueueResendSessionMessage(@NonNull IMMessage imMessage) {
-        this.enqueueResendSessionMessage(imMessage, new EnqueueCallbackAdapter<>());
+        this.enqueueResendSessionMessage(imMessage, null);
     }
 
     /**
      * 本地重发一个失败的消息
      */
-    public void enqueueResendSessionMessage(@NonNull IMMessage imMessage, @NonNull EnqueueCallback<IMSessionMessage> enqueueCallback) {
+    public void enqueueResendSessionMessage(@NonNull IMMessage imMessage, @Nullable IMCallback<GeneralResult> enqueueCallback) {
         this.enqueueSendSessionMessage(imMessage, 0, true, enqueueCallback);
     }
 
     /**
      * 本地发送新消息
      */
-    public void enqueueSendSessionMessage(@NonNull IMMessage imMessage, long toUserId, @NonNull EnqueueCallback<IMSessionMessage> enqueueCallback) {
+    public void enqueueSendSessionMessage(@NonNull IMMessage imMessage, long toUserId, @Nullable IMCallback<GeneralResult> enqueueCallback) {
         this.enqueueSendSessionMessage(imMessage, toUserId, false, enqueueCallback);
     }
 
-    private void enqueueSendSessionMessage(@NonNull IMMessage imMessage, long toUserId, boolean resend, @NonNull EnqueueCallback<IMSessionMessage> enqueueCallback) {
+    private void enqueueSendSessionMessage(@NonNull IMMessage imMessage, long toUserId, boolean resend, @Nullable IMCallback<GeneralResult> enqueueCallback) {
         // sessionUserId 可能是无效值
         final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
         mSendSessionMessageQueue.enqueue(
@@ -154,31 +155,31 @@ public class IMMessageQueueManager {
     private class SendSessionMessageTask implements Runnable {
 
         @NonNull
-        private final IMSessionMessage mIMSessionMessage;
+        private final IMSessionMessage mSessionMessage;
 
         private SendSessionMessageTask(@NonNull IMSessionMessage imSessionMessage) {
-            mIMSessionMessage = imSessionMessage;
+            mSessionMessage = imSessionMessage;
         }
 
         @Override
         public void run() {
             try {
-                if (!mSendSessionMessageProcessor.doProcess(mIMSessionMessage)) {
-                    Throwable e = new IllegalAccessError("SendMessageTask IMSessionMessage do process fail");
+                if (!mSendSessionMessageProcessor.doProcess(mSessionMessage)) {
+                    Throwable e = new IllegalAccessError("SendSessionMessageTask IMSessionMessage do process fail");
                     IMLog.v(e);
 
-                    mIMSessionMessage.getEnqueueCallback().onEnqueueFail(
-                            mIMSessionMessage,
+                    mSessionMessage.getEnqueueCallback().onCallback(
                             GeneralResult.valueOf(GeneralResult.ERROR_CODE_UNKNOWN)
+                                    .withPayload(mSessionMessage)
                     );
                 }
             } catch (Throwable e) {
-                IMLog.e(e, "IMSessionMessage:%s", mIMSessionMessage.toShortString());
+                IMLog.e(e, "IMSessionMessage:%s", mSessionMessage.toShortString());
                 RuntimeMode.fixme(e);
 
-                mIMSessionMessage.getEnqueueCallback().onEnqueueFail(
-                        mIMSessionMessage,
+                mSessionMessage.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_UNKNOWN)
+                                .withPayload(mSessionMessage)
                 );
             }
         }
@@ -213,13 +214,13 @@ public class IMMessageQueueManager {
      * 发送指令消息
      */
     public void enqueueSendActionMessage(int actionType, Object actionObject) {
-        this.enqueueSendActionMessage(actionType, actionObject, new EnqueueCallbackAdapter<>());
+        this.enqueueSendActionMessage(actionType, actionObject, null);
     }
 
     /**
      * 发送指令消息
      */
-    public void enqueueSendActionMessage(int actionType, Object actionObject, @NonNull EnqueueCallback<IMActionMessage> enqueueCallback) {
+    public void enqueueSendActionMessage(int actionType, Object actionObject, @Nullable IMCallback<GeneralResult> enqueueCallback) {
         final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
         mSendActionMessageQueue.enqueue(new SendActionMessageTask(
                 new IMActionMessage(
@@ -247,18 +248,18 @@ public class IMMessageQueueManager {
                     Throwable e = new IllegalAccessError("SendActionMessageTask mActionMessage do process fail");
                     IMLog.v(e);
 
-                    mActionMessage.getEnqueueCallback().onEnqueueFail(
-                            mActionMessage,
+                    mActionMessage.getEnqueueCallback().onCallback(
                             GeneralResult.valueOf(GeneralResult.ERROR_CODE_UNKNOWN)
+                                    .withPayload(mActionMessage)
                     );
                 }
             } catch (Throwable e) {
                 IMLog.e(e, "mActionMessage:%s", mActionMessage.toShortString());
                 RuntimeMode.fixme(e);
 
-                mActionMessage.getEnqueueCallback().onEnqueueFail(
-                        mActionMessage,
+                mActionMessage.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_UNKNOWN)
+                                .withPayload(mActionMessage)
                 );
             }
         }

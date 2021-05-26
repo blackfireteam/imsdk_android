@@ -1,7 +1,9 @@
 package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.util.Objects;
 
 /**
@@ -20,19 +22,25 @@ public class IMSessionMessage implements EnqueueMessage {
     private final IMMessage mMessage;
 
     @NonNull
-    private final EnqueueCallback<IMSessionMessage> mEnqueueCallback;
+    private final IMCallback<GeneralResult> mEnqueueCallback;
 
     public IMSessionMessage(
             long sessionUserId,
             long toUserId,
             boolean resend,
             @NonNull IMMessage imMessage,
-            @NonNull EnqueueCallback<IMSessionMessage> enqueueCallback) {
+            @Nullable IMCallback<GeneralResult> enqueueCallback) {
         mSessionUserId = sessionUserId;
         mToUserId = toUserId;
         mResend = resend;
         mMessage = imMessage;
-        mEnqueueCallback = enqueueCallback;
+        if (enqueueCallback != null) {
+            mEnqueueCallback = enqueueCallback;
+        } else {
+            mEnqueueCallback = payload -> {
+                // ignore
+            };
+        }
     }
 
     public long getSessionUserId() {
@@ -65,7 +73,7 @@ public class IMSessionMessage implements EnqueueMessage {
     }
 
     @NonNull
-    public EnqueueCallback<IMSessionMessage> getEnqueueCallback() {
+    public IMCallback<GeneralResult> getEnqueueCallback() {
         return mEnqueueCallback;
     }
 

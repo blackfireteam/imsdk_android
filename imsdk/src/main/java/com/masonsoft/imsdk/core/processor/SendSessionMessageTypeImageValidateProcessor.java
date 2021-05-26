@@ -30,18 +30,18 @@ public class SendSessionMessageTypeImageValidateProcessor extends SendSessionMes
     protected boolean doTypeProcess(@NonNull IMSessionMessage target, int type) {
         final StateProp<String> body = target.getMessage().body;
         if (body.isUnset()) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_IMAGE_MESSAGE_IMAGE_PATH_UNSET)
+                            .withPayload(target)
             );
             return true;
         }
 
         final String bodyUri = body.get();
         if (TextUtils.isEmpty(bodyUri)) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_IMAGE_MESSAGE_IMAGE_PATH_INVALID)
+                            .withPayload(target)
             );
             return true;
         }
@@ -62,9 +62,9 @@ public class SendSessionMessageTypeImageValidateProcessor extends SendSessionMes
             // 文件本身是一个网络地址
             if (requireDecodeImageSize) {
                 // 网络地址的图片没有设置合法的宽高值，直接报错(不适宜去下载图片再解码宽高值，会阻塞队列执行速度)
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_IMAGE_MESSAGE_IMAGE_WIDTH_OR_HEIGHT_INVALID)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -73,9 +73,9 @@ public class SendSessionMessageTypeImageValidateProcessor extends SendSessionMes
             final ImageInfo imageInfo = BitmapUtil.decodeImageInfo(imageUri);
             if (imageInfo == null) {
                 // 解码图片信息失败, 通常来说都是由于图片格式不支持导致(或者图片 Uri 指向的不是一张真实的图片)
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_IMAGE_MESSAGE_IMAGE_FORMAT_NOT_SUPPORT)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -89,9 +89,9 @@ public class SendSessionMessageTypeImageValidateProcessor extends SendSessionMes
                     && imageInfo.length > IMConstants.SendMessageOption.Image.MAX_FILE_SIZE) {
                 // 图片文件太大
                 final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Image.MAX_FILE_SIZE);
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_IMAGE_MESSAGE_IMAGE_FILE_SIZE_TOO_LARGE)
+                                .withPayload(target)
                 );
                 return true;
             }

@@ -3,10 +3,8 @@ package com.masonsoft.imsdk;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.EnqueueCallback;
 import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
-import com.masonsoft.imsdk.core.IMSessionMessage;
 import com.masonsoft.imsdk.lang.GeneralResult;
 
 import io.github.idonans.core.Singleton;
@@ -40,17 +38,7 @@ public class MSIMMessageManager {
         IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
                 message.getMessage(),
                 receiver,
-                new EnqueueCallback<IMSessionMessage>() {
-                    @Override
-                    public void onEnqueueSuccess(@NonNull IMSessionMessage enqueueMessage) {
-                        proxy.onCallback(GeneralResult.success());
-                    }
-
-                    @Override
-                    public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, @NonNull GeneralResult result) {
-                        proxy.onCallback(result);
-                    }
-                }
+                callback
         );
     }
 

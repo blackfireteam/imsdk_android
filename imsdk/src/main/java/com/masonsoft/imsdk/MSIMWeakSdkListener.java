@@ -7,6 +7,8 @@ import com.masonsoft.imsdk.lang.GeneralResult;
 
 import java.lang.ref.WeakReference;
 
+import io.github.idonans.core.thread.Threads;
+
 /**
  * @since 1.0
  */
@@ -14,97 +16,133 @@ public class MSIMWeakSdkListener implements MSIMSdkListener {
 
     @NonNull
     private final WeakReference<MSIMSdkListener> mOutRef;
+    private final boolean mRunOnUiThread;
 
     public MSIMWeakSdkListener(@Nullable MSIMSdkListener listener) {
+        this(listener, false);
+    }
+
+    public MSIMWeakSdkListener(@Nullable MSIMSdkListener listener, boolean runOnUiThread) {
         mOutRef = new WeakReference<>(listener);
+        mRunOnUiThread = runOnUiThread;
+    }
+
+    private void runOrPost(Runnable runnable) {
+        if (mRunOnUiThread) {
+            Threads.postUi(runnable);
+        } else {
+            runnable.run();
+        }
     }
 
     @Override
     public void onConnecting() {
-        final MSIMSdkListener out = mOutRef.get();
-        if (out != null) {
-            out.onConnecting();
-        }
+        runOrPost(() -> {
+            final MSIMSdkListener out = mOutRef.get();
+            if (out != null) {
+                out.onConnecting();
+            }
+        });
     }
 
     @Override
     public void onConnectSuccess() {
-        final MSIMSdkListener out = mOutRef.get();
-        if (out != null) {
-            out.onConnectSuccess();
-        }
+        runOrPost(() -> {
+            final MSIMSdkListener out = mOutRef.get();
+            if (out != null) {
+                out.onConnectSuccess();
+            }
+        });
     }
 
     @Override
     public void onConnectClosed() {
-        final MSIMSdkListener out = mOutRef.get();
-        if (out != null) {
-            out.onConnectClosed();
-        }
+        runOrPost(() -> {
+            final MSIMSdkListener out = mOutRef.get();
+            if (out != null) {
+                out.onConnectClosed();
+            }
+        });
     }
 
     @Override
     public void onSigningIn() {
-        final MSIMSdkListener out = mOutRef.get();
-        if (out != null) {
-            out.onSigningIn();
-        }
+        runOrPost(() -> {
+            final MSIMSdkListener out = mOutRef.get();
+            if (out != null) {
+                out.onSigningIn();
+            }
+        });
     }
 
     @Override
     public void onSignInSuccess() {
-        final MSIMSdkListener out = mOutRef.get();
-        if (out != null) {
-            out.onSignInSuccess();
-        }
+        runOrPost(() -> {
+            final MSIMSdkListener out = mOutRef.get();
+            if (out != null) {
+                out.onSignInSuccess();
+            }
+        });
     }
 
     @Override
     public void onSignInFail(@NonNull GeneralResult result) {
-        final MSIMSdkListener out = mOutRef.get();
-        if (out != null) {
-            out.onSignInFail(result);
-        }
+        runOrPost(() -> {
+            final MSIMSdkListener out = mOutRef.get();
+            if (out != null) {
+                out.onSignInFail(result);
+            }
+        });
     }
 
     @Override
     public void onKickedOffline() {
-        final MSIMSdkListener out = mOutRef.get();
-        if (out != null) {
-            out.onKickedOffline();
-        }
+        runOrPost(() -> {
+            final MSIMSdkListener out = mOutRef.get();
+            if (out != null) {
+                out.onKickedOffline();
+            }
+        });
     }
 
     @Override
     public void onTokenExpired() {
-        final MSIMSdkListener out = mOutRef.get();
-        if (out != null) {
-            out.onTokenExpired();
-        }
+        runOrPost(() -> {
+            final MSIMSdkListener out = mOutRef.get();
+            if (out != null) {
+                out.onTokenExpired();
+            }
+        });
     }
 
     @Override
     public void onSigningOut() {
-        final MSIMSdkListener out = mOutRef.get();
-        if (out != null) {
-            out.onSigningOut();
-        }
+        runOrPost(() -> {
+            final MSIMSdkListener out = mOutRef.get();
+            if (out != null) {
+                out.onSigningOut();
+            }
+        });
     }
 
     @Override
     public void onSignOutSuccess() {
-        final MSIMSdkListener out = mOutRef.get();
-        if (out != null) {
-            out.onSignOutSuccess();
-        }
+        runOrPost(() -> {
+            final MSIMSdkListener out = mOutRef.get();
+            if (out != null) {
+                out.onSignOutSuccess();
+            }
+        });
     }
 
     @Override
     public void onSignOutFail(@NonNull GeneralResult result) {
-        final MSIMSdkListener out = mOutRef.get();
-        if (out != null) {
-            out.onSignOutFail(result);
-        }
+        runOrPost(() -> {
+            final MSIMSdkListener out = mOutRef.get();
+            if (out != null) {
+                out.onSignOutFail(result);
+            }
+        });
     }
 
 }

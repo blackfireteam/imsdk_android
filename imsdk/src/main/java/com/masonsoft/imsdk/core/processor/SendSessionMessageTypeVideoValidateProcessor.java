@@ -47,9 +47,9 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
     private boolean validateVideo(@NonNull IMSessionMessage target) {
         final StateProp<String> body = target.getMessage().body;
         if (body.isUnset()) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_UNSET)
+                            .withPayload(target)
             );
             return true;
         }
@@ -62,9 +62,9 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
             body.set(videoPath);
         }
         if (TextUtils.isEmpty(videoPath)) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_INVALID)
+                            .withPayload(target)
             );
             return true;
         }
@@ -86,9 +86,9 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
             // 视频本身是一个网络地址
             if (requireDecodeVideoSize) {
                 // 网络地址的视频没有设置合法的宽高值，直接报错
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_WIDTH_OR_HEIGHT_INVALID)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -97,9 +97,9 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
             final MediaInfo mediaInfo = MediaUtil.decodeMediaInfo(videoUri);
             if (mediaInfo == null || !mediaInfo.isVideo()) {
                 // 解码视频信息失败, 通常来说都是由于视频格式不支持导致(或者视频 Uri 指向的不是一个真实的视频)
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_FORMAT_NOT_SUPPORT)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -122,9 +122,9 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
                     && mediaInfo.length > IMConstants.SendMessageOption.Video.MAX_FILE_SIZE) {
                 // 视频文件太大
                 final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Video.MAX_FILE_SIZE);
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_FILE_SIZE_TOO_LARGE)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -137,9 +137,9 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
         final StateProp<String> thumb = target.getMessage().thumb;
 
         if (thumb.isUnset()) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_UNSET)
+                            .withPayload(target)
             );
             return true;
         }
@@ -152,9 +152,9 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
             thumb.set(thumbPath);
         }
         if (TextUtils.isEmpty(thumbPath)) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_INVALID)
+                            .withPayload(target)
             );
             return true;
         }
@@ -167,9 +167,9 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
             final ImageInfo imageInfo = BitmapUtil.decodeImageInfo(Uri.parse(thumbPath));
             if (imageInfo == null) {
                 // 解码图片信息失败, 通常来说都是由于图片格式不支持导致(或者图片 Uri 指向的不是一张真实的图片)
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FORMAT_NOT_SUPPORT)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -178,9 +178,9 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
                     && imageInfo.length > IMConstants.SendMessageOption.Video.MAX_THUMB_FILE_SIZE) {
                 // 封面文件太大
                 final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Video.MAX_THUMB_FILE_SIZE);
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FILE_SIZE_TOO_LARGE)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -195,9 +195,9 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
         if (duration.isUnset()
                 || duration.get() == null
                 || duration.get() <= 0) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_DURATION_INVALID)
+                            .withPayload(target)
             );
             return true;
         }

@@ -26,15 +26,15 @@ public class SendActionTypeMarkAsReadValidateProcessor extends SendActionTypeVal
 
         final long targetUserId = (long) actionObject;
         if (targetUserId <= 0) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_TO_USER_ID)
+                            .withPayload(target)
             );
             return true;
         }
 
         // 提示成功入队
-        target.getEnqueueCallback().onEnqueueSuccess(target);
+        target.getEnqueueCallback().onCallback(GeneralResult.success().withPayload(target));
 
         // 派发到指令发送队列
         IMActionMessageManager.getInstance().enqueueActionMessage(

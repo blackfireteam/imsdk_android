@@ -12,12 +12,11 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.EnqueueCallbackAdapter;
+import com.masonsoft.imsdk.MSIMCallback;
+import com.masonsoft.imsdk.MSIMWeakCallback;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
-import com.masonsoft.imsdk.core.IMSessionMessage;
-import com.masonsoft.imsdk.core.WeakEnqueueCallbackAdapter;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -87,16 +86,14 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
             if (message != null
                     && !message.sendState.isUnset()) {
                 if (message.sendState.get() == IMConstants.SendStatus.FAIL) {
-                    IMMessageQueueManager.getInstance().enqueueResendSessionMessage(message, new WeakEnqueueCallbackAdapter<>(mEnqueueCallback, true));
+                    IMMessageQueueManager.getInstance().enqueueResendSessionMessage(message, new MSIMWeakCallback<>(mEnqueueCallback, true));
                 }
             }
         });
     }
 
-    private final EnqueueCallbackAdapter<IMSessionMessage> mEnqueueCallback = new EnqueueCallbackAdapter<IMSessionMessage>() {
-        @Override
-        public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, @NonNull GeneralResult result) {
-            super.onEnqueueFail(enqueueMessage, result);
+    private final MSIMCallback<GeneralResult> mEnqueueCallback = result -> {
+        if (!result.isSuccess()) {
             TipUtil.showOrDefault(result.message);
         }
     };

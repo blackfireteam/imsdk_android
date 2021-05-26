@@ -3,6 +3,7 @@ package com.masonsoft.imsdk.core;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.util.Objects;
 
 /**
@@ -31,17 +32,23 @@ public class IMActionMessage implements EnqueueMessage {
     private final long mSign = SignGenerator.nextSign();
 
     @NonNull
-    private final EnqueueCallback<IMActionMessage> mEnqueueCallback;
+    private final IMCallback<GeneralResult> mEnqueueCallback;
 
     public IMActionMessage(
             long sessionUserId,
             int actionType,
             @Nullable Object actionObject,
-            @NonNull EnqueueCallback<IMActionMessage> enqueueCallback) {
+            @Nullable IMCallback<GeneralResult> enqueueCallback) {
         mSessionUserId = sessionUserId;
         mActionType = actionType;
         mActionObject = actionObject;
-        mEnqueueCallback = enqueueCallback;
+        if (enqueueCallback != null) {
+            mEnqueueCallback = enqueueCallback;
+        } else {
+            mEnqueueCallback = payload -> {
+                // ignore
+            };
+        }
     }
 
     public long getSessionUserId() {
@@ -62,7 +69,7 @@ public class IMActionMessage implements EnqueueMessage {
     }
 
     @NonNull
-    public EnqueueCallback<IMActionMessage> getEnqueueCallback() {
+    public IMCallback<GeneralResult> getEnqueueCallback() {
         return mEnqueueCallback;
     }
 

@@ -61,9 +61,9 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                     localMessageId);
             if (dbMessage == null) {
                 // 消息没有找到
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_ID)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -71,9 +71,9 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                     || dbMessage.fromUserId.get() != sessionUserId
                     || sessionUserId <= 0) {
                 // 发送者信息不正确
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_FROM_USER_ID)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -81,9 +81,9 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                     || dbMessage.toUserId.get() != targetUserId
                     || targetUserId <= 0) {
                 // 接收者信息不正确
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_TO_USER_ID)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -91,18 +91,18 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                     || dbMessage.sign.get() == null
                     || dbMessage.sign.get() == 0) {
                 // 重发消息需要有正确的 sign
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_SIGN)
+                                .withPayload(target)
                 );
                 return true;
             }
             if (dbMessage.remoteMessageId.isUnset()
                     || dbMessage.remoteMessageId.get() > 0) {
                 // 有服务器消息 id, 说明消息已经发送成功
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_SEND_STATUS)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -115,9 +115,9 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
             );
             if (localSendingMessage == null || localSendingMessage.localSendStatus.get() != IMConstants.SendStatus.FAIL) {
                 // 仅允许对发送失败的消息进行重新发送
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_SEND_STATUS)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -136,7 +136,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 IMLog.v("success updateLocalSendingMessage: %s", localSendingMessageUpdate);
 
                 // 提示成功入队
-                target.getEnqueueCallback().onEnqueueSuccess(target);
+                target.getEnqueueCallback().onCallback(GeneralResult.success().withPayload(target));
 
                 // 通知上传任务队列检查新内容
                 IMSessionMessageUploadManager.getInstance().notifySyncLocalSendingMessage(sessionUserId);
@@ -168,9 +168,9 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                     || dbMessageInsert.fromUserId.get() != sessionUserId
                     || sessionUserId <= 0) {
                 // 发送者信息不正确
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_FROM_USER_ID)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -178,9 +178,9 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                     || dbMessageInsert.toUserId.get() != targetUserId
                     || targetUserId <= 0) {
                 // 接收者信息不正确
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_TO_USER_ID)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -227,7 +227,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                         db.setTransactionSuccessful();
 
                         // 提示成功入队
-                        target.getEnqueueCallback().onEnqueueSuccess(target);
+                        target.getEnqueueCallback().onCallback(GeneralResult.success().withPayload(target));
 
                         // 通知上传任务队列检查新内容
                         IMSessionMessageUploadManager.getInstance().notifySyncLocalSendingMessage(sessionUserId);

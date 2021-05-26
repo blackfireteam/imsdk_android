@@ -55,9 +55,9 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
      */
     private boolean validateSendUser(@NonNull IMSessionMessage target) {
         if (target.getSessionUserId() <= 0) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_SESSION_USER_ID)
+                            .withPayload(target)
             );
             return true;
         }
@@ -67,9 +67,9 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
             final IMMessage message = target.getMessage();
             if (message.fromUserId.isUnset()
                     || message.fromUserId.get() != target.getSessionUserId()) {
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_FROM_USER_ID)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -92,9 +92,9 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
             if (toUserId.isUnset()
                     || toUserId.get() == null
                     || toUserId.get() <= 0) {
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_TO_USER_ID)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -105,9 +105,9 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
         }
 
         if (target.getToUserId() <= 0) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_TO_USER_ID)
+                            .withPayload(target)
             );
             return true;
         }
@@ -126,9 +126,9 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
             if (id.isUnset()
                     || id.get() == null
                     || id.get() <= 0) {
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_ID)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -151,9 +151,9 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
             if (seq.isUnset()
                     || seq.get() == null
                     || seq.get() <= 0) {
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_SEQ)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -176,9 +176,9 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
             if (timeMs.isUnset()
                     || timeMs.get() == null
                     || timeMs.get() <= 0) {
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_TIME)
+                                .withPayload(target)
                 );
                 return true;
             }
@@ -201,9 +201,9 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
             if (sign.isUnset()
                     || sign.get() == null
                     || sign.get() == 0) {
-                target.getEnqueueCallback().onEnqueueFail(
-                        target,
+                target.getEnqueueCallback().onCallback(
                         GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_SIGN)
+                                .withPayload(target)
                 );
                 return true;
             }

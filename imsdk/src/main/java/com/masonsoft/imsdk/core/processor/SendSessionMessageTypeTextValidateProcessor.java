@@ -24,9 +24,9 @@ public class SendSessionMessageTypeTextValidateProcessor extends SendSessionMess
     protected boolean doTypeProcess(@NonNull IMSessionMessage target, int type) {
         final StateProp<String> body = target.getMessage().body;
         if (body.isUnset()) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_TEXT_MESSAGE_TEXT_UNSET)
+                            .withPayload(target)
             );
             return true;
         }
@@ -51,9 +51,9 @@ public class SendSessionMessageTypeTextValidateProcessor extends SendSessionMess
             }
 
             // 不允许发送空字符串
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_TEXT_MESSAGE_TEXT_EMPTY)
+                            .withPayload(target)
             );
             return true;
         }
@@ -61,9 +61,9 @@ public class SendSessionMessageTypeTextValidateProcessor extends SendSessionMess
         if (IMConstants.SendMessageOption.Text.MAX_LENGTH > 0 &&
                 text.length() > IMConstants.SendMessageOption.Text.MAX_LENGTH) {
             // 文字长度超过了限制
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_TEXT_MESSAGE_TEXT_TOO_LARGE)
+                            .withPayload(target)
             );
             return true;
         }

@@ -32,9 +32,9 @@ public class SendActionTypeDeleteConversationValidateProcessor extends SendActio
                 || conversation.id.get() == null
                 || conversation.id.get() <= 0) {
             // 会话没有入库，不支持删除
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_CONVERSATION_ID)
+                            .withPayload(target)
             );
             return true;
         }
@@ -44,15 +44,15 @@ public class SendActionTypeDeleteConversationValidateProcessor extends SendActio
                 conversation.id.get());
         if (dbConversation == null) {
             // 会话没有找到
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_CONVERSATION_ID)
+                            .withPayload(target)
             );
             return true;
         }
 
         // 提示成功入队
-        target.getEnqueueCallback().onEnqueueSuccess(target);
+        target.getEnqueueCallback().onCallback(GeneralResult.success().withPayload(target));
 
         // 派发到指令发送队列
         IMActionMessageManager.getInstance().enqueueActionMessage(

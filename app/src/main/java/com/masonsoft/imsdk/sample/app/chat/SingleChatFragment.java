@@ -18,14 +18,12 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.masonsoft.imsdk.core.EnqueueCallback;
-import com.masonsoft.imsdk.core.EnqueueCallbackAdapter;
+import com.masonsoft.imsdk.MSIMCallback;
+import com.masonsoft.imsdk.MSIMWeakCallback;
 import com.masonsoft.imsdk.core.IMConstants.ConversationType;
 import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMMessageFactory;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
-import com.masonsoft.imsdk.core.IMSessionMessage;
-import com.masonsoft.imsdk.core.WeakEnqueueCallbackAdapter;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
@@ -482,7 +480,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
         IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
                 imMessage,
                 mTargetUserId,
-                new WeakEnqueueCallbackAdapter<>(mEnqueueCallback, true)
+                new MSIMWeakCallback<>(mEnqueueCallback, true)
         );
     }
 
@@ -503,10 +501,8 @@ public class SingleChatFragment extends SystemInsetsFragment {
             IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
                     message,
                     mTargetUserId,
-                    new EnqueueCallbackAdapter<IMSessionMessage>() {
-                        @Override
-                        public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, @NonNull GeneralResult result) {
-                            super.onEnqueueFail(enqueueMessage, result);
+                    result -> {
+                        if (!result.isSuccess()) {
                             TipUtil.showOrDefault(result.message);
                         }
                     }
@@ -524,10 +520,8 @@ public class SingleChatFragment extends SystemInsetsFragment {
         IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
                 message,
                 mTargetUserId,
-                new EnqueueCallbackAdapter<IMSessionMessage>() {
-                    @Override
-                    public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, @NonNull GeneralResult result) {
-                        super.onEnqueueFail(enqueueMessage, result);
+                result -> {
+                    if (!result.isSuccess()) {
                         TipUtil.showOrDefault(result.message);
                     }
                 }
@@ -787,10 +781,10 @@ public class SingleChatFragment extends SystemInsetsFragment {
         }
     }
 
-    private class LocalEnqueueCallback implements EnqueueCallback<IMSessionMessage>, AbortSignal {
+    private class LocalEnqueueCallback implements MSIMCallback<GeneralResult>, AbortSignal {
 
         @Override
-        public void onEnqueueSuccess(@NonNull IMSessionMessage enqueueMessage) {
+        public void onCallback(@NonNull GeneralResult result) {
             if (isAbort()) {
                 return;
             }
@@ -799,25 +793,14 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
+            SampleLog.v("onCallback %s", result);
 
-            SampleLog.v("onEnqueueSuccess %s", enqueueMessage);
-            // 消息发送成功之后，清空输入框
-            binding.keyboardEditText.setText(null);
-        }
-
-        @Override
-        public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, @NonNull GeneralResult result) {
-            if (isAbort()) {
-                return;
+            if (result.isSuccess()) {
+                // 消息发送成功之后，清空输入框
+                binding.keyboardEditText.setText(null);
+            } else {
+                TipUtil.showOrDefault(result.message);
             }
-            final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
-            if (binding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
-                return;
-            }
-
-            SampleLog.v("onEnqueueFail %s, result:%s", enqueueMessage, result);
-            TipUtil.showOrDefault(result.message);
         }
 
         @Override

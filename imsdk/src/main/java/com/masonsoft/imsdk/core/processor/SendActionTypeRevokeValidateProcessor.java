@@ -33,9 +33,9 @@ public class SendActionTypeRevokeValidateProcessor extends SendActionTypeValidat
                 || message.id.get() == null
                 || message.id.get() <= 0) {
             // 消息没有入库，不支持撤回
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_ID)
+                            .withPayload(target)
             );
             return true;
         }
@@ -47,42 +47,42 @@ public class SendActionTypeRevokeValidateProcessor extends SendActionTypeValidat
                 message.id.get());
         if (dbMessage == null) {
             // 消息没有找到
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_ID)
+                            .withPayload(target)
             );
             return true;
         }
 
         if (dbMessage.fromUserId.get() != target.getSessionUserId()) {
             // 不是自己发送的消息，不能撤回
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_FROM_USER_ID)
+                            .withPayload(target)
             );
             return true;
         }
 
         if (dbMessage.remoteMessageId.getOrDefault(0L) <= 0) {
             // 消息没有发送成功，不能撤回
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_ID)
+                            .withPayload(target)
             );
             return true;
         }
 
         if (dbMessage.messageType.get() == IMConstants.MessageType.REVOKED) {
             // 消息已撤回
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
+            target.getEnqueueCallback().onCallback(
                     GeneralResult.valueOf(GeneralResult.ERROR_CODE_MESSAGE_ALREADY_REVOKE)
+                            .withPayload(target)
             );
             return true;
         }
 
         // 提示成功入队
-        target.getEnqueueCallback().onEnqueueSuccess(target);
+        target.getEnqueueCallback().onCallback(GeneralResult.success().withPayload(target));
 
         // 派发到指令发送队列
         IMActionMessageManager.getInstance().enqueueActionMessage(
