@@ -47,8 +47,8 @@ public class MSIMMessageManager {
                     }
 
                     @Override
-                    public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, int errorCode, String errorMessage) {
-                        proxy.onCallback(GeneralResult.valueOf(errorCode, errorMessage));
+                    public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, @NonNull GeneralResult result) {
+                        proxy.onCallback(result);
                     }
                 }
         );

@@ -14,9 +14,6 @@ public class OtherMessage implements EnqueueMessage {
     private final long mSessionUserId;
     private final MessagePacket mMessagePacket;
 
-    @NonNull
-    private final EnqueueCallback<OtherMessage> mEnqueueCallback;
-
     @SuppressWarnings("FieldCanBeLocal")
     private final MessagePacketStateObservable.MessagePacketStateObserver mMessagePacketStateObserver = new MessagePacketStateObservable.MessagePacketStateObserver() {
         @Override
@@ -31,11 +28,9 @@ public class OtherMessage implements EnqueueMessage {
 
     public OtherMessage(
             long sessionUserId,
-            @NonNull MessagePacket messagePacket,
-            @NonNull EnqueueCallback<OtherMessage> enqueueCallback) {
+            @NonNull MessagePacket messagePacket) {
         mSessionUserId = sessionUserId;
         mMessagePacket = messagePacket;
-        mEnqueueCallback = enqueueCallback;
 
         mMessagePacket.getMessagePacketStateObservable().registerObserver(mMessagePacketStateObserver);
     }
@@ -46,11 +41,6 @@ public class OtherMessage implements EnqueueMessage {
 
     public MessagePacket getMessagePacket() {
         return mMessagePacket;
-    }
-
-    @NonNull
-    public EnqueueCallback<OtherMessage> getEnqueueCallback() {
-        return mEnqueueCallback;
     }
 
     @NonNull

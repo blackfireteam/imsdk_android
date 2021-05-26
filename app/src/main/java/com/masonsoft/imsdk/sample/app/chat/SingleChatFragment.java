@@ -26,6 +26,7 @@ import com.masonsoft.imsdk.core.IMMessageFactory;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.IMSessionMessage;
 import com.masonsoft.imsdk.core.WeakEnqueueCallbackAdapter;
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -504,9 +505,9 @@ public class SingleChatFragment extends SystemInsetsFragment {
                     mTargetUserId,
                     new EnqueueCallbackAdapter<IMSessionMessage>() {
                         @Override
-                        public void onEnqueueFail(@NonNull IMSessionMessage imSessionMessage, int errorCode, String errorMessage) {
-                            super.onEnqueueFail(imSessionMessage, errorCode, errorMessage);
-                            TipUtil.show(errorMessage);
+                        public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, @NonNull GeneralResult result) {
+                            super.onEnqueueFail(enqueueMessage, result);
+                            TipUtil.showOrDefault(result.message);
                         }
                     }
             );
@@ -525,9 +526,9 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 mTargetUserId,
                 new EnqueueCallbackAdapter<IMSessionMessage>() {
                     @Override
-                    public void onEnqueueFail(@NonNull IMSessionMessage imSessionMessage, int errorCode, String errorMessage) {
-                        super.onEnqueueFail(imSessionMessage, errorCode, errorMessage);
-                        TipUtil.show(errorMessage);
+                    public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, @NonNull GeneralResult result) {
+                        super.onEnqueueFail(enqueueMessage, result);
+                        TipUtil.showOrDefault(result.message);
                     }
                 }
         );
@@ -789,7 +790,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
     private class LocalEnqueueCallback implements EnqueueCallback<IMSessionMessage>, AbortSignal {
 
         @Override
-        public void onEnqueueSuccess(@NonNull IMSessionMessage imSessionMessage) {
+        public void onEnqueueSuccess(@NonNull IMSessionMessage enqueueMessage) {
             if (isAbort()) {
                 return;
             }
@@ -799,13 +800,13 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 return;
             }
 
-            SampleLog.v("onEnqueueSuccess %s", imSessionMessage);
+            SampleLog.v("onEnqueueSuccess %s", enqueueMessage);
             // 消息发送成功之后，清空输入框
             binding.keyboardEditText.setText(null);
         }
 
         @Override
-        public void onEnqueueFail(@NonNull IMSessionMessage imSessionMessage, int errorCode, String errorMessage) {
+        public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, @NonNull GeneralResult result) {
             if (isAbort()) {
                 return;
             }
@@ -815,8 +816,8 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 return;
             }
 
-            SampleLog.v("onEnqueueFail %s, errorCode:%s, errorMessage:%s", imSessionMessage, errorCode, errorMessage);
-            TipUtil.show(errorMessage);
+            SampleLog.v("onEnqueueFail %s, result:%s", enqueueMessage, result);
+            TipUtil.showOrDefault(result.message);
         }
 
         @Override

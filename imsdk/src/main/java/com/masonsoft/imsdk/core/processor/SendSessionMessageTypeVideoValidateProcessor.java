@@ -6,11 +6,9 @@ import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.EnqueueCallback;
-import com.masonsoft.imsdk.core.IMSessionMessage;
-import com.masonsoft.imsdk.R;
-import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMSessionMessage;
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.ImageInfo;
 import com.masonsoft.imsdk.lang.MediaInfo;
 import com.masonsoft.imsdk.lang.StateProp;
@@ -51,8 +49,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
         if (body.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_UNSET,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_path_unset)
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_UNSET)
             );
             return true;
         }
@@ -67,8 +64,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
         if (TextUtils.isEmpty(videoPath)) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_INVALID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_path_invalid)
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_PATH_INVALID)
             );
             return true;
         }
@@ -92,8 +88,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
                 // 网络地址的视频没有设置合法的宽高值，直接报错
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_WIDTH_OR_HEIGHT_INVALID,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_width_or_height_invalid)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_WIDTH_OR_HEIGHT_INVALID)
                 );
                 return true;
             }
@@ -104,8 +99,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
                 // 解码视频信息失败, 通常来说都是由于视频格式不支持导致(或者视频 Uri 指向的不是一个真实的视频)
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_FORMAT_NOT_SUPPORT,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_format_not_support)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_FORMAT_NOT_SUPPORT)
                 );
                 return true;
             }
@@ -130,8 +124,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
                 final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Video.MAX_FILE_SIZE);
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_FILE_SIZE_TOO_LARGE,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_file_size_too_large, maxFileSizeAsHumanString)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_FILE_SIZE_TOO_LARGE)
                 );
                 return true;
             }
@@ -146,8 +139,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
         if (thumb.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_UNSET,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_thumb_path_unset)
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_UNSET)
             );
             return true;
         }
@@ -162,8 +154,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
         if (TextUtils.isEmpty(thumbPath)) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_INVALID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_thumb_path_invalid)
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_INVALID)
             );
             return true;
         }
@@ -178,8 +169,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
                 // 解码图片信息失败, 通常来说都是由于图片格式不支持导致(或者图片 Uri 指向的不是一张真实的图片)
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FORMAT_NOT_SUPPORT,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_thumb_format_not_support)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FORMAT_NOT_SUPPORT)
                 );
                 return true;
             }
@@ -190,8 +180,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
                 final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Video.MAX_THUMB_FILE_SIZE);
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FILE_SIZE_TOO_LARGE,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_thumb_file_size_too_large, maxFileSizeAsHumanString)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FILE_SIZE_TOO_LARGE)
                 );
                 return true;
             }
@@ -208,8 +197,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
                 || duration.get() <= 0) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_VIDEO_MESSAGE_VIDEO_DURATION_INVALID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_video_message_video_duration_invalid)
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_VIDEO_MESSAGE_VIDEO_DURATION_INVALID)
             );
             return true;
         }

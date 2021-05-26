@@ -6,11 +6,9 @@ import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.EnqueueCallback;
-import com.masonsoft.imsdk.core.IMSessionMessage;
-import com.masonsoft.imsdk.R;
-import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMSessionMessage;
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.ImageInfo;
 import com.masonsoft.imsdk.lang.StateProp;
 import com.masonsoft.imsdk.util.BitmapUtil;
@@ -34,8 +32,7 @@ public class SendSessionMessageTypeImageValidateProcessor extends SendSessionMes
         if (body.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_IMAGE_MESSAGE_IMAGE_PATH_UNSET,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_image_message_image_path_unset)
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_IMAGE_MESSAGE_IMAGE_PATH_UNSET)
             );
             return true;
         }
@@ -44,8 +41,7 @@ public class SendSessionMessageTypeImageValidateProcessor extends SendSessionMes
         if (TextUtils.isEmpty(bodyUri)) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
-                    EnqueueCallback.ERROR_CODE_IMAGE_MESSAGE_IMAGE_PATH_INVALID,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_image_message_image_path_invalid)
+                    GeneralResult.valueOf(GeneralResult.ERROR_CODE_IMAGE_MESSAGE_IMAGE_PATH_INVALID)
             );
             return true;
         }
@@ -68,8 +64,7 @@ public class SendSessionMessageTypeImageValidateProcessor extends SendSessionMes
                 // 网络地址的图片没有设置合法的宽高值，直接报错(不适宜去下载图片再解码宽高值，会阻塞队列执行速度)
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_IMAGE_MESSAGE_IMAGE_WIDTH_OR_HEIGHT_INVALID,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_image_message_image_width_or_height_invalid)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_IMAGE_MESSAGE_IMAGE_WIDTH_OR_HEIGHT_INVALID)
                 );
                 return true;
             }
@@ -80,8 +75,7 @@ public class SendSessionMessageTypeImageValidateProcessor extends SendSessionMes
                 // 解码图片信息失败, 通常来说都是由于图片格式不支持导致(或者图片 Uri 指向的不是一张真实的图片)
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_IMAGE_MESSAGE_IMAGE_FORMAT_NOT_SUPPORT,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_image_message_image_format_not_support)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_IMAGE_MESSAGE_IMAGE_FORMAT_NOT_SUPPORT)
                 );
                 return true;
             }
@@ -97,8 +91,7 @@ public class SendSessionMessageTypeImageValidateProcessor extends SendSessionMes
                 final String maxFileSizeAsHumanString = HumanUtil.getHumanSizeFromByte(IMConstants.SendMessageOption.Image.MAX_FILE_SIZE);
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_IMAGE_MESSAGE_IMAGE_FILE_SIZE_TOO_LARGE,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_image_message_image_file_size_too_large, maxFileSizeAsHumanString)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_IMAGE_MESSAGE_IMAGE_FILE_SIZE_TOO_LARGE)
                 );
                 return true;
             }

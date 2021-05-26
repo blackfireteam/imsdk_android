@@ -18,6 +18,7 @@ import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.IMSessionMessage;
 import com.masonsoft.imsdk.core.WeakEnqueueCallbackAdapter;
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.util.TipUtil;
@@ -94,8 +95,9 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
 
     private final EnqueueCallbackAdapter<IMSessionMessage> mEnqueueCallback = new EnqueueCallbackAdapter<IMSessionMessage>() {
         @Override
-        public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, int errorCode, String errorMessage) {
-            TipUtil.showOrDefault(errorMessage);
+        public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, @NonNull GeneralResult result) {
+            super.onEnqueueFail(enqueueMessage, result);
+            TipUtil.showOrDefault(result.message);
         }
     };
 

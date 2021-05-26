@@ -9,10 +9,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.masonsoft.imsdk.core.EnqueueCallbackAdapter;
-import com.masonsoft.imsdk.core.OtherMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMSessionManager;
+import com.masonsoft.imsdk.core.OtherMessage;
 import com.masonsoft.imsdk.core.OtherMessageManager;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.observable.OtherMessageObservable;
@@ -200,13 +199,7 @@ public class DefaultApi {
         final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
         final long originSign = SignGenerator.nextSign();
         final FetchSparkMessagePacket messagePacket = FetchSparkMessagePacket.create(originSign);
-        final OtherMessage otherMessage = new OtherMessage(sessionUserId, messagePacket, new EnqueueCallbackAdapter<OtherMessage>() {
-            @Override
-            public void onEnqueueFail(@NonNull OtherMessage enqueueMessage, int errorCode, String errorMessage) {
-                super.onEnqueueFail(enqueueMessage, errorCode, errorMessage);
-                subject.onError(new IllegalArgumentException("errorCode:" + errorCode + ", errorMessage:" + errorMessage));
-            }
-        });
+        final OtherMessage otherMessage = new OtherMessage(sessionUserId, messagePacket);
         final OtherMessageObservable.OtherMessageObserver otherMessageObserver = new OtherMessageObservable.OtherMessageObserver() {
             @Override
             public void onOtherMessageLoading(long sign, @NonNull OtherMessage otherMessage) {

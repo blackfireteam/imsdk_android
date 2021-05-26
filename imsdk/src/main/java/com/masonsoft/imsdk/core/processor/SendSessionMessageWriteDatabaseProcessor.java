@@ -4,9 +4,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.R;
-import com.masonsoft.imsdk.core.EnqueueCallback;
-import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.core.IMLog;
@@ -23,6 +20,7 @@ import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.MessageFactory;
 import com.masonsoft.imsdk.core.db.Sequence;
+import com.masonsoft.imsdk.lang.GeneralResult;
 
 /**
  * 将需要发送的消息写入数据库
@@ -65,8 +63,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 消息没有找到
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_ID,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_id)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_ID)
                 );
                 return true;
             }
@@ -76,8 +73,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 发送者信息不正确
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_INVALID_FROM_USER_ID,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_from_user_id)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_FROM_USER_ID)
                 );
                 return true;
             }
@@ -87,8 +83,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 接收者信息不正确
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_INVALID_TO_USER_ID,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_to_user_id)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_TO_USER_ID)
                 );
                 return true;
             }
@@ -98,8 +93,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 重发消息需要有正确的 sign
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SIGN,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_sign)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_SIGN)
                 );
                 return true;
             }
@@ -108,8 +102,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 有服务器消息 id, 说明消息已经发送成功
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SEND_STATUS,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_send_status)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_SEND_STATUS)
                 );
                 return true;
             }
@@ -124,8 +117,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 仅允许对发送失败的消息进行重新发送
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SEND_STATUS,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_send_status)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_MESSAGE_SEND_STATUS)
                 );
                 return true;
             }
@@ -178,8 +170,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 发送者信息不正确
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_INVALID_FROM_USER_ID,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_from_user_id)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_FROM_USER_ID)
                 );
                 return true;
             }
@@ -189,8 +180,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 接收者信息不正确
                 target.getEnqueueCallback().onEnqueueFail(
                         target,
-                        EnqueueCallback.ERROR_CODE_INVALID_TO_USER_ID,
-                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_to_user_id)
+                        GeneralResult.valueOf(GeneralResult.ERROR_CODE_INVALID_TO_USER_ID)
                 );
                 return true;
             }
