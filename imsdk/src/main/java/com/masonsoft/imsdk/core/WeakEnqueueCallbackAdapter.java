@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import io.github.idonans.core.WeakAbortSignal;
 import io.github.idonans.core.thread.Threads;
 
+@Deprecated
 public class WeakEnqueueCallbackAdapter<T extends EnqueueMessage> extends WeakAbortSignal implements EnqueueCallback<T> {
 
     private final boolean mRunOnUiThread;

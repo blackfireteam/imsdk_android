@@ -24,7 +24,7 @@ public class SendSessionMessageTypeTextValidateProcessor extends SendSessionMess
 
     @Override
     protected boolean doTypeProcess(@NonNull IMSessionMessage target, int type) {
-        final StateProp<String> body = target.getIMMessage().body;
+        final StateProp<String> body = target.getMessage().body;
         if (body.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,

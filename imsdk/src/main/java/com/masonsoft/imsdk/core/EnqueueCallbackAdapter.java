@@ -2,6 +2,7 @@ package com.masonsoft.imsdk.core;
 
 import androidx.annotation.NonNull;
 
+@Deprecated
 public class EnqueueCallbackAdapter<T extends EnqueueMessage> implements EnqueueCallback<T> {
 
     @Override

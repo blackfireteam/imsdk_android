@@ -22,6 +22,7 @@ public class GeneralErrorCode {
     //////////////////////////////////////////////////////////////////////
     private static final int FIRST_ERROR_CODE = Integer.MIN_VALUE / 2;
     private static int sNextErrorCode = FIRST_ERROR_CODE;
+    //////////////////////////////////////////////////////////////////////
     /**
      * 未知错误
      */
@@ -84,6 +85,14 @@ public class GeneralErrorCode {
      */
     public static final int ERROR_CODE_FILE_UPLOAD_FAIL = sNextErrorCode++;
     //////////////////////////////////////////////////////////////////////
+    /**
+     * 非法的会话 id.
+     */
+    public static final int ERROR_CODE_INVALID_CONVERSATION_ID = sNextErrorCode++;
+    /**
+     * 非法的消息 sign.
+     */
+    public static final int ERROR_CODE_INVALID_MESSAGE_SIGN = sNextErrorCode++;
     /**
      * 非法的会话用户 id.
      */
@@ -196,6 +205,18 @@ public class GeneralErrorCode {
      * 视频消息，视频封面文件太大
      */
     public static final int ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FILE_SIZE_TOO_LARGE = sNextErrorCode++;
+    /**
+     * 视频消息，视频宽度或者高度不合法
+     */
+    public static final int ERROR_CODE_VIDEO_MESSAGE_VIDEO_WIDTH_OR_HEIGHT_INVALID = sNextErrorCode++;
+    /**
+     * 视频格式不支持
+     */
+    public static final int ERROR_CODE_VIDEO_MESSAGE_VIDEO_FORMAT_NOT_SUPPORT = sNextErrorCode++;
+    /**
+     * 视频封面图格式不支持
+     */
+    public static final int ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FORMAT_NOT_SUPPORT = sNextErrorCode++;
     //////////////////////////////////////////////////////////////////////
     private static final Map<Integer, Integer> DEFAULT_ERROR_MESSAGE_LOCAL_MAP = new HashMap<>();
 
@@ -216,6 +237,8 @@ public class GeneralErrorCode {
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_BIND_ABORT_ID_FAIL, R.string.msimsdk_general_error_message_bind_abort_id_fail);
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_UPDATE_SEND_STATUS_FAIL, R.string.msimsdk_general_error_message_update_send_status_fail);
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_FILE_UPLOAD_FAIL, R.string.msimsdk_general_error_message_file_upload_fail);
+        DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_INVALID_CONVERSATION_ID, R.string.msimsdk_general_error_message_invalid_conversation_id);
+        DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_INVALID_MESSAGE_SIGN, R.string.msimsdk_general_error_message_invalid_message_sign);
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_INVALID_SESSION_USER_ID, R.string.msimsdk_general_error_message_invalid_session_user_id);
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_INVALID_FROM_USER_ID, R.string.msimsdk_general_error_message_invalid_from_user_id);
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_INVALID_TO_USER_ID, R.string.msimsdk_general_error_message_invalid_to_user_id);
@@ -243,6 +266,9 @@ public class GeneralErrorCode {
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_UNSET, R.string.msimsdk_general_error_message_video_message_video_thumb_path_unset);
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_PATH_INVALID, R.string.msimsdk_general_error_message_video_message_video_thumb_path_invalid);
         DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FILE_SIZE_TOO_LARGE, R.string.msimsdk_general_error_message_video_message_video_thumb_file_size_too_large);
+        DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_VIDEO_MESSAGE_VIDEO_WIDTH_OR_HEIGHT_INVALID, R.string.msimsdk_general_error_message_video_message_video_width_or_height_invalid);
+        DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_VIDEO_MESSAGE_VIDEO_FORMAT_NOT_SUPPORT, R.string.msimsdk_general_error_message_video_message_video_format_not_support);
+        DEFAULT_ERROR_MESSAGE_LOCAL_MAP.put(ERROR_CODE_VIDEO_MESSAGE_VIDEO_THUMB_FORMAT_NOT_SUPPORT, R.string.msimsdk_general_error_message_video_message_video_thumb_format_not_support);
 
         Preconditions.checkArgument(DEFAULT_ERROR_MESSAGE_LOCAL_MAP.size() == sNextErrorCode - FIRST_ERROR_CODE + 1);
     }

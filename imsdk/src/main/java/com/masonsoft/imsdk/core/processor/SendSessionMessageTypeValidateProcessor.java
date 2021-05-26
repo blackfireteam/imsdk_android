@@ -29,7 +29,7 @@ public abstract class SendSessionMessageTypeValidateProcessor extends SendSessio
 
     @Override
     protected final boolean doNotNullProcess(@NonNull IMSessionMessage target) {
-        final StateProp<Integer> type = target.getIMMessage().type;
+        final StateProp<Integer> type = target.getMessage().type;
         if (type.isUnset()) {
             // unexpected
             final Throwable e = new IllegalArgumentException("SendMessageTypeValidateProcessor doNotNullProcess target type is unset");

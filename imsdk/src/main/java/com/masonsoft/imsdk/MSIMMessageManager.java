@@ -1,5 +1,14 @@
 package com.masonsoft.imsdk;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.masonsoft.imsdk.core.EnqueueCallback;
+import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.core.IMMessageQueueManager;
+import com.masonsoft.imsdk.core.IMSessionMessage;
+import com.masonsoft.imsdk.lang.GeneralResult;
+
 import io.github.idonans.core.Singleton;
 
 /**
@@ -19,6 +28,30 @@ public class MSIMMessageManager {
     }
 
     private MSIMMessageManager() {
+    }
+
+    public void sendMessage(@NonNull MSIMMessage message, long receiver, @Nullable MSIMCallback<GeneralResult> callback) {
+        final MSIMCallback<GeneralResult> proxy = new MSIMCallbackProxy<>(callback);
+        final IMMessage m = message.getMessage();
+        if (m == null) {
+            proxy.onCallback(GeneralResult.valueOf(GeneralResult.ERROR_CODE_TARGET_NOT_FOUND));
+            return;
+        }
+        IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
+                message.getMessage(),
+                receiver,
+                new EnqueueCallback<IMSessionMessage>() {
+                    @Override
+                    public void onEnqueueSuccess(@NonNull IMSessionMessage enqueueMessage) {
+                        proxy.onCallback(GeneralResult.success());
+                    }
+
+                    @Override
+                    public void onEnqueueFail(@NonNull IMSessionMessage enqueueMessage, int errorCode, String errorMessage) {
+                        proxy.onCallback(GeneralResult.valueOf(errorCode, errorMessage));
+                    }
+                }
+        );
     }
 
 }

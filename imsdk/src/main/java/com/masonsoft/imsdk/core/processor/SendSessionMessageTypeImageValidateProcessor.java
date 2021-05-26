@@ -30,7 +30,7 @@ public class SendSessionMessageTypeImageValidateProcessor extends SendSessionMes
 
     @Override
     protected boolean doTypeProcess(@NonNull IMSessionMessage target, int type) {
-        final StateProp<String> body = target.getIMMessage().body;
+        final StateProp<String> body = target.getMessage().body;
         if (body.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
@@ -54,8 +54,8 @@ public class SendSessionMessageTypeImageValidateProcessor extends SendSessionMes
         // 是否需要解码图片尺寸信息
         boolean requireDecodeImageSize = true;
 
-        final StateProp<Long> width = target.getIMMessage().width;
-        final StateProp<Long> height = target.getIMMessage().height;
+        final StateProp<Long> width = target.getMessage().width;
+        final StateProp<Long> height = target.getMessage().height;
         if (!width.isUnset() && width.get() != null && width.get() > 0
                 && !height.isUnset() && height.get() != null && height.get() > 0) {
             // 已经设置了合法的宽高值

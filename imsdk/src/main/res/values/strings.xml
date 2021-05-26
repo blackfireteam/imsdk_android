@@ -48,6 +48,8 @@
     <string name="msimsdk_general_error_message_bind_abort_id_fail">绑定 abort id 失败</string>
     <string name="msimsdk_general_error_message_update_send_status_fail">更新 sendStatus 失败</string>
     <string name="msimsdk_general_error_message_file_upload_fail">文件上传失败</string>
+    <string name="msimsdk_general_error_message_invalid_conversation_id">非法的会话 id</string>
+    <string name="msimsdk_general_error_message_invalid_message_sign">非法的消息 sign</string>
     <string name="msimsdk_general_error_message_invalid_session_user_id">非法的会话用户 id</string>
     <string name="msimsdk_general_error_message_invalid_from_user_id">非法的发送者用户 id</string>
     <string name="msimsdk_general_error_message_invalid_to_user_id">非法的接收者用户 id</string>
@@ -75,4 +77,7 @@
     <string name="msimsdk_general_error_message_video_message_video_thumb_path_unset">视频消息，视频封面图未设置</string>
     <string name="msimsdk_general_error_message_video_message_video_thumb_path_invalid">视频消息，视频封面图非法</string>
     <string name="msimsdk_general_error_message_video_message_video_thumb_file_size_too_large">视频消息，视频封面文件太大</string>
+    <string name="msimsdk_general_error_message_video_message_video_width_or_height_invalid">视频宽度或高度不正确</string>
+    <string name="msimsdk_general_error_message_video_message_video_format_not_support">视频格式不支持</string>
+    <string name="msimsdk_general_error_message_video_message_video_thumb_format_not_support">视频封面图格式不支持</string>
 </resources>

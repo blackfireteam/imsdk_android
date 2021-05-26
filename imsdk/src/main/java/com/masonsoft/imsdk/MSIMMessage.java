@@ -16,6 +16,11 @@ public class MSIMMessage {
         mMessage = message;
     }
 
+    @Nullable
+    IMMessage getMessage() {
+        return mMessage;
+    }
+
     public long getMessageId() {
         return getMessageId(0L);
     }

@@ -4,14 +4,14 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.EnqueueCallback;
-import com.masonsoft.imsdk.core.IMMessage;
-import com.masonsoft.imsdk.core.IMSessionMessage;
 import com.masonsoft.imsdk.R;
+import com.masonsoft.imsdk.core.EnqueueCallback;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.core.IMSessionMessage;
 import com.masonsoft.imsdk.core.IMSessionMessageUploadManager;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.db.DatabaseHelper;
@@ -48,7 +48,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
      * 重发一个已有的旧消息
      */
     private boolean resendMessage(@NonNull IMSessionMessage target) {
-        final IMMessage message = target.getIMMessage();
+        final IMMessage message = target.getMessage();
         final long sessionUserId = target.getSessionUserId();
         final int conversationType = IMConstants.ConversationType.C2C;
         final long targetUserId = target.getToUserId();
@@ -89,6 +89,17 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                         target,
                         EnqueueCallback.ERROR_CODE_INVALID_TO_USER_ID,
                         I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_to_user_id)
+                );
+                return true;
+            }
+            if (dbMessage.sign.isUnset()
+                    || dbMessage.sign.get() == null
+                    || dbMessage.sign.get() == 0) {
+                // 重发消息需要有正确的 sign
+                target.getEnqueueCallback().onEnqueueFail(
+                        target,
+                        EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SIGN,
+                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_sign)
                 );
                 return true;
             }
@@ -153,7 +164,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
      * 发送一个新消息
      */
     private boolean sendNewMessage(@NonNull IMSessionMessage target) {
-        final IMMessage message = target.getIMMessage();
+        final IMMessage message = target.getMessage();
         final long sessionUserId = target.getSessionUserId();
         final int conversationType = IMConstants.ConversationType.C2C;
         final long targetUserId = target.getToUserId();
@@ -186,6 +197,8 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
 
             // 新消息清空 localId
             dbMessageInsert.localId.clear();
+            // 设置新消息的 sign
+            dbMessageInsert.sign.set(SignGenerator.nextSign());
             // 设置新消息的 seq
             dbMessageInsert.localSeq.set(Sequence.create(SignGenerator.nextMicroSeconds()));
             // 设置新消息的显示时间为当前时间

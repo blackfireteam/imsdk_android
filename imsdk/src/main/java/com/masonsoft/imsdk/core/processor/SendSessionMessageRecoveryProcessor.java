@@ -19,7 +19,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
 
     @Override
     protected boolean doNotNullProcess(@NonNull IMSessionMessage target) {
-        target.getIMMessage().applyLogicField(
+        target.getMessage().applyLogicField(
                 target.getSessionUserId(),
                 target.getConversationType(),
                 target.getToUserId()
@@ -67,7 +67,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
 
         if (target.isResend()) {
             // 重新发送的消息，消息的发送者需要一致
-            final IMMessage message = target.getIMMessage();
+            final IMMessage message = target.getMessage();
             if (message.fromUserId.isUnset()
                     || message.fromUserId.get() != target.getSessionUserId()) {
                 target.getEnqueueCallback().onEnqueueFail(
@@ -79,7 +79,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
             }
         } else {
             // 设置消息发送者
-            target.getIMMessage().fromUserId.set(target.getSessionUserId());
+            target.getMessage().fromUserId.set(target.getSessionUserId());
         }
 
         return false;
@@ -91,7 +91,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
     private boolean validateToUser(@NonNull IMSessionMessage target) {
         if (target.isResend()) {
             // 重新发送的消息，恢复消息接收者 id
-            final IMMessage message = target.getIMMessage();
+            final IMMessage message = target.getMessage();
             final StateProp<Long> toUserId = message.toUserId;
             if (toUserId.isUnset()
                     || toUserId.get() == null
@@ -106,7 +106,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
             target.setToUserId(toUserId.get());
         } else {
             // 设置消息接收者
-            target.getIMMessage().toUserId.set(target.getToUserId());
+            target.getMessage().toUserId.set(target.getToUserId());
         }
 
         if (target.getToUserId() <= 0) {
@@ -125,7 +125,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
      * 验证 id
      */
     private boolean validateId(@NonNull IMSessionMessage target) {
-        final IMMessage message = target.getIMMessage();
+        final IMMessage message = target.getMessage();
         if (target.isResend()) {
             // 重新发送的消息需要有正确的 id
             final StateProp<Long> id = message.id;
@@ -151,7 +151,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
      * 验证 seq
      */
     private boolean validateSeq(@NonNull IMSessionMessage target) {
-        final IMMessage message = target.getIMMessage();
+        final IMMessage message = target.getMessage();
         if (target.isResend()) {
             // 重新发送的消息需要有正确的 seq
             final StateProp<Long> seq = message.seq;
@@ -177,7 +177,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
      * 验证 timeMs
      */
     private boolean validateTimeMs(@NonNull IMSessionMessage target) {
-        final IMMessage message = target.getIMMessage();
+        final IMMessage message = target.getMessage();
         if (target.isResend()) {
             // 重新发送的消息需要有正确的时间
             final StateProp<Long> timeMs = message.timeMs;
@@ -203,15 +203,23 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
      * 校验 sign
      */
     private boolean validateSign(@NonNull IMSessionMessage target) {
-        final IMMessage message = target.getIMMessage();
-        final long sign = message.sign.getOrDefault(0L);
-        if (sign == 0) {
-            target.getEnqueueCallback().onEnqueueFail(
-                    target,
-                    EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SIGN,
-                    I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_sign)
-            );
-            return true;
+        final IMMessage message = target.getMessage();
+        if (target.isResend()) {
+            // 重新发送的消息需要有正确的 sign
+            final StateProp<Long> sign = message.sign;
+            if (sign.isUnset()
+                    || sign.get() == null
+                    || sign.get() == 0) {
+                target.getEnqueueCallback().onEnqueueFail(
+                        target,
+                        EnqueueCallback.ERROR_CODE_INVALID_MESSAGE_SIGN,
+                        I18nResources.getString(R.string.msimsdk_enqueue_callback_error_invalid_message_sign)
+                );
+                return true;
+            }
+        } else {
+            // 新消息重置 sign
+            message.sign.clear();
         }
 
         return false;
@@ -221,7 +229,7 @@ public class SendSessionMessageRecoveryProcessor extends SendSessionMessageNotNu
      * 验证其它字段
      */
     private boolean validateOthers(@NonNull IMSessionMessage target) {
-        final IMMessage message = target.getIMMessage();
+        final IMMessage message = target.getMessage();
         // 重置发送状态
         message.sendState.clear();
         // 重置发送进度

@@ -47,7 +47,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
     }
 
     private boolean validateVideo(@NonNull IMSessionMessage target) {
-        final StateProp<String> body = target.getIMMessage().body;
+        final StateProp<String> body = target.getMessage().body;
         if (body.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
@@ -78,8 +78,8 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
         // 是否需要解码视频尺寸信息
         boolean requireDecodeVideoSize = true;
 
-        final StateProp<Long> width = target.getIMMessage().width;
-        final StateProp<Long> height = target.getIMMessage().height;
+        final StateProp<Long> width = target.getMessage().width;
+        final StateProp<Long> height = target.getMessage().height;
         if (!width.isUnset() && width.get() != null && width.get() > 0
                 && !height.isUnset() && height.get() != null && height.get() > 0) {
             // 已经设置了合法的宽高值
@@ -113,14 +113,14 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
             width.set((long) mediaInfo.getViewWidth());
             height.set((long) mediaInfo.getViewHeight());
 
-            if (target.getIMMessage().durationMs.isUnset()) {
+            if (target.getMessage().durationMs.isUnset()) {
                 // 回写 duration
-                target.getIMMessage().durationMs.set(mediaInfo.durationMs);
+                target.getMessage().durationMs.set(mediaInfo.durationMs);
             }
 
-            if (target.getIMMessage().thumb.isUnset()) {
+            if (target.getMessage().thumb.isUnset()) {
                 // 回写缩略图
-                target.getIMMessage().thumb.set(mediaInfo.thumbFilePath);
+                target.getMessage().thumb.set(mediaInfo.thumbFilePath);
             }
 
             // 校验视频文件的大小是否合法
@@ -141,7 +141,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
     }
 
     private boolean validateThumb(@NonNull IMSessionMessage target) {
-        final StateProp<String> thumb = target.getIMMessage().thumb;
+        final StateProp<String> thumb = target.getMessage().thumb;
 
         if (thumb.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
@@ -202,7 +202,7 @@ public class SendSessionMessageTypeVideoValidateProcessor extends SendSessionMes
 
     private boolean validateDuration(@NonNull IMSessionMessage target) {
         // 必须要有合法的时长参数
-        final StateProp<Long> duration = target.getIMMessage().durationMs;
+        final StateProp<Long> duration = target.getMessage().durationMs;
         if (duration.isUnset()
                 || duration.get() == null
                 || duration.get() <= 0) {

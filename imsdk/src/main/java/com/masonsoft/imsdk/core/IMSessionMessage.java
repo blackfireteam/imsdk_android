@@ -17,7 +17,7 @@ public class IMSessionMessage implements EnqueueMessage {
     private final boolean mResend;
 
     @NonNull
-    private final IMMessage mIMMessage;
+    private final IMMessage mMessage;
 
     @NonNull
     private final EnqueueCallback<IMSessionMessage> mEnqueueCallback;
@@ -31,7 +31,7 @@ public class IMSessionMessage implements EnqueueMessage {
         mSessionUserId = sessionUserId;
         mToUserId = toUserId;
         mResend = resend;
-        mIMMessage = imMessage;
+        mMessage = imMessage;
         mEnqueueCallback = enqueueCallback;
     }
 
@@ -60,8 +60,8 @@ public class IMSessionMessage implements EnqueueMessage {
     }
 
     @NonNull
-    public IMMessage getIMMessage() {
-        return mIMMessage;
+    public IMMessage getMessage() {
+        return mMessage;
     }
 
     @NonNull
@@ -76,7 +76,7 @@ public class IMSessionMessage implements EnqueueMessage {
         builder.append(Objects.defaultObjectTag(this));
         builder.append(" sessionUserId:").append(this.mSessionUserId);
         builder.append(" toUserId:").append(this.mToUserId);
-        builder.append(" ").append(this.mIMMessage.toShortString());
+        builder.append(" ").append(this.mMessage.toShortString());
         return builder.toString();
     }
 

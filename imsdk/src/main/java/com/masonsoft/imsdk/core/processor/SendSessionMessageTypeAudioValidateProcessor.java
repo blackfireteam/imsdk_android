@@ -41,7 +41,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
     }
 
     private boolean validateAudio(@NonNull IMSessionMessage target) {
-        final StateProp<String> audio = target.getIMMessage().body;
+        final StateProp<String> audio = target.getMessage().body;
         if (audio.isUnset()) {
             target.getEnqueueCallback().onEnqueueFail(
                     target,
@@ -105,7 +105,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
     }
 
     private boolean validateDuration(@NonNull IMSessionMessage target) {
-        final StateProp<Long> duration = target.getIMMessage().durationMs;
+        final StateProp<Long> duration = target.getMessage().durationMs;
         if (!duration.isUnset()
                 && duration.get() != null
                 && duration.get() > 0) {
@@ -122,7 +122,7 @@ public class SendSessionMessageTypeAudioValidateProcessor extends SendSessionMes
         }
 
         // 从音频文件中获取时长信息
-        final IMMessage message = target.getIMMessage();
+        final IMMessage message = target.getMessage();
         final String audioPath = message.body.get();
         if (URLUtil.isNetworkUrl(audioPath)) {
             // 文件本身是一个网络地址
