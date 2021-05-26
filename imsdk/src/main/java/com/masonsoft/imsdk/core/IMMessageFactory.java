@@ -15,19 +15,12 @@ public class IMMessageFactory {
     private IMMessageFactory() {
     }
 
-    @NonNull
-    private static IMMessage newWithSign() {
-        final IMMessage target = new IMMessage();
-        target.sign.set(SignGenerator.nextSign());
-        return target;
-    }
-
     /**
      * 文本消息
      */
     @NonNull
     public static IMMessage createTextMessage(String text) {
-        final IMMessage target = newWithSign();
+        final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.TEXT);
         target.body.set(text);
         return target;
@@ -40,7 +33,7 @@ public class IMMessageFactory {
      */
     @NonNull
     public static IMMessage createImageMessage(Uri imageUri) {
-        final IMMessage target = newWithSign();
+        final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.IMAGE);
         target.body.set(imageUri.toString());
         return target;
@@ -58,7 +51,7 @@ public class IMMessageFactory {
             String localImagePath,
             long width,
             long height) {
-        final IMMessage target = newWithSign();
+        final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.IMAGE);
         target.body.set(localImagePath);
         target.width.set(width);
@@ -73,7 +66,7 @@ public class IMMessageFactory {
      */
     @NonNull
     public static IMMessage createAudioMessage(String localAudioPath) {
-        final IMMessage target = newWithSign();
+        final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.AUDIO);
         target.body.set(localAudioPath);
         return target;
@@ -86,7 +79,7 @@ public class IMMessageFactory {
      */
     @NonNull
     public static IMMessage createVideoMessage(Uri videoUrl) {
-        final IMMessage target = newWithSign();
+        final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.VIDEO);
         target.body.set(videoUrl.toString());
         return target;
@@ -107,7 +100,7 @@ public class IMMessageFactory {
             long width,
             long height,
             String localVideoThumbPath) {
-        final IMMessage target = newWithSign();
+        final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.VIDEO);
         target.body.set(localVideoPath);
         target.durationMs.set(durationMs);
@@ -122,7 +115,7 @@ public class IMMessageFactory {
      */
     @NonNull
     public static IMMessage createCustomMessage(String text) {
-        final IMMessage target = newWithSign();
+        final IMMessage target = new IMMessage();
         target.type.set(IMConstants.MessageType.FIRST_CUSTOM_MESSAGE);
         target.body.set(text);
         return target;
