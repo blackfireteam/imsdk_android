@@ -9,6 +9,7 @@ import com.masonsoft.imsdk.lang.GeneralResult;
  * 对于指令消息：表示消息已经进入到发送队列<br>
  * 对于会话消息(聊天消息)：表示消息已经进入到发送队列，并且已经写入数据库.<br>
  */
+@Deprecated
 public interface EnqueueCallback<T extends EnqueueMessage> {
     /**
      * 消息入队成功，此时消息尚未正式发送到网络.<br>

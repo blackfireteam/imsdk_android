@@ -1,12 +1,9 @@
 package com.masonsoft.imsdk;
 
-import androidx.annotation.NonNull;
+import com.masonsoft.imsdk.core.IMCallback;
 
 /**
  * @since 1.0
  */
-public interface MSIMCallback<T> {
-
-    void onCallback(@NonNull T payload);
-
+public interface MSIMCallback<T> extends IMCallback<T> {
 }
