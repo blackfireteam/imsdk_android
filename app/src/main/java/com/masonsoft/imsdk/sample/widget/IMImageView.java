@@ -3,7 +3,10 @@ package com.masonsoft.imsdk.sample.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMImageElement;
+import com.masonsoft.imsdk.MSIMMessage;
+import com.masonsoft.imsdk.MSIMVideoElement;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -11,9 +14,8 @@ import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.core.util.Preconditions;
 
 public class IMImageView extends ImageLayout {
 
@@ -36,63 +38,50 @@ public class IMImageView extends ImageLayout {
         initFromAttributes(context, attrs, defStyleAttr, 0);
     }
 
-    private String mLocationThumbUrl;
-
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        final int locationImageSize = DimenUtil.dp2px(200);
-        mLocationThumbUrl = "http://restapi.amap.com/v3/staticmap?location=%s,%s&zoom=%s&size=" + locationImageSize + "*" + locationImageSize + "&markers=mid,0xFF0000,0:%s,%s&key=7d496af79e5fabd7616131817f337541";
     }
 
-    public void setChatMessage(IMMessage message) {
-        String thumbUrl = null;
+    public void setChatMessage(MSIMMessage message) {
         final List<String> firstAvailableUrls = new ArrayList<>();
 
-        if (message != null && !message.type.isUnset()) {
-            final int type = message.type.get();
+        if (message != null) {
+            final int messageType = message.getMessageType();
 
-            if (type == IMConstants.MessageType.IMAGE) {
-                final String localBodyOrigin = message.localBodyOrigin.getOrDefault(null);
-                if (localBodyOrigin != null) {
-                    firstAvailableUrls.add(localBodyOrigin);
+            if (messageType == MSIMConstants.MessageType.IMAGE) {
+                final MSIMImageElement element = message.getImageElement();
+                Preconditions.checkNotNull(element);
+                final String localPath = element.getPath();
+                if (localPath != null) {
+                    firstAvailableUrls.add(localPath);
                 }
-                final String body = message.body.getOrDefault(null);
-                if (body != null) {
-                    firstAvailableUrls.add(body);
-                }
-                if (DEBUG) {
-                    SampleLog.v(Objects.defaultObjectTag(this) + " image message localBodyOrigin:%s, body:%s",
-                            localBodyOrigin, body);
-                }
-            } else if (type == IMConstants.MessageType.VIDEO) {
-                final String localThumbOrigin = message.localThumbOrigin.getOrDefault(null);
-                if (localThumbOrigin != null) {
-                    firstAvailableUrls.add(localThumbOrigin);
-                }
-                final String thumb = message.thumb.getOrDefault(null);
-                if (thumb != null) {
-                    firstAvailableUrls.add(thumb);
+                final String url = element.getUrl();
+                if (url != null) {
+                    firstAvailableUrls.add(url);
                 }
                 if (DEBUG) {
-                    SampleLog.v(Objects.defaultObjectTag(this) + " video message localThumbOrigin:%s, thumb:%s", localThumbOrigin, thumb);
+                    SampleLog.v(Objects.defaultObjectTag(this) + " image message localPath:%s, url:%s",
+                            localPath, url);
                 }
-            } else if (type == IMConstants.MessageType.LOCATION) {
-                String url = String.format(Locale.CHINA, mLocationThumbUrl,
-                        message.lng.getOrDefault(0d),
-                        message.lat.getOrDefault(0d),
-                        message.zoom.getOrDefault(0L),
-                        message.lng.getOrDefault(0d),
-                        message.lat.getOrDefault(0d));
+            } else if (messageType == IMConstants.MessageType.VIDEO) {
+                final MSIMVideoElement element = message.getVideoElement();
+                Preconditions.checkNotNull(element);
+                final String localThumbPath = element.getThumbPath();
+                if (localThumbPath != null) {
+                    firstAvailableUrls.add(localThumbPath);
+                }
+                final String thumbUrl = element.getThumbUrl();
+                if (thumbUrl != null) {
+                    firstAvailableUrls.add(thumbUrl);
+                }
                 if (DEBUG) {
-                    SampleLog.v(Objects.defaultObjectTag(this) + " location thumb url %s", url);
+                    SampleLog.v(Objects.defaultObjectTag(this) + " video message localThumbPath:%s, thumbUrl:%s", localThumbPath, thumbUrl);
                 }
-                firstAvailableUrls.add(url);
             } else {
-                SampleLog.e(Objects.defaultObjectTag(this) + " not support type %s", type);
+                SampleLog.e(Objects.defaultObjectTag(this) + " not support type %s", messageType);
             }
         }
 
-        //noinspection ConstantConditions
-        this.setFirstAvailableUrls(thumbUrl, firstAvailableUrls.toArray(new String[]{}));
+        this.setFirstAvailableUrls(null, firstAvailableUrls.toArray(new String[]{}));
     }
 
 }

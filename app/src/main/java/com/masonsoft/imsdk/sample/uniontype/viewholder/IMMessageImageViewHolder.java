@@ -4,7 +4,8 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMImageElement;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
@@ -32,11 +33,18 @@ public abstract class IMMessageImageViewHolder extends IMMessageViewHolder {
     }
 
     @Override
-    protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
+    protected void onBindItemObject(int position, @NonNull DataObject<MSIMMessage> itemObject) {
         super.onBindItemObject(position, itemObject);
-        final IMMessage message = itemObject.object;
+        final MSIMMessage message = itemObject.object;
 
-        mResizeImageView.setImageSize(message.width.getOrDefault(0L), message.height.getOrDefault(0L));
+        long width = 0;
+        long height = 0;
+        final MSIMImageElement element = message.getImageElement();
+        if (element != null) {
+            width = element.getWidth();
+            height = element.getHeight();
+        }
+        mResizeImageView.setImageSize(width, height);
         mImage.setChatMessage(message);
 
         mResizeImageView.setOnLongClickListener(v -> {

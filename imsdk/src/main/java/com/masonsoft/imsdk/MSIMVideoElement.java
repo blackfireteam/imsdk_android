@@ -53,11 +53,19 @@ public class MSIMVideoElement extends MSIMElement {
         return getMessage().height.getOrDefault(defaultValue);
     }
 
-    public String getThumb() {
-        return getThumb(null);
+    public String getThumbPath() {
+        return getThumbPath(null);
     }
 
-    public String getThumb(String defaultValue) {
+    public String getThumbPath(String defaultValue) {
+        return getMessage().localThumbOrigin.getOrDefault(defaultValue);
+    }
+
+    public String getThumbUrl() {
+        return getThumbUrl(null);
+    }
+
+    public String getThumbUrl(String defaultValue) {
         return getMessage().thumb.getOrDefault(defaultValue);
     }
 
