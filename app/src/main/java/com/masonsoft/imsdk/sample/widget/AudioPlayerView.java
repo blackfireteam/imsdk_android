@@ -12,21 +12,21 @@ import com.google.android.exoplayer2.audio.AudioListener;
 import com.google.android.exoplayer2.util.Util;
 import com.masonsoft.imsdk.sample.common.media.player.MediaPlayerView;
 
-public class VoicePlayerView extends ResizeVoiceView implements MediaPlayerView {
+public class AudioPlayerView extends ResizeAudioView implements MediaPlayerView {
 
-    public VoicePlayerView(@NonNull Context context) {
+    public AudioPlayerView(@NonNull Context context) {
         this(context, null);
     }
 
-    public VoicePlayerView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public AudioPlayerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public VoicePlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public AudioPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public VoicePlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public AudioPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }

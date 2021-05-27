@@ -7,7 +7,8 @@ import androidx.annotation.Nullable;
 
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMAudioElement;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.common.media.player.MediaPlayer;
 import com.masonsoft.imsdk.sample.common.media.player.MediaPlayerDelegate;
@@ -15,42 +16,42 @@ import com.masonsoft.imsdk.sample.common.microlifecycle.real.Real;
 
 import io.github.idonans.lang.util.ViewUtil;
 
-public class IMMessageVoiceView extends MicroLifecycleFrameLayout implements Real {
+public class IMMessageAudioView extends MicroLifecycleFrameLayout implements Real {
 
-    public IMMessageVoiceView(Context context) {
+    public IMMessageAudioView(Context context) {
         this(context, null);
     }
 
-    public IMMessageVoiceView(Context context, AttributeSet attrs) {
+    public IMMessageAudioView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public IMMessageVoiceView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IMMessageAudioView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public IMMessageVoiceView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public IMMessageAudioView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Nullable
-    private IMMessage mMessage;
+    private MSIMMessage mMessage;
 
-    private VoicePlayerView mVoicePlayerView;
+    private AudioPlayerView mAudioPlayerView;
 
     @Nullable
     private MediaPlayerDelegate mMediaPlayerDelegate;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        setContentView(R.layout.imsdk_sample_widget_im_message_voice_view);
-        mVoicePlayerView = findViewById(R.id.voice_player_view);
+        setContentView(R.layout.imsdk_sample_widget_im_message_audio_view);
+        mAudioPlayerView = findViewById(R.id.voice_player_view);
 
-        ViewUtil.onClick(mVoicePlayerView, v -> {
+        ViewUtil.onClick(mAudioPlayerView, v -> {
             togglePlayer();
             performClick();
         });
-        mVoicePlayerView.setOnLongClickListener(v -> {
+        mAudioPlayerView.setOnLongClickListener(v -> {
             performLongClick();
             return true;
         });
@@ -58,8 +59,8 @@ public class IMMessageVoiceView extends MicroLifecycleFrameLayout implements Rea
         setDefaultManual(true);
     }
 
-    public void setOnPlayerStateUpdateListener(@Nullable VoicePlayerView.OnPlayerStateUpdateListener listener) {
-        mVoicePlayerView.setOnPlayerStateUpdateListener(listener);
+    public void setOnPlayerStateUpdateListener(@Nullable AudioPlayerView.OnPlayerStateUpdateListener listener) {
+        mAudioPlayerView.setOnPlayerStateUpdateListener(listener);
     }
 
     @Override
@@ -78,7 +79,7 @@ public class IMMessageVoiceView extends MicroLifecycleFrameLayout implements Rea
                 if (player != null) {
                     if (!canPausePlayer(player)) {
                         // 正常播放结束或者播放失败时点击重新开始播放
-                        mMediaPlayerDelegate.initPlayerIfNeed(mVoicePlayerView, getVoiceUrl(), true, isResumed(), false);
+                        mMediaPlayerDelegate.initPlayerIfNeed(mAudioPlayerView, getVoiceUrl(), true, isResumed(), false);
                         return;
                     }
                 }
@@ -94,20 +95,28 @@ public class IMMessageVoiceView extends MicroLifecycleFrameLayout implements Rea
                 && player.getPlayWhenReady();
     }
 
-    public void setMessage(@Nullable IMMessage message) {
+    public void setMessage(@Nullable MSIMMessage message) {
         mMessage = message;
 
-        mVoicePlayerView.setDurationMs(message == null ? 0L : message.durationMs.getOrDefault(0L));
+        long durationMs = 0L;
+        final MSIMAudioElement element = message.getAudioElement();
+        if (element != null) {
+            durationMs = element.getDurationMs();
+        }
+        mAudioPlayerView.setDurationMs(durationMs);
 
         if (mMediaPlayerDelegate != null) {
-            mMediaPlayerDelegate.initPlayerIfNeed(mVoicePlayerView, getVoiceUrl(), true, isResumed(), false);
+            mMediaPlayerDelegate.initPlayerIfNeed(mAudioPlayerView, getVoiceUrl(), true, isResumed(), false);
         }
     }
 
     @Nullable
     private String getVoiceUrl() {
         if (mMessage != null) {
-            return mMessage.body.getOrDefault(null);
+            final MSIMAudioElement element = mMessage.getAudioElement();
+            if (element != null) {
+                return element.getUrl();
+            }
         }
         return null;
     }
@@ -122,7 +131,7 @@ public class IMMessageVoiceView extends MicroLifecycleFrameLayout implements Rea
         super.onResume();
 
         if (mMediaPlayerDelegate != null) {
-            mMediaPlayerDelegate.initPlayerIfNeed(mVoicePlayerView, getVoiceUrl(), true, isResumed(), false);
+            mMediaPlayerDelegate.initPlayerIfNeed(mAudioPlayerView, getVoiceUrl(), true, isResumed(), false);
         }
     }
 

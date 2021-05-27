@@ -20,15 +20,15 @@ import com.masonsoft.imsdk.sample.common.microlifecycle.real.Real;
 import com.masonsoft.imsdk.sample.common.microlifecycle.real.RealHost;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
-import com.masonsoft.imsdk.sample.widget.IMMessageVoiceView;
-import com.masonsoft.imsdk.sample.widget.VoicePlayerView;
+import com.masonsoft.imsdk.sample.widget.IMMessageAudioView;
+import com.masonsoft.imsdk.sample.widget.AudioPlayerView;
 
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
 
 public abstract class IMMessageVoiceViewHolder extends IMMessageViewHolder {
 
-    protected final IMMessageVoiceView mVoiceView;
+    protected final IMMessageAudioView mVoiceView;
     protected final ImageView mVoiceImageFlag;
     protected final TextView mVoiceDurationText;
 
@@ -67,7 +67,7 @@ public abstract class IMMessageVoiceViewHolder extends IMMessageViewHolder {
             }
             return true;
         });
-        mVoiceView.setOnPlayerStateUpdateListener(new VoicePlayerView.OnPlayerStateUpdateListener() {
+        mVoiceView.setOnPlayerStateUpdateListener(new AudioPlayerView.OnPlayerStateUpdateListener() {
             @Override
             public void onPlayerPlayPauseUpdate(boolean shouldShowPauseButton) {
                 if (shouldShowPauseButton) {

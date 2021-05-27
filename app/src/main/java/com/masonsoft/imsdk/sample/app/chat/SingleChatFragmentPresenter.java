@@ -4,25 +4,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.IMMessage;
-import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
-import com.masonsoft.imsdk.core.observable.ConversationObservable;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageViewHolder;
+import com.masonsoft.imsdk.sample.widget.MSIMConversationChangedViewHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.idonans.core.thread.Threads;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.dynamic.page.PageView;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
@@ -36,11 +34,14 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     private static final boolean DEBUG = true;
 
     private final long mSessionUserId;
-    private final int mConversationType = IMConstants.ConversationType.C2C;
+    private final int mConversationType = MSIMConstants.ConversationType.C2C;
     private final long mTargetUserId;
     private final int mPageSize = 20;
     private long mFirstMessageSeq = -1;
     private long mLastMessageSeq = -1;
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private final MSIMConversationChangedViewHelper mConversationChangedViewHelper;
 
     private final DisposableHolder mDefaultRequestHolder = new DisposableHolder();
 
@@ -49,7 +50,25 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         super(view, true, true);
         mSessionUserId = IMSessionManager.getInstance().getSessionUserId();
         mTargetUserId = view.getTargetUserId();
-        ConversationObservable.DEFAULT.registerObserver(mConversationObserver);
+
+        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper() {
+            @Override
+            protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
+                if (conversation == null) {
+                    reloadOrRequestMoreMessage();
+                    return;
+                }
+
+                final long sessionUserId = conversation.getSessionUserId();
+                final int conversationType = conversation.getConversationType();
+                final long targetUserId = conversation.getTargetUserId();
+                if (mSessionUserId == sessionUserId
+                        && mConversationType == conversationType
+                        && mTargetUserId == targetUserId) {
+                    reloadOrRequestMoreMessage();
+                }
+            }
+        };
     }
 
     @Nullable
@@ -57,49 +76,17 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         return (SingleChatFragment.ViewImpl) super.getView();
     }
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private final ConversationObservable.ConversationObserver mConversationObserver = new ConversationObservable.ConversationObserver() {
-
-        private boolean notMatch(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            return !IMConstants.isIdMatch(mSessionUserId, sessionUserId)
-                    || !IMConstants.isIdMatch(mConversationType, conversationType)
-                    || !IMConstants.isIdMatch(mTargetUserId, targetUserId);
-        }
-
-        @Override
-        public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
-                return;
+    private void reloadOrRequestMoreMessage() {
+        if (mLastMessageSeq > 0) {
+            if (!getNextPageRequestStatus().isLoading()) {
+                requestNextPage(true);
             }
-
-            Threads.postUi(() -> onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId));
-        }
-
-        @Override
-        public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
-                return;
-            }
-
-            Threads.postUi(() -> onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId));
-        }
-
-        private void onConversationChangedInternal(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
-                return;
-            }
-
-            if (mLastMessageSeq > 0) {
-                if (!getNextPageRequestStatus().isLoading()) {
-                    requestNextPage(true);
-                }
-            } else {
-                if (!getInitRequestStatus().isLoading()) {
-                    requestInit(true);
-                }
+        } else {
+            if (!getInitRequestStatus().isLoading()) {
+                requestInit(true);
             }
         }
-    };
+    }
 
     private final UnionTypeViewHolderListeners.OnItemClickListener mOnHolderItemClickListener = viewHolder -> {
         SingleChatFragment.ViewImpl view = getView();
@@ -204,22 +191,21 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         }
 
         return Single.just("")
-                .map(input -> IMMessageManager.getInstance().pageQueryMessage(
+                .map(input -> MSIMManager.getInstance().getMessageManager().pageQueryHistoryMessage(
                         mSessionUserId,
                         mFirstMessageSeq,
                         mPageSize,
                         mConversationType,
-                        mTargetUserId,
-                        true))
+                        mTargetUserId))
                 .map(page -> {
-                    List<IMMessage> imMessages = page.items;
-                    if (imMessages == null) {
-                        imMessages = new ArrayList<>();
+                    List<MSIMMessage> messageList = page.items;
+                    if (messageList == null) {
+                        messageList = new ArrayList<>();
                     }
-                    Collections.reverse(imMessages);
+                    Collections.reverse(messageList);
                     List<UnionTypeItemObject> target = new ArrayList<>();
-                    for (IMMessage imMessage : imMessages) {
-                        UnionTypeItemObject item = createDefault(imMessage);
+                    for (MSIMMessage message : messageList) {
+                        UnionTypeItemObject item = createDefault(message);
                         if (item == null) {
                             if (DEBUG) {
                                 SampleLog.e("createPrePageRequest ignore null UnionTypeItemObject");
@@ -242,7 +228,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
         // 记录上一页，下一页参数
         if (!items.isEmpty()) {
-            mFirstMessageSeq = ((IMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(0)).itemObject).object).seq.get();
+            mFirstMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(0)).itemObject).object).getSeq();
         }
         super.onPrePageRequestResult(view, items);
     }
@@ -266,21 +252,20 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         }
 
         return Single.just("")
-                .map(input -> IMMessageManager.getInstance().pageQueryMessage(
+                .map(input -> MSIMManager.getInstance().getMessageManager().pageQueryNewMessage(
                         mSessionUserId,
                         mLastMessageSeq,
                         mPageSize,
                         mConversationType,
-                        mTargetUserId,
-                        false))
+                        mTargetUserId))
                 .map(page -> {
-                    List<IMMessage> imMessages = page.items;
-                    if (imMessages == null) {
-                        imMessages = new ArrayList<>();
+                    List<MSIMMessage> messageList = page.items;
+                    if (messageList == null) {
+                        messageList = new ArrayList<>();
                     }
                     List<UnionTypeItemObject> target = new ArrayList<>();
-                    for (IMMessage imMessage : imMessages) {
-                        UnionTypeItemObject item = createDefault(imMessage);
+                    for (MSIMMessage message : messageList) {
+                        UnionTypeItemObject item = createDefault(message);
                         if (item == null) {
                             if (DEBUG) {
                                 SampleLog.e("createNextPageRequest ignore null UnionTypeItemObject");
@@ -303,7 +288,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
         // 记录上一页，下一页参数
         if (!items.isEmpty()) {
-            mLastMessageSeq = ((IMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).seq.get();
+            mLastMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).getSeq();
         }
         super.onNextPageRequestResult(view, items);
     }
@@ -312,12 +297,6 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     public void setAbort() {
         super.setAbort();
         mDefaultRequestHolder.clear();
-
-        /* TODO
-        // 清除会话焦点
-        final long sessionUserId = SessionManager.Session.getSessionUserId(mSession);
-        SettingsManager.getInstance().getUserMemorySettings(sessionUserId).setFocusConversationId(-1);
-        */
     }
 
 }

@@ -42,6 +42,14 @@ public class MSIMConversation {
         return mConversation.id.getOrDefault(defaultValue);
     }
 
+    public int getConversationType() {
+        return getConversationType(0);
+    }
+
+    public int getConversationType(int defaultValue) {
+        return mConversation.type.getOrDefault(defaultValue);
+    }
+
     public long getSeq() {
         return getSeq(0L);
     }

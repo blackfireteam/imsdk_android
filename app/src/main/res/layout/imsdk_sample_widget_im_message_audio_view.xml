@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:parentTag="com.masonsoft.imsdk.sample.widget.IMMessageVoiceView">
+    tools:parentTag="com.masonsoft.imsdk.sample.widget.IMMessageAudioView">
 
-    <com.masonsoft.imsdk.sample.widget.VoicePlayerView
+    <com.masonsoft.imsdk.sample.widget.AudioPlayerView
         android:id="@+id/voice_player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

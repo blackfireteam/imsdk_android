@@ -29,11 +29,11 @@ public class MSIMAudioElement extends MSIMElement {
         return getMessage().body.getOrDefault(defaultValue);
     }
 
-    public long getDurationMilliseconds() {
-        return getDurationMilliseconds(0L);
+    public long getDurationMs() {
+        return getDurationMs(0L);
     }
 
-    public long getDurationMilliseconds(long defaultValue) {
+    public long getDurationMs(long defaultValue) {
         return getMessage().durationMs.getOrDefault(defaultValue);
     }
 

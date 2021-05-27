@@ -12,23 +12,23 @@ import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.util.DimenUtil;
 
-public class ResizeVoiceView extends FrameLayout {
+public class ResizeAudioView extends FrameLayout {
 
     private static final boolean DEBUG = Constants.DEBUG_WIDGET;
 
-    public ResizeVoiceView(Context context) {
+    public ResizeAudioView(Context context) {
         this(context, null);
     }
 
-    public ResizeVoiceView(Context context, AttributeSet attrs) {
+    public ResizeAudioView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ResizeVoiceView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ResizeAudioView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public ResizeVoiceView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ResizeAudioView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
