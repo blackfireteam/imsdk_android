@@ -281,7 +281,11 @@ public class UserInfoManager {
             mergeUserInfo.verified.apply(userInfoUpdate.verified);
         }
 
-        mergeUserInfo.updateTimeMs.set(System.currentTimeMillis());
+        if (userInfoUpdate.updateTimeMs.isUnset()) {
+            mergeUserInfo.updateTimeMs.set(System.currentTimeMillis());
+        } else {
+            mergeUserInfo.updateTimeMs.set(userInfoUpdate.updateTimeMs.get());
+        }
 
         insertOrUpdateUser(mergeUserInfo);
     }

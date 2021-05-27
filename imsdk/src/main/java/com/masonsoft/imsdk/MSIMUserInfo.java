@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.user.UserInfo;
@@ -71,6 +72,52 @@ public class MSIMUserInfo {
             return defaultValue;
         }
         return verified == IMConstants.TRUE;
+    }
+
+    public static class Editor {
+
+        @NonNull
+        private final UserInfo mUserInfoUpdate;
+
+        public Editor(final long userId) {
+            mUserInfoUpdate = new UserInfo();
+            mUserInfoUpdate.uid.set(userId);
+        }
+
+        @NonNull
+        UserInfo getUserInfoUpdate() {
+            return mUserInfoUpdate;
+        }
+
+        @NonNull
+        public Editor setAvatar(@Nullable final String avatar) {
+            mUserInfoUpdate.avatar.set(avatar);
+            return this;
+        }
+
+        @NonNull
+        public Editor setNickname(@Nullable final String nickname) {
+            mUserInfoUpdate.nickname.set(nickname);
+            return this;
+        }
+
+        @NonNull
+        public Editor setGold(final boolean gold) {
+            mUserInfoUpdate.gold.set(gold ? IMConstants.TRUE : IMConstants.FALSE);
+            return this;
+        }
+
+        @NonNull
+        public Editor setVerified(final boolean verified) {
+            mUserInfoUpdate.verified.set(verified ? IMConstants.TRUE : IMConstants.FALSE);
+            return this;
+        }
+
+        @NonNull
+        public Editor setUpdateTimeMs(final long updateTimeMs) {
+            mUserInfoUpdate.updateTimeMs.set(updateTimeMs);
+            return this;
+        }
     }
 
 }
