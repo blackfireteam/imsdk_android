@@ -8,11 +8,13 @@ import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignInMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignOutMessagePacket;
+import com.masonsoft.imsdk.core.observable.SessionObservable;
 import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
 import com.masonsoft.imsdk.core.observable.TokenOfflineObservable;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.GeneralResult;
+import com.masonsoft.imsdk.util.WeakObservable;
 
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.Threads;
@@ -90,14 +92,51 @@ public class MSIMManager {
 
     private Object mSignInOrSignOutTag;
 
+    @NonNull
+    private final WeakObservable<MSIMSessionListener> mSessionListeners = new WeakObservable<>();
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private final SessionObservable.SessionObserver mSessionObserver = new SessionObservable.SessionObserver() {
+        @Override
+        public void onSessionChanged() {
+            mSessionListeners.forEach(listener -> {
+                if (listener != null) {
+                    listener.onSessionChanged();
+                }
+            });
+        }
+
+        @Override
+        public void onSessionUserIdChanged() {
+            mSessionListeners.forEach(listener -> {
+                if (listener != null) {
+                    listener.onSessionUserIdChanged();
+                }
+            });
+        }
+    };
+
     private MSIMManager() {
         TokenOfflineObservable.DEFAULT.registerObserver(mTokenOfflineObserver);
         SessionTcpClientObservable.DEFAULT.registerObserver(mSessionTcpClientObserver);
+        SessionObservable.DEFAULT.registerObserver(mSessionObserver);
     }
 
     public void initSdk(String appId, @Nullable MSIMSdkListener listener) {
         mAppId = appId;
         mSdkListener = new MSIMSdkListenerProxy(listener);
+    }
+
+    public void addSessionListener(@Nullable MSIMSessionListener listener) {
+        if (listener != null) {
+            mSessionListeners.registerObserver(listener);
+        }
+    }
+
+    public void removeSessionListener(@Nullable MSIMSessionListener listener) {
+        if (listener != null) {
+            mSessionListeners.unregisterObserver(listener);
+        }
     }
 
     public void signIn(@NonNull String token, @NonNull String tcpServerAndPort, @Nullable MSIMCallback<GeneralResult> callback) {
