@@ -20,19 +20,19 @@ public class MSIMMessageListenerProxy extends RunOnUiThread implements MSIMMessa
     }
 
     @Override
-    public void onMessageChanged(long targetUserId, long messageId) {
+    public void onMessageChanged(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
         runOrPost(() -> {
             if (mOut != null) {
-                mOut.onMessageChanged(targetUserId, messageId);
+                mOut.onMessageChanged(sessionUserId, conversationType, targetUserId, localMessageId);
             }
         });
     }
 
     @Override
-    public void onMessageCreated(long targetUserId, long messageId) {
+    public void onMessageCreated(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
         runOrPost(() -> {
             if (mOut != null) {
-                mOut.onMessageCreated(targetUserId, messageId);
+                mOut.onMessageCreated(sessionUserId, conversationType, targetUserId, localMessageId);
             }
         });
     }

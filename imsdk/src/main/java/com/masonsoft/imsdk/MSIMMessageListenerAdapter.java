@@ -6,12 +6,12 @@ package com.masonsoft.imsdk;
 public class MSIMMessageListenerAdapter implements MSIMMessageListener {
 
     @Override
-    public void onMessageChanged(long targetUserId, long messageId) {
+    public void onMessageChanged(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
         // ignore
     }
 
     @Override
-    public void onMessageCreated(long targetUserId, long messageId) {
+    public void onMessageCreated(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
         // ignore
     }
 

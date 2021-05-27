@@ -69,12 +69,12 @@ public class MSIMConversationManager {
         }
     }
 
-    public void deleteConversation(MSIMConversation conversation) {
-        deleteConversation(conversation, null);
+    public void deleteConversation(long sessionUserId, MSIMConversation conversation) {
+        deleteConversation(sessionUserId, conversation, null);
     }
 
-    public void deleteConversation(MSIMConversation conversation, @Nullable MSIMCallback<GeneralResult> callback) {
-        IMMessageQueueManager.getInstance().enqueueDeleteConversationActionMessage(conversation.getConversation(), callback);
+    public void deleteConversation(long sessionUserId, MSIMConversation conversation, @Nullable MSIMCallback<GeneralResult> callback) {
+        IMMessageQueueManager.getInstance().enqueueDeleteConversationActionMessage(sessionUserId, conversation.getConversation(), callback);
     }
 
     @Nullable

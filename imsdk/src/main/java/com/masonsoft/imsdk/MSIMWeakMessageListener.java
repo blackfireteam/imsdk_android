@@ -33,21 +33,21 @@ public class MSIMWeakMessageListener extends RunOnUiThread implements MSIMMessag
     }
 
     @Override
-    public void onMessageCreated(long targetUserId, long messageId) {
+    public void onMessageCreated(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
         runOrPost(() -> {
             final MSIMMessageListener out = mOutRef.get();
             if (out != null) {
-                out.onMessageCreated(targetUserId, messageId);
+                out.onMessageCreated(sessionUserId, conversationType, targetUserId, localMessageId);
             }
         });
     }
 
     @Override
-    public void onMessageChanged(long targetUserId, long messageId) {
+    public void onMessageChanged(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
         runOrPost(() -> {
             final MSIMMessageListener out = mOutRef.get();
             if (out != null) {
-                out.onMessageChanged(targetUserId, messageId);
+                out.onMessageChanged(sessionUserId, conversationType, targetUserId, localMessageId);
             }
         });
     }
