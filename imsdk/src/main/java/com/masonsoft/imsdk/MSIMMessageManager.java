@@ -82,8 +82,13 @@ public class MSIMMessageManager {
     public MSIMMessage getMessage(
             final long targetUserId,
             final long messageId) {
+        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+        if (sessionUserId <= 0) {
+            return null;
+        }
+
         final IMMessage message = IMMessageManager.getInstance().getMessage(
-                IMSessionManager.getInstance().getSessionUserId(),
+                sessionUserId,
                 IMConstants.ConversationType.C2C,
                 targetUserId,
                 messageId
@@ -99,8 +104,13 @@ public class MSIMMessageManager {
     public TinyPage<MSIMMessage> pageQueryNewMessage(final long seq,
                                                      final int limit,
                                                      final long targetUserId) {
+        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+        if (sessionUserId <= 0) {
+            return new TinyPage<>();
+        }
+
         final TinyPage<IMMessage> page = IMMessageManager.getInstance().pageQueryMessage(
-                IMSessionManager.getInstance().getSessionUserId(),
+                sessionUserId,
                 seq,
                 limit,
                 IMConstants.ConversationType.C2C,
@@ -119,8 +129,13 @@ public class MSIMMessageManager {
     public TinyPage<MSIMMessage> pageQueryHistoryMessage(final long seq,
                                                          final int limit,
                                                          final long targetUserId) {
+        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+        if (sessionUserId <= 0) {
+            return new TinyPage<>();
+        }
+
         final TinyPage<IMMessage> page = IMMessageManager.getInstance().pageQueryMessage(
-                IMSessionManager.getInstance().getSessionUserId(),
+                sessionUserId,
                 seq,
                 limit,
                 IMConstants.ConversationType.C2C,
