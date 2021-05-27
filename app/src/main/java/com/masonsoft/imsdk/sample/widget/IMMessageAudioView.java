@@ -45,7 +45,7 @@ public class IMMessageAudioView extends MicroLifecycleFrameLayout implements Rea
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         setContentView(R.layout.imsdk_sample_widget_im_message_audio_view);
-        mAudioPlayerView = findViewById(R.id.voice_player_view);
+        mAudioPlayerView = findViewById(R.id.audio_player_view);
 
         ViewUtil.onClick(mAudioPlayerView, v -> {
             togglePlayer();

@@ -125,6 +125,14 @@ public class MSIMMessage {
         return mMessage.sendState.getOrDefault(defaultValue);
     }
 
+    public float getSendProgress() {
+        return getSendProgress(0f);
+    }
+
+    public float getSendProgress(float defaultValue) {
+        return mMessage.sendProgress.getOrDefault(defaultValue);
+    }
+
     @Nullable
     public MSIMTextElement getTextElement() {
         final int messageType = getMessageType(-1);

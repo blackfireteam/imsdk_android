@@ -5,16 +5,16 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.core.util.Pair;
 
+import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
+import com.masonsoft.imsdk.MSIMMessageListener;
+import com.masonsoft.imsdk.MSIMMessageListenerProxy;
 import com.masonsoft.imsdk.core.IMConstants;
-import com.masonsoft.imsdk.core.IMMessage;
-import com.masonsoft.imsdk.core.IMMessageManager;
-import com.masonsoft.imsdk.core.observable.MessageObservable;
 import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.util.Objects;
 
-import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -31,7 +31,7 @@ public abstract class IMMessageChangedViewHelper {
     private long mLocalMessageId = Long.MIN_VALUE / 2;
 
     public IMMessageChangedViewHelper() {
-        MessageObservable.DEFAULT.registerObserver(mMessageObserver);
+        MSIMManager.getInstance().getMessageManager().addMessageListener(mMessageListener);
     }
 
     public void setMessage(@NonNull MSIMMessage message) {
@@ -90,13 +90,13 @@ public abstract class IMMessageChangedViewHelper {
         }
         mRequestHolder.set(Single.just("")
                 .map(input -> {
-                    final IMMessage imMessage = IMMessageManager.getInstance().getMessage(
+                    final MSIMMessage message = MSIMManager.getInstance().getMessageManager().getMessage(
                             mSessionUserId,
                             mConversationType,
                             mTargetUserId,
                             mLocalMessageId
                     );
-                    return new ObjectWrapper(imMessage);
+                    return new ObjectWrapper(message);
                 })
                 .map(input -> {
                     final Object customObject = loadCustomObject();
@@ -106,7 +106,7 @@ public abstract class IMMessageChangedViewHelper {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pair -> {
                     Preconditions.checkNotNull(pair.first);
-                    onMessageChanged((IMMessage) pair.first.getObject(), pair.second);
+                    onMessageChanged((MSIMMessage) pair.first.getObject(), pair.second);
                 }, SampleLog::e));
     }
 
@@ -116,48 +116,30 @@ public abstract class IMMessageChangedViewHelper {
         return null;
     }
 
-    protected abstract void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject);
+    protected abstract void onMessageChanged(@Nullable MSIMMessage message, @Nullable Object customObject);
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final MessageObservable.MessageObserver mMessageObserver = new MessageObservable.MessageObserver() {
-
+    private final MSIMMessageListener mMessageListener = new MSIMMessageListenerProxy(new MSIMMessageListener() {
         private boolean notMatch(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-            return (sessionUserId != IMConstants.ID_ANY && mSessionUserId != sessionUserId)
-                    || (conversationType != IMConstants.ID_ANY && mConversationType != conversationType)
-                    || (targetUserId != IMConstants.ID_ANY && mTargetUserId != targetUserId)
-                    || (localMessageId != IMConstants.ID_ANY && mLocalMessageId != localMessageId);
+            return !MSIMConstants.isIdMatch(mSessionUserId, sessionUserId)
+                    || !MSIMConstants.isIdMatch(mConversationType, conversationType)
+                    || !MSIMConstants.isIdMatch(mTargetUserId, targetUserId)
+                    || !MSIMConstants.isIdMatch(mLocalMessageId, localMessageId);
         }
 
         @Override
         public void onMessageChanged(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-            if (notMatch(sessionUserId, conversationType, targetUserId, localMessageId)) {
-                return;
-            }
-
-            Threads.postUi(() -> onMessageChangedInternal(sessionUserId, conversationType, targetUserId, localMessageId));
+            onMessageChangedInternal(sessionUserId, conversationType, targetUserId, localMessageId);
         }
 
         @Override
         public void onMessageCreated(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-            if (notMatch(sessionUserId, conversationType, targetUserId, localMessageId)) {
-                return;
-            }
-
-            Threads.postUi(() -> onMessageChangedInternal(sessionUserId, conversationType, targetUserId, localMessageId));
-        }
-
-        @Override
-        public void onMessageBlockChanged(long sessionUserId, int conversationType, long targetUserId, long fromBlockId, long toBlockId) {
-            // ignore
+            onMessageChangedInternal(sessionUserId, conversationType, targetUserId, localMessageId);
         }
 
         @Override
         public void onMultiMessageChanged(long sessionUserId) {
-            if (notMatch(sessionUserId, IMConstants.ID_ANY, IMConstants.ID_ANY, IMConstants.ID_ANY)) {
-                return;
-            }
-
-            Threads.postUi(() -> onMessageChangedInternal(sessionUserId, IMConstants.ID_ANY, IMConstants.ID_ANY, IMConstants.ID_ANY));
+            onMessageChangedInternal(sessionUserId, IMConstants.ID_ANY, IMConstants.ID_ANY, IMConstants.ID_ANY);
         }
 
         private void onMessageChangedInternal(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
@@ -167,6 +149,6 @@ public abstract class IMMessageChangedViewHelper {
 
             requestLoadData(false);
         }
-    };
+    }, true);
 
 }

@@ -7,8 +7,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMMessage;
-import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.util.Objects;
@@ -41,7 +41,7 @@ public class IMMessageProgressView extends ProgressView {
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mMessageChangedViewHelper = new IMMessageChangedViewHelper() {
             @Override
-            protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {
+            protected void onMessageChanged(@Nullable MSIMMessage message, @Nullable Object customObject) {
                 IMMessageProgressView.this.updateProgress(message);
             }
         };
@@ -49,17 +49,15 @@ public class IMMessageProgressView extends ProgressView {
         hideProgress();
     }
 
-    private void updateProgress(@Nullable IMMessage message) {
+    private void updateProgress(@Nullable MSIMMessage message) {
         boolean showProgress = false;
         float progress = 0f;
         if (message != null) {
-            if (!message.sendState.isUnset()) {
-                final int sendState = message.sendState.get();
-                if (sendState == IMConstants.SendStatus.IDLE
-                        || sendState == IMConstants.SendStatus.SENDING) {
-                    showProgress = true;
-                    progress = message.sendProgress.getOrDefault(0f);
-                }
+            final int sendState = message.getSendStatus(MSIMConstants.SendStatus.SUCCESS);
+            if (sendState == MSIMConstants.SendStatus.IDLE
+                    || sendState == MSIMConstants.SendStatus.SENDING) {
+                showProgress = true;
+                progress = message.getSendProgress();
             }
         }
         if (showProgress) {
@@ -84,7 +82,7 @@ public class IMMessageProgressView extends ProgressView {
         ViewUtil.setVisibilityIfChanged(this, View.GONE);
     }
 
-    public void setMessage(@NonNull IMMessage message) {
+    public void setMessage(@NonNull MSIMMessage message) {
         mMessageChangedViewHelper.setMessage(message);
     }
 

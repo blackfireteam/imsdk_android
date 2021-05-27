@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.sample.Constants;
 
 public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
@@ -44,7 +43,7 @@ public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
             }
 
             @Override
-            protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {
+            protected void onMessageChanged(@Nullable MSIMMessage message, @Nullable Object customObject) {
                 IMMessageDynamicFrameLayout.this.onMessageChanged(message, customObject);
             }
         };
@@ -80,6 +79,6 @@ public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
         return mMessageChangedViewHelper.getLocalMessageId();
     }
 
-    protected abstract void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject);
+    protected abstract void onMessageChanged(@Nullable MSIMMessage message, @Nullable Object customObject);
 
 }
