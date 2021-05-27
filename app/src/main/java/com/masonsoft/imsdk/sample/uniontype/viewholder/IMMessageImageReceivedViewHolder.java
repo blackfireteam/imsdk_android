@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -24,11 +24,11 @@ public class IMMessageImageReceivedViewHolder extends IMMessageImageViewHolder {
     }
 
     @Override
-    protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
+    protected void onBindItemObject(int position, @NonNull DataObject<MSIMMessage> itemObject) {
         super.onBindItemObject(position, itemObject);
-        final IMMessage message = itemObject.object;
+        final MSIMMessage message = itemObject.object;
 
-        mBinding.avatar.setTargetUserId(message.fromUserId.get());
+        mBinding.avatar.setTargetUserId(message.getSender());
         mBinding.avatar.setShowBorder(false);
 
         ViewUtil.onClick(mBinding.avatar, v -> {

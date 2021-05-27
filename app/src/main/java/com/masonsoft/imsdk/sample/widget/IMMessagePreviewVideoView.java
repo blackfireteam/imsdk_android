@@ -8,7 +8,8 @@ import androidx.annotation.Nullable;
 
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMMessage;
+import com.masonsoft.imsdk.MSIMVideoElement;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.common.media.player.MediaPlayerDelegate;
 import com.masonsoft.imsdk.sample.common.media.player.MediaPlayerView;
@@ -35,7 +36,7 @@ public class IMMessagePreviewVideoView extends MicroLifecycleFrameLayout {
     }
 
     @Nullable
-    private IMMessage mImMessage;
+    private MSIMMessage mMessage;
 
     @Nullable
     private View mActionClose;
@@ -115,11 +116,11 @@ public class IMMessagePreviewVideoView extends MicroLifecycleFrameLayout {
         }
     }
 
-    public void setImMessage(@Nullable IMMessage imMessage) {
-        mImMessage = imMessage;
+    public void setMessage(@Nullable MSIMMessage message) {
+        mMessage = message;
 
         if (mCoverImage != null) {
-            mCoverImage.setChatMessage(imMessage);
+            mCoverImage.setChatMessage(message);
         }
         if (mMediaPlayerDelegate != null) {
             mMediaPlayerDelegate.initPlayerIfNeed(mMediaPlayerView, getVideoUrl(), true, isResumed(), false);
@@ -128,8 +129,11 @@ public class IMMessagePreviewVideoView extends MicroLifecycleFrameLayout {
 
     @Nullable
     private String getVideoUrl() {
-        if (mImMessage != null) {
-            return mImMessage.body.getOrDefault(null);
+        if (mMessage != null) {
+            final MSIMVideoElement element = mMessage.getVideoElement();
+            if (element != null) {
+                return element.getUrl();
+            }
         }
         return null;
     }

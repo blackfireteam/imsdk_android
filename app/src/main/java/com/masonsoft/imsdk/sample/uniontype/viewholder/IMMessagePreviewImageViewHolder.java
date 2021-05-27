@@ -4,7 +4,8 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMImageElement;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
@@ -22,11 +23,15 @@ public class IMMessagePreviewImageViewHolder extends IMMessageViewHolder {
     }
 
     @Override
-    protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
+    protected void onBindItemObject(int position, @NonNull DataObject<MSIMMessage> itemObject) {
         super.onBindItemObject(position, itemObject);
 
-        final IMMessage imMessage = itemObject.object;
-        final String url = imMessage.body.getOrDefault(null);
+        final MSIMMessage message = itemObject.object;
+        String url = null;
+        final MSIMImageElement element = message.getImageElement();
+        if (element != null) {
+            url = element.getUrl();
+        }
         mImage.setPhotoUri(url == null ? null : Uri.parse(url));
 
         mImage.setOnViewTapListener((view, x, y) -> {

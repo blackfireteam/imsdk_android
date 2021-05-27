@@ -11,7 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMAudioElement;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManagerHost;
@@ -20,67 +21,71 @@ import com.masonsoft.imsdk.sample.common.microlifecycle.real.Real;
 import com.masonsoft.imsdk.sample.common.microlifecycle.real.RealHost;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
-import com.masonsoft.imsdk.sample.widget.IMMessageAudioView;
 import com.masonsoft.imsdk.sample.widget.AudioPlayerView;
+import com.masonsoft.imsdk.sample.widget.IMMessageAudioView;
 
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
 
 public abstract class IMMessageVoiceViewHolder extends IMMessageViewHolder {
 
-    protected final IMMessageAudioView mVoiceView;
-    protected final ImageView mVoiceImageFlag;
-    protected final TextView mVoiceDurationText;
+    protected final IMMessageAudioView mAudioView;
+    protected final ImageView mAudioImageFlag;
+    protected final TextView mAudioDurationText;
 
     @Nullable
     private LocalMicroLifecycle mLocalMicroLifecycle;
 
     public IMMessageVoiceViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
-        mVoiceView = itemView.findViewById(R.id.voice_view);
-        mVoiceImageFlag = itemView.findViewById(R.id.voice_image_flag);
-        mVoiceDurationText = itemView.findViewById(R.id.voice_duration_text);
+        mAudioView = itemView.findViewById(R.id.audio_view);
+        mAudioImageFlag = itemView.findViewById(R.id.audio_image_flag);
+        mAudioDurationText = itemView.findViewById(R.id.audio_duration_text);
     }
 
     public IMMessageVoiceViewHolder(@NonNull Host host, @NonNull View itemView) {
         super(host, itemView);
-        mVoiceView = itemView.findViewById(R.id.voice_view);
-        mVoiceImageFlag = itemView.findViewById(R.id.voice_image_flag);
-        mVoiceDurationText = itemView.findViewById(R.id.voice_duration_text);
+        mAudioView = itemView.findViewById(R.id.audio_view);
+        mAudioImageFlag = itemView.findViewById(R.id.audio_image_flag);
+        mAudioDurationText = itemView.findViewById(R.id.audio_duration_text);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
+    protected void onBindItemObject(int position, @NonNull DataObject<MSIMMessage> itemObject) {
         super.onBindItemObject(position, itemObject);
-        final IMMessage message = itemObject.object;
+        final MSIMMessage message = itemObject.object;
 
-        mVoiceView.setMessage(message);
+        mAudioView.setMessage(message);
 
-        final long durationMs = message.durationMs.getOrDefault(0L);
-        mVoiceDurationText.setText(durationMs / 1000 + " ''");
+        long durationMs = 0L;
+        final MSIMAudioElement element = message.getAudioElement();
+        if (element != null) {
+            durationMs = element.getDurationMs();
+        }
+        mAudioDurationText.setText(durationMs / 1000 + " ''");
 
-        mVoiceView.setOnLongClickListener(v -> {
+        mAudioView.setOnLongClickListener(v -> {
             final UnionTypeViewHolderListeners.OnItemLongClickListener listener = itemObject.getExtHolderItemLongClick1();
             if (listener != null) {
                 listener.onItemLongClick(this);
             }
             return true;
         });
-        mVoiceView.setOnPlayerStateUpdateListener(new AudioPlayerView.OnPlayerStateUpdateListener() {
+        mAudioView.setOnPlayerStateUpdateListener(new AudioPlayerView.OnPlayerStateUpdateListener() {
             @Override
             public void onPlayerPlayPauseUpdate(boolean shouldShowPauseButton) {
                 if (shouldShowPauseButton) {
-                    Drawable drawable = mVoiceImageFlag.getDrawable();
+                    Drawable drawable = mAudioImageFlag.getDrawable();
                     if (!(drawable instanceof AnimationDrawable)) {
-                        mVoiceImageFlag.setImageResource(R.drawable.imsdk_sample_voice_message_playing_anim);
-                        drawable = mVoiceImageFlag.getDrawable();
+                        mAudioImageFlag.setImageResource(R.drawable.imsdk_sample_voice_message_playing_anim);
+                        drawable = mAudioImageFlag.getDrawable();
                     }
                     if (drawable instanceof AnimationDrawable) {
                         ((AnimationDrawable) drawable).start();
                     }
                 } else {
-                    mVoiceImageFlag.setImageResource(R.drawable.imsdk_sample_voice_msg_playing_3);
+                    mAudioImageFlag.setImageResource(R.drawable.imsdk_sample_voice_msg_playing_3);
                 }
             }
 
@@ -123,46 +128,46 @@ public abstract class IMMessageVoiceViewHolder extends IMMessageViewHolder {
 
         @Override
         public Real getReal() {
-            return mVoiceView;
+            return mAudioView;
         }
 
         @Override
         public void onCreate() {
             super.onCreate();
-            if (mVoiceView != null) {
-                mVoiceView.performCreate();
+            if (mAudioView != null) {
+                mAudioView.performCreate();
             }
         }
 
         @Override
         public void onStart() {
             super.onStart();
-            if (mVoiceView != null) {
-                mVoiceView.performStart();
+            if (mAudioView != null) {
+                mAudioView.performStart();
             }
         }
 
         @Override
         public void onResume() {
             super.onResume();
-            if (mVoiceView != null) {
-                mVoiceView.performResume();
+            if (mAudioView != null) {
+                mAudioView.performResume();
             }
         }
 
         @Override
         public void onPause() {
             super.onPause();
-            if (mVoiceView != null) {
-                mVoiceView.performPause();
+            if (mAudioView != null) {
+                mAudioView.performPause();
             }
         }
 
         @Override
         public void onStop() {
             super.onStop();
-            if (mVoiceView != null) {
-                mVoiceView.performStop();
+            if (mAudioView != null) {
+                mAudioView.performStop();
             }
         }
 
@@ -170,8 +175,8 @@ public abstract class IMMessageVoiceViewHolder extends IMMessageViewHolder {
         public void onDestroy() {
             super.onDestroy();
             mLocalMicroLifecycle = null;
-            if (mVoiceView != null) {
-                mVoiceView.performDestroy();
+            if (mAudioView != null) {
+                mAudioView.performDestroy();
             }
         }
     }

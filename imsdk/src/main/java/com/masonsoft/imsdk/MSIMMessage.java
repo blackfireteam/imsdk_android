@@ -76,6 +76,14 @@ public class MSIMMessage {
         return mMessage.type.getOrDefault(defaultValue);
     }
 
+    public String getBody() {
+        return getBody(null);
+    }
+
+    public String getBody(String defaultValue) {
+        return mMessage.body.getOrDefault(defaultValue);
+    }
+
     /**
      * 判断这一条消息是否是已撤回的消息
      *

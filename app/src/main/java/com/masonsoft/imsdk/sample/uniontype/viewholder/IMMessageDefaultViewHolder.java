@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.view.GestureDetectorCompat;
 
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
@@ -32,11 +32,11 @@ public abstract class IMMessageDefaultViewHolder extends IMMessageViewHolder {
 
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
-    protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
+    protected void onBindItemObject(int position, @NonNull DataObject<MSIMMessage> itemObject) {
         super.onBindItemObject(position, itemObject);
-        final IMMessage message = itemObject.object;
+        final MSIMMessage message = itemObject.object;
 
-        mMessageText.setText("[default]type:" + message.type.getOrDefault(-1) + ", body:" + message.body.getOrDefault(null));
+        mMessageText.setText("[default]type:" + message.getMessageType() + ", body:" + message.getBody());
 
         GestureDetectorCompat gestureDetectorCompat = new GestureDetectorCompat(mMessageText.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override

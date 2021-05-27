@@ -5,11 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.google.common.collect.Lists;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.IMMessage;
-import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -111,22 +110,21 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
         }
 
         return Single.just("")
-                .map(input -> IMMessageManager.getInstance().pageQueryMessage(
+                .map(input -> MSIMManager.getInstance().getMessageManager().pageQueryHistoryMessage(
                         mSessionUserId,
                         mFirstMessageSeq,
                         mPageSize,
                         mConversationType,
-                        mTargetUserId,
-                        true))
+                        mTargetUserId))
                 .map(page -> {
-                    List<IMMessage> imMessages = page.items;
-                    if (imMessages == null) {
-                        imMessages = new ArrayList<>();
+                    List<MSIMMessage> messageList = page.items;
+                    if (messageList == null) {
+                        messageList = new ArrayList<>();
                     }
-                    Collections.reverse(imMessages);
+                    Collections.reverse(messageList);
                     List<UnionTypeItemObject> target = new ArrayList<>();
-                    for (IMMessage imMessage : imMessages) {
-                        UnionTypeItemObject item = create(imMessage);
+                    for (MSIMMessage message : messageList) {
+                        UnionTypeItemObject item = create(message);
                         if (item == null) {
                             if (DEBUG) {
                                 SampleLog.e("createPrePageRequest ignore null UnionTypeItemObject");
@@ -149,7 +147,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
 
         // 记录上一页，下一页参数
         if (!items.isEmpty()) {
-            mFirstMessageSeq = ((IMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(0)).itemObject).object).seq.get();
+            mFirstMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(0)).itemObject).object).getSeq();
         }
         super.onPrePageRequestResult(view, items);
     }
@@ -173,21 +171,20 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
         }
 
         return Single.just("")
-                .map(input -> IMMessageManager.getInstance().pageQueryMessage(
+                .map(input -> MSIMManager.getInstance().getMessageManager().pageQueryNewMessage(
                         mSessionUserId,
                         mLastMessageSeq,
                         mPageSize,
                         mConversationType,
-                        mTargetUserId,
-                        false))
+                        mTargetUserId))
                 .map(page -> {
-                    List<IMMessage> imMessages = page.items;
-                    if (imMessages == null) {
-                        imMessages = new ArrayList<>();
+                    List<MSIMMessage> messageList = page.items;
+                    if (messageList == null) {
+                        messageList = new ArrayList<>();
                     }
                     List<UnionTypeItemObject> target = new ArrayList<>();
-                    for (IMMessage imMessage : imMessages) {
-                        UnionTypeItemObject item = create(imMessage);
+                    for (MSIMMessage message : messageList) {
+                        UnionTypeItemObject item = create(message);
                         if (item == null) {
                             if (DEBUG) {
                                 SampleLog.e("createNextPageRequest ignore null UnionTypeItemObject");
@@ -210,7 +207,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
 
         // 记录上一页，下一页参数
         if (!items.isEmpty()) {
-            mLastMessageSeq = ((IMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).seq.get();
+            mLastMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).getSeq();
         }
         super.onNextPageRequestResult(view, items);
     }

@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManagerHost;
@@ -29,12 +29,12 @@ public class IMMessagePreviewVideoViewHolder extends IMMessageViewHolder {
     }
 
     @Override
-    protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
+    protected void onBindItemObject(int position, @NonNull DataObject<MSIMMessage> itemObject) {
         super.onBindItemObject(position, itemObject);
 
-        final IMMessage imMessage = itemObject.object;
+        final MSIMMessage message = itemObject.object;
 
-        mPreviewVideoView.setImMessage(imMessage);
+        mPreviewVideoView.setMessage(message);
         mPreviewVideoView.setOnActionCloseClickListener(() -> {
             UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();
             if (listener != null) {
