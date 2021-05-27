@@ -5,32 +5,21 @@ import androidx.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
 
-import io.github.idonans.core.thread.Threads;
-
 /**
  * @since 1.0
  */
-public class MSIMWeakCallback<T> implements MSIMCallback<T> {
+public class MSIMWeakCallback<T> extends RunOnUiThread implements MSIMCallback<T> {
 
     @NonNull
     private final WeakReference<MSIMCallback<T>> mOutRef;
-    private final boolean mRunOnUiThread;
 
     public MSIMWeakCallback(@Nullable MSIMCallback<T> callback) {
         this(callback, false);
     }
 
     public MSIMWeakCallback(@Nullable MSIMCallback<T> callback, boolean runOnUiThread) {
+        super(runOnUiThread);
         mOutRef = new WeakReference<>(callback);
-        mRunOnUiThread = runOnUiThread;
-    }
-
-    private void runOrPost(Runnable runnable) {
-        if (mRunOnUiThread) {
-            Threads.postUi(runnable);
-        } else {
-            runnable.run();
-        }
     }
 
     @Override

@@ -8,6 +8,11 @@ import com.masonsoft.imsdk.core.IMConstants;
 public class MSIMConstants {
 
     /**
+     * 指代任意 id
+     */
+    public static final int ID_ANY = IMConstants.ID_ANY;
+
+    /**
      * 消息的发送状态
      */
     public static class SendStatus {

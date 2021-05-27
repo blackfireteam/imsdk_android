@@ -7,32 +7,21 @@ import com.masonsoft.imsdk.lang.GeneralResult;
 
 import java.lang.ref.WeakReference;
 
-import io.github.idonans.core.thread.Threads;
-
 /**
  * @since 1.0
  */
-public class MSIMWeakSdkListener implements MSIMSdkListener {
+public class MSIMWeakSdkListener extends RunOnUiThread implements MSIMSdkListener {
 
     @NonNull
     private final WeakReference<MSIMSdkListener> mOutRef;
-    private final boolean mRunOnUiThread;
 
     public MSIMWeakSdkListener(@Nullable MSIMSdkListener listener) {
         this(listener, false);
     }
 
     public MSIMWeakSdkListener(@Nullable MSIMSdkListener listener, boolean runOnUiThread) {
+        super(runOnUiThread);
         mOutRef = new WeakReference<>(listener);
-        mRunOnUiThread = runOnUiThread;
-    }
-
-    private void runOrPost(Runnable runnable) {
-        if (mRunOnUiThread) {
-            Threads.postUi(runnable);
-        } else {
-            runnable.run();
-        }
     }
 
     @Override

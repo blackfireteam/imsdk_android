@@ -10,7 +10,9 @@ import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.db.TinyPage;
+import com.masonsoft.imsdk.core.observable.MessageObservable;
 import com.masonsoft.imsdk.lang.GeneralResult;
+import com.masonsoft.imsdk.util.WeakObservable;
 
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.util.Preconditions;
@@ -31,7 +33,69 @@ public class MSIMMessageManager {
         return INSTANCE.get();
     }
 
+    @NonNull
+    private final WeakObservable<MSIMMessageListener> mMessageListeners = new WeakObservable<>();
+    @SuppressWarnings("FieldCanBeLocal")
+    private final MessageObservable.MessageObserver mMessageObserver = new MessageObservable.MessageObserver() {
+        @Override
+        public void onMessageChanged(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
+            if (sessionUserId != IMConstants.ID_ANY
+                    && sessionUserId != IMSessionManager.getInstance().getSessionUserId()) {
+                return;
+            }
+            mMessageListeners.forEach(listener -> {
+                if (listener != null) {
+                    listener.onMessageChanged(targetUserId, localMessageId);
+                }
+            });
+        }
+
+        @Override
+        public void onMessageCreated(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
+            if (sessionUserId != IMConstants.ID_ANY
+                    && sessionUserId != IMSessionManager.getInstance().getSessionUserId()) {
+                return;
+            }
+            mMessageListeners.forEach(listener -> {
+                if (listener != null) {
+                    listener.onMessageCreated(targetUserId, localMessageId);
+                }
+            });
+        }
+
+        @Override
+        public void onMessageBlockChanged(long sessionUserId, int conversationType, long targetUserId, long fromBlockId, long toBlockId) {
+            // ignore
+        }
+
+        @Override
+        public void onMultiMessageChanged(long sessionUserId) {
+            if (sessionUserId != IMConstants.ID_ANY
+                    && sessionUserId != IMSessionManager.getInstance().getSessionUserId()) {
+                return;
+            }
+            mMessageListeners.forEach(listener -> {
+                if (listener != null) {
+                    listener.onMultiMessageChanged(sessionUserId);
+                }
+            });
+        }
+    };
+
     private MSIMMessageManager() {
+        MessageObservable.DEFAULT.registerObserver(mMessageObserver);
+    }
+
+    public void addMessageListener(@Nullable MSIMMessageListener listener) {
+        if (listener != null) {
+            mMessageListeners.registerObserver(listener);
+        }
+    }
+
+    public void removeMessageListener(@Nullable MSIMMessageListener listener) {
+        if (listener != null) {
+            mMessageListeners.unregisterObserver(listener);
+        }
     }
 
     /**
