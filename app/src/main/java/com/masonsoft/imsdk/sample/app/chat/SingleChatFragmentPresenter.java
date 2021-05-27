@@ -69,6 +69,11 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                 }
             }
         };
+        mConversationChangedViewHelper.setConversationByTargetUserId(
+                mSessionUserId,
+                mConversationType,
+                mTargetUserId
+        );
     }
 
     @Nullable

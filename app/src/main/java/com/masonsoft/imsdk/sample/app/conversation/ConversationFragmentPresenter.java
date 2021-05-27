@@ -56,6 +56,10 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
                 addOrUpdateConversation(conversation);
             }
         };
+        mConversationChangedViewHelper.setConversation(
+                mSessionUserIdChangedViewHelper.getSessionUserId(),
+                MSIMConstants.ID_ANY
+        );
     }
 
     private long getSessionUserId() {
