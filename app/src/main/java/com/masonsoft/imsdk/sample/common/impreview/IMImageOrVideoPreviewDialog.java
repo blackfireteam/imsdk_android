@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.common.microlifecycle.CenterRecyclerViewMicroLifecycleComponentManager;
@@ -39,7 +39,7 @@ public class IMImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedL
     public IMImageOrVideoPreviewDialog(Lifecycle lifecycle,
                                        Activity activity,
                                        ViewGroup parentView,
-                                       IMMessage initMessage,
+                                       MSIMMessage initMessage,
                                        long targetUserId) {
         mViewDialog = new ViewDialog.Builder(activity)
                 .setContentView(R.layout.imsdk_sample_common_im_image_or_video_preview)
@@ -67,7 +67,7 @@ public class IMImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedL
         mViewImpl = new ViewImpl(adapter);
         clearPresenter();
 
-        final long initMessageSeq = initMessage.seq.get();
+        final long initMessageSeq = initMessage.getSeq();
         mPresenter = new IMImageOrVideoPreviewPresenter(mViewImpl, targetUserId, initMessageSeq);
         mViewImpl.setPresenter(mPresenter);
         mPresenter.showInitMessage(initMessage);

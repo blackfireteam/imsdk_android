@@ -5,9 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.google.common.collect.Lists;
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.Constants;
@@ -49,7 +50,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
         mLastMessageSeq = initMessageSeq;
     }
 
-    void showInitMessage(IMMessage initMessage) {
+    void showInitMessage(MSIMMessage initMessage) {
         UnionTypeStatusPageView view = getView();
         if (view == null) {
             return;
@@ -67,18 +68,18 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     };
 
     @Nullable
-    private UnionTypeItemObject create(IMMessage imMessage) {
-        return create(imMessage, false);
+    private UnionTypeItemObject create(MSIMMessage message) {
+        return create(message, false);
     }
 
     @Nullable
-    private UnionTypeItemObject create(IMMessage imMessage, boolean autoPlay) {
-        if (imMessage == null) {
+    private UnionTypeItemObject create(MSIMMessage message, boolean autoPlay) {
+        if (message == null) {
             return null;
         }
 
         return IMMessageViewHolder.Helper.createPreviewDefault(
-                new DataObject<>(imMessage)
+                new DataObject<>(message)
                         .putExtObjectBoolean1(autoPlay)
                         .putExtHolderItemClick1(mOnHolderItemClickListener),
                 mSessionUserId

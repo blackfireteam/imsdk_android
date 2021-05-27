@@ -5,8 +5,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.core.util.Pair;
 
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.observable.MessageObservable;
 import com.masonsoft.imsdk.lang.ObjectWrapper;
@@ -33,27 +34,11 @@ public abstract class IMMessageChangedViewHelper {
         MessageObservable.DEFAULT.registerObserver(mMessageObserver);
     }
 
-    public void setMessage(@NonNull IMMessage message) {
-        if (message._sessionUserId.isUnset()) {
-            SampleLog.e(new IllegalArgumentException("unexpected message._sessionUserId.isUnset()"));
-            return;
-        }
-        if (message._conversationType.isUnset()) {
-            SampleLog.e(new IllegalArgumentException("unexpected message._conversationType.isUnset()"));
-            return;
-        }
-        if (message._targetUserId.isUnset()) {
-            SampleLog.e(new IllegalArgumentException("unexpected message._targetUserId.isUnset()"));
-            return;
-        }
-        if (message.id.isUnset()) {
-            SampleLog.e(new IllegalArgumentException("unexpected message.id.isUnset()"));
-            return;
-        }
-        setMessage(message._sessionUserId.get(),
-                message._conversationType.get(),
-                message._targetUserId.get(),
-                message.id.get());
+    public void setMessage(@NonNull MSIMMessage message) {
+        setMessage(message.getSessionUserId(),
+                message.getConversationType(),
+                message.getTargetUserId(),
+                message.getMessageId());
     }
 
     public void setMessage(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {

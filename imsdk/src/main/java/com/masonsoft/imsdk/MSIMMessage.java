@@ -22,12 +22,44 @@ public class MSIMMessage {
         return mMessage;
     }
 
+    public long getSessionUserId() {
+        return getSessionUserId(0L);
+    }
+
+    public long getSessionUserId(long defaultValue) {
+        return mMessage._sessionUserId.getOrDefault(defaultValue);
+    }
+
+    public int getConversationType() {
+        return getConversationType(0);
+    }
+
+    public int getConversationType(int defaultValue) {
+        return mMessage._conversationType.getOrDefault(defaultValue);
+    }
+
+    public long getTargetUserId() {
+        return getTargetUserId(0L);
+    }
+
+    public long getTargetUserId(long defaultValue) {
+        return mMessage._targetUserId.getOrDefault(defaultValue);
+    }
+
     public long getMessageId() {
         return getMessageId(0L);
     }
 
     public long getMessageId(long defaultValue) {
         return mMessage.id.getOrDefault(defaultValue);
+    }
+
+    public long getSeq() {
+        return getSeq(0L);
+    }
+
+    public long getSeq(long defaultValue) {
+        return mMessage.seq.getOrDefault(defaultValue);
     }
 
     /**

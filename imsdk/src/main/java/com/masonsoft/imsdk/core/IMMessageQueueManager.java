@@ -118,27 +118,36 @@ public class IMMessageQueueManager {
     /**
      * 本地重发一个失败的消息
      */
-    public void enqueueResendSessionMessage(@NonNull IMMessage message) {
-        this.enqueueResendSessionMessage(message, null);
+    public void enqueueResendSessionMessage(long sessionUserId, @NonNull IMMessage message) {
+        this.enqueueResendSessionMessage(sessionUserId, message, null);
     }
 
     /**
      * 本地重发一个失败的消息
      */
-    public void enqueueResendSessionMessage(@NonNull IMMessage message, @Nullable IMCallback<GeneralResult> enqueueCallback) {
-        this.enqueueSendSessionMessage(message, 0, true, enqueueCallback);
+    public void enqueueResendSessionMessage(long sessionUserId,
+                                            @NonNull IMMessage message,
+                                            @Nullable IMCallback<GeneralResult> enqueueCallback) {
+        this.enqueueSendSessionMessage(sessionUserId, message, 0, true, enqueueCallback);
     }
 
     /**
      * 本地发送新消息
      */
-    public void enqueueSendSessionMessage(@NonNull IMMessage message, long toUserId, @Nullable IMCallback<GeneralResult> enqueueCallback) {
-        this.enqueueSendSessionMessage(message, toUserId, false, enqueueCallback);
+    public void enqueueSendSessionMessage(
+            long sessionUserId,
+            @NonNull IMMessage message,
+            long toUserId,
+            @Nullable IMCallback<GeneralResult> enqueueCallback) {
+        this.enqueueSendSessionMessage(sessionUserId, message, toUserId, false, enqueueCallback);
     }
 
-    private void enqueueSendSessionMessage(@NonNull IMMessage message, long toUserId, boolean resend, @Nullable IMCallback<GeneralResult> enqueueCallback) {
-        // sessionUserId 可能是无效值
-        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+    private void enqueueSendSessionMessage(
+            long sessionUserId,
+            @NonNull IMMessage message,
+            long toUserId,
+            boolean resend,
+            @Nullable IMCallback<GeneralResult> enqueueCallback) {
         mSendSessionMessageQueue.enqueue(
                 new SendSessionMessageTask(
                         new IMSessionMessage(
@@ -192,36 +201,35 @@ public class IMMessageQueueManager {
     /**
      * 撤回指定会话消息(聊天消息)
      */
-    public void enqueueRevokeActionMessage(@NonNull IMMessage message, @Nullable IMCallback<GeneralResult> enqueueCallback) {
-        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_REVOKE, message, enqueueCallback);
+    public void enqueueRevokeActionMessage(long sessionUserId, @NonNull IMMessage message, @Nullable IMCallback<GeneralResult> enqueueCallback) {
+        this.enqueueSendActionMessage(sessionUserId, IMActionMessage.ACTION_TYPE_REVOKE, message, enqueueCallback);
     }
 
     /**
      * 回执消息已读
      */
-    public void enqueueMarkAsReadActionMessage(long targetUserId, @Nullable IMCallback<GeneralResult> enqueueCallback) {
-        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_MARK_AS_READ, targetUserId, enqueueCallback);
+    public void enqueueMarkAsReadActionMessage(long sessionUserId, long targetUserId, @Nullable IMCallback<GeneralResult> enqueueCallback) {
+        this.enqueueSendActionMessage(sessionUserId, IMActionMessage.ACTION_TYPE_MARK_AS_READ, targetUserId, enqueueCallback);
     }
 
     /**
      * 删除会话
      */
-    public void enqueueDeleteConversationActionMessage(@NonNull IMConversation conversation, @Nullable IMCallback<GeneralResult> enqueueCallback) {
-        this.enqueueSendActionMessage(IMActionMessage.ACTION_TYPE_DELETE_CONVERSATION, conversation, enqueueCallback);
+    public void enqueueDeleteConversationActionMessage(long sessionUserId, @NonNull IMConversation conversation, @Nullable IMCallback<GeneralResult> enqueueCallback) {
+        this.enqueueSendActionMessage(sessionUserId, IMActionMessage.ACTION_TYPE_DELETE_CONVERSATION, conversation, enqueueCallback);
     }
 
     /**
      * 发送指令消息
      */
-    public void enqueueSendActionMessage(int actionType, Object actionObject) {
-        this.enqueueSendActionMessage(actionType, actionObject, null);
+    public void enqueueSendActionMessage(long sessionUserId, int actionType, Object actionObject) {
+        this.enqueueSendActionMessage(sessionUserId, actionType, actionObject, null);
     }
 
     /**
      * 发送指令消息
      */
-    public void enqueueSendActionMessage(int actionType, Object actionObject, @Nullable IMCallback<GeneralResult> enqueueCallback) {
-        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+    public void enqueueSendActionMessage(long sessionUserId, int actionType, Object actionObject, @Nullable IMCallback<GeneralResult> enqueueCallback) {
         mSendActionMessageQueue.enqueue(new SendActionMessageTask(
                 new IMActionMessage(
                         sessionUserId,

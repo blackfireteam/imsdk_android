@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.observable.ConversationObservable;
@@ -114,11 +116,11 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     };
 
     @Nullable
-    private UnionTypeItemObject createDefault(@Nullable IMMessage imMessage) {
-        if (imMessage == null) {
+    private UnionTypeItemObject createDefault(@Nullable MSIMMessage message) {
+        if (message == null) {
             return null;
         }
-        final DataObject<IMMessage> dataObject = new DataObject<>(imMessage)
+        final DataObject<MSIMMessage> dataObject = new DataObject<>(message)
                 .putExtHolderItemClick1(mOnHolderItemClickListener)
                 .putExtHolderItemLongClick1(mOnHolderItemLongClickListener);
         return IMMessageViewHolder.Helper.createDefault(dataObject, mSessionUserId);
@@ -137,22 +139,21 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         }
 
         return Single.just("")
-                .map(input -> IMMessageManager.getInstance().pageQueryMessage(
+                .map(input -> MSIMManager.getInstance().getMessageManager().pageQueryHistoryMessage(
                         mSessionUserId,
                         0,
                         mPageSize,
                         mConversationType,
-                        mTargetUserId,
-                        true))
+                        mTargetUserId))
                 .map(page -> {
-                    List<IMMessage> imMessages = page.items;
-                    if (imMessages == null) {
-                        imMessages = new ArrayList<>();
+                    List<MSIMMessage> messageList = page.items;
+                    if (messageList == null) {
+                        messageList = new ArrayList<>();
                     }
-                    Collections.reverse(imMessages);
+                    Collections.reverse(messageList);
                     List<UnionTypeItemObject> target = new ArrayList<>();
-                    for (IMMessage imMessage : imMessages) {
-                        UnionTypeItemObject item = createDefault(imMessage);
+                    for (MSIMMessage message : messageList) {
+                        UnionTypeItemObject item = createDefault(message);
                         if (item == null) {
                             if (DEBUG) {
                                 SampleLog.e("createInitRequest ignore null UnionTypeItemObject");
@@ -172,23 +173,14 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         if (DEBUG) {
             IMLog.v("onInitRequestResult items size:%s", items.size());
         }
-        /*
-        // TODO
-        if (mTargetConversation != null) {
-            // 设置新的会话焦点
-            final long conversationId = mTargetConversation.id;
-            final long sessionUserId = SessionManager.Session.getSessionUserId(mSession);
-            SettingsManager.getInstance().getUserMemorySettings(sessionUserId).setFocusConversationId(conversationId);
-            ImManager.getInstance().clearUnreadCount(conversationId);
-        }*/
 
         // 记录上一页，下一页参数
         if (items.isEmpty()) {
             mFirstMessageSeq = -1;
             mLastMessageSeq = -1;
         } else {
-            mFirstMessageSeq = ((IMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(0)).itemObject).object).seq.get();
-            mLastMessageSeq = ((IMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).seq.get();
+            mFirstMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(0)).itemObject).object).getSeq();
+            mLastMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).getSeq();
         }
         super.onInitRequestResult(view, items);
     }

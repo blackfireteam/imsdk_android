@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.sample.Constants;
 
@@ -55,7 +56,7 @@ public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
         return null;
     }
 
-    public void setMessage(@NonNull IMMessage message) {
+    public void setMessage(@NonNull MSIMMessage message) {
         mMessageChangedViewHelper.setMessage(message);
     }
 

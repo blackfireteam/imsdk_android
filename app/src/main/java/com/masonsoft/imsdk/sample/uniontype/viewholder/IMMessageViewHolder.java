@@ -16,12 +16,10 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 
+import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.core.IMConstants;
-import com.masonsoft.imsdk.core.IMMessage;
-import com.masonsoft.imsdk.core.IMMessageManager;
-import com.masonsoft.imsdk.core.IMMessageQueueManager;
-import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -140,31 +138,31 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
     @Override
     public final void onBind(int position, @NonNull Object originObject) {
         //noinspection unchecked
-        onBindItemObject(position, (DataObject<IMMessage>) originObject);
+        onBindItemObject(position, (DataObject<MSIMMessage>) originObject);
     }
 
     @CallSuper
-    protected void onBindItemObject(int position, @NonNull DataObject<IMMessage> itemObject) {
-        final IMMessage imMessage = itemObject.object;
+    protected void onBindItemObject(int position, @NonNull DataObject<MSIMMessage> itemObject) {
+        final MSIMMessage message = itemObject.object;
 
-        final long sessionUserId = imMessage._sessionUserId.get();
-        final int conversationType = imMessage._conversationType.get();
-        final long targetUserId = imMessage._targetUserId.get();
-        final long localMessageId = imMessage.id.get();
+        final long sessionUserId = message.getSessionUserId();
+        final int conversationType = message.getConversationType();
+        final long targetUserId = message.getTargetUserId();
+        final long messageId = message.getMessageId();
         if (mMessageDebugView != null) {
             mMessageDebugView.setMessage(
                     sessionUserId,
                     conversationType,
                     targetUserId,
-                    localMessageId
+                    messageId
             );
         }
 
         if (mMessageRevokeStateFrameLayout != null) {
-            mMessageRevokeStateFrameLayout.setMessage(imMessage);
+            mMessageRevokeStateFrameLayout.setMessage(message);
         }
         if (mMessageRevokeTextView != null) {
-            mMessageRevokeTextView.setTargetUserId(imMessage.fromUserId.get());
+            mMessageRevokeTextView.setTargetUserId(message.getSender());
         }
 
         if (mMessageTime != null) {
@@ -179,7 +177,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
         return TimeUnit.MINUTES.toMillis(5);
     }
 
-    protected boolean needShowTime(DataObject<IMMessage> dataObject) {
+    protected boolean needShowTime(DataObject<MSIMMessage> dataObject) {
         final long showTimeDuration = getShowTimeDuration();
         if (showTimeDuration <= 0) {
             return true;
@@ -188,7 +186,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
         boolean needShowTime = true;
         if (dataObject != null) {
             if (dataObject.object != null) {
-                final long currentMessageTime = dataObject.object.timeMs.getOrDefault(0L);
+                final long currentMessageTime = dataObject.object.getTimeMs();
                 if (currentMessageTime <= 0) {
                     Throwable e = new IllegalArgumentException("invalid timeMs " + dataObject.object);
                     SampleLog.e(e);
@@ -200,12 +198,12 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                     if (preObject != null) {
                         //noinspection rawtypes
                         if (preObject.itemObject instanceof DataObject
-                                && ((DataObject) preObject.itemObject).object instanceof IMMessage) {
+                                && ((DataObject) preObject.itemObject).object instanceof MSIMMessage) {
                             //noinspection rawtypes
-                            IMMessage preIMMessage = (IMMessage) ((DataObject) preObject.itemObject).object;
-                            final long preMessageTime = preIMMessage.timeMs.getOrDefault(0L);
+                            MSIMMessage preMessage = (MSIMMessage) ((DataObject) preObject.itemObject).object;
+                            final long preMessageTime = preMessage.getTimeMs();
                             if (preMessageTime <= 0) {
-                                Throwable e = new IllegalArgumentException("invalid timeMs " + preIMMessage);
+                                Throwable e = new IllegalArgumentException("invalid timeMs " + preMessage);
                                 SampleLog.e(e);
                             }
                             needShowTime = currentMessageTime - preMessageTime >= showTimeDuration;
@@ -218,7 +216,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
         return needShowTime;
     }
 
-    protected void updateMessageTimeView(TextView messageTimeView, DataObject<IMMessage> dataObject) {
+    protected void updateMessageTimeView(TextView messageTimeView, DataObject<MSIMMessage> dataObject) {
         if (messageTimeView == null) {
             SampleLog.v("updateMessageTimeView ignore null messageTimeView");
             return;
@@ -231,7 +229,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
 
         long currentMessageTime = -1;
         if (dataObject != null && dataObject.object != null) {
-            currentMessageTime = dataObject.object.timeMs.getOrDefault(0L);
+            currentMessageTime = dataObject.object.getTimeMs();
         }
         if (currentMessageTime <= 0) {
             SampleLog.v("invalid current message time: %s", currentMessageTime);
@@ -253,22 +251,13 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
          * 竖向默认消息模式
          */
         @Nullable
-        public static UnionTypeItemObject createDefault(DataObject<IMMessage> dataObject, long sessionUserId) {
-            if (dataObject.object.toUserId.isUnset()) {
-                SampleLog.e("imMessage toUserId is unset %s", dataObject.object);
-                return null;
-            }
-            if (dataObject.object.type.isUnset()) {
-                SampleLog.e("imMessage type is unset %s", dataObject.object);
-                return null;
-            }
-
+        public static UnionTypeItemObject createDefault(DataObject<MSIMMessage> dataObject, long sessionUserId) {
             // 区分消息是收到的还是发送的
-            final boolean received = dataObject.object.toUserId.get() == sessionUserId;
-            final int msgType = dataObject.object.type.get();
+            final boolean received = dataObject.object.getReceiver() == sessionUserId;
+            final int messageType = dataObject.object.getMessageType();
 
             // 已撤回的消息
-            if (msgType == IMConstants.MessageType.REVOKED) {
+            if (messageType == MSIMConstants.MessageType.REVOKED) {
                 return received
                         ? UnionTypeItemObject.valueOf(
                         UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_RECEIVED,
@@ -279,7 +268,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             }
 
             // 文本消息
-            if (msgType == IMConstants.MessageType.TEXT) {
+            if (messageType == MSIMConstants.MessageType.TEXT) {
                 return received
                         ? UnionTypeItemObject.valueOf(
                         UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_TEXT_RECEIVED,
@@ -290,7 +279,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             }
 
             // 图片消息
-            if (msgType == IMConstants.MessageType.IMAGE) {
+            if (messageType == MSIMConstants.MessageType.IMAGE) {
                 return received ? UnionTypeItemObject.valueOf(
                         UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_RECEIVED,
                         dataObject)
@@ -300,7 +289,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             }
 
             // 语音消息
-            if (msgType == IMConstants.MessageType.AUDIO) {
+            if (messageType == MSIMConstants.MessageType.AUDIO) {
                 return received ? UnionTypeItemObject.valueOf(
                         UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_VOICE_RECEIVED,
                         dataObject)
@@ -310,7 +299,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             }
 
             // 视频消息
-            if (msgType == IMConstants.MessageType.VIDEO) {
+            if (messageType == MSIMConstants.MessageType.VIDEO) {
                 return received ? UnionTypeItemObject.valueOf(
                         UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_RECEIVED,
                         dataObject)
@@ -320,7 +309,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             }
 
             // 自定义消息
-            if (msgType == IMConstants.MessageType.FIRST_CUSTOM_MESSAGE) {
+            if (messageType == MSIMConstants.MessageType.FIRST_CUSTOM_MESSAGE) {
                 return received ? UnionTypeItemObject.valueOf(
                         UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED,
                         dataObject)
@@ -342,29 +331,20 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
          * 横向全屏预览模式
          */
         @Nullable
-        public static UnionTypeItemObject createPreviewDefault(DataObject<IMMessage> dataObject, long sessionUserId) {
-            if (dataObject.object.toUserId.isUnset()) {
-                SampleLog.e("imMessage toUserId is unset %s", dataObject.object);
-                return null;
-            }
-            if (dataObject.object.type.isUnset()) {
-                SampleLog.e("imMessage type is unset %s", dataObject.object);
-                return null;
-            }
-
+        public static UnionTypeItemObject createPreviewDefault(DataObject<MSIMMessage> dataObject, long sessionUserId) {
             // 区分消息是收到的还是发送的
-            final boolean received = dataObject.object.toUserId.get() == sessionUserId;
-            final long msgType = dataObject.object.type.get();
+            final boolean received = dataObject.object.getReceiver() == sessionUserId;
+            final long messageType = dataObject.object.getMessageType();
 
             // 视频消息
-            if (msgType == IMConstants.MessageType.VIDEO) {
+            if (messageType == MSIMConstants.MessageType.VIDEO) {
                 return UnionTypeItemObject.valueOf(
                         UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO,
                         dataObject);
             }
 
             // 图片消息
-            if (msgType == IMConstants.MessageType.IMAGE) {
+            if (messageType == MSIMConstants.MessageType.IMAGE) {
                 return UnionTypeItemObject.valueOf(
                         UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE,
                         dataObject);
@@ -393,12 +373,12 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 return null;
             }
             final DataObject<?> dataObject = (DataObject<?>) itemObject.itemObject;
-            if (!(dataObject.object instanceof IMMessage)) {
-                SampleLog.e("item object's data object's object is not ImMessage");
+            if (!(dataObject.object instanceof MSIMMessage)) {
+                SampleLog.e("item object's data object's object is not MSIMMessage");
                 return null;
             }
 
-            final IMMessage message = (IMMessage) dataObject.object;
+            final MSIMMessage message = (MSIMMessage) dataObject.object;
             Activity innerActivity = holder.host.getActivity();
             if (innerActivity == null) {
                 SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
@@ -423,7 +403,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             }
 
             // 区分消息是收到的还是发送的
-            final boolean received = message.toUserId.getOrDefault(0L) == IMSessionManager.getInstance().getSessionUserId();
+            final boolean received = message.getReceiver() == MSIMManager.getInstance().getSessionUserId();
             HolderFinder holderFinder = new HolderFinder();
             holderFinder.holder = holder;
             holderFinder.position = position;
@@ -444,11 +424,11 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             final Object tag = new Object();
             setHolderFinderTag(input.holder, tag);
             Threads.postBackground(() -> {
-                final IMMessage message = IMMessageManager.getInstance().getMessage(
-                        input.message._sessionUserId.get(),
-                        input.message._conversationType.get(),
-                        input.message._targetUserId.get(),
-                        input.message.id.get()
+                final MSIMMessage message = MSIMManager.getInstance().getMessageManager().getMessage(
+                        input.message.getSessionUserId(),
+                        input.message.getConversationType(),
+                        input.message.getTargetUserId(),
+                        input.message.getMessageId()
                 );
                 Threads.runOnUi(() -> {
                     if (isHolderFinderTagChanged(input.holder, tag)) {
@@ -470,7 +450,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             public int position;
             public UnionTypeItemObject itemObject;
             public DataObject<?> dataObject;
-            public IMMessage message;
+            public MSIMMessage message;
             public Activity innerActivity;
             public Lifecycle lifecycle;
 
@@ -485,13 +465,9 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 return;
             }
 
-            if (holderFinder.message.type.isUnset()) {
-                SampleLog.e("imMessage type is unset %s", holderFinder.message);
-                return;
-            }
-            final long type = holderFinder.message.type.get();
-            if (type == IMConstants.MessageType.IMAGE
-                    || type == IMConstants.MessageType.VIDEO) {
+            final long messageType = holderFinder.message.getMessageType();
+            if (messageType == MSIMConstants.MessageType.IMAGE
+                    || messageType == MSIMConstants.MessageType.VIDEO) {
                 // 图片或者视频
                 new IMImageOrVideoPreviewDialog(
                         holderFinder.lifecycle,
@@ -536,15 +512,10 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
         }
 
         private static boolean showMenuInternal(@NonNull final HolderFinder holderFinder) {
-            if (holderFinder.message.type.isUnset()) {
-                SampleLog.e("message type is unset %s", holderFinder.message);
-                return false;
-            }
-
-            final long type = holderFinder.message.type.get();
+            final long messageType = holderFinder.message.getMessageType();
             final int MENU_ID_COPY = 1;
             final int MENU_ID_RECALL = 2;
-            if (type == IMConstants.MessageType.TEXT) {
+            if (messageType == MSIMConstants.MessageType.TEXT) {
                 // 文字
                 View anchorView = holderFinder.holder.itemView.findViewById(R.id.message_text);
                 if (anchorView == null) {
@@ -563,7 +534,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 menuList.add(I18nResources.getString(R.string.imsdk_sample_menu_copy));
                 menuIdList.add(MENU_ID_COPY);
                 if (!holderFinder.received) {
-                    if (holderFinder.message.sendState.getOrDefault(IMConstants.SendStatus.SUCCESS) == IMConstants.SendStatus.SUCCESS) {
+                    if (holderFinder.message.getSendStatus(MSIMConstants.SendStatus.SUCCESS) == MSIMConstants.SendStatus.SUCCESS) {
                         menuList.add(I18nResources.getString(R.string.imsdk_sample_menu_recall));
                         menuIdList.add(MENU_ID_RECALL);
                     }
@@ -579,7 +550,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 menuDialog.setOnIMMenuClickListener((menuId, menuText, menuView) -> {
                     if (menuId == MENU_ID_COPY) {
                         // 复制
-                        ClipboardUtil.copy(holderFinder.message.body.getOrDefault(""));
+                        ClipboardUtil.copy(holderFinder.message.getTextElement().getText());
                     } else if (menuId == MENU_ID_RECALL) {
                         // 撤回
                         revoke(holderFinder.holder);
@@ -591,7 +562,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 menuDialog.show();
                 return true;
             }
-            if (type == IMConstants.MessageType.IMAGE) {
+            if (messageType == MSIMConstants.MessageType.IMAGE) {
                 // 图片
                 View anchorView = holderFinder.holder.itemView.findViewById(R.id.resize_image_view);
                 if (anchorView == null) {
@@ -608,7 +579,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 final List<Integer> menuIdList = new ArrayList<>();
 
                 if (!holderFinder.received) {
-                    if (holderFinder.message.sendState.getOrDefault(IMConstants.SendStatus.SUCCESS) == IMConstants.SendStatus.SUCCESS) {
+                    if (holderFinder.message.getSendStatus(MSIMConstants.SendStatus.SUCCESS) == MSIMConstants.SendStatus.SUCCESS) {
                         menuList.add(I18nResources.getString(R.string.imsdk_sample_menu_recall));
                         menuIdList.add(MENU_ID_RECALL);
                     }
@@ -650,8 +621,11 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 SampleLog.e("revoke getHolderFinder return null");
                 return;
             }
-            final IMMessage message = holderFinder.message;
-            IMMessageQueueManager.getInstance().enqueueRevokeActionMessage(message);
+            final MSIMMessage message = holderFinder.message;
+            MSIMManager.getInstance().getMessageManager().revoke(
+                    message.getSessionUserId(),
+                    message
+            );
         }
 
     }

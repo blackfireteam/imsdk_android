@@ -4,11 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.core.IMMessageManager;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
-import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.db.TinyPage;
 import com.masonsoft.imsdk.core.observable.MessageObservable;
 import com.masonsoft.imsdk.lang.GeneralResult;
@@ -89,15 +87,16 @@ public class MSIMMessageManager {
     /**
      * 将消息入库，然后异步发送
      */
-    public void sendMessage(@NonNull MSIMMessage message, long receiver) {
-        this.sendMessage(message, receiver, null);
+    public void sendMessage(long sessionUserId, @NonNull MSIMMessage message, long receiver) {
+        this.sendMessage(sessionUserId, message, receiver, null);
     }
 
     /**
      * 将消息入库，然后异步发送
      */
-    public void sendMessage(@NonNull MSIMMessage message, long receiver, @Nullable MSIMCallback<GeneralResult> callback) {
+    public void sendMessage(long sessionUserId, @NonNull MSIMMessage message, long receiver, @Nullable MSIMCallback<GeneralResult> callback) {
         IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
+                sessionUserId,
                 message.getMessage(),
                 receiver,
                 callback
@@ -107,41 +106,51 @@ public class MSIMMessageManager {
     /**
      * 异步重新发送一个已经发送失败的消息
      */
-    public void resendMessage(@NonNull MSIMMessage message) {
-        this.resendMessage(message, null);
+    public void resendMessage(long sessionUserId, @NonNull MSIMMessage message) {
+        this.resendMessage(sessionUserId, message, null);
     }
 
     /**
      * 异步重新发送一个已经发送失败的消息
      */
-    public void resendMessage(@NonNull MSIMMessage message, @Nullable MSIMCallback<GeneralResult> callback) {
+    public void resendMessage(long sessionUserId, @NonNull MSIMMessage message, @Nullable MSIMCallback<GeneralResult> callback) {
         IMMessageQueueManager.getInstance().enqueueResendSessionMessage(
+                sessionUserId,
                 message.getMessage(),
                 callback
         );
     }
 
-    public void markAsRead(long targetUserId) {
-        markAsRead(targetUserId, null);
+    public void markAsRead(long sessionUserId, long targetUserId) {
+        markAsRead(sessionUserId, targetUserId, null);
     }
 
-    public void markAsRead(long targetUserId, @Nullable MSIMCallback<GeneralResult> callback) {
-        IMMessageQueueManager.getInstance().enqueueMarkAsReadActionMessage(targetUserId, callback);
+    public void markAsRead(long sessionUserId, long targetUserId, @Nullable MSIMCallback<GeneralResult> callback) {
+        IMMessageQueueManager.getInstance().enqueueMarkAsReadActionMessage(sessionUserId, targetUserId, callback);
+    }
+
+    public void revoke(long sessionUserId, @NonNull MSIMMessage message) {
+        revoke(sessionUserId, message, null);
+    }
+
+    public void revoke(long sessionUserId, @NonNull MSIMMessage message, @Nullable MSIMCallback<GeneralResult> callback) {
+        IMMessageQueueManager.getInstance().enqueueRevokeActionMessage(
+                sessionUserId,
+                message.getMessage(),
+                callback
+        );
     }
 
     @WorkerThread
     @Nullable
     public MSIMMessage getMessage(
+            final long sessionUserId,
+            final int conversationType,
             final long targetUserId,
             final long messageId) {
-        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        if (sessionUserId <= 0) {
-            return null;
-        }
-
         final IMMessage message = IMMessageManager.getInstance().getMessage(
                 sessionUserId,
-                IMConstants.ConversationType.C2C,
+                conversationType,
                 targetUserId,
                 messageId
         );
@@ -153,19 +162,17 @@ public class MSIMMessageManager {
 
     @WorkerThread
     @NonNull
-    public TinyPage<MSIMMessage> pageQueryNewMessage(final long seq,
-                                                     final int limit,
-                                                     final long targetUserId) {
-        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        if (sessionUserId <= 0) {
-            return new TinyPage<>();
-        }
-
+    public TinyPage<MSIMMessage> pageQueryNewMessage(
+            final long sessionUserId,
+            final long seq,
+            final int limit,
+            final int conversationType,
+            final long targetUserId) {
         final TinyPage<IMMessage> page = IMMessageManager.getInstance().pageQueryMessage(
                 sessionUserId,
                 seq,
                 limit,
-                IMConstants.ConversationType.C2C,
+                conversationType,
                 targetUserId,
                 false
         );
@@ -178,19 +185,17 @@ public class MSIMMessageManager {
 
     @WorkerThread
     @NonNull
-    public TinyPage<MSIMMessage> pageQueryHistoryMessage(final long seq,
-                                                         final int limit,
-                                                         final long targetUserId) {
-        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        if (sessionUserId <= 0) {
-            return new TinyPage<>();
-        }
-
+    public TinyPage<MSIMMessage> pageQueryHistoryMessage(
+            final long sessionUserId,
+            final long seq,
+            final int limit,
+            final int conversationType,
+            final long targetUserId) {
         final TinyPage<IMMessage> page = IMMessageManager.getInstance().pageQueryMessage(
                 sessionUserId,
                 seq,
                 limit,
-                IMConstants.ConversationType.C2C,
+                conversationType,
                 targetUserId,
                 true
         );
