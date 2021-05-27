@@ -1,9 +1,12 @@
 package com.masonsoft.imsdk;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.core.observable.UserInfoObservable;
 import com.masonsoft.imsdk.user.UserInfo;
 import com.masonsoft.imsdk.user.UserInfoManager;
+import com.masonsoft.imsdk.util.WeakObservable;
 
 import io.github.idonans.core.Singleton;
 
@@ -23,7 +26,30 @@ public class MSIMUserInfoManager {
         return INSTANCE.get();
     }
 
+    @NonNull
+    private final WeakObservable<MSIMUserInfoListener> mUserInfoListeners = new WeakObservable<>();
+    @SuppressWarnings("FieldCanBeLocal")
+    private final UserInfoObservable.UserInfoObserver mUserInfoObserver = userId ->
+            mUserInfoListeners.forEach(listener -> {
+                if (listener != null) {
+                    listener.onUserInfoChanged(userId);
+                }
+            });
+
     private MSIMUserInfoManager() {
+        UserInfoObservable.DEFAULT.registerObserver(mUserInfoObserver);
+    }
+
+    public void addUserInfoListener(@Nullable MSIMUserInfoListener listener) {
+        if (listener != null) {
+            mUserInfoListeners.registerObserver(listener);
+        }
+    }
+
+    public void removeUserInfoListener(@Nullable MSIMUserInfoListener listener) {
+        if (listener != null) {
+            mUserInfoListeners.unregisterObserver(listener);
+        }
     }
 
     @Nullable

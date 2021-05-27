@@ -171,6 +171,11 @@ public class MSIMManager {
         return MSIMConversationManager.getInstance();
     }
 
+    @NonNull
+    public MSIMUserInfoManager getUserInfoManager() {
+        return MSIMUserInfoManager.getInstance();
+    }
+
     public final String getAppId() {
         return mAppId;
     }
