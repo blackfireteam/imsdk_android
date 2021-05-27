@@ -9,7 +9,9 @@ import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.db.TinyPage;
+import com.masonsoft.imsdk.core.observable.ConversationObservable;
 import com.masonsoft.imsdk.lang.GeneralResult;
+import com.masonsoft.imsdk.util.WeakObservable;
 
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.util.Preconditions;
@@ -28,6 +30,53 @@ public class MSIMConversationManager {
 
     static MSIMConversationManager getInstance() {
         return INSTANCE.get();
+    }
+
+    @NonNull
+    private final WeakObservable<MSIMConversationListener> mConversationListeners = new WeakObservable<>();
+    @SuppressWarnings("FieldCanBeLocal")
+    private final ConversationObservable.ConversationObserver mConversationObserver = new ConversationObservable.ConversationObserver() {
+        @Override
+        public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+            if (sessionUserId != IMConstants.ID_ANY
+                    && sessionUserId != IMSessionManager.getInstance().getSessionUserId()) {
+                return;
+            }
+            mConversationListeners.forEach(listener -> {
+                if (listener != null) {
+                    listener.onConversationChanged(conversationId, targetUserId);
+                }
+            });
+        }
+
+        @Override
+        public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+            if (sessionUserId != IMConstants.ID_ANY
+                    && sessionUserId != IMSessionManager.getInstance().getSessionUserId()) {
+                return;
+            }
+            mConversationListeners.forEach(listener -> {
+                if (listener != null) {
+                    listener.onConversationCreated(conversationId, targetUserId);
+                }
+            });
+        }
+    };
+
+    private MSIMConversationManager() {
+        ConversationObservable.DEFAULT.registerObserver(mConversationObserver);
+    }
+
+    public void addConversationListener(@Nullable MSIMConversationListener listener) {
+        if (listener != null) {
+            mConversationListeners.registerObserver(listener);
+        }
+    }
+
+    public void removeConversationListener(@Nullable MSIMConversationListener listener) {
+        if (listener != null) {
+            mConversationListeners.unregisterObserver(listener);
+        }
     }
 
     public void deleteConversation(MSIMConversation conversation) {

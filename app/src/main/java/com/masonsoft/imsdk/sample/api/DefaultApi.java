@@ -9,8 +9,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.IMConstants;
-import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.OtherMessage;
 import com.masonsoft.imsdk.core.OtherMessageManager;
 import com.masonsoft.imsdk.core.SignGenerator;
@@ -23,7 +24,6 @@ import com.masonsoft.imsdk.sample.entity.Spark;
 import com.masonsoft.imsdk.sample.im.FetchSparkMessagePacket;
 import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
 import com.masonsoft.imsdk.sample.util.RequestSignUtil;
-import com.masonsoft.imsdk.user.UserInfoManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -196,7 +196,7 @@ public class DefaultApi {
 
     public static List<Spark> getSparks() {
         final SingleSubject<List<Spark>> subject = SingleSubject.create();
-        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+        final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
         final long originSign = SignGenerator.nextSign();
         final FetchSparkMessagePacket messagePacket = FetchSparkMessagePacket.create(originSign);
         final OtherMessage otherMessage = new OtherMessage(sessionUserId, messagePacket);
@@ -215,7 +215,11 @@ public class DefaultApi {
 
                 // 存储用户头像与昵称
                 for (Spark spark : sparkList) {
-                    UserInfoManager.getInstance().updateAvatarAndNickname(spark.userId, spark.avatar, spark.nickname);
+                    MSIMManager.getInstance().getUserInfoManager().insertOrUpdateUserInfo(
+                            new MSIMUserInfo.Editor(spark.userId)
+                                    .setAvatar(spark.avatar)
+                                    .setNickname(spark.nickname)
+                    );
                 }
 
                 subject.onSuccess(sparkList);

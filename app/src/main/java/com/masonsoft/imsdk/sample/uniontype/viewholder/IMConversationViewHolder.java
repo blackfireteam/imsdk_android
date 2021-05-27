@@ -6,6 +6,7 @@ import android.view.Window;
 
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.core.IMConversation;
@@ -36,11 +37,11 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
     @Override
     public void onBind(int position, @NonNull Object originObject) {
         //noinspection unchecked
-        final DataObject<IMConversation> itemObject = (DataObject<IMConversation>) originObject;
-        final IMConversation conversation = itemObject.object;
+        final DataObject<MSIMConversation> itemObject = (DataObject<MSIMConversation>) originObject;
+        final MSIMConversation conversation = itemObject.object;
 
         final long sessionUserId = conversation._sessionUserId.get();
-        final long conversationId = conversation.id.get();
+        final long conversationId = conversation.getConversationId();
         final long targetUserId = conversation.targetUserId.get();
 
         // debug

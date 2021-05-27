@@ -161,6 +161,14 @@ public class MSIMManager {
         return signInOrSignOutTag == null || mSignInOrSignOutTag != signInOrSignOutTag;
     }
 
+    public long getSessionUserId() {
+        return IMSessionManager.getInstance().getSessionUserId();
+    }
+
+    public boolean hasSession() {
+        return IMSessionManager.getInstance().getSession() != null;
+    }
+
     @NonNull
     public MSIMMessageManager getMessageManager() {
         return MSIMMessageManager.getInstance();

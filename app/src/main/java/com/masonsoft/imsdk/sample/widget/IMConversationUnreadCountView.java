@@ -12,9 +12,9 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMConversation;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.IMConstants;
-import com.masonsoft.imsdk.core.IMConversationManager;
+import com.masonsoft.imsdk.core.IMConversation;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 
@@ -100,7 +100,7 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
     @Override
     protected Object loadCustomObject() {
         if (getConversationId() == IMConstants.ID_ANY) {
-            return IMConversationManager.getInstance().getAllUnreadCount(getSessionUserId());
+            return MSIMManager.getInstance().getConversationManager().getAllUnreadCount();
         }
 
         return null;

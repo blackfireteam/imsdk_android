@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMSessionManager;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.app.signin.SignInActivity;
@@ -86,7 +86,7 @@ public class SplashActivity extends FragmentDelegateActivity {
      * 如果存在有效的登录信息，返回 true, 否则返回 false.
      */
     private boolean hasValidSession() {
-        return IMSessionManager.getInstance().getSession() != null;
+        return MSIMManager.getInstance().hasSession();
     }
 
     private static class RedirectTask extends WeakAbortSignal implements Runnable {
