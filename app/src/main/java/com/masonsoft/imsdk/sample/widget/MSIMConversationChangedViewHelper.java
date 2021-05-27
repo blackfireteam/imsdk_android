@@ -4,22 +4,22 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.core.util.Pair;
 
-import com.masonsoft.imsdk.core.IMConversation;
-import com.masonsoft.imsdk.core.IMConstants;
-import com.masonsoft.imsdk.core.IMConversationManager;
-import com.masonsoft.imsdk.core.observable.ConversationObservable;
+import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.MSIMConversationListener;
+import com.masonsoft.imsdk.MSIMConversationListenerProxy;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.util.Objects;
 
-import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public abstract class IMConversationChangedViewHelper {
+public abstract class MSIMConversationChangedViewHelper {
 
     private final DisposableHolder mRequestHolder = new DisposableHolder();
 
@@ -32,8 +32,8 @@ public abstract class IMConversationChangedViewHelper {
     private int mConversationType = Integer.MIN_VALUE / 2;
     private long mTargetUserId = Long.MIN_VALUE / 2;
 
-    public IMConversationChangedViewHelper() {
-        ConversationObservable.DEFAULT.registerObserver(mConversationObserver);
+    public MSIMConversationChangedViewHelper() {
+        MSIMManager.getInstance().getConversationManager().addConversationListener(mConversationListener);
     }
 
     public void setConversation(long sessionUserId, long conversationId) {
@@ -101,14 +101,14 @@ public abstract class IMConversationChangedViewHelper {
         }
         mRequestHolder.set(Single.just("")
                 .map(input -> {
-                    final IMConversation conversation;
+                    final MSIMConversation conversation;
                     if (mByConversationId) {
-                        conversation = IMConversationManager.getInstance().getConversation(
+                        conversation = MSIMManager.getInstance().getConversationManager().getConversation(
                                 mSessionUserId,
                                 mConversationId
                         );
                     } else {
-                        conversation = IMConversationManager.getInstance().getConversationByTargetUserId(
+                        conversation = MSIMManager.getInstance().getConversationManager().getConversationByTargetUserId(
                                 mSessionUserId,
                                 mConversationType,
                                 mTargetUserId
@@ -124,7 +124,7 @@ public abstract class IMConversationChangedViewHelper {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pair -> {
                     Preconditions.checkNotNull(pair.first);
-                    onConversationChanged((IMConversation) pair.first.getObject(), pair.second);
+                    onConversationChanged((MSIMConversation) pair.first.getObject(), pair.second);
                 }, SampleLog::e));
     }
 
@@ -134,38 +134,29 @@ public abstract class IMConversationChangedViewHelper {
         return null;
     }
 
-    protected abstract void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject);
+    protected abstract void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject);
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final ConversationObservable.ConversationObserver mConversationObserver = new ConversationObservable.ConversationObserver() {
-
+    private final MSIMConversationListener mConversationListener = new MSIMConversationListenerProxy(new MSIMConversationListener() {
         private boolean notMatch(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
             if (mByConversationId) {
-                return !IMConstants.isIdMatch(mSessionUserId, sessionUserId)
-                        || !IMConstants.isIdMatch(mConversationId, conversationId);
+                return !MSIMConstants.isIdMatch(mSessionUserId, sessionUserId)
+                        || !MSIMConstants.isIdMatch(mConversationId, conversationId);
             } else {
-                return !IMConstants.isIdMatch(mSessionUserId, sessionUserId)
-                        || !IMConstants.isIdMatch(mConversationType, conversationType)
-                        || !IMConstants.isIdMatch(mTargetUserId, targetUserId);
+                return !MSIMConstants.isIdMatch(mSessionUserId, sessionUserId)
+                        || !MSIMConstants.isIdMatch(mConversationType, conversationType)
+                        || !MSIMConstants.isIdMatch(mTargetUserId, targetUserId);
             }
         }
 
         @Override
         public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
-                return;
-            }
-
-            Threads.postUi(() -> onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId));
+            onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId);
         }
 
         @Override
         public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
-                return;
-            }
-
-            Threads.postUi(() -> onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId));
+            onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId);
         }
 
         private void onConversationChangedInternal(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
@@ -175,6 +166,6 @@ public abstract class IMConversationChangedViewHelper {
 
             requestLoadData(false);
         }
-    };
+    }, true);
 
 }

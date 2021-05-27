@@ -6,8 +6,8 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMConversation;
-import com.masonsoft.imsdk.sample.widget.IMConversationChangedViewHelper;
+import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.sample.widget.MSIMConversationChangedViewHelper;
 
 public class ConversationDebugView extends DebugTextView {
 
@@ -26,12 +26,12 @@ public class ConversationDebugView extends DebugTextView {
         initFromAttributes(context, attrs, defStyleAttr, 0);
     }
 
-    private IMConversationChangedViewHelper mConversationChangedViewHelper;
+    private MSIMConversationChangedViewHelper mConversationChangedViewHelper;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        mConversationChangedViewHelper = new IMConversationChangedViewHelper() {
+        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper() {
             @Override
-            protected void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject) {
+            protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
                 ConversationDebugView.this.showConversationDebugInfo(conversation);
             }
         };
@@ -41,13 +41,13 @@ public class ConversationDebugView extends DebugTextView {
         mConversationChangedViewHelper.setConversation(sessionUserId, conversationId);
     }
 
-    private void showConversationDebugInfo(@Nullable IMConversation conversation) {
+    private void showConversationDebugInfo(@Nullable MSIMConversation conversation) {
         if (conversation == null) {
             setText(mConversationChangedViewHelper.getDebugString());
             return;
         }
 
-        setText(conversation.toShortString());
+        setText(conversation.toString());
     }
 
 }

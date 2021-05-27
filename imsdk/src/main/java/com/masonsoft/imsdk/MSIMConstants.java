@@ -13,6 +13,25 @@ public class MSIMConstants {
     public static final int ID_ANY = IMConstants.ID_ANY;
 
     /**
+     * 当两个 id 相等或者其中任意一个 id 为 ID_ANY 时，则匹配成功。
+     */
+    public static boolean isIdMatch(long id1, long id2) {
+        return IMConstants.isIdMatch(id1, id2);
+    }
+
+    /**
+     * 会话类型
+     */
+    public static class ConversationType {
+
+        /**
+         * 单聊
+         */
+        public static final int C2C = IMConstants.ConversationType.C2C;
+
+    }
+
+    /**
      * 消息的发送状态
      */
     public static class SendStatus {

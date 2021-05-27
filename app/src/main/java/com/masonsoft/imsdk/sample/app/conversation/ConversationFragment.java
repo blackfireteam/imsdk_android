@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.collect.Lists;
-import com.masonsoft.imsdk.core.IMConversation;
-import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleConversationFragmentBinding;
@@ -143,8 +142,8 @@ public class ConversationFragment extends SystemInsetsFragment {
                 return;
             }
 
-            final IMConversation updateConversation = (IMConversation) ((DataObject<?>) unionTypeItemObject.itemObject).object;
-            final boolean delete = updateConversation.delete.getOrDefault(IMConstants.FALSE) == IMConstants.TRUE;
+            final MSIMConversation updateConversation = (MSIMConversation) ((DataObject<?>) unionTypeItemObject.itemObject).object;
+            final boolean delete = updateConversation.isDelete();
             final List<UnionTypeItemObject> groupDefaultList = getAdapter().getData().getGroupItems(GROUP_DEFAULT);
             int removedPosition = -1;
             int insertPosition = -1;
@@ -157,10 +156,10 @@ public class ConversationFragment extends SystemInsetsFragment {
                     }
 
                     if (!delete) {
-                        final IMConversation existsConversation = (IMConversation) ((DataObject<?>) existsOne.itemObject).object;
+                        final MSIMConversation existsConversation = (MSIMConversation) ((DataObject<?>) existsOne.itemObject).object;
                         SampleLog.v("updateConversation===>" + updateConversation);
                         SampleLog.v("existsConversation===>" + existsConversation);
-                        if (updateConversation.seq.get() > existsConversation.seq.get() && insertPosition == -1) {
+                        if (updateConversation.getSeq() > existsConversation.getSeq() && insertPosition == -1) {
                             insertPosition = i;
                         }
 

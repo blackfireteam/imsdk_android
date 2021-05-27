@@ -4,27 +4,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.masonsoft.imsdk.MSIMConversationListener;
-import com.masonsoft.imsdk.MSIMSessionListener;
-import com.masonsoft.imsdk.MSIMSessionListenerAdapter;
-import com.masonsoft.imsdk.MSIMSessionListenerProxy;
-import com.masonsoft.imsdk.core.IMConversation;
-import com.masonsoft.imsdk.core.IMConstants;
-import com.masonsoft.imsdk.core.IMConversationManager;
-import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.IMSessionManager;
-import com.masonsoft.imsdk.core.observable.ConversationObservable;
-import com.masonsoft.imsdk.core.observable.SessionObservable;
+import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
+import com.masonsoft.imsdk.sample.widget.MSIMConversationChangedViewHelper;
+import com.masonsoft.imsdk.sample.widget.SessionUserIdChangedViewHelper;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import io.github.idonans.core.thread.Threads;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.dynamic.page.PageView;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
@@ -38,8 +31,10 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     private static final boolean DEBUG = true;
 
-    private long mSessionUserId;
-    private final int mConversationType = IMConstants.ConversationType.C2C;
+    private final SessionUserIdChangedViewHelper mSessionUserIdChangedViewHelper;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final MSIMConversationChangedViewHelper mConversationChangedViewHelper;
+    private final int mConversationType = MSIMConstants.ConversationType.C2C;
     private final int mPageSize = 20;
     private long mFirstConversationSeq = -1;
     private long mLastConversationSeq = -1;
@@ -49,17 +44,42 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
     @UiThread
     public ConversationFragmentPresenter(@NonNull ConversationFragment.ViewImpl view) {
         super(view, false, true);
-        mSessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        SessionObservable.DEFAULT.registerObserver(mSessionObserver);
-        ConversationObservable.DEFAULT.registerObserver(mConversationObserver);
+        mSessionUserIdChangedViewHelper = new SessionUserIdChangedViewHelper() {
+            @Override
+            protected void onSessionUserIdChanged(long sessionUserId) {
+                reloadWithNewSessionUserId();
+            }
+        };
+        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper() {
+            @Override
+            protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
+                addOrUpdateConversation(conversation);
+            }
+        };
+    }
+
+    private long getSessionUserId() {
+        return mSessionUserIdChangedViewHelper.getSessionUserId();
     }
 
     private void reloadWithNewSessionUserId() {
-        final long newSessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        if (mSessionUserId != newSessionUserId) {
-            mSessionUserId = newSessionUserId;
-            requestInit(true);
+        requestInit(true);
+    }
+
+    private void addOrUpdateConversation(@Nullable MSIMConversation conversation) {
+        if (conversation == null) {
+            return;
         }
+
+        final UnionTypeItemObject unionTypeItemObject = createDefault(conversation);
+        if (unionTypeItemObject == null) {
+            return;
+        }
+        final ConversationFragment.ViewImpl view = getView();
+        if (view == null) {
+            return;
+        }
+        view.replaceConversation(unionTypeItemObject);
     }
 
     @Nullable
@@ -67,94 +87,12 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         return (ConversationFragment.ViewImpl) super.getView();
     }
 
-    private final MSIMSessionListener mSessionListener = new MSIMSessionListenerProxy(new MSIMSessionListener() {
-        @Override
-        public void onSessionChanged() {
-        }
-
-        @Override
-        public void onSessionUserIdChanged() {
-            reloadWithNewSessionUserId();
-        }
-    }, true);
-
-    private final MSIMConversationListener mConversationListener = new MSIMConversationListener() {
-        @Override
-        public void onConversationChanged(long conversationId, long targetUserId) {
-
-        }
-
-        @Override
-        public void onConversationCreated(long conversationId, long targetUserId) {
-
-        }
-
-        private boolean notMatch(long conversationId, long targetUserId) {
-            return (sessionUserId != IMConstants.ID_ANY && mSessionUserId != sessionUserId);
-        }
-    };
-
-    @SuppressWarnings("FieldCanBeLocal")
-    private final ConversationObservable.ConversationObserver mConversationObserver = new ConversationObservable.ConversationObserver() {
-
-        private boolean notMatch(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            return (sessionUserId != IMConstants.ID_ANY && mSessionUserId != sessionUserId);
-        }
-
-        @Override
-        public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId);
-        }
-
-        @Override
-        public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId);
-        }
-
-        private void onConversationChangedInternal(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
-                return;
-            }
-
-            if (sessionUserId <= 0) {
-                // ignore
-                return;
-            }
-
-            IMConversation conversation = null;
-            if (conversationId > 0) {
-                conversation = IMConversationManager.getInstance().getConversation(sessionUserId, conversationId);
-            } else if (conversationType >= 0 && targetUserId > 0) {
-                conversation = IMConversationManager.getInstance().getConversationByTargetUserId(sessionUserId, conversationType, targetUserId);
-            }
-            if (conversation == null) {
-                SampleLog.e(Objects.defaultObjectTag(this) + " conversation not found");
-                return;
-            }
-
-            final UnionTypeItemObject unionTypeItemObject = createDefault(conversation);
-            if (unionTypeItemObject == null) {
-                return;
-            }
-            Threads.postUi(() -> {
-                if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
-                    return;
-                }
-                final ConversationFragment.ViewImpl view = getView();
-                if (view == null) {
-                    return;
-                }
-                view.replaceConversation(unionTypeItemObject);
-            });
-        }
-    };
-
     @Nullable
-    private UnionTypeItemObject createDefault(@Nullable IMConversation imConversation) {
-        if (imConversation == null) {
+    private UnionTypeItemObject createDefault(@Nullable MSIMConversation conversation) {
+        if (conversation == null) {
             return null;
         }
-        final DataObject<IMConversation> dataObject = new DeepDiffDataObject(imConversation);
+        final DataObject<MSIMConversation> dataObject = new DeepDiffDataObject(conversation);
         return new UnionTypeItemObject(
                 UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_CONVERSATION,
                 dataObject
@@ -167,25 +105,25 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         SampleLog.v(Objects.defaultObjectTag(this) + " createInitRequest");
         if (DEBUG) {
             SampleLog.v(Objects.defaultObjectTag(this) + " createInitRequest sessionUserId:%s, mConversationType:%s, pageSize:%s",
-                    mSessionUserId,
+                    getSessionUserId(),
                     mConversationType,
                     mPageSize);
         }
 
         return Single.just("")
-                .map(input -> IMConversationManager.getInstance().pageQueryConversation(
-                        mSessionUserId,
+                .map(input -> MSIMManager.getInstance().getConversationManager().pageQueryConversation(
+                        getSessionUserId(),
                         0,
                         mPageSize,
                         mConversationType))
                 .map(page -> {
-                    List<IMConversation> imConversationList = page.items;
-                    if (imConversationList == null) {
-                        imConversationList = new ArrayList<>();
+                    List<MSIMConversation> conversationList = page.items;
+                    if (conversationList == null) {
+                        conversationList = new ArrayList<>();
                     }
                     List<UnionTypeItemObject> target = new ArrayList<>();
-                    for (IMConversation imConversation : imConversationList) {
-                        UnionTypeItemObject item = createDefault(imConversation);
+                    for (MSIMConversation conversation : conversationList) {
+                        UnionTypeItemObject item = createDefault(conversation);
                         if (item == null) {
                             if (DEBUG) {
                                 SampleLog.e(Objects.defaultObjectTag(this) + " createInitRequest ignore null UnionTypeItemObject");
@@ -210,8 +148,8 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
             mFirstConversationSeq = -1;
             mLastConversationSeq = -1;
         } else {
-            mFirstConversationSeq = ((IMConversation) ((DataObject) ((UnionTypeItemObject) ((List) items).get(0)).itemObject).object).seq.get();
-            mLastConversationSeq = ((IMConversation) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).seq.get();
+            mFirstConversationSeq = ((MSIMConversation) ((DataObject) ((UnionTypeItemObject) ((List) items).get(0)).itemObject).object).getSeq();
+            mLastConversationSeq = ((MSIMConversation) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).getSeq();
         }
         super.onInitRequestResult(view, items);
     }
@@ -230,7 +168,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         SampleLog.v(Objects.defaultObjectTag(this) + " createNextPageRequest");
         if (DEBUG) {
             SampleLog.v(Objects.defaultObjectTag(this) + " createNextPageRequest sessionUserId:%s, mConversationType:%s, pageSize:%s, mLastConversationSeq:%s",
-                    mSessionUserId,
+                    getSessionUserId(),
                     mConversationType,
                     mPageSize,
                     mLastConversationSeq);
@@ -242,19 +180,19 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         }
 
         return Single.just("")
-                .map(input -> IMConversationManager.getInstance().pageQueryConversation(
-                        mSessionUserId,
+                .map(input -> MSIMManager.getInstance().getConversationManager().pageQueryConversation(
+                        getSessionUserId(),
                         mLastConversationSeq,
                         mPageSize,
                         mConversationType))
                 .map(page -> {
-                    List<IMConversation> imConversationList = page.items;
-                    if (imConversationList == null) {
-                        imConversationList = new ArrayList<>();
+                    List<MSIMConversation> conversationList = page.items;
+                    if (conversationList == null) {
+                        conversationList = new ArrayList<>();
                     }
                     List<UnionTypeItemObject> target = new ArrayList<>();
-                    for (IMConversation imConversation : imConversationList) {
-                        UnionTypeItemObject item = createDefault(imConversation);
+                    for (MSIMConversation conversation : conversationList) {
+                        UnionTypeItemObject item = createDefault(conversation);
                         if (item == null) {
                             if (DEBUG) {
                                 SampleLog.e(Objects.defaultObjectTag(this) + " createNextPageRequest ignore null UnionTypeItemObject");
@@ -270,14 +208,14 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     @Override
     protected void onNextPageRequestResult(@NonNull PageView<UnionTypeItemObject> view, @NonNull Collection<UnionTypeItemObject> items) {
-        IMLog.v(Objects.defaultObjectTag(this) + " onNextPageRequestResult");
+        SampleLog.v(Objects.defaultObjectTag(this) + " onNextPageRequestResult");
         if (DEBUG) {
-            IMLog.v(Objects.defaultObjectTag(this) + " onNextPageRequestResult items size:%s", items.size());
+            SampleLog.v(Objects.defaultObjectTag(this) + " onNextPageRequestResult items size:%s", items.size());
         }
 
         // 记录上一页，下一页参数
         if (!items.isEmpty()) {
-            mLastConversationSeq = ((IMConversation) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).seq.get();
+            mLastConversationSeq = ((MSIMConversation) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).getSeq();
         }
         super.onNextPageRequestResult(view, items);
     }
@@ -288,9 +226,9 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         mDefaultRequestHolder.clear();
     }
 
-    private static class DeepDiffDataObject extends DataObject<IMConversation> implements DeepDiff {
+    private static class DeepDiffDataObject extends DataObject<MSIMConversation> implements DeepDiff {
 
-        public DeepDiffDataObject(IMConversation object) {
+        public DeepDiffDataObject(@NonNull MSIMConversation object) {
             super(object);
         }
 
@@ -298,7 +236,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         public boolean isSameItem(@Nullable Object other) {
             if (other instanceof DeepDiffDataObject) {
                 final DeepDiffDataObject otherDataObject = (DeepDiffDataObject) other;
-                return java.util.Objects.equals(this.object.id.get(), otherDataObject.object.id.get());
+                return this.object.getConversationId() == otherDataObject.object.getConversationId();
             }
             return false;
         }
@@ -307,7 +245,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         public boolean isSameContent(@Nullable Object other) {
             if (other instanceof DeepDiffDataObject) {
                 final DeepDiffDataObject otherDataObject = (DeepDiffDataObject) other;
-                return java.util.Objects.equals(this.object.id.get(), otherDataObject.object.id.get());
+                return this.object.getConversationId() == otherDataObject.object.getConversationId();
             }
             return false;
         }

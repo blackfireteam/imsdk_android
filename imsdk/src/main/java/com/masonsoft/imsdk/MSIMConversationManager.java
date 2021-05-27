@@ -3,11 +3,9 @@ package com.masonsoft.imsdk;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMConversation;
 import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
-import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.db.TinyPage;
 import com.masonsoft.imsdk.core.observable.ConversationObservable;
 import com.masonsoft.imsdk.lang.GeneralResult;
@@ -80,12 +78,7 @@ public class MSIMConversationManager {
     }
 
     @Nullable
-    public MSIMConversation getConversation(final long conversationId) {
-        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        if (sessionUserId <= 0) {
-            return null;
-        }
-
+    public MSIMConversation getConversation(final long sessionUserId, final long conversationId) {
         final IMConversation conversation = IMConversationManager.getInstance().getConversation(sessionUserId, conversationId);
         if (conversation == null) {
             return null;
@@ -95,15 +88,13 @@ public class MSIMConversationManager {
     }
 
     @Nullable
-    public MSIMConversation getConversationByTargetUserId(final long targetUserId) {
-        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        if (sessionUserId <= 0) {
-            return null;
-        }
-
+    public MSIMConversation getConversationByTargetUserId(
+            final long sessionUserId,
+            final int conversationType,
+            final long targetUserId) {
         final IMConversation conversation = IMConversationManager.getInstance().getConversationByTargetUserId(
                 sessionUserId,
-                IMConstants.ConversationType.C2C,
+                conversationType,
                 targetUserId
         );
         if (conversation == null) {
@@ -112,26 +103,21 @@ public class MSIMConversationManager {
         return new MSIMConversation(conversation);
     }
 
-    public int getAllUnreadCount() {
-        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        if (sessionUserId <= 0) {
-            return 0;
-        }
+    public int getAllUnreadCount(final long sessionUserId) {
         return IMConversationManager.getInstance().getAllUnreadCount(sessionUserId);
     }
 
     @NonNull
-    public TinyPage<MSIMConversation> pageQueryConversation(final long seq, final int limit) {
-        final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        if (sessionUserId <= 0) {
-            return new TinyPage<>();
-        }
-
+    public TinyPage<MSIMConversation> pageQueryConversation(
+            final long sessionUserId,
+            final long seq,
+            final int limit,
+            final int conversationType) {
         final TinyPage<IMConversation> page = IMConversationManager.getInstance().pageQueryConversation(
                 sessionUserId,
                 seq,
                 limit,
-                IMConstants.ConversationType.C2C
+                conversationType
         );
         return page.transform(conversation -> {
             Preconditions.checkNotNull(conversation);

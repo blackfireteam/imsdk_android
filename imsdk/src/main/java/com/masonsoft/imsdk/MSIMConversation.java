@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMConversation;
+import com.masonsoft.imsdk.util.Objects;
 
 /**
  * @since 1.0
@@ -23,6 +24,14 @@ public class MSIMConversation {
     @NonNull
     IMConversation getConversation() {
         return mConversation;
+    }
+
+    public long getSessionUserId() {
+        return getSessionUserId(0L);
+    }
+
+    public long getSessionUserId(long defaultValue) {
+        return mConversation._sessionUserId.getOrDefault(defaultValue);
     }
 
     public long getConversationId() {
@@ -84,6 +93,16 @@ public class MSIMConversation {
     @NonNull
     public MSIMConversationExt getExt() {
         return mExt;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        //noinspection StringBufferReplaceableByString
+        final StringBuilder builder = new StringBuilder();
+        builder.append(Objects.defaultObjectTag(this));
+        builder.append(" ").append(mConversation);
+        return builder.toString();
     }
 
 }
