@@ -103,7 +103,10 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
             menuDialog.setOnIMMenuClickListener((menuId, menuText, menuView) -> {
                 if (menuId == MENU_ID_DELETE) {
                     // 删除
-                    MSIMManager.getInstance().getConversationManager().deleteConversation(conversation);
+                    MSIMManager.getInstance().getConversationManager().deleteConversation(
+                            sessionUserId,
+                            conversation
+                    );
                 } else {
                     SampleLog.e("IMChatConversationMenuDialog onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
                             menuId, menuText, menuView);

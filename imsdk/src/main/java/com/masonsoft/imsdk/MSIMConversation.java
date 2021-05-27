@@ -50,6 +50,14 @@ public class MSIMConversation {
         return mConversation.type.getOrDefault(defaultValue);
     }
 
+    public long getLastReadServerMessageId() {
+        return getLastReadServerMessageId(0L);
+    }
+
+    public long getLastReadServerMessageId(long defaultValue) {
+        return mConversation.messageLastRead.getOrDefault(defaultValue);
+    }
+
     public long getSeq() {
         return getSeq(0L);
     }
@@ -64,6 +72,14 @@ public class MSIMConversation {
 
     public long getTargetUserId(long defaultValue) {
         return mConversation.targetUserId.getOrDefault(defaultValue);
+    }
+
+    public long getUnreadCount() {
+        return getUnreadCount(0L);
+    }
+
+    public long getUnreadCount(long defaultValue) {
+        return mConversation.unreadCount.getOrDefault(defaultValue);
     }
 
     public long getShowMessageId() {

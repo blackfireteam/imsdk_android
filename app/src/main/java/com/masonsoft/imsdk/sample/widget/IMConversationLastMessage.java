@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMConversation;
+import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.sample.Constants;
 
 import io.github.idonans.lang.util.ViewUtil;
@@ -42,16 +42,16 @@ public class IMConversationLastMessage extends IMConversationDynamicFrameLayout 
     }
 
     @Override
-    protected void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject) {
+    protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
         if (conversation == null) {
             ViewUtil.setVisibilityIfChanged(mLastMessageView, View.GONE);
         } else {
             ViewUtil.setVisibilityIfChanged(mLastMessageView, View.VISIBLE);
             mLastMessageView.setMessage(
-                    conversation._sessionUserId.get(),
-                    conversation.type.get(),
-                    conversation.targetUserId.get(),
-                    conversation.showMessageId.getOrDefault(0L)
+                    conversation.getSessionUserId(),
+                    conversation.getConversationType(),
+                    conversation.getTargetUserId(),
+                    conversation.getShowMessageId()
             );
         }
     }

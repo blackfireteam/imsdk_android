@@ -10,11 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.masonsoft.imsdk.core.IMConstants;
-import com.masonsoft.imsdk.core.IMConversation;
-import com.masonsoft.imsdk.core.IMConversationManager;
-import com.masonsoft.imsdk.core.IMMessage;
-import com.masonsoft.imsdk.core.IMMessageManager;
+import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 
@@ -45,17 +44,17 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
         mConversationChangedViewHelper = new MSIMConversationChangedViewHelper() {
             @Nullable
             @Override
-            protected IMMessage loadCustomObject() {
+            protected MSIMMessage loadCustomObject() {
                 final long localMessageId = getLocalMessageId();
                 if (localMessageId > 0) {
-                    return IMMessageManager.getInstance().getMessage(getSessionUserId(), getConversationType(), getTargetUserId(), localMessageId);
+                    return MSIMManager.getInstance().getMessageManager().getMessage(getSessionUserId(), getConversationType(), getTargetUserId(), localMessageId);
                 }
                 return null;
             }
 
             @Override
-            protected void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject) {
-                onConversationOrMessageChanged(conversation, (IMMessage) customObject);
+            protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
+                onConversationOrMessageChanged(conversation, (MSIMMessage) customObject);
             }
         };
 
@@ -77,7 +76,7 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
     }
 
     @Override
-    public void setMessage(@NonNull IMMessage message) {
+    public void setMessage(@NonNull MSIMMessage message) {
         super.setMessage(message);
         mConversationChangedViewHelper.setConversationByTargetUserId(
                 getSessionUserId(),
@@ -98,16 +97,16 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
 
     @Nullable
     @Override
-    protected IMConversation loadCustomObject() {
-        return IMConversationManager.getInstance().getConversationByTargetUserId(getSessionUserId(), getConversationType(), getTargetUserId());
+    protected MSIMConversation loadCustomObject() {
+        return MSIMManager.getInstance().getConversationManager().getConversationByTargetUserId(getSessionUserId(), getConversationType(), getTargetUserId());
     }
 
     @Override
-    protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {
-        onConversationOrMessageChanged((IMConversation) customObject, message);
+    protected void onMessageChanged(@Nullable MSIMMessage message, @Nullable Object customObject) {
+        onConversationOrMessageChanged((MSIMConversation) customObject, message);
     }
 
-    private void onConversationOrMessageChanged(@Nullable IMConversation conversation, @Nullable IMMessage message) {
+    private void onConversationOrMessageChanged(@Nullable MSIMConversation conversation, @Nullable MSIMMessage message) {
         if (DEBUG) {
             SampleLog.v("onConversationOrMessageChanged conversation:%s message:%s", conversation, message);
         }
@@ -117,18 +116,12 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
             return;
         }
 
-        int messageSendStatus = IMConstants.SendStatus.SUCCESS;
-        boolean read = false;
-        if (!message.sendState.isUnset()) {
-            messageSendStatus = message.sendState.get();
-        }
+        final int messageSendStatus = message.getSendStatus(MSIMConstants.SendStatus.SUCCESS);
+        final long serverMessageId = message.getServerMessageId();
+        final long lastReadServerMessageId = conversation.getLastReadServerMessageId();
+        boolean read = serverMessageId > 0 && serverMessageId <= lastReadServerMessageId;
 
-        if (!conversation.messageLastRead.isUnset()
-                && !message.serverMessageId.isUnset()) {
-            read = message.serverMessageId.get() <= conversation.messageLastRead.get();
-        }
-
-        if (messageSendStatus == IMConstants.SendStatus.SUCCESS) {
+        if (messageSendStatus == MSIMConstants.SendStatus.SUCCESS) {
             if (read) {
                 mReadTextView.setText(R.string.imsdk_sample_tip_message_read);
             } else {

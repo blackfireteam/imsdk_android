@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import com.masonsoft.imsdk.core.IMConversation;
+import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.sample.Constants;
 
 import io.github.idonans.appcontext.AppContext;
@@ -47,7 +47,7 @@ public abstract class IMConversationDynamicFrameLayout extends FrameLayout {
             }
 
             @Override
-            protected void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject) {
+            protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
                 IMConversationDynamicFrameLayout.this.onConversationChanged(conversation, customObject);
             }
         };
@@ -71,6 +71,6 @@ public abstract class IMConversationDynamicFrameLayout extends FrameLayout {
         return null;
     }
 
-    protected abstract void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject);
+    protected abstract void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject);
 
 }

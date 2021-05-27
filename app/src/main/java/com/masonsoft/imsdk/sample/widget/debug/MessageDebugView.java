@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.widget.IMMessageChangedViewHelper;
 
 public class MessageDebugView extends DebugTextView {
@@ -31,7 +31,7 @@ public class MessageDebugView extends DebugTextView {
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mMessageChangedViewHelper = new IMMessageChangedViewHelper() {
             @Override
-            protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {
+            protected void onMessageChanged(@Nullable MSIMMessage message, @Nullable Object customObject) {
                 MessageDebugView.this.showMessageDebugInfo(message);
             }
         };
@@ -41,13 +41,13 @@ public class MessageDebugView extends DebugTextView {
         mMessageChangedViewHelper.setMessage(sessionUserId, conversationType, targetUserId, localMessageId);
     }
 
-    private void showMessageDebugInfo(@Nullable IMMessage message) {
+    private void showMessageDebugInfo(@Nullable MSIMMessage message) {
         if (message == null) {
             setText(mMessageChangedViewHelper.getDebugString());
             return;
         }
 
-        setText(message.toShortString());
+        setText(message.toString());
     }
 
 }

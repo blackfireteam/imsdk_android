@@ -15,8 +15,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 
+import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.core.IMConstants;
-import com.masonsoft.imsdk.core.IMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.util.Objects;
@@ -65,7 +66,7 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
     }
 
     @Override
-    protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {
+    protected void onMessageChanged(@Nullable MSIMMessage message, @Nullable Object customObject) {
         if (DEBUG) {
             SampleLog.v(Objects.defaultObjectTag(this) + " onMessageChanged %s", message);
         }
@@ -76,60 +77,54 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
         }
     }
 
-    private CharSequence buildStatusText(@NonNull IMMessage message) {
+    private CharSequence buildStatusText(@NonNull MSIMMessage message) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        if (!message.sendState.isUnset()) {
-            // 消息发送状态
-            switch (message.sendState.get()) {
-                case IMConstants.SendStatus.IDLE:
-                case IMConstants.SendStatus.SENDING:
-                    SpannableString sendingSpan = new SpannableString("[sending]");
-                    sendingSpan.setSpan(new AlignImageSpan(mSendingDrawable), 0, sendingSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    builder.append(sendingSpan);
-                    break;
-                case IMConstants.SendStatus.FAIL:
-                    SpannableString failSpan = new SpannableString("[fail]");
-                    failSpan.setSpan(new AlignImageSpan(mSendFailDrawable), 0, failSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    builder.append(failSpan);
-                    break;
-            }
+
+        // 消息发送状态
+        final int sendState = message.getSendStatus(MSIMConstants.SendStatus.SUCCESS);
+        switch (sendState) {
+            case MSIMConstants.SendStatus.IDLE:
+            case MSIMConstants.SendStatus.SENDING:
+                SpannableString sendingSpan = new SpannableString("[sending]");
+                sendingSpan.setSpan(new AlignImageSpan(mSendingDrawable), 0, sendingSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                builder.append(sendingSpan);
+                break;
+            case MSIMConstants.SendStatus.FAIL:
+                SpannableString failSpan = new SpannableString("[fail]");
+                failSpan.setSpan(new AlignImageSpan(mSendFailDrawable), 0, failSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                builder.append(failSpan);
+                break;
         }
 
-        final int type = message.type.getOrDefault(-1);
-        String msgText;
-        switch (type) {
-            case IMConstants.MessageType.TEXT:
-                msgText = message.body.getOrDefault(null);
+        final int messageType = message.getMessageType();
+        String messageText;
+        switch (messageType) {
+            case MSIMConstants.MessageType.TEXT:
+                messageText = message.getTextElement().getText();
                 break;
-            case IMConstants.MessageType.IMAGE:
-                msgText = "[图片]";
+            case MSIMConstants.MessageType.IMAGE:
+                messageText = "[图片]";
                 break;
-            case IMConstants.MessageType.AUDIO:
-                msgText = "[语音]";
+            case MSIMConstants.MessageType.AUDIO:
+                messageText = "[语音]";
                 break;
-            case IMConstants.MessageType.VIDEO:
-                msgText = "[视频]";
+            case MSIMConstants.MessageType.VIDEO:
+                messageText = "[视频]";
                 break;
-            case IMConstants.MessageType.LOCATION:
-                msgText = "[位置]";
-                break;
-            case IMConstants.MessageType.REAL_TIME_LOCATION:
-                msgText = "[共享位置]";
-                break;
-            case IMConstants.MessageType.REVOKED:
-                msgText = "[已撤回]";
+            case MSIMConstants.MessageType.REVOKED:
+                messageText = "[已撤回]";
                 break;
             default:
-                msgText = "[default]type:" + type + ", body:" + message.body.getOrDefault(null);
+                messageText = "[default]type:" + messageType + ", body:" + message.getBody();
         }
 
-        if (IMConstants.MessageType.isCustomMessage(type)) {
-            msgText = "[自定义消息]";
+        if (IMConstants.MessageType.isCustomMessage(messageType)) {
+            messageText = "[自定义消息]";
         }
 
-        if (msgText != null) {
-            msgText = msgText.trim();
-            builder.append(msgText);
+        if (messageText != null) {
+            messageText = messageText.trim();
+            builder.append(messageText);
         }
         return builder;
     }

@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.masonsoft.imsdk.core.IMConversation;
+import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.util.FormatUtil;
 
@@ -60,7 +60,7 @@ public class IMConversationTimeView extends IMConversationDynamicFrameLayout {
     }
 
     @Override
-    protected void onConversationChanged(@Nullable IMConversation conversation, @Nullable Object customObject) {
+    protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
         if (conversation == null) {
             setTime(null);
         } else {
@@ -68,9 +68,9 @@ public class IMConversationTimeView extends IMConversationDynamicFrameLayout {
         }
     }
 
-    private String buildConversationTime(@NonNull IMConversation conversation) {
+    private String buildConversationTime(@NonNull MSIMConversation conversation) {
         // 用会话的更新时间
-        final long timeMs = conversation.timeMs.getOrDefault(0L);
+        final long timeMs = conversation.getTimeMs();
         if (timeMs > 0) {
             return FormatUtil.getHumanTimeDistance(timeMs, new FormatUtil.DefaultShortDateFormatOptions());
         }

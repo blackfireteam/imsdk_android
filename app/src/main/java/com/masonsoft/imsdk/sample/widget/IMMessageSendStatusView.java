@@ -13,10 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMCallback;
+import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMWeakCallback;
 import com.masonsoft.imsdk.core.IMConstants;
-import com.masonsoft.imsdk.core.IMMessage;
-import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -50,7 +51,7 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
     private int mMessageSendStatus = -1;
 
     @Nullable
-    private IMMessage mMessageUnsafe;
+    private MSIMMessage mMessageUnsafe;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         setWillNotDraw(false);
@@ -82,11 +83,14 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
         ViewUtil.setVisibilityIfChanged(mSendingView, View.GONE);
 
         ViewUtil.onClick(this, v -> {
-            final IMMessage message = mMessageUnsafe;
-            if (message != null
-                    && !message.sendState.isUnset()) {
-                if (message.sendState.get() == IMConstants.SendStatus.FAIL) {
-                    IMMessageQueueManager.getInstance().enqueueResendSessionMessage(message, new MSIMWeakCallback<>(mEnqueueCallback, true));
+            final MSIMMessage message = mMessageUnsafe;
+            if (message != null) {
+                final int sendState = message.getSendStatus(MSIMConstants.SendStatus.SUCCESS);
+                if (sendState == MSIMConstants.SendStatus.FAIL) {
+                    MSIMManager.getInstance().getMessageManager().resendMessage(
+                            getSessionUserId(),
+                            message,
+                            new MSIMWeakCallback<>(mEnqueueCallback, true));
                 }
             }
         });
@@ -99,21 +103,17 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
     };
 
     @Override
-    protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {
+    protected void onMessageChanged(@Nullable MSIMMessage message, @Nullable Object customObject) {
         if (DEBUG) {
             SampleLog.v("onMessageChanged %s", message);
         }
         mMessageUnsafe = message;
         if (message == null) {
-            mMessageSendStatus = -1;
+            mMessageSendStatus = MSIMConstants.SendStatus.SUCCESS;
             mMessageSendTimeMs = 0L;
         } else {
-            mMessageSendTimeMs = message.timeMs.getOrDefault(0L);
-            if (message.sendState.isUnset()) {
-                mMessageSendStatus = -1;
-            } else {
-                mMessageSendStatus = message.sendState.get();
-            }
+            mMessageSendStatus = message.getSendStatus(MSIMConstants.SendStatus.SUCCESS);
+            mMessageSendTimeMs = message.getTimeMs();
         }
 
         syncState();

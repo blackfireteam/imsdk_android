@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.IMMessage;
+import com.masonsoft.imsdk.util.Objects;
 
 /**
  * @since 1.0
@@ -52,6 +53,14 @@ public class MSIMMessage {
 
     public long getMessageId(long defaultValue) {
         return mMessage.id.getOrDefault(defaultValue);
+    }
+
+    public long getServerMessageId() {
+        return getServerMessageId(0L);
+    }
+
+    public long getServerMessageId(long defaultValue) {
+        return mMessage.serverMessageId.getOrDefault(defaultValue);
     }
 
     public long getSeq() {
@@ -184,6 +193,16 @@ public class MSIMMessage {
             return new MSIMCustomElement(mMessage);
         }
         return null;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        //noinspection StringBufferReplaceableByString
+        final StringBuilder builder = new StringBuilder();
+        builder.append(Objects.defaultObjectTag(this));
+        builder.append(" ").append(mMessage);
+        return builder.toString();
     }
 
 }

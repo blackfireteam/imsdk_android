@@ -478,6 +478,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
         final String text = editable.toString().trim();
         final MSIMMessage message = MSIMMessageFactory.createTextMessage(text);
         MSIMManager.getInstance().getMessageManager().sendMessage(
+                MSIMManager.getInstance().getSessionUserId(),
                 message,
                 mTargetUserId,
                 new MSIMWeakCallback<>(mEnqueueCallback, true)
@@ -500,6 +501,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 message = MSIMMessageFactory.createImageMessage(mediaInfo.uri);
             }
             MSIMManager.getInstance().getMessageManager().sendMessage(
+                    MSIMManager.getInstance().getSessionUserId(),
                     message,
                     mTargetUserId,
                     new MSIMWeakCallback<>(mEnqueueCallback, true)
@@ -517,6 +519,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
         mEnqueueCallback = new LocalEnqueueCallback(true);
         final MSIMMessage message = MSIMMessageFactory.createAudioMessage(audioFilePath);
         MSIMManager.getInstance().getMessageManager().sendMessage(
+                MSIMManager.getInstance().getSessionUserId(),
                 message,
                 mTargetUserId,
                 new MSIMWeakCallback<>(mEnqueueCallback, true)
@@ -561,7 +564,10 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
     private void sendMarkAsRead() {
         SampleLog.v(Objects.defaultObjectTag(this) + " sendMarkAsRead targetUserId:%s", mTargetUserId);
-        MSIMManager.getInstance().getMessageManager().markAsRead(mTargetUserId);
+        MSIMManager.getInstance().getMessageManager().markAsRead(
+                MSIMManager.getInstance().getSessionUserId(),
+                mTargetUserId
+        );
     }
 
     private class OnAudioRecordListenerImpl implements AudioRecordManager.OnAudioRecordListener {

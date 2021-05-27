@@ -7,8 +7,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMMessage;
-import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 
@@ -66,7 +65,7 @@ public class IMMessageRevokeStateFrameLayout extends IMMessageDynamicFrameLayout
     }
 
     @Override
-    protected void onMessageChanged(@Nullable IMMessage message, @Nullable Object customObject) {
+    protected void onMessageChanged(@Nullable MSIMMessage message, @Nullable Object customObject) {
         int childCount = getChildCount();
         if (childCount != 2) {
             final Throwable e = new IllegalStateException("only support 2 child. current child count:" + childCount);
@@ -76,7 +75,7 @@ public class IMMessageRevokeStateFrameLayout extends IMMessageDynamicFrameLayout
 
         final View firstChild = getChildAt(0);
         final View secondChild = getChildAt(1);
-        final boolean isRevoked = message != null && message.type.get() == IMConstants.MessageType.REVOKED;
+        final boolean isRevoked = message != null && message.isRevoked();
         if (isRevoked) {
             ViewUtil.setVisibilityIfChanged(firstChild, View.VISIBLE);
             ViewUtil.setVisibilityIfChanged(secondChild, View.GONE);
