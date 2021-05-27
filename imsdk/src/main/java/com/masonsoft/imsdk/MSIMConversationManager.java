@@ -38,26 +38,18 @@ public class MSIMConversationManager {
     private final ConversationObservable.ConversationObserver mConversationObserver = new ConversationObservable.ConversationObserver() {
         @Override
         public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            if (sessionUserId != IMConstants.ID_ANY
-                    && sessionUserId != IMSessionManager.getInstance().getSessionUserId()) {
-                return;
-            }
             mConversationListeners.forEach(listener -> {
                 if (listener != null) {
-                    listener.onConversationChanged(conversationId, targetUserId);
+                    listener.onConversationChanged(sessionUserId, conversationId, conversationType, targetUserId);
                 }
             });
         }
 
         @Override
         public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            if (sessionUserId != IMConstants.ID_ANY
-                    && sessionUserId != IMSessionManager.getInstance().getSessionUserId()) {
-                return;
-            }
             mConversationListeners.forEach(listener -> {
                 if (listener != null) {
-                    listener.onConversationCreated(conversationId, targetUserId);
+                    listener.onConversationCreated(sessionUserId, conversationId, conversationType, targetUserId);
                 }
             });
         }

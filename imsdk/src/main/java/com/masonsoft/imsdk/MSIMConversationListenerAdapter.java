@@ -6,12 +6,12 @@ package com.masonsoft.imsdk;
 public class MSIMConversationListenerAdapter implements MSIMConversationListener {
 
     @Override
-    public void onConversationChanged(long conversationId, long targetUserId) {
+    public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
         // ignore
     }
 
     @Override
-    public void onConversationCreated(long conversationId, long targetUserId) {
+    public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
         // ignore
     }
 

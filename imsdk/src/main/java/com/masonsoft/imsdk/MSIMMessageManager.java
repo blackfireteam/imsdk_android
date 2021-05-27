@@ -39,26 +39,18 @@ public class MSIMMessageManager {
     private final MessageObservable.MessageObserver mMessageObserver = new MessageObservable.MessageObserver() {
         @Override
         public void onMessageChanged(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-            if (sessionUserId != IMConstants.ID_ANY
-                    && sessionUserId != IMSessionManager.getInstance().getSessionUserId()) {
-                return;
-            }
             mMessageListeners.forEach(listener -> {
                 if (listener != null) {
-                    listener.onMessageChanged(targetUserId, localMessageId);
+                    listener.onMessageChanged(sessionUserId, conversationType, targetUserId, localMessageId);
                 }
             });
         }
 
         @Override
         public void onMessageCreated(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-            if (sessionUserId != IMConstants.ID_ANY
-                    && sessionUserId != IMSessionManager.getInstance().getSessionUserId()) {
-                return;
-            }
             mMessageListeners.forEach(listener -> {
                 if (listener != null) {
-                    listener.onMessageCreated(targetUserId, localMessageId);
+                    listener.onMessageCreated(sessionUserId, conversationType, targetUserId, localMessageId);
                 }
             });
         }
@@ -70,10 +62,6 @@ public class MSIMMessageManager {
 
         @Override
         public void onMultiMessageChanged(long sessionUserId) {
-            if (sessionUserId != IMConstants.ID_ANY
-                    && sessionUserId != IMSessionManager.getInstance().getSessionUserId()) {
-                return;
-            }
             mMessageListeners.forEach(listener -> {
                 if (listener != null) {
                     listener.onMultiMessageChanged(sessionUserId);

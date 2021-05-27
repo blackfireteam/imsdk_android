@@ -20,19 +20,19 @@ public class MSIMConversationListenerProxy extends RunOnUiThread implements MSIM
     }
 
     @Override
-    public void onConversationChanged(long conversationId, long targetUserId) {
+    public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
         runOrPost(() -> {
             if (mOut != null) {
-                mOut.onConversationChanged(conversationId, targetUserId);
+                mOut.onConversationChanged(sessionUserId, conversationId, conversationType, targetUserId);
             }
         });
     }
 
     @Override
-    public void onConversationCreated(long conversationId, long targetUserId) {
+    public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
         runOrPost(() -> {
             if (mOut != null) {
-                mOut.onConversationCreated(conversationId, targetUserId);
+                mOut.onConversationCreated(sessionUserId, conversationId, conversationType, targetUserId);
             }
         });
     }

@@ -4,6 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.masonsoft.imsdk.MSIMConversationListener;
+import com.masonsoft.imsdk.MSIMSessionListener;
+import com.masonsoft.imsdk.MSIMSessionListenerAdapter;
+import com.masonsoft.imsdk.MSIMSessionListenerProxy;
 import com.masonsoft.imsdk.core.IMConversation;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMConversationManager;
@@ -63,15 +67,30 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         return (ConversationFragment.ViewImpl) super.getView();
     }
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private final SessionObservable.SessionObserver mSessionObserver = new SessionObservable.SessionObserver() {
+    private final MSIMSessionListener mSessionListener = new MSIMSessionListenerProxy(new MSIMSessionListener() {
         @Override
         public void onSessionChanged() {
         }
 
         @Override
         public void onSessionUserIdChanged() {
-            Threads.postUi(() -> reloadWithNewSessionUserId());
+            reloadWithNewSessionUserId();
+        }
+    }, true);
+
+    private final MSIMConversationListener mConversationListener = new MSIMConversationListener() {
+        @Override
+        public void onConversationChanged(long conversationId, long targetUserId) {
+
+        }
+
+        @Override
+        public void onConversationCreated(long conversationId, long targetUserId) {
+
+        }
+
+        private boolean notMatch(long conversationId, long targetUserId) {
+            return (sessionUserId != IMConstants.ID_ANY && mSessionUserId != sessionUserId);
         }
     };
 

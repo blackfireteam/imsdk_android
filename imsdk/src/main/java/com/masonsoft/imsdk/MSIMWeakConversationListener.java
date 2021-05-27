@@ -23,21 +23,21 @@ public class MSIMWeakConversationListener extends RunOnUiThread implements MSIMC
     }
 
     @Override
-    public void onConversationCreated(long conversationId, long targetUserId) {
+    public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
         runOrPost(() -> {
             final MSIMConversationListener out = mOutRef.get();
             if (out != null) {
-                out.onConversationCreated(conversationId, targetUserId);
+                out.onConversationCreated(sessionUserId, conversationId, conversationType, targetUserId);
             }
         });
     }
 
     @Override
-    public void onConversationChanged(long conversationId, long targetUserId) {
+    public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
         runOrPost(() -> {
             final MSIMConversationListener out = mOutRef.get();
             if (out != null) {
-                out.onConversationChanged(conversationId, targetUserId);
+                out.onConversationChanged(sessionUserId, conversationId, conversationType, targetUserId);
             }
         });
     }

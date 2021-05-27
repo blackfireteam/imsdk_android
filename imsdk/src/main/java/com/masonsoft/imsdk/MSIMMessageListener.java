@@ -5,9 +5,19 @@ package com.masonsoft.imsdk;
  */
 public interface MSIMMessageListener {
 
-    void onMessageChanged(final long targetUserId, final long messageId);
+    void onMessageChanged(
+            final long sessionUserId,
+            final int conversationType,
+            final long targetUserId,
+            final long localMessageId
+    );
 
-    void onMessageCreated(final long targetUserId, final long messageId);
+    void onMessageCreated(
+            final long sessionUserId,
+            final int conversationType,
+            final long targetUserId,
+            final long localMessageId
+    );
 
     void onMultiMessageChanged(final long sessionUserId);
 
