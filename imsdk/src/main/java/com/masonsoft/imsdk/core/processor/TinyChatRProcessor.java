@@ -94,9 +94,7 @@ public class TinyChatRProcessor extends ReceivedProtoMessageProtoTypeProcessor<P
 
         final long remoteMessageId = message.remoteMessageId.get();
         final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
-        synchronized (DatabaseSessionWriteLock.getInstance().
-
-                getSessionWriteLock(databaseHelper)) {
+        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
             final Message dbMessage = MessageDatabaseProvider.getInstance().getMessageWithRemoteMessageId(
                     sessionUserId,
                     conversationType,

@@ -6,11 +6,11 @@ import androidx.annotation.UiThread;
 
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.MSIMConversationListener;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
-import com.masonsoft.imsdk.sample.widget.MSIMConversationChangedViewHelper;
 import com.masonsoft.imsdk.sample.widget.SessionUserIdChangedViewHelper;
 import com.masonsoft.imsdk.util.Objects;
 
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import io.github.idonans.core.thread.Threads;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.dynamic.page.PageView;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
@@ -33,7 +34,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     private final SessionUserIdChangedViewHelper mSessionUserIdChangedViewHelper;
     @SuppressWarnings("FieldCanBeLocal")
-    private final MSIMConversationChangedViewHelper mConversationChangedViewHelper;
+    private final MSIMConversationListener mConversationListener;
     private final int mConversationType = MSIMConstants.ConversationType.C2C;
     private final int mPageSize = 20;
     private long mFirstConversationSeq = -1;
@@ -50,16 +51,18 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
                 reloadWithNewSessionUserId();
             }
         };
-        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper() {
+        mConversationListener = new MSIMConversationListener() {
             @Override
-            protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
-                addOrUpdateConversation(conversation);
+            public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+                addOrUpdateConversation(sessionUserId, conversationId);
+            }
+
+            @Override
+            public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+                addOrUpdateConversation(sessionUserId, conversationId);
             }
         };
-        mConversationChangedViewHelper.setConversation(
-                mSessionUserIdChangedViewHelper.getSessionUserId(),
-                MSIMConstants.ID_ANY
-        );
+        MSIMManager.getInstance().getConversationManager().addConversationListener(mConversationListener);
     }
 
     private long getSessionUserId() {
@@ -68,6 +71,24 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     private void reloadWithNewSessionUserId() {
         requestInit(true);
+    }
+
+    private void addOrUpdateConversation(long sessionUserId, long conversationId) {
+        if (getSessionUserId() != sessionUserId) {
+            return;
+        }
+
+        Threads.postBackground(() -> {
+            final MSIMConversation conversation = MSIMManager.getInstance().getConversationManager().getConversation(sessionUserId, conversationId);
+            if (conversation != null) {
+                Threads.postUi(() -> {
+                    if (getSessionUserId() != sessionUserId) {
+                        return;
+                    }
+                    addOrUpdateConversation(conversation);
+                });
+            }
+        });
     }
 
     private void addOrUpdateConversation(@Nullable MSIMConversation conversation) {
