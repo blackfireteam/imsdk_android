@@ -20,15 +20,15 @@ import io.github.idonans.systeminsets.SystemInsetsLayoutHelper;
 public class SoftKeyboardListenerLayout extends SystemInsetsFrameLayout {
 
     public SoftKeyboardListenerLayout(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public SoftKeyboardListenerLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public SoftKeyboardListenerLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public SoftKeyboardListenerLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {

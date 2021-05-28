@@ -17,8 +17,12 @@ public class SessionUserCacheNameText extends UserCacheName {
     }
 
     public SessionUserCacheNameText(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    public SessionUserCacheNameText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {

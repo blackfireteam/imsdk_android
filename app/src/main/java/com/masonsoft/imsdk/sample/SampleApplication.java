@@ -47,7 +47,7 @@ public class SampleApplication extends Application {
         EmojiCompat.init(new BundledEmojiCompatConfig(this));
 
         // 初始化 im
-        MSIMManager.getInstance().initSdk("appId", IMTokenOfflineManager.getInstance().getSdkListener()  );
+        MSIMManager.getInstance().initSdk("appId", IMTokenOfflineManager.getInstance().getSdkListener());
 
         initFresco();
         registerActivityLifecycleCallbacks(TopActivity.getInstance().getActivityLifecycleCallbacks());

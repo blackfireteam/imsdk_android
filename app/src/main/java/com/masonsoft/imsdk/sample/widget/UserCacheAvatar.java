@@ -7,8 +7,8 @@ import android.util.AttributeSet;
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.sample.R;
-import com.masonsoft.imsdk.user.UserInfo;
 
 public class UserCacheAvatar extends ImageLayout {
 
@@ -25,7 +25,7 @@ public class UserCacheAvatar extends ImageLayout {
     private UserCacheChangedViewHelper mUserCacheChangedViewHelper;
 
     @Nullable
-    private UserInfo mCacheUserInfo;
+    private MSIMUserInfo mCacheUserInfo;
 
     public UserCacheAvatar(Context context) {
         this(context, null);
@@ -52,12 +52,12 @@ public class UserCacheAvatar extends ImageLayout {
 
         mUserCacheChangedViewHelper = new UserCacheChangedViewHelper() {
             @Override
-            protected void onUserCacheChanged(@Nullable UserInfo userInfo) {
+            protected void onUserCacheChanged(@Nullable MSIMUserInfo userInfo) {
                 mCacheUserInfo = userInfo;
                 if (mCacheUserInfo == null) {
                     UserCacheAvatar.this.loadAvatar(null);
                 } else {
-                    UserCacheAvatar.this.loadAvatar(mCacheUserInfo.avatar.getOrDefault(null));
+                    UserCacheAvatar.this.loadAvatar(mCacheUserInfo.getAvatar());
                 }
                 UserCacheAvatar.this.invalidate();
             }
@@ -73,24 +73,6 @@ public class UserCacheAvatar extends ImageLayout {
     }
 
     private void loadAvatar(String url) {
-        /*
-        // 约束图片地址的网络尺寸
-        // TODO
-        final int limitSize;
-        if (mAvatarSize == AVATAR_SIZE_LARGE) {
-            limitSize = Constants.AvatarSize.LARGE;
-        } else if (mAvatarSize == AVATAR_SIZE_MIDDLE) {
-            limitSize = Constants.AvatarSize.MIDDLE;
-        } else {
-            limitSize = Constants.AvatarSize.SMALL;
-        }
-
-        url = new OSSImageUrlBuilder(url)
-                .scale(limitSize, limitSize)
-                .formatStatic()
-                .build();
-         */
-
         setUrl(url);
     }
 

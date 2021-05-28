@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.masonsoft.imsdk.user.UserInfo;
+import com.masonsoft.imsdk.MSIMUserInfo;
 
 public abstract class UserCacheDynamicTextView extends AppCompatTextView {
 
@@ -22,14 +22,18 @@ public abstract class UserCacheDynamicTextView extends AppCompatTextView {
     }
 
     public UserCacheDynamicTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    public UserCacheDynamicTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mUserCacheChangedViewHelper = new UserCacheChangedViewHelper() {
             @Override
-            protected void onUserCacheChanged(@Nullable UserInfo userInfo) {
+            protected void onUserCacheChanged(@Nullable MSIMUserInfo userInfo) {
                 UserCacheDynamicTextView.this.onUserCacheUpdate(userInfo);
             }
         };
@@ -43,10 +47,10 @@ public abstract class UserCacheDynamicTextView extends AppCompatTextView {
         return mUserCacheChangedViewHelper.getTargetUserId();
     }
 
-    public void setExternalTargetUser(@Nullable UserInfo userInfo) {
+    public void setExternalTargetUser(@Nullable MSIMUserInfo userInfo) {
         onUserCacheUpdate(userInfo);
     }
 
-    protected abstract void onUserCacheUpdate(@Nullable UserInfo userInfo);
+    protected abstract void onUserCacheUpdate(@Nullable MSIMUserInfo userInfo);
 
 }

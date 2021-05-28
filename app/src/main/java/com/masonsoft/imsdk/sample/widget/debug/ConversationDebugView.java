@@ -12,18 +12,20 @@ import com.masonsoft.imsdk.sample.widget.MSIMConversationChangedViewHelper;
 public class ConversationDebugView extends DebugTextView {
 
     public ConversationDebugView(@NonNull Context context) {
-        super(context);
-        initFromAttributes(context, null, 0, 0);
+        this(context, null);
     }
 
     public ConversationDebugView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        initFromAttributes(context, attrs, 0, 0);
+        this(context, attrs, 0);
     }
 
     public ConversationDebugView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    public ConversationDebugView(@NonNull Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
     private MSIMConversationChangedViewHelper mConversationChangedViewHelper;

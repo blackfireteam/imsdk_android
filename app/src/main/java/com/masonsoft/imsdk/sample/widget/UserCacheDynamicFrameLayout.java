@@ -7,11 +7,12 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.user.UserInfo;
+import com.masonsoft.imsdk.MSIMUserInfo;
+import com.masonsoft.imsdk.sample.Constants;
 
 public abstract class UserCacheDynamicFrameLayout extends FrameLayout {
 
-    protected final boolean DEBUG = true;
+    protected final boolean DEBUG = Constants.DEBUG_WIDGET;
 
     private UserCacheChangedViewHelper mUserCacheChangedViewHelper;
 
@@ -35,7 +36,7 @@ public abstract class UserCacheDynamicFrameLayout extends FrameLayout {
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mUserCacheChangedViewHelper = new UserCacheChangedViewHelper() {
             @Override
-            protected void onUserCacheChanged(@Nullable UserInfo userInfo) {
+            protected void onUserCacheChanged(@Nullable MSIMUserInfo userInfo) {
                 UserCacheDynamicFrameLayout.this.onUserCacheUpdate(userInfo);
             }
         };
@@ -49,10 +50,10 @@ public abstract class UserCacheDynamicFrameLayout extends FrameLayout {
         return mUserCacheChangedViewHelper.getTargetUserId();
     }
 
-    public void setExternalTargetUser(@Nullable UserInfo targetUser) {
+    public void setExternalTargetUser(@Nullable MSIMUserInfo targetUser) {
         onUserCacheUpdate(targetUser);
     }
 
-    protected abstract void onUserCacheUpdate(@Nullable UserInfo userInfo);
+    protected abstract void onUserCacheUpdate(@Nullable MSIMUserInfo userInfo);
 
 }

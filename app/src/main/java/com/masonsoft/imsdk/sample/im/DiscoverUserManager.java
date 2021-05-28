@@ -2,7 +2,7 @@ package com.masonsoft.imsdk.sample.im;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageNotNullProcessor;
@@ -107,8 +107,8 @@ public class DiscoverUserManager {
 
         target.nickname.set(input.getNickName());
         target.avatar.set(input.getAvatar());
-        target.gold.set(input.getGold() ? IMConstants.TRUE : IMConstants.FALSE);
-        target.verified.set(input.getVerified() ? IMConstants.TRUE : IMConstants.FALSE);
+        target.gold.set(MSIMConstants.trueOfFalse(input.getGold()));
+        target.verified.set(MSIMConstants.trueOfFalse(input.getVerified()));
         return target;
     }
 

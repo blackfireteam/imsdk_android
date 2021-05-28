@@ -14,8 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -28,7 +28,6 @@ import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentInputDialog;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleLoadingDialog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMineFragmentBinding;
 import com.masonsoft.imsdk.sample.util.TipUtil;
-import com.masonsoft.imsdk.user.UserInfo;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.dynamic.DynamicView;
@@ -289,15 +288,15 @@ public class MineFragment extends SystemInsetsFragment {
 
     class ViewImpl implements DynamicView {
 
-        public void showSessionUserInfo(@Nullable UserInfo userInfo) {
+        public void showSessionUserInfo(@Nullable MSIMUserInfo userInfo) {
             SampleLog.v(Objects.defaultObjectTag(this) + " showSessionUserInfo userInfo:%s", userInfo);
             if (mBinding == null) {
                 SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 
-            final boolean gold = userInfo != null && (userInfo.gold.getOrDefault(IMConstants.FALSE) == IMConstants.TRUE);
-            final boolean verified = userInfo != null && (userInfo.verified.getOrDefault(IMConstants.FALSE) == IMConstants.TRUE);
+            final boolean gold = userInfo != null && userInfo.isGold();
+            final boolean verified = userInfo != null && userInfo.isVerified();
 
             clearCheckedChangeListener();
             mBinding.modifyGoldSwitch.setChecked(gold);

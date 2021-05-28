@@ -9,9 +9,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMUserInfo;
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.OtherMessage;
 import com.masonsoft.imsdk.core.OtherMessageManager;
 import com.masonsoft.imsdk.core.SignGenerator;
@@ -173,7 +173,7 @@ public class DefaultApi {
 
         final Map<String, Object> requestArgs = new HashMap<>();
         requestArgs.put("uid", userId);
-        requestArgs.put("gold", gold ? IMConstants.TRUE : IMConstants.FALSE);
+        requestArgs.put("gold", MSIMConstants.trueOfFalse(gold));
         if (gold) {
             requestArgs.put("gold_exp", (System.currentTimeMillis() / 1000) + TimeUnit.DAYS.toSeconds(7));
         }
@@ -188,7 +188,7 @@ public class DefaultApi {
 
         final Map<String, Object> requestArgs = new HashMap<>();
         requestArgs.put("uid", userId);
-        requestArgs.put("verified", verified ? IMConstants.TRUE : IMConstants.FALSE);
+        requestArgs.put("verified", MSIMConstants.trueOfFalse(verified));
 
         requestApiServer(url, requestArgs, null);
         return new Object();

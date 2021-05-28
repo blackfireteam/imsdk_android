@@ -15,21 +15,23 @@ import io.github.idonans.lang.util.ViewUtil;
 class DebugTextView extends AppCompatTextView {
 
     public DebugTextView(@NonNull Context context) {
-        super(context);
-        initFromAttributes(context, null, 0, 0);
+        this(context, null);
     }
 
     public DebugTextView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        initFromAttributes(context, attrs, 0, 0);
+        this(context, attrs, 0);
     }
 
     public DebugTextView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
-    private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public DebugTextView(@NonNull Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr);
+        initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    private void initFromAttributes(@NonNull Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         this.setTextSize(12);
         this.setIncludeFontPadding(false);
         this.setTextColor(0xffff0000);

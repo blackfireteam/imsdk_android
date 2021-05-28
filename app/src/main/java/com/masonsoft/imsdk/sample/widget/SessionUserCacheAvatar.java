@@ -19,8 +19,7 @@ public class SessionUserCacheAvatar extends UserCacheAvatar {
     }
 
     public SessionUserCacheAvatar(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, R.style.SessionUserCacheAvatar);
+        this(context, attrs, defStyleAttr, R.style.SessionUserCacheAvatar);
     }
 
     public SessionUserCacheAvatar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {

@@ -24,15 +24,15 @@ public class IMMessageRevokeStateFrameLayout extends IMMessageDynamicFrameLayout
     protected final boolean DEBUG = Constants.DEBUG_WIDGET;
 
     public IMMessageRevokeStateFrameLayout(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public IMMessageRevokeStateFrameLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public IMMessageRevokeStateFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public IMMessageRevokeStateFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {

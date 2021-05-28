@@ -5,9 +5,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.google.common.collect.Lists;
+import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.Constants;
@@ -43,7 +43,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     public IMImageOrVideoPreviewPresenter(@NonNull IMImageOrVideoPreviewDialog.ViewImpl view, long targetUserId, long initMessageSeq) {
         super(view, initMessageSeq >= 0, initMessageSeq >= 0);
         mSessionUserId = IMSessionManager.getInstance().getSessionUserId();
-        mConversationType = IMConstants.ConversationType.C2C;
+        mConversationType = MSIMConstants.ConversationType.C2C;
         mTargetUserId = targetUserId;
         mFirstMessageSeq = initMessageSeq;
         mLastMessageSeq = initMessageSeq;

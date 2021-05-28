@@ -2,13 +2,14 @@ package com.masonsoft.imsdk.sample.widget;
 
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.observable.UserInfoObservable;
+import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.MSIMUserInfo;
+import com.masonsoft.imsdk.MSIMUserInfoListener;
+import com.masonsoft.imsdk.MSIMUserInfoListenerProxy;
 import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.user.UserInfo;
-import com.masonsoft.imsdk.user.UserInfoManager;
 
-import io.github.idonans.core.thread.Threads;
 import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -21,7 +22,7 @@ public abstract class UserCacheChangedViewHelper {
     private long mTargetUserId = Long.MIN_VALUE / 2;
 
     public UserCacheChangedViewHelper() {
-        UserInfoObservable.DEFAULT.registerObserver(mUserInfoObserver);
+        MSIMManager.getInstance().getUserInfoManager().addUserInfoListener(mUserInfoListener);
     }
 
     public void setTargetUserId(long targetUserId) {
@@ -44,23 +45,21 @@ public abstract class UserCacheChangedViewHelper {
         }
         mRequestHolder.set(Single.just("")
                 .map(input -> {
-                    final UserInfo userInfo = UserInfoManager.getInstance().getByUserId(mTargetUserId);
+                    final MSIMUserInfo userInfo = MSIMManager.getInstance().getUserInfoManager().getUserInfo(mTargetUserId);
                     return new ObjectWrapper(userInfo);
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(objectWrapper -> onUserCacheChanged((UserInfo) objectWrapper.getObject()), SampleLog::e));
+                .subscribe(objectWrapper -> onUserCacheChanged((MSIMUserInfo) objectWrapper.getObject()), SampleLog::e));
     }
 
-    protected abstract void onUserCacheChanged(@Nullable UserInfo userInfo);
+    protected abstract void onUserCacheChanged(@Nullable MSIMUserInfo userInfo);
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final UserInfoObservable.UserInfoObserver mUserInfoObserver = userId -> {
-        if (mTargetUserId == userId) {
-            Threads.postUi(() -> {
-                requestLoadData(false);
-            });
+    private final MSIMUserInfoListener mUserInfoListener = new MSIMUserInfoListenerProxy(userId -> {
+        if (MSIMConstants.isIdMatch(mTargetUserId, userId)) {
+            requestLoadData(false);
         }
-    };
+    }, true);
 
 }

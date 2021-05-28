@@ -5,16 +5,15 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.FileUploadProvider;
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.api.DefaultApi;
 import com.masonsoft.imsdk.sample.widget.SessionUserIdChangedViewHelper;
 import com.masonsoft.imsdk.sample.widget.UserCacheChangedViewHelper;
-import com.masonsoft.imsdk.user.UserInfo;
 import com.masonsoft.imsdk.user.UserInfoManager;
 
 import io.github.idonans.core.Progress;
@@ -52,12 +51,12 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
         }
 
         @Override
-        protected void onUserCacheChanged(@Nullable UserInfo userInfo) {
+        protected void onUserCacheChanged(@Nullable MSIMUserInfo userInfo) {
             Threads.postUi(() -> showSessionUserInfo(userInfo));
         }
     }
 
-    private void showSessionUserInfo(@Nullable UserInfo userInfo) {
+    private void showSessionUserInfo(@Nullable MSIMUserInfo userInfo) {
         final MineFragment.ViewImpl view = getView();
         if (view != null) {
             view.showSessionUserInfo(userInfo);
@@ -67,9 +66,9 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
     public void requestSyncSessionUserInfo() {
         mRequestHolder.set(Single.just("")
                 .map(input -> {
-                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
                     Preconditions.checkArgument(sessionUserId > 0);
-                    return UserInfoManager.getInstance().getByUserId(sessionUserId);
+                    return MSIMManager.getInstance().getUserInfoManager().getUserInfo(sessionUserId);
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -190,27 +189,18 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                 .map(input -> {
                     final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
                     Preconditions.checkArgument(sessionUserId > 0);
-                    final UserInfo sessionUserInfo = UserInfoManager.getInstance().getByUserId(sessionUserId);
+                    final MSIMUserInfo sessionUserInfo = MSIMManager.getInstance().getUserInfoManager().getUserInfo(sessionUserId);
                     Preconditions.checkNotNull(sessionUserInfo);
 
                     // 是否提交更改
-                    boolean submit = false;
-                    if (sessionUserInfo.gold.isUnset()) {
-                        submit = true;
-                    } else {
-                        boolean currentChecked = sessionUserInfo.gold.get() == IMConstants.TRUE;
-                        if (currentChecked != isChecked) {
-                            submit = true;
-                        }
-                    }
-                    return submit;
+                    return sessionUserInfo.isGold(!isChecked) != isChecked;
                 })
                 .map(submit -> {
                     if (!submit) {
                         return new Object();
                     }
 
-                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
                     Preconditions.checkArgument(sessionUserId > 0);
                     DefaultApi.updateGold(sessionUserId, isChecked);
                     UserInfoManager.getInstance().updateGold(sessionUserId, isChecked);
@@ -241,27 +231,18 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                 .map(input -> {
                     final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
                     Preconditions.checkArgument(sessionUserId > 0);
-                    final UserInfo sessionUserInfo = UserInfoManager.getInstance().getByUserId(sessionUserId);
+                    final MSIMUserInfo sessionUserInfo = MSIMManager.getInstance().getUserInfoManager().getUserInfo(sessionUserId);
                     Preconditions.checkNotNull(sessionUserInfo);
 
                     // 是否提交更改
-                    boolean submit = false;
-                    if (sessionUserInfo.verified.isUnset()) {
-                        submit = true;
-                    } else {
-                        boolean currentChecked = sessionUserInfo.verified.get() == IMConstants.TRUE;
-                        if (currentChecked != isChecked) {
-                            submit = true;
-                        }
-                    }
-                    return submit;
+                    return sessionUserInfo.isVerified(!isChecked) != isChecked;
                 })
                 .map(submit -> {
                     if (!submit) {
                         return new Object();
                     }
 
-                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
                     Preconditions.checkArgument(sessionUserId > 0);
                     DefaultApi.updateVerified(sessionUserId, isChecked);
                     UserInfoManager.getInstance().updateVerified(sessionUserId, isChecked);

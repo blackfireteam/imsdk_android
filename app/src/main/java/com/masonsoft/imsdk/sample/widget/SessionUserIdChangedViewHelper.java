@@ -3,7 +3,6 @@ package com.masonsoft.imsdk.sample.widget;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMSessionListener;
 import com.masonsoft.imsdk.MSIMSessionListenerProxy;
-import com.masonsoft.imsdk.core.IMSessionManager;
 
 public abstract class SessionUserIdChangedViewHelper {
 
@@ -33,7 +32,7 @@ public abstract class SessionUserIdChangedViewHelper {
         }
 
         private void sync() {
-            final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+            final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
             if (mSessionUserId != sessionUserId) {
                 mSessionUserId = sessionUserId;
                 SessionUserIdChangedViewHelper.this.onSessionUserIdChanged(sessionUserId);

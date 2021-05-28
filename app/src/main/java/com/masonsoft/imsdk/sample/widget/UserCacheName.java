@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.user.UserInfo;
+import com.masonsoft.imsdk.MSIMUserInfo;
 
 public class UserCacheName extends UserCacheDynamicTextView {
 
@@ -18,15 +18,19 @@ public class UserCacheName extends UserCacheDynamicTextView {
     }
 
     public UserCacheName(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    public UserCacheName(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override
-    protected void onUserCacheUpdate(@Nullable UserInfo userInfo) {
+    protected void onUserCacheUpdate(@Nullable MSIMUserInfo userInfo) {
         if (userInfo == null) {
             setText(null);
         } else {
-            setText(userInfo.nickname.getOrDefault(null));
+            setText(userInfo.getNickname());
         }
     }
 

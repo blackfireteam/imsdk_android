@@ -23,7 +23,6 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessageFactory;
 import com.masonsoft.imsdk.MSIMWeakCallback;
-import com.masonsoft.imsdk.core.IMConstants.ConversationType;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
@@ -60,7 +59,7 @@ import io.github.idonans.uniontype.UnionTypeItemObject;
 /**
  * 单聊页面
  *
- * @see ConversationType#C2C
+ * @see com.masonsoft.imsdk.MSIMConstants.ConversationType#C2C
  */
 public class SingleChatFragment extends SystemInsetsFragment {
 

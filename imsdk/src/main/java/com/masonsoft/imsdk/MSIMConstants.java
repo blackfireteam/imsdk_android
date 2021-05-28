@@ -19,6 +19,17 @@ public class MSIMConstants {
         return IMConstants.isIdMatch(id1, id2);
     }
 
+    public static final int TRUE = IMConstants.TRUE;
+    public static final int FALSE = IMConstants.FALSE;
+
+    public static int trueOfFalse(boolean input) {
+        return IMConstants.trueOfFalse(input);
+    }
+
+    public static boolean trueOfFalse(int input) {
+        return IMConstants.trueOfFalse(input);
+    }
+
     /**
      * 会话类型
      */

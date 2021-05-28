@@ -6,9 +6,9 @@ import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.sample.R;
-import com.masonsoft.imsdk.user.UserInfo;
 
 public class IMMessageRevokeTextView extends UserCacheDynamicTextView {
 
@@ -21,8 +21,12 @@ public class IMMessageRevokeTextView extends UserCacheDynamicTextView {
     }
 
     public IMMessageRevokeTextView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    public IMMessageRevokeTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
     // 标记是接收的消息还是发送的消息
@@ -39,10 +43,10 @@ public class IMMessageRevokeTextView extends UserCacheDynamicTextView {
         }
     }
 
-    private String buildRecallText(@Nullable UserInfo userInfo) {
+    private String buildRecallText(@Nullable MSIMUserInfo userInfo) {
         String username = null;
         if (userInfo != null) {
-            username = userInfo.nickname.getOrDefault(null);
+            username = userInfo.getNickname();
         }
         if (username == null) {
             username = "";
@@ -55,7 +59,7 @@ public class IMMessageRevokeTextView extends UserCacheDynamicTextView {
     }
 
     @Override
-    protected void onUserCacheUpdate(@Nullable UserInfo userInfo) {
+    protected void onUserCacheUpdate(@Nullable MSIMUserInfo userInfo) {
         setText(buildRecallText(userInfo));
     }
 

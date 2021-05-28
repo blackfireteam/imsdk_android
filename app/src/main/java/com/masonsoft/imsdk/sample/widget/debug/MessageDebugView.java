@@ -12,18 +12,20 @@ import com.masonsoft.imsdk.sample.widget.IMMessageChangedViewHelper;
 public class MessageDebugView extends DebugTextView {
 
     public MessageDebugView(@NonNull Context context) {
-        super(context);
-        initFromAttributes(context, null, 0, 0);
+        this(context, null);
     }
 
     public MessageDebugView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        initFromAttributes(context, attrs, 0, 0);
+        this(context, attrs, 0);
     }
 
     public MessageDebugView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    public MessageDebugView(@NonNull Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
     private IMMessageChangedViewHelper mMessageChangedViewHelper;

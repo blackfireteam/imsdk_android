@@ -2,14 +2,14 @@ package com.masonsoft.imsdk.sample.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 
-import com.masonsoft.imsdk.user.UserInfo;
+import com.masonsoft.imsdk.MSIMUserInfo;
 
-public abstract class UserCacheDynamicImageView extends ImageView {
+public abstract class UserCacheDynamicImageView extends AppCompatImageView {
 
     public UserCacheDynamicImageView(Context context) {
         this(context, null);
@@ -24,7 +24,7 @@ public abstract class UserCacheDynamicImageView extends ImageView {
     }
 
     public UserCacheDynamicImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+        super(context, attrs, defStyleAttr);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
@@ -33,7 +33,7 @@ public abstract class UserCacheDynamicImageView extends ImageView {
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mUserCacheChangedViewHelper = new UserCacheChangedViewHelper() {
             @Override
-            protected void onUserCacheChanged(@Nullable UserInfo userInfo) {
+            protected void onUserCacheChanged(@Nullable MSIMUserInfo userInfo) {
                 UserCacheDynamicImageView.this.onUserCacheUpdate(userInfo);
             }
         };
@@ -47,10 +47,10 @@ public abstract class UserCacheDynamicImageView extends ImageView {
         return mUserCacheChangedViewHelper.getTargetUserId();
     }
 
-    public void setExternalTargetUser(@Nullable UserInfo targetUser) {
+    public void setExternalTargetUser(@Nullable MSIMUserInfo targetUser) {
         onUserCacheUpdate(targetUser);
     }
 
-    protected abstract void onUserCacheUpdate(@Nullable UserInfo userInfo);
+    protected abstract void onUserCacheUpdate(@Nullable MSIMUserInfo userInfo);
 
 }

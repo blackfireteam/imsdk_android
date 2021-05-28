@@ -25,6 +25,10 @@ public final class IMConstants {
         return input ? TRUE : FALSE;
     }
 
+    public static boolean trueOfFalse(int input) {
+        return input == TRUE;
+    }
+
     /**
      * 指代任意 id
      */
