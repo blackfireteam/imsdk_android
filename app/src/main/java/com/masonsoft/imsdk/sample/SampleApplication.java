@@ -14,7 +14,6 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.backends.okhttp3.OkHttpNetworkFetcher;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.masonsoft.imsdk.MSIMManager;
-import com.masonsoft.imsdk.core.DebugManager;
 import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.sample.common.TopActivity;
@@ -22,7 +21,6 @@ import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
 
 import io.github.idonans.core.manager.ProcessManager;
-import io.github.idonans.dynamic.DynamicLog;
 
 public class SampleApplication extends Application {
 
@@ -30,10 +28,10 @@ public class SampleApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        IMLog.setLogLevel(Log.VERBOSE);
+        // IMLog.setLogLevel(Log.VERBOSE);
         LocalSettingsManager.getInstance().start();
         DiscoverUserManager.getInstance().start();
-        DebugManager.getInstance().start();
+        // DebugManager.getInstance().start();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             WebView.setDataDirectorySuffix(ProcessManager.getInstance().getProcessTag());
         }
@@ -41,8 +39,8 @@ public class SampleApplication extends Application {
         // 设置文件上服务
         FileUploadManager.getInstance().setFileUploadProvider(new TencentOSSFileUploadProvider());
 
-        SampleLog.setLogLevel(Log.VERBOSE);
-        DynamicLog.setLogLevel(Log.VERBOSE);
+        // SampleLog.setLogLevel(Log.VERBOSE);
+        // DynamicLog.setLogLevel(Log.VERBOSE);
 
         EmojiCompat.init(new BundledEmojiCompatConfig(this));
 

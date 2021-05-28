@@ -23,8 +23,18 @@ android {
         viewBinding = true
     }
 
+    signingConfigs {
+        release {
+            storeFile file("../msimsdk_sign.jks")
+            storePassword "20210528MSIMSDK"
+            keyAlias "msimsdk"
+            keyPassword "20210528MSIMSDK"
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
