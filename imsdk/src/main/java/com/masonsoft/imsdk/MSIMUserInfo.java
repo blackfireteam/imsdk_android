@@ -85,6 +85,11 @@ public class MSIMUserInfo {
         }
 
         @NonNull
+        public MSIMUserInfo getUserInfo() {
+            return new MSIMUserInfo(mUserInfoUpdate);
+        }
+
+        @NonNull
         UserInfo getUserInfoUpdate() {
             return mUserInfoUpdate;
         }

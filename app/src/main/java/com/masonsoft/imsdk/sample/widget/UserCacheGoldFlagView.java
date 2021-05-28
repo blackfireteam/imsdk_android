@@ -7,9 +7,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.sample.R;
-import com.masonsoft.imsdk.user.UserInfo;
 
 import io.github.idonans.lang.util.ViewUtil;
 
@@ -38,14 +37,8 @@ public class UserCacheGoldFlagView extends UserCacheDynamicImageView {
     }
 
     @Override
-    protected void onUserCacheUpdate(@Nullable UserInfo userInfo) {
-        boolean gold = false;
-        if (userInfo != null) {
-            if (!userInfo.gold.isUnset()) {
-                gold = userInfo.gold.get() == IMConstants.TRUE;
-            }
-        }
-
+    protected void onUserCacheUpdate(@Nullable MSIMUserInfo userInfo) {
+        final boolean gold = userInfo != null && userInfo.isGold();
         ViewUtil.setVisibilityIfChanged(this, gold ? View.VISIBLE : View.GONE);
     }
 

@@ -2,15 +2,14 @@ package com.masonsoft.imsdk.sample.im;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.processor.ReceivedProtoMessageNotNullProcessor;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.observable.DiscoverUserObservable;
-import com.masonsoft.imsdk.user.UserInfo;
-import com.masonsoft.imsdk.user.UserInfoManager;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
@@ -81,9 +80,9 @@ public class DiscoverUserManager {
             }
 
             if (protoMessageObject instanceof ProtoMessage.ProfileOnline) {
-                final UserInfo userInfo = createUserInfo((ProtoMessage.ProfileOnline) protoMessageObject);
-                UserInfoManager.getInstance().insertOrUpdateUser(userInfo);
-                addOnline(userInfo.uid.get());
+                final MSIMUserInfo.Editor userInfo = createUserInfo((ProtoMessage.ProfileOnline) protoMessageObject);
+                MSIMManager.getInstance().getUserInfoManager().insertOrUpdateUserInfo(userInfo);
+                addOnline(userInfo.getUserInfo().getUserId());
                 return true;
             }
 
@@ -98,18 +97,13 @@ public class DiscoverUserManager {
     }
 
     @NonNull
-    private static UserInfo createUserInfo(@NonNull ProtoMessage.ProfileOnline input) {
-        final UserInfo target = new UserInfo();
-        target.uid.set(input.getUid());
-
-        // 将服务器返回的秒转换为毫秒
-        target.updateTimeMs.set(input.getUpdateTime() * 1000L);
-
-        target.nickname.set(input.getNickName());
-        target.avatar.set(input.getAvatar());
-        target.gold.set(MSIMConstants.trueOfFalse(input.getGold()));
-        target.verified.set(MSIMConstants.trueOfFalse(input.getVerified()));
-        return target;
+    private static MSIMUserInfo.Editor createUserInfo(@NonNull ProtoMessage.ProfileOnline input) {
+        return new MSIMUserInfo.Editor(input.getUid())
+                .setUpdateTimeMs(input.getUpdateTime() * 1000L /* 将服务器返回的秒转换为毫秒 */)
+                .setNickname(input.getNickName())
+                .setAvatar(input.getAvatar())
+                .setGold(input.getGold())
+                .setVerified(input.getVerified());
     }
 
 }
