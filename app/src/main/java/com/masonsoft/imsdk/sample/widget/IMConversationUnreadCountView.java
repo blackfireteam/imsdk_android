@@ -125,7 +125,7 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
     public void setUnreadCount(long unreadCount) {
         if (mUnreadCount != unreadCount) {
             mUnreadCount = unreadCount;
-            mUnreadCountText = String.valueOf(mUnreadCount <= 99 ? mUnreadCount : "99+");
+            mUnreadCountText = String.valueOf(mUnreadCount);
             requestLayout();
             invalidate();
         }
