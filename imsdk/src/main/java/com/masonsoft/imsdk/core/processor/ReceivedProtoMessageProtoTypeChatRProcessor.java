@@ -123,6 +123,7 @@ public class ReceivedProtoMessageProtoTypeChatRProcessor extends ReceivedProtoMe
                 }
                 mTimeDiffDebugHelper.mark();
                 mTimeDiffDebugHelper.print("batch size:" + targetList.size());
+                doNextBatch();
             });
         }
 

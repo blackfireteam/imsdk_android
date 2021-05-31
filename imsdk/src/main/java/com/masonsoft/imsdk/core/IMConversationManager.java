@@ -206,11 +206,10 @@ public class IMConversationManager {
                                                    final int conversationType,
                                                    final long targetUserId,
                                                    final int unreadCountDiff) {
-        final Conversation conversation = ConversationDatabaseProvider.getInstance()
-                .getConversationByTargetUserId(
-                        sessionUserId,
-                        conversationType,
-                        targetUserId);
+        final IMConversation conversation = getOrCreateConversationByTargetUserId(
+                sessionUserId,
+                conversationType,
+                targetUserId);
         if (conversation == null) {
             final Throwable e = new IllegalAccessError("unexpected. conversation is null");
             IMLog.e(e);
@@ -220,8 +219,8 @@ public class IMConversationManager {
 
         // 累加消息未读数
         final Conversation conversationUpdate = new Conversation();
-        conversationUpdate.localId.set(conversation.localId.get());
-        conversationUpdate.localUnreadCount.set(conversation.localUnreadCount.get() + unreadCountDiff);
+        conversationUpdate.localId.set(conversation.id.get());
+        conversationUpdate.localUnreadCount.set(conversation.unreadCount.get() + unreadCountDiff);
         return ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate);
     }
 

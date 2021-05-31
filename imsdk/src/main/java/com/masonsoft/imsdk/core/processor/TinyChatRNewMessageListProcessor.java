@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMConversationManager;
 import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.block.MessageBlock;
 import com.masonsoft.imsdk.core.db.DatabaseHelper;
 import com.masonsoft.imsdk.core.db.DatabaseProvider;
@@ -15,9 +16,12 @@ import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.MessageFactory;
+import com.masonsoft.imsdk.core.db.Sequence;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.lang.Processor;
+import com.masonsoft.imsdk.util.Objects;
+import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +34,8 @@ import io.github.idonans.core.util.Preconditions;
  * 批量处理多个收到的新消息(注意：与 ChatRBatch 不同，这个里的每一个 ChatR(包装在 SessionProtoByteMessageWrapper 内) 都必须是新消息, 并且具有相同的 sessionUserId)
  */
 public class TinyChatRNewMessageListProcessor implements Processor<List<SessionProtoByteMessageWrapper>> {
+
+    private final TimeDiffDebugHelper mTimeDiffDebugHelper = new TimeDiffDebugHelper(Objects.defaultObjectTag(this));
 
     @Override
     public boolean doProcess(@Nullable List<SessionProtoByteMessageWrapper> targetList) {
@@ -59,7 +65,10 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
             if (list.isEmpty()) {
                 continue;
             }
+            mTimeDiffDebugHelper.mark();
             doProcessWithSameTargetUserId(sessionUserId, entry.getKey(), list);
+            mTimeDiffDebugHelper.mark();
+            mTimeDiffDebugHelper.print("list size:" + list.size() + "/" + targetList.size());
         }
         return true;
     }
@@ -72,7 +81,13 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
         final List<Message> messageList = new ArrayList<>();
         for (SessionProtoByteMessageWrapper target : chatRList) {
             final ProtoMessage.ChatR chatR = (ProtoMessage.ChatR) target.getProtoByteMessageWrapper().getProtoMessageObject();
-            messageList.add(MessageFactory.create(chatR));
+            final Message message = MessageFactory.create(chatR);
+            // 接收到新消息
+            // 设置新消息的 seq
+            message.localSeq.set(Sequence.create(SignGenerator.nextMicroSeconds()));
+            // 设置新消息的显示时间为当前时间
+            message.localTimeMs.set(System.currentTimeMillis());
+            messageList.add(message);
         }
 
         // messageList 中的所有消息是连续的，并且是有序的(按照 msg id 有序)
