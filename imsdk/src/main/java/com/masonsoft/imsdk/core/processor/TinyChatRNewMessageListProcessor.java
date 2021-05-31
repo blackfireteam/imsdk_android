@@ -106,6 +106,11 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
             }
         }
 
+        {
+            final long messageTime = maxMessage.remoteMessageTime.get();
+            chatRList.get(0).getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
+        }
+
         final long fromUserId = maxMessage.fromUserId.get();
         final long toUserId = maxMessage.toUserId.get();
         if (fromUserId != sessionUserId && toUserId != sessionUserId) {
