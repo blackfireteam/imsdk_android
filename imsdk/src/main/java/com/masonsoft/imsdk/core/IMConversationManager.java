@@ -191,6 +191,21 @@ public class IMConversationManager {
             return false;
         }
 
+        return increaseConversationUnreadCount(
+                sessionUserId,
+                conversationType,
+                targetUserId,
+                1
+        );
+    }
+
+    /**
+     * 累加未读消息数
+     */
+    public boolean increaseConversationUnreadCount(final long sessionUserId,
+                                                   final int conversationType,
+                                                   final long targetUserId,
+                                                   final int unreadCountDiff) {
         final Conversation conversation = ConversationDatabaseProvider.getInstance()
                 .getConversationByTargetUserId(
                         sessionUserId,
@@ -206,7 +221,7 @@ public class IMConversationManager {
         // 累加消息未读数
         final Conversation conversationUpdate = new Conversation();
         conversationUpdate.localId.set(conversation.localId.get());
-        conversationUpdate.localUnreadCount.set(conversation.localUnreadCount.get() + 1);
+        conversationUpdate.localUnreadCount.set(conversation.localUnreadCount.get() + unreadCountDiff);
         return ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate);
     }
 

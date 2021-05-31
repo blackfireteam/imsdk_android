@@ -690,15 +690,18 @@ public class FetchMessageHistoryManager {
                     }
 
                     final long sessionUserId = mSessionUserId;
-                    final long fromUserId = maxMessage.fromUserId.get();
-                    final long toUserId = maxMessage.toUserId.get();
-                    if (fromUserId != sessionUserId && toUserId != sessionUserId) {
-                        IMLog.e("unexpected. sessionUserId:%s invalid fromUserId and toUserId %s", sessionUserId, maxMessage);
-                        return false;
-                    }
+                    final long targetUserId;
+                    {
+                        final long fromUserId = maxMessage.fromUserId.get();
+                        final long toUserId = maxMessage.toUserId.get();
+                        if (fromUserId != sessionUserId && toUserId != sessionUserId) {
+                            IMLog.e("unexpected. sessionUserId:%s invalid fromUserId and toUserId %s", sessionUserId, maxMessage);
+                            return false;
+                        }
 
-                    final boolean received = fromUserId != sessionUserId;
-                    final long targetUserId = received ? fromUserId : toUserId;
+                        final boolean received = fromUserId != sessionUserId;
+                        targetUserId = received ? fromUserId : toUserId;
+                    }
                     final int conversationType = IMConstants.ConversationType.C2C;
 
                     for (Message message : messageList) {
@@ -766,7 +769,10 @@ public class FetchMessageHistoryManager {
                         final SQLiteDatabase database = databaseHelper.getDBHelper().getWritableDatabase();
                         database.beginTransaction();
                         try {
+                            Message conversationBestShowMessage = null;
+
                             for (Message message : messageList) {
+                                final boolean actionMessage = message.localActionMessage.get() > 0;
                                 final long remoteMessageId = message.remoteMessageId.get();
                                 // 设置 block id
                                 message.localBlockId.set(blockId);
@@ -785,6 +791,14 @@ public class FetchMessageHistoryManager {
                                             message)) {
                                         final Throwable e = new IllegalAccessError("unexpected insertMessage return false " + message);
                                         IMLog.e(e);
+                                    } else {
+                                        // 新消息入库成功
+                                        if (!actionMessage) {
+                                            if (conversationBestShowMessage == null
+                                                    || conversationBestShowMessage.localSeq.get() < message.localSeq.get()) {
+                                                conversationBestShowMessage = message;
+                                            }
+                                        }
                                     }
                                 } else {
                                     // 消息已经存在
@@ -830,19 +844,21 @@ public class FetchMessageHistoryManager {
                             // expand block id
                             MessageBlock.expandBlockId(sessionUserId, conversationType, targetUserId, minMessage.remoteMessageId.get());
 
-                            database.setTransactionSuccessful();
-
                             try {
                                 // 更新对应会话的最后一条关联消息
-                                IMConversationManager.getInstance().updateConversationLastMessage(
-                                        sessionUserId,
-                                        conversationType,
-                                        targetUserId,
-                                        maxMessage.localId.get()
-                                );
+                                if (conversationBestShowMessage != null) {
+                                    IMConversationManager.getInstance().updateConversationLastMessage(
+                                            sessionUserId,
+                                            conversationType,
+                                            targetUserId,
+                                            conversationBestShowMessage.localId.get()
+                                    );
+                                }
                             } catch (Throwable e) {
                                 IMLog.e(e);
                             }
+
+                            database.setTransactionSuccessful();
                         } finally {
                             database.endTransaction();
                         }
