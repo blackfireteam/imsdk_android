@@ -6,9 +6,18 @@ import com.masonsoft.imsdk.util.Objects;
 public class TimeDiffDebugHelper {
 
     private final long mStart = System.nanoTime();
+    private final String mTagPrefix;
     private long mLast = System.nanoTime();
     private long mDiffWithStart;
     private long mDiffWithLast;
+
+    public TimeDiffDebugHelper() {
+        this("default");
+    }
+
+    public TimeDiffDebugHelper(String tagPrefix) {
+        mTagPrefix = tagPrefix;
+    }
 
     public void mark() {
         final long now = System.nanoTime();
@@ -18,7 +27,7 @@ public class TimeDiffDebugHelper {
     }
 
     public void print() {
-        SampleLog.i("%s diff[%s/%s]", Objects.defaultObjectTag(this), mDiffWithLast, mDiffWithStart);
+        SampleLog.i("%s [%s] diff[%s/%s]", Objects.defaultObjectTag(this), mTagPrefix, mDiffWithLast, mDiffWithStart);
     }
 
 }
