@@ -154,7 +154,7 @@ public class UserInfoSyncManager {
     }
 
     public void enqueueSyncUserInfoList(final List<Long> userIdList) {
-        mSyncQueue.enqueue(new SafetyRunnable(new MultiUserInfoSyncTask(userIdList)));
+        mSyncQueue.enqueue(new SafetyRunnable(new MultiUserInfoSyncTask(userIdList)), true);
     }
 
     public void enqueueSyncUserInfo(final long userId) {
@@ -170,7 +170,7 @@ public class UserInfoSyncManager {
     }
 
     public void enqueueSyncUserInfo(final long userId, long serverUpdateTimeMs, boolean important) {
-        mSyncQueue.enqueue(new SafetyRunnable(new UserInfoSyncTask(userId, serverUpdateTimeMs, important)));
+        mSyncQueue.enqueue(new SafetyRunnable(new UserInfoSyncTask(userId, serverUpdateTimeMs, important)), true);
     }
 
     private static class UserInfoSyncTask implements Runnable {
