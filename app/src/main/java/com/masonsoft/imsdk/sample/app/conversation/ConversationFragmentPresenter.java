@@ -13,6 +13,7 @@ import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.widget.SessionUserIdChangedViewHelper;
 import com.masonsoft.imsdk.util.Objects;
+import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -104,7 +105,11 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         if (view == null) {
             return;
         }
+        final TimeDiffDebugHelper timeDiffDebugHelper = new TimeDiffDebugHelper(Objects.defaultObjectTag(this));
+        timeDiffDebugHelper.mark();
         view.replaceConversation(unionTypeItemObject);
+        timeDiffDebugHelper.mark();
+        timeDiffDebugHelper.print("addOrUpdateConversation targetUserId:" + conversation.getTargetUserId() + ", sessionUserId:" + conversation.getSessionUserId());
     }
 
     @Nullable
