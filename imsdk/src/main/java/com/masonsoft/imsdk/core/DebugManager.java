@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.TaskQueue;
+import io.github.idonans.core.thread.ThreadPool;
 
 /**
  * only for debug
@@ -43,6 +44,9 @@ public class DebugManager {
     private long mLastPrintTimeMs;
 
     private DebugManager() {
+        mDebugInfoProviderSet.put(builder ->
+                builder.append("-- ThreadPool current count:").append(ThreadPool.getInstance().getCount()).append(" --\n")
+        );
     }
 
     public void addDebugInfoProvider(DebugInfoProvider debugInfoProvider) {
