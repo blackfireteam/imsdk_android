@@ -52,6 +52,9 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
 
         @Override
         protected void onUserCacheChanged(@Nullable MSIMUserInfo userInfo) {
+            if (getView() == null) {
+                return;
+            }
             Threads.postUi(() -> showSessionUserInfo(userInfo));
         }
     }

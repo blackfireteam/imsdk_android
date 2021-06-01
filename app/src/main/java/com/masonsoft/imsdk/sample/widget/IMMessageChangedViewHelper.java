@@ -2,6 +2,7 @@ package com.masonsoft.imsdk.sample.widget;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 import androidx.core.util.Pair;
 
@@ -15,6 +16,7 @@ import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.util.Objects;
 
+import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -81,7 +83,10 @@ public abstract class IMMessageChangedViewHelper {
         return mLocalMessageId;
     }
 
+    @UiThread
     public void requestLoadData(boolean reset) {
+        Threads.mustUi();
+
         // abort last
         mRequestHolder.set(null);
 

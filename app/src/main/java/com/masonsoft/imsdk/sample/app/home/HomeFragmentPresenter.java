@@ -110,6 +110,9 @@ public class HomeFragmentPresenter extends PagePresenter<UnionTypeItemObject, Un
     }
 
     private void setLastRetryListener(LastRetryListener listener) {
+        if (getView() == null) {
+            return;
+        }
         Threads.runOnUi(() -> mLastRetryListener = listener);
     }
 

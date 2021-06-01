@@ -8,6 +8,9 @@ import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.db.Conversation;
 import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
+import com.masonsoft.imsdk.core.db.DatabaseHelper;
+import com.masonsoft.imsdk.core.db.DatabaseProvider;
+import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.user.UserInfoSyncManager;
@@ -42,44 +45,48 @@ public class TinyConversationUpdateProcessor extends ReceivedProtoMessageProtoTy
         // 获取用户信息
         UserInfoSyncManager.getInstance().enqueueSyncUserInfo(targetUserId);
 
-        final Conversation dbConversation = ConversationDatabaseProvider
-                .getInstance()
-                .getConversationByTargetUserId(sessionUserId, conversationType, targetUserId);
-        if (dbConversation == null) {
-            // 会话在本地不存在，忽略.
-            IMLog.w("conversation is not exists. ignore chat item update. sessionUserId:%s, targetUserId:%s", sessionUserId, targetUserId);
-            return true;
-        }
-
-        {
-            final long messageTime = protoMessageObject.getUpdateTime();
-            target.getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
-        }
-
-        final Conversation conversationUpdate = new Conversation();
-        conversationUpdate.localId.set(dbConversation.localId.get());
         boolean fetchMessageHistory = false;
-        if (event == EVENT_MSG_LAST_READ) {
-            conversationUpdate.messageLastRead.set(protoMessageObject.getMsgLastRead());
-        } else if (event == EVENT_UNREAD) {
-            conversationUpdate.remoteUnread.set(protoMessageObject.getUnread());
-            conversationUpdate.localUnreadCount.set(protoMessageObject.getUnread());
-            fetchMessageHistory = true;
-        } else if (event == EVENT_I_BLOCK_U) {
-            conversationUpdate.iBlockU.set(IMConstants.trueOfFalse(protoMessageObject.getIBlockU()));
-        } else if (event == EVENT_DELETED) {
-            conversationUpdate.delete.set(IMConstants.trueOfFalse(protoMessageObject.getDeleted()));
-        } else {
-            // 未知的 event 值
-            IMLog.e("unknown event:%s. ignore chat item update.", event);
-            return true;
-        }
 
-        if (!ConversationDatabaseProvider.getInstance().updateConversation(
-                sessionUserId,
-                conversationUpdate)) {
-            final Throwable e = new IllegalAccessError("unexpected updateConversation return false " + conversationUpdate);
-            IMLog.e(e);
+        final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+            final Conversation dbConversation = ConversationDatabaseProvider
+                    .getInstance()
+                    .getConversationByTargetUserId(sessionUserId, conversationType, targetUserId);
+            if (dbConversation == null) {
+                // 会话在本地不存在，忽略.
+                IMLog.w("conversation is not exists. ignore chat item update. sessionUserId:%s, targetUserId:%s", sessionUserId, targetUserId);
+                return true;
+            }
+
+            {
+                final long messageTime = protoMessageObject.getUpdateTime();
+                target.getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
+            }
+
+            final Conversation conversationUpdate = new Conversation();
+            conversationUpdate.localId.set(dbConversation.localId.get());
+            if (event == EVENT_MSG_LAST_READ) {
+                conversationUpdate.messageLastRead.set(protoMessageObject.getMsgLastRead());
+            } else if (event == EVENT_UNREAD) {
+                conversationUpdate.remoteUnread.set(protoMessageObject.getUnread());
+                conversationUpdate.localUnreadCount.set(protoMessageObject.getUnread());
+                fetchMessageHistory = true;
+            } else if (event == EVENT_I_BLOCK_U) {
+                conversationUpdate.iBlockU.set(IMConstants.trueOfFalse(protoMessageObject.getIBlockU()));
+            } else if (event == EVENT_DELETED) {
+                conversationUpdate.delete.set(IMConstants.trueOfFalse(protoMessageObject.getDeleted()));
+            } else {
+                // 未知的 event 值
+                IMLog.e("unknown event:%s. ignore chat item update.", event);
+                return true;
+            }
+
+            if (!ConversationDatabaseProvider.getInstance().updateConversation(
+                    sessionUserId,
+                    conversationUpdate)) {
+                final Throwable e = new IllegalAccessError("unexpected updateConversation return false " + conversationUpdate);
+                IMLog.e(e);
+            }
         }
 
         if (fetchMessageHistory) {

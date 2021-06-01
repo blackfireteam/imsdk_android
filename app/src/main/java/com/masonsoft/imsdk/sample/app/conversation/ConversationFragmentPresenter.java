@@ -74,16 +74,32 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         requestInit(true);
     }
 
-    private void addOrUpdateConversation(long sessionUserId, long conversationId) {
+    private boolean isAbort(long sessionUserId) {
+        if (super.isAbort()) {
+            return true;
+        }
         if (getSessionUserId() != sessionUserId) {
+            return true;
+        }
+        return getView() == null;
+    }
+
+    private void addOrUpdateConversation(long sessionUserId, long conversationId) {
+        if (isAbort(sessionUserId)) {
             return;
         }
 
         Threads.postBackground(() -> {
+            if (isAbort(sessionUserId)) {
+                return;
+            }
             final MSIMConversation conversation = MSIMManager.getInstance().getConversationManager().getConversation(sessionUserId, conversationId);
+            if (isAbort(sessionUserId)) {
+                return;
+            }
             if (conversation != null) {
                 Threads.postUi(() -> {
-                    if (getSessionUserId() != sessionUserId) {
+                    if (isAbort(sessionUserId)) {
                         return;
                     }
                     addOrUpdateConversation(conversation);

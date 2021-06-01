@@ -38,6 +38,9 @@ public class DiscoverFragmentPresenter extends PagePresenter<UnionTypeItemObject
     private final DiscoverUserObservable.DiscoverUserObserver mDiscoverUserObserver = new DiscoverUserObservable.DiscoverUserObserver() {
         @Override
         public void onDiscoverUserOnline(long userId) {
+            if (getView() == null) {
+                return;
+            }
             final UnionTypeItemObject unionTypeItemObject = create(userId);
             Threads.postUi(() -> {
                 final DiscoverFragment.ViewImpl view = getView();
@@ -50,6 +53,9 @@ public class DiscoverFragmentPresenter extends PagePresenter<UnionTypeItemObject
 
         @Override
         public void onDiscoverUserOffline(long userId) {
+            if (getView() == null) {
+                return;
+            }
             final UnionTypeItemObject unionTypeItemObject = create(userId);
             Threads.postUi(() -> {
                 final DiscoverFragment.ViewImpl view = getView();

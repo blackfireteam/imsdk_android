@@ -424,12 +424,20 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             final Object tag = new Object();
             setHolderFinderTag(input.holder, tag);
             Threads.postBackground(() -> {
+                if (isHolderFinderTagChanged(input.holder, tag)) {
+                    SampleLog.v("ignore. holder finder tag changed");
+                    return;
+                }
                 final MSIMMessage message = MSIMManager.getInstance().getMessageManager().getMessage(
                         input.message.getSessionUserId(),
                         input.message.getConversationType(),
                         input.message.getTargetUserId(),
                         input.message.getMessageId()
                 );
+                if (isHolderFinderTagChanged(input.holder, tag)) {
+                    SampleLog.v("ignore. holder finder tag changed");
+                    return;
+                }
                 Threads.runOnUi(() -> {
                     if (isHolderFinderTagChanged(input.holder, tag)) {
                         SampleLog.v("ignore. holder finder tag changed");

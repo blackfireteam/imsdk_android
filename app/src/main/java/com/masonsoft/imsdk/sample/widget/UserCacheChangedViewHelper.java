@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk.sample.widget;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
@@ -10,6 +11,7 @@ import com.masonsoft.imsdk.MSIMUserInfoListenerProxy;
 import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.sample.SampleLog;
 
+import io.github.idonans.core.thread.Threads;
 import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -36,7 +38,10 @@ public abstract class UserCacheChangedViewHelper {
         return mTargetUserId;
     }
 
-    private void requestLoadData(boolean reset) {
+    @UiThread
+    public void requestLoadData(boolean reset) {
+        Threads.mustUi();
+
         // abort last
         mRequestHolder.set(null);
 

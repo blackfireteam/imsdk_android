@@ -113,6 +113,9 @@ public class IMTokenOfflineManager {
         mLastKickedOffline = true;
         mLastTokenExpired = false;
 
+        if (!mAttached) {
+            return;
+        }
         Threads.postUi(() -> {
             if (mAttached) {
                 showKickedOffline();
@@ -124,6 +127,9 @@ public class IMTokenOfflineManager {
         mLastKickedOffline = false;
         mLastTokenExpired = true;
 
+        if (!mAttached) {
+            return;
+        }
         Threads.postUi(() -> {
             if (mAttached) {
                 showTokenExpired();

@@ -7,6 +7,9 @@ import com.masonsoft.imsdk.core.IMActionMessageManager;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.db.Conversation;
 import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
+import com.masonsoft.imsdk.core.db.DatabaseHelper;
+import com.masonsoft.imsdk.core.db.DatabaseProvider;
+import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
 import com.masonsoft.imsdk.lang.GeneralResult;
 
 /**
@@ -36,7 +39,8 @@ public class SendActionTypeMarkAsReadValidateProcessor extends SendActionTypeVal
             return true;
         }
 
-        {
+        final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(target.getSessionUserId());
+        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
             // 手动清空本地未读消息数
             final Conversation conversation = ConversationDatabaseProvider.getInstance().getConversationByTargetUserId(target.getSessionUserId(), IMConstants.ConversationType.C2C, targetUserId);
             if (conversation != null) {

@@ -6,6 +6,9 @@ import androidx.annotation.Nullable;
 import com.masonsoft.imsdk.core.db.Conversation;
 import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
 import com.masonsoft.imsdk.core.db.ConversationFactory;
+import com.masonsoft.imsdk.core.db.DatabaseHelper;
+import com.masonsoft.imsdk.core.db.DatabaseProvider;
+import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
 import com.masonsoft.imsdk.core.db.Message;
 import com.masonsoft.imsdk.core.db.MessageDatabaseProvider;
 import com.masonsoft.imsdk.core.db.TinyPage;
@@ -88,50 +91,54 @@ public class IMConversationManager {
             final long sessionUserId,
             final int conversationType,
             final long targetUserId) {
-        final Conversation conversation = ConversationDatabaseProvider.getInstance()
-                .getConversationByTargetUserId(
-                        sessionUserId,
-                        conversationType,
-                        targetUserId);
-        if (conversation != null) {
-            return IMConversationFactory.create(conversation);
-        } else {
-            // try create conversation
-            Conversation targetConversation = null;
-
-            final Conversation insertConversation = ConversationFactory.createEmptyConversation(
-                    conversationType,
-                    targetUserId
-            );
-            if (ConversationDatabaseProvider.getInstance().insertConversation(
-                    sessionUserId,
-                    insertConversation)) {
-                final long conversationId = insertConversation.localId.get();
-                targetConversation = ConversationDatabaseProvider.getInstance().getConversation(
-                        sessionUserId,
-                        conversationId
-                );
+        final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+            final Conversation conversation = ConversationDatabaseProvider.getInstance()
+                    .getConversationByTargetUserId(
+                            sessionUserId,
+                            conversationType,
+                            targetUserId);
+            if (conversation != null) {
+                return IMConversationFactory.create(conversation);
             } else {
-                // insert conversation fail, try read again.
-                targetConversation = ConversationDatabaseProvider.getInstance()
-                        .getConversationByTargetUserId(
-                                sessionUserId,
-                                conversationType,
-                                targetUserId
-                        );
-                IMLog.v("fail to insert conversation, try read again result %s", targetConversation);
-            }
+                // try create conversation
+                Conversation targetConversation = null;
 
-            if (targetConversation != null) {
-                return IMConversationFactory.create(targetConversation);
-            }
+                final Conversation insertConversation = ConversationFactory.createEmptyConversation(
+                        conversationType,
+                        targetUserId
+                );
+                final boolean insertSuccess = ConversationDatabaseProvider.getInstance().insertConversation(
+                        sessionUserId,
+                        insertConversation);
+                if (insertSuccess) {
+                    final long conversationId = insertConversation.localId.get();
+                    targetConversation = ConversationDatabaseProvider.getInstance().getConversation(
+                            sessionUserId,
+                            conversationId
+                    );
+                } else {
+                    // insert conversation fail, try read again.
+                    targetConversation = ConversationDatabaseProvider.getInstance()
+                            .getConversationByTargetUserId(
+                                    sessionUserId,
+                                    conversationType,
+                                    targetUserId
+                            );
+                    IMLog.v("fail to insert conversation, try read again result %s", targetConversation);
+                }
 
-            final Throwable e = new IllegalAccessError("unexpected. targetConversation is null.");
-            IMLog.e(e, "sessionUserId:%s, conversationType:%s, targetUserId:%s",
-                    sessionUserId, conversationType, targetUserId);
-            RuntimeMode.fixme(e);
-            // fallback
-            return IMConversationFactory.create(insertConversation);
+                if (targetConversation != null) {
+                    return IMConversationFactory.create(targetConversation);
+                }
+
+                final Throwable e = new IllegalAccessError("unexpected. targetConversation is null.");
+                IMLog.e(e, "sessionUserId:%s, conversationType:%s, targetUserId:%s",
+                        sessionUserId, conversationType, targetUserId);
+                RuntimeMode.fixme(e);
+                // fallback
+                return IMConversationFactory.create(insertConversation);
+            }
         }
     }
 
@@ -206,22 +213,25 @@ public class IMConversationManager {
                                                    final int conversationType,
                                                    final long targetUserId,
                                                    final int unreadCountDiff) {
-        final IMConversation conversation = getOrCreateConversationByTargetUserId(
-                sessionUserId,
-                conversationType,
-                targetUserId);
-        if (conversation == null) {
-            final Throwable e = new IllegalAccessError("unexpected. conversation is null");
-            IMLog.e(e);
-            RuntimeMode.fixme(e);
-            return false;
-        }
+        final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+            final IMConversation conversation = getOrCreateConversationByTargetUserId(
+                    sessionUserId,
+                    conversationType,
+                    targetUserId);
+            if (conversation == null) {
+                final Throwable e = new IllegalAccessError("unexpected. conversation is null");
+                IMLog.e(e);
+                RuntimeMode.fixme(e);
+                return false;
+            }
 
-        // 累加消息未读数
-        final Conversation conversationUpdate = new Conversation();
-        conversationUpdate.localId.set(conversation.id.get());
-        conversationUpdate.localUnreadCount.set(conversation.unreadCount.get() + unreadCountDiff);
-        return ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate);
+            // 累加消息未读数
+            final Conversation conversationUpdate = new Conversation();
+            conversationUpdate.localId.set(conversation.id.get());
+            conversationUpdate.localUnreadCount.set(conversation.unreadCount.get() + unreadCountDiff);
+            return ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate);
+        }
     }
 
     /**
@@ -236,71 +246,74 @@ public class IMConversationManager {
                                               final int conversationType,
                                               final long targetUserId,
                                               final long localMessageId) {
-        final IMConversation imConversation = getOrCreateConversationByTargetUserId(
-                sessionUserId, conversationType, targetUserId);
-        if (imConversation.id.isUnset()) {
-            final Throwable e = new IllegalAccessError("unexpected. conversation's id is unset");
-            IMLog.e(e);
-            RuntimeMode.fixme(e);
-            return;
-        }
-        if (imConversation.id.get() <= 0) {
-            final Throwable e = new IllegalAccessError("unexpected. conversation's id is invalid " + imConversation.id.get());
-            IMLog.e(e);
-            RuntimeMode.fixme(e);
-            return;
-        }
-
-        // 判断是否需要将 conversation 的 showMessageId 更改为 localMessageId
-        Message oldShowMessage = null;
-        Message newShowMessage = null;
-
-        if (!imConversation.showMessageId.isUnset()) {
-            oldShowMessage = MessageDatabaseProvider.getInstance().getMessage(
-                    sessionUserId, conversationType, targetUserId, imConversation.showMessageId.get());
-        }
-        newShowMessage = MessageDatabaseProvider.getInstance().getMessage(
-                sessionUserId, conversationType, targetUserId, localMessageId);
-
-        if (newShowMessage != null) {
-            boolean useNewShowMessageId = true;
-            if (oldShowMessage != null) {
-                // showMessageId 对应的 seq 不小于 localMessageId 的 seq
-                if (oldShowMessage.localSeq.get() >= newShowMessage.localSeq.get()) {
-                    useNewShowMessageId = false;
-                }
-            }
-
-            if (newShowMessage.localActionMessage.get() > 0) {
-                // 指令消息不能作为会话的 showMessageId
-                useNewShowMessageId = false;
-            }
-
-            if (useNewShowMessageId) {
-                // 更新 conversation 的 showMessageId 为 localMessageId
-                final Conversation conversationUpdate = new Conversation();
-                conversationUpdate.localId.set(imConversation.id.get());
-                conversationUpdate.localShowMessageId.set(localMessageId);
-                conversationUpdate.localTimeMs.set(newShowMessage.localTimeMs.get());
-                conversationUpdate.localSeq.set(newShowMessage.localSeq.get());
-                if (!ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate)) {
-                    final Throwable e = new IllegalAccessError("unexpected. updateConversation return false");
-                    IMLog.e(e, "sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
-                            sessionUserId,
-                            conversationType,
-                            targetUserId,
-                            localMessageId);
-                    RuntimeMode.fixme(e);
-                }
+        final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+            final IMConversation imConversation = getOrCreateConversationByTargetUserId(
+                    sessionUserId, conversationType, targetUserId);
+            if (imConversation.id.isUnset()) {
+                final Throwable e = new IllegalAccessError("unexpected. conversation's id is unset");
+                IMLog.e(e);
+                RuntimeMode.fixme(e);
                 return;
             }
-        }
+            if (imConversation.id.get() <= 0) {
+                final Throwable e = new IllegalAccessError("unexpected. conversation's id is invalid " + imConversation.id.get());
+                IMLog.e(e);
+                RuntimeMode.fixme(e);
+                return;
+            }
 
-        IMLog.v("updateConversationLastMessage ignore sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
-                sessionUserId,
-                conversationType,
-                targetUserId,
-                localMessageId);
+            // 判断是否需要将 conversation 的 showMessageId 更改为 localMessageId
+            Message oldShowMessage = null;
+            Message newShowMessage = null;
+
+            if (!imConversation.showMessageId.isUnset()) {
+                oldShowMessage = MessageDatabaseProvider.getInstance().getMessage(
+                        sessionUserId, conversationType, targetUserId, imConversation.showMessageId.get());
+            }
+            newShowMessage = MessageDatabaseProvider.getInstance().getMessage(
+                    sessionUserId, conversationType, targetUserId, localMessageId);
+
+            if (newShowMessage != null) {
+                boolean useNewShowMessageId = true;
+                if (oldShowMessage != null) {
+                    // showMessageId 对应的 seq 不小于 localMessageId 的 seq
+                    if (oldShowMessage.localSeq.get() >= newShowMessage.localSeq.get()) {
+                        useNewShowMessageId = false;
+                    }
+                }
+
+                if (newShowMessage.localActionMessage.get() > 0) {
+                    // 指令消息不能作为会话的 showMessageId
+                    useNewShowMessageId = false;
+                }
+
+                if (useNewShowMessageId) {
+                    // 更新 conversation 的 showMessageId 为 localMessageId
+                    final Conversation conversationUpdate = new Conversation();
+                    conversationUpdate.localId.set(imConversation.id.get());
+                    conversationUpdate.localShowMessageId.set(localMessageId);
+                    conversationUpdate.localTimeMs.set(newShowMessage.localTimeMs.get());
+                    conversationUpdate.localSeq.set(newShowMessage.localSeq.get());
+                    if (!ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate)) {
+                        final Throwable e = new IllegalAccessError("unexpected. updateConversation return false");
+                        IMLog.e(e, "sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
+                                sessionUserId,
+                                conversationType,
+                                targetUserId,
+                                localMessageId);
+                        RuntimeMode.fixme(e);
+                    }
+                    return;
+                }
+            }
+
+            IMLog.v("updateConversationLastMessage ignore sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
+                    sessionUserId,
+                    conversationType,
+                    targetUserId,
+                    localMessageId);
+        }
     }
 
     @NonNull

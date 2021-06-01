@@ -160,13 +160,13 @@ public class TcpClientAutoReconnectionManager {
     @AnyThread
     private void enqueueReconnect(long delayMs, boolean clearRetryCount) {
         IMLog.v("%s enqueueReconnect delayMs:%s, clearRetryCount:%s", Objects.defaultObjectTag(this), delayMs, clearRetryCount);
-        Threads.postUi(() -> {
+        Threads.postUi(() -> Threads.postBackground(() -> {
             mActionQueue.skipQueue();
             if (clearRetryCount) {
                 IMSessionManager.getInstance().clearSessionTcpClientProxyConfigRetryCount();
             }
             mActionQueue.enqueue(new SafetyRunnable(new ReconnectionTask()));
-        }, delayMs);
+        }), delayMs);
     }
 
     private static class ReconnectionTask implements Runnable {

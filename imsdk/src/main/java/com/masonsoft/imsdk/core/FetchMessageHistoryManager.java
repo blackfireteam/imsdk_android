@@ -658,13 +658,16 @@ public class FetchMessageHistoryManager {
                                     } else {
                                         IMLog.v("start update block id %s -> %s. mRemoteMessageStart:%s, mRemoteMessageEnd:%s",
                                                 preBlockId, blockId, mRemoteMessageStart, mRemoteMessageEnd);
-                                        if (!MessageDatabaseProvider.getInstance().updateBlockId(
-                                                mSessionUserId,
-                                                mConversationType,
-                                                mTargetUserId,
-                                                preBlockId,
-                                                blockId)) {
-                                            IMLog.e(Objects.defaultObjectTag(this) + " unexpected. updateBlockId return false");
+                                        final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(mSessionUserId);
+                                        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+                                            if (!MessageDatabaseProvider.getInstance().updateBlockId(
+                                                    mSessionUserId,
+                                                    mConversationType,
+                                                    mTargetUserId,
+                                                    preBlockId,
+                                                    blockId)) {
+                                                IMLog.e(Objects.defaultObjectTag(this) + " unexpected. updateBlockId return false");
+                                            }
                                         }
                                     }
                                 }

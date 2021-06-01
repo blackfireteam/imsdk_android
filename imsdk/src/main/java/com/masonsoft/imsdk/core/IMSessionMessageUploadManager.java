@@ -7,6 +7,9 @@ import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 
 import com.masonsoft.imsdk.core.block.MessageBlock;
+import com.masonsoft.imsdk.core.db.DatabaseHelper;
+import com.masonsoft.imsdk.core.db.DatabaseProvider;
+import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
 import com.masonsoft.imsdk.core.db.LocalSendingMessage;
 import com.masonsoft.imsdk.core.db.LocalSendingMessageProvider;
 import com.masonsoft.imsdk.core.db.Message;
@@ -261,14 +264,18 @@ public class IMSessionMessageUploadManager {
                         messageUpdate.localId.apply(message.localId);
                         messageUpdate.body.apply(message.body);
                         messageUpdate.localBodyOrigin.apply(message.localBodyOrigin);
-                        if (!MessageDatabaseProvider.getInstance().updateMessage(
-                                mSessionUserId,
-                                mLocalSendingMessage.conversationType.get(),
-                                mLocalSendingMessage.targetUserId.get(),
-                                messageUpdate)) {
-                            IMLog.e(Objects.defaultObjectTag(this)
-                                    + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", mSign, messageUpdate);
-                            return null;
+
+                        final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(mSessionUserId);
+                        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+                            if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                    mSessionUserId,
+                                    mLocalSendingMessage.conversationType.get(),
+                                    mLocalSendingMessage.targetUserId.get(),
+                                    messageUpdate)) {
+                                IMLog.e(Objects.defaultObjectTag(this)
+                                        + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", mSign, messageUpdate);
+                                return null;
+                            }
                         }
                     }
 
@@ -308,14 +315,18 @@ public class IMSessionMessageUploadManager {
                         messageUpdate.localId.apply(message.localId);
                         messageUpdate.body.apply(message.body);
                         messageUpdate.localBodyOrigin.apply(message.localBodyOrigin);
-                        if (!MessageDatabaseProvider.getInstance().updateMessage(
-                                mSessionUserId,
-                                mLocalSendingMessage.conversationType.get(),
-                                mLocalSendingMessage.targetUserId.get(),
-                                messageUpdate)) {
-                            IMLog.e(Objects.defaultObjectTag(this)
-                                    + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", mSign, messageUpdate);
-                            return null;
+
+                        final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(mSessionUserId);
+                        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+                            if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                    mSessionUserId,
+                                    mLocalSendingMessage.conversationType.get(),
+                                    mLocalSendingMessage.targetUserId.get(),
+                                    messageUpdate)) {
+                                IMLog.e(Objects.defaultObjectTag(this)
+                                        + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", mSign, messageUpdate);
+                                return null;
+                            }
                         }
                     }
 
@@ -357,14 +368,18 @@ public class IMSessionMessageUploadManager {
                             messageUpdate.localId.apply(message.localId);
                             messageUpdate.body.apply(message.body);
                             messageUpdate.localBodyOrigin.apply(message.localBodyOrigin);
-                            if (!MessageDatabaseProvider.getInstance().updateMessage(
-                                    mSessionUserId,
-                                    mLocalSendingMessage.conversationType.get(),
-                                    mLocalSendingMessage.targetUserId.get(),
-                                    messageUpdate)) {
-                                IMLog.e(Objects.defaultObjectTag(this)
-                                        + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", mSign, messageUpdate);
-                                return null;
+
+                            final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(mSessionUserId);
+                            synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+                                if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                        mSessionUserId,
+                                        mLocalSendingMessage.conversationType.get(),
+                                        mLocalSendingMessage.targetUserId.get(),
+                                        messageUpdate)) {
+                                    IMLog.e(Objects.defaultObjectTag(this)
+                                            + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", mSign, messageUpdate);
+                                    return null;
+                                }
                             }
                         }
                     }
@@ -389,14 +404,18 @@ public class IMSessionMessageUploadManager {
                             messageUpdate.localId.apply(message.localId);
                             messageUpdate.thumb.apply(message.thumb);
                             messageUpdate.localThumbOrigin.apply(message.localThumbOrigin);
-                            if (!MessageDatabaseProvider.getInstance().updateMessage(
-                                    mSessionUserId,
-                                    mLocalSendingMessage.conversationType.get(),
-                                    mLocalSendingMessage.targetUserId.get(),
-                                    messageUpdate)) {
-                                IMLog.e(Objects.defaultObjectTag(this)
-                                        + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", mSign, messageUpdate);
-                                return null;
+
+                            final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(mSessionUserId);
+                            synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+                                if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                        mSessionUserId,
+                                        mLocalSendingMessage.conversationType.get(),
+                                        mLocalSendingMessage.targetUserId.get(),
+                                        messageUpdate)) {
+                                    IMLog.e(Objects.defaultObjectTag(this)
+                                            + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", mSign, messageUpdate);
+                                    return null;
+                                }
                             }
                         }
                     }
@@ -572,15 +591,18 @@ public class IMSessionMessageUploadManager {
                                 Preconditions.checkArgument(blockId > 0);
                                 messageUpdate.localBlockId.set(blockId);
 
-                                if (!MessageDatabaseProvider.getInstance().updateMessage(
-                                        mSessionUserId,
-                                        mLocalSendingMessage.conversationType.get(),
-                                        mLocalSendingMessage.targetUserId.get(),
-                                        messageUpdate)) {
-                                    IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
-                                            + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", getSign(), messageUpdate);
-                                    moveToState(STATE_FAIL);
-                                    return true;
+                                final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(mSessionUserId);
+                                synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+                                    if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                            mSessionUserId,
+                                            mLocalSendingMessage.conversationType.get(),
+                                            mLocalSendingMessage.targetUserId.get(),
+                                            messageUpdate)) {
+                                        IMLog.e(Objects.defaultObjectTag(ChatSMessagePacket.this)
+                                                + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", getSign(), messageUpdate);
+                                        moveToState(STATE_FAIL);
+                                        return true;
+                                    }
                                 }
 
                                 final Message readMessage = MessageDatabaseProvider.getInstance().getMessage(
