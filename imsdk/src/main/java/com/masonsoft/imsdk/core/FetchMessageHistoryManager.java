@@ -676,6 +676,7 @@ public class FetchMessageHistoryManager {
                         return true;
                     }
 
+                    IMLog.v("[%s] doNotNullProcessChatRBatchInternal batch size:%s", Objects.defaultObjectTag(this), messageList.size());
                     // messageList 中的所有消息是连续的，并且是有序的(按照 msg id 有序)
 
                     // server message id 最大和最小的那一条(对比第一条和最后一条)
