@@ -22,6 +22,7 @@ import java.util.List;
 
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.Preconditions;
 import io.reactivex.rxjava3.subjects.SingleSubject;
 
 /**
@@ -54,7 +55,7 @@ public class IMMessageManager {
     @WorkerThread
     @NonNull
     private IMMessage buildInternal(@NonNull final Message message) {
-        Threads.mustNotUi();
+        Preconditions.checkArgument(!Threads.isUi());
 
         IMMessage target = IMMessageFactory.create(message);
 
@@ -91,7 +92,7 @@ public class IMMessageManager {
             final int conversationType,
             final long targetUserId,
             final long localMessageId) {
-        Threads.mustNotUi();
+        Preconditions.checkArgument(!Threads.isUi());
 
         if (sessionUserId < 0 || conversationType < 0 || targetUserId < 0 || localMessageId < 0) {
             return null;
@@ -136,7 +137,7 @@ public class IMMessageManager {
                                                  final long targetUserId,
                                                  final boolean queryHistory,
                                                  @Nullable final String lastLoopInvokeCondition) {
-        Threads.mustNotUi();
+        Preconditions.checkArgument(!Threads.isUi());
 
         final TinyPage<IMMessage> page = pageQueryMessageInternal(
                 sessionUserId,
@@ -236,7 +237,7 @@ public class IMMessageManager {
                                                          final long targetUserId,
                                                          final boolean queryHistory,
                                                          @Nullable String lastLoopInvokeCondition) {
-        Threads.mustNotUi();
+        Preconditions.checkArgument(!Threads.isUi());
 
         if (seq == 0) {
             // 读取第一页消息时，尝试同步用户信息

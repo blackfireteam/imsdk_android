@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.Preconditions;
 
 public class FetchSparkMessagePacket extends NotNullTimeoutMessagePacket {
 
@@ -31,7 +32,7 @@ public class FetchSparkMessagePacket extends NotNullTimeoutMessagePacket {
 
     @Override
     protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
-        Threads.mustNotUi();
+        Preconditions.checkArgument(!Threads.isUi());
 
         final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
         if (protoMessageObject == null) {

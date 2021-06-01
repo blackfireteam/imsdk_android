@@ -81,7 +81,7 @@ public class IMSessionManager {
     }
 
     public static void setConversationListLastSyncTimeBySessionUserId(long sessionUserId, long syncTime) {
-        Threads.mustNotUi();
+        Preconditions.checkArgument(!Threads.isUi());
         synchronized (KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE) {
             {
                 final Long cache = KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE.get(sessionUserId);
@@ -100,7 +100,7 @@ public class IMSessionManager {
     }
 
     public static long getConversationListLastSyncTimeBySessionUserId(long sessionUserId) {
-        Threads.mustNotUi();
+        Preconditions.checkArgument(!Threads.isUi());
         synchronized (KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE) {
             {
                 final Long cache = KEY_CONVERSATION_LIST_LAST_SYNC_TIME_BY_SESSION_USER_ID_CACHE.get(sessionUserId);

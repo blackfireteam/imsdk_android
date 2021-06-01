@@ -496,8 +496,7 @@ public class IMSessionMessageUploadManager {
 
                 @Override
                 protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
-                    // check thread state
-                    Threads.mustNotUi();
+                    Preconditions.checkArgument(!Threads.isUi());
 
                     final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
                     if (protoMessageObject == null) {

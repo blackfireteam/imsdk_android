@@ -12,6 +12,7 @@ import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.sample.SampleLog;
 
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -40,7 +41,7 @@ public abstract class UserCacheChangedViewHelper {
 
     @UiThread
     public void requestLoadData(boolean reset) {
-        Threads.mustUi();
+        Preconditions.checkArgument(Threads.isUi());
 
         // abort last
         mRequestHolder.set(null);

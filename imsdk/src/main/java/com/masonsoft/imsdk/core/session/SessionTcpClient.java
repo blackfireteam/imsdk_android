@@ -278,7 +278,7 @@ public class SessionTcpClient extends NettyTcpClient {
 
     @WorkerThread
     private void saveConversationListLastSyncTime() {
-        Threads.mustNotUi();
+        Preconditions.checkArgument(!Threads.isUi());
 
         if (mFetchConversationListFinish) {
             final long maxTime = Math.max(mConversationListUpdateTimeTmp, mFetchConversationListFinishUpdateTime);

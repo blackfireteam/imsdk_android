@@ -11,6 +11,7 @@ import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.Preconditions;
 
 @Deprecated
 public class GetIMTokenMessagePacket extends NotNullTimeoutMessagePacket {
@@ -29,7 +30,7 @@ public class GetIMTokenMessagePacket extends NotNullTimeoutMessagePacket {
 
     @Override
     protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
-        Threads.mustNotUi();
+        Preconditions.checkArgument(!Threads.isUi());
 
         final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
         if (protoMessageObject == null) {

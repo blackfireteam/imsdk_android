@@ -10,6 +10,7 @@ import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.Preconditions;
 
 /**
  * 在长连接上的登录消息包
@@ -33,8 +34,7 @@ public class SignInMessagePacket extends NotNullTimeoutMessagePacket {
 
     @Override
     protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
-        // check thread state
-        Threads.mustNotUi();
+        Preconditions.checkArgument(!Threads.isUi());
 
         final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
         if (protoMessageObject == null) {

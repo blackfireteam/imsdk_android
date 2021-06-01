@@ -85,7 +85,7 @@ public abstract class IMMessageChangedViewHelper {
 
     @UiThread
     public void requestLoadData(boolean reset) {
-        Threads.mustUi();
+        Preconditions.checkArgument(Threads.isUi());
 
         // abort last
         mRequestHolder.set(null);

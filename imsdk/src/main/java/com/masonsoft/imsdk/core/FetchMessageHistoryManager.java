@@ -547,7 +547,7 @@ public class FetchMessageHistoryManager {
 
                 @Override
                 protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
-                    Threads.mustNotUi();
+                    Preconditions.checkArgument(!Threads.isUi());
 
                     final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
                     if (protoMessageObject == null) {
