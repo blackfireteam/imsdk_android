@@ -130,8 +130,8 @@ public class DefaultApi {
         requestArgs.put("uid", userId);
         requestArgs.put("nick_name", nickname);
         requestArgs.put("avatar", avatar);
-        requestArgs.put("gold", 0);
-        requestArgs.put("gold_exp", System.currentTimeMillis() / 1000);
+        requestArgs.put("gold", 1);
+        requestArgs.put("gold_exp", TimeUnit.DAYS.toSeconds(360) + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
         requestArgs.put("approved", 1);
         requestArgs.put("disabled", 0);
         requestArgs.put("blocked", 0);
