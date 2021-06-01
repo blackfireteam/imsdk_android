@@ -258,10 +258,6 @@ public class TcpClientAutoReconnectionManager {
                 10 * 1000L, // 10s
                 30 * 1000L, // 30s
                 60 * 1000L, // 60s
-                2 * 60 * 1000L, // 2min
-                5 * 60 * 1000L, // 5min
-                10 * 60 * 1000L, // 10min
-                30 * 60 * 1000L, // 30min
         };
 
         @Override
