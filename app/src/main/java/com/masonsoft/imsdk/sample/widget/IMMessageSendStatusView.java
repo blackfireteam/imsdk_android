@@ -90,7 +90,7 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
                     MSIMManager.getInstance().getMessageManager().resendMessage(
                             getSessionUserId(),
                             message,
-                            new MSIMWeakCallback<>(mEnqueueCallback, true));
+                            new MSIMWeakCallback<>(mEnqueueCallback));
                 }
             }
         });

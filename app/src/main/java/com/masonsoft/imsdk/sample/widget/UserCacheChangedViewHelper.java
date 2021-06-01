@@ -63,8 +63,12 @@ public abstract class UserCacheChangedViewHelper {
     @SuppressWarnings("FieldCanBeLocal")
     private final MSIMUserInfoListener mUserInfoListener = new MSIMUserInfoListenerProxy(userId -> {
         if (MSIMConstants.isIdMatch(mTargetUserId, userId)) {
-            requestLoadData(false);
+            Threads.postUi(() -> {
+                if (MSIMConstants.isIdMatch(mTargetUserId, userId)) {
+                    requestLoadData(false);
+                }
+            });
         }
-    }, true);
+    });
 
 }

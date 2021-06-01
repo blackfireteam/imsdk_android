@@ -480,7 +480,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 MSIMManager.getInstance().getSessionUserId(),
                 message,
                 mTargetUserId,
-                new MSIMWeakCallback<>(mEnqueueCallback, true)
+                new MSIMWeakCallback<>(mEnqueueCallback)
         );
     }
 
@@ -503,7 +503,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                     MSIMManager.getInstance().getSessionUserId(),
                     message,
                     mTargetUserId,
-                    new MSIMWeakCallback<>(mEnqueueCallback, true)
+                    new MSIMWeakCallback<>(mEnqueueCallback)
             );
         }
     }
@@ -521,7 +521,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 MSIMManager.getInstance().getSessionUserId(),
                 message,
                 mTargetUserId,
-                new MSIMWeakCallback<>(mEnqueueCallback, true)
+                new MSIMWeakCallback<>(mEnqueueCallback)
         );
     }
 
@@ -783,7 +783,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
     private class LocalEnqueueCallback implements MSIMCallback<GeneralResult>, AbortSignal {
 
-        private boolean mClearEditTextWhenSuccess;
+        private final boolean mClearEditTextWhenSuccess;
 
         private LocalEnqueueCallback(boolean clearEditTextWhenSuccess) {
             this.mClearEditTextWhenSuccess = clearEditTextWhenSuccess;
@@ -794,21 +794,27 @@ public class SingleChatFragment extends SystemInsetsFragment {
             if (isAbort()) {
                 return;
             }
-            final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
-            if (binding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
-                return;
-            }
-            SampleLog.v("onCallback %s", result);
-
-            if (result.isSuccess()) {
-                if (mClearEditTextWhenSuccess) {
-                    // 消息发送成功之后，清空输入框
-                    binding.keyboardEditText.setText(null);
+            Threads.postUi(() -> {
+                if (isAbort()) {
+                    return;
                 }
-            } else {
-                TipUtil.showOrDefault(result.message);
-            }
+
+                final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+                if (binding == null) {
+                    SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                    return;
+                }
+                SampleLog.v("onCallback %s", result);
+
+                if (result.isSuccess()) {
+                    if (mClearEditTextWhenSuccess) {
+                        // 消息发送成功之后，清空输入框
+                        binding.keyboardEditText.setText(null);
+                    }
+                } else {
+                    TipUtil.showOrDefault(result.message);
+                }
+            });
         }
 
         @Override
@@ -816,6 +822,5 @@ public class SingleChatFragment extends SystemInsetsFragment {
             return mEnqueueCallback != this;
         }
     }
-
 
 }

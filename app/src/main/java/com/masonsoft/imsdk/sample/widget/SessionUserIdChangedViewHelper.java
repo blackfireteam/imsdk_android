@@ -4,6 +4,8 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMSessionListener;
 import com.masonsoft.imsdk.MSIMSessionListenerProxy;
 
+import io.github.idonans.core.thread.Threads;
+
 public abstract class SessionUserIdChangedViewHelper {
 
     private long mSessionUserId;
@@ -31,13 +33,20 @@ public abstract class SessionUserIdChangedViewHelper {
             sync();
         }
 
+        private boolean isSessionUserIdChanged() {
+            return mSessionUserId != MSIMManager.getInstance().getSessionUserId();
+        }
+
         private void sync() {
-            final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
-            if (mSessionUserId != sessionUserId) {
-                mSessionUserId = sessionUserId;
-                SessionUserIdChangedViewHelper.this.onSessionUserIdChanged(sessionUserId);
+            if (isSessionUserIdChanged()) {
+                Threads.postUi(() -> {
+                    if (isSessionUserIdChanged()) {
+                        mSessionUserId = MSIMManager.getInstance().getSessionUserId();
+                        SessionUserIdChangedViewHelper.this.onSessionUserIdChanged(mSessionUserId);
+                    }
+                });
             }
         }
-    }, true);
+    });
 
 }

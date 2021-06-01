@@ -169,8 +169,13 @@ public abstract class MSIMConversationChangedViewHelper {
                 return;
             }
 
-            requestLoadData(false);
+            Threads.postUi(() -> {
+                if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
+                    return;
+                }
+                requestLoadData(false);
+            });
         }
-    }, true);
+    });
 
 }
