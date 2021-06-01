@@ -36,7 +36,7 @@ public class TimeDiffDebugHelper {
 
     public void print(String extraMessage) {
         mPrintCount++;
-        IMLog.i("%s [%s][%s/%s] diff[%s(%s)/%s(%s)] [%s]",
+        IMLog.v("%s [%s][%s/%s] diff[%s(%s)/%s(%s)] [%s]",
                 Objects.defaultObjectTag(this),
                 mTagPrefix,
                 mPrintCount, mMarkCount,

@@ -123,7 +123,7 @@ public abstract class TcpClient implements Closeable {
      * @param newState 迁移后的状态(当前状态)
      */
     protected void onStateChanged(int oldState, int newState) {
-        IMLog.i(Objects.defaultObjectTag(TcpClient.this) + " state changed %s -> %s",
+        IMLog.v(Objects.defaultObjectTag(TcpClient.this) + " state changed %s -> %s",
                 stateToString(oldState),
                 stateToString(newState));
     }

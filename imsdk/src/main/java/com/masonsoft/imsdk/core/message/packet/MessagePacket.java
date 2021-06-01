@@ -219,7 +219,7 @@ public abstract class MessagePacket implements Processor<SessionProtoByteMessage
      * @param newState 迁移后的状态(当前状态)
      */
     protected void onStateChanged(int oldState, int newState) {
-        IMLog.i(Objects.defaultObjectTag(MessagePacket.this) + "[" + mSign + "] state changed %s -> %s",
+        IMLog.v(Objects.defaultObjectTag(MessagePacket.this) + "[" + mSign + "] state changed %s -> %s",
                 stateToString(oldState),
                 stateToString(newState));
 
@@ -234,6 +234,7 @@ public abstract class MessagePacket implements Processor<SessionProtoByteMessage
 
     @NonNull
     public String toShortString() {
+        //noinspection StringBufferReplaceableByString
         final StringBuilder builder = new StringBuilder();
         builder.append(Objects.defaultObjectTag(this));
         builder.append(" sign:").append(this.mSign);

@@ -31,7 +31,7 @@ public class SampleApplication extends Application {
 
         final boolean debug = BuildConfig.DEBUG;
         if (debug) {
-            IMLog.setLogLevel(Log.VERBOSE);
+            IMLog.setLogLevel(Log.DEBUG);
         }
         LocalSettingsManager.getInstance().start();
         DiscoverUserManager.getInstance().start();
@@ -46,7 +46,7 @@ public class SampleApplication extends Application {
         FileUploadManager.getInstance().setFileUploadProvider(new TencentOSSFileUploadProvider());
 
         if (debug) {
-            SampleLog.setLogLevel(Log.VERBOSE);
+            SampleLog.setLogLevel(Log.DEBUG);
         }
 
         EmojiCompat.init(new BundledEmojiCompatConfig(this));
