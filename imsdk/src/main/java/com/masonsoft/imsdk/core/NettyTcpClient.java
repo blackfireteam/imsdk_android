@@ -82,7 +82,6 @@ public abstract class NettyTcpClient extends TcpClient {
         bootstrap.group(mEventLoopGroup);
         bootstrap.option(ChannelOption.TCP_NODELAY, true);
         bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
-        bootstrap.option(ChannelOption.SO_TIMEOUT, 10000);
         bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
         bootstrap.channel(NioSocketChannel.class);
         bootstrap.handler(new ChannelInitializer<NioSocketChannel>() {
@@ -292,6 +291,7 @@ public abstract class NettyTcpClient extends TcpClient {
             int readableLen = dataByteBuf.readableBytes();
             byte[] messageData = new byte[readableLen];
             dataByteBuf.getBytes(dataByteBuf.readerIndex(), messageData, 0, readableLen);
+            dataByteBuf.release();
 
             if (isEncrypt == 1) {
                 // 解密
