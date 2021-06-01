@@ -44,6 +44,22 @@ public class IMConversationManager {
     private IMConversationManager() {
     }
 
+    private void syncConversationRelationInfo(final Conversation conversation) {
+        if (conversation == null) {
+            return;
+        }
+
+        UserInfoSyncManager.getInstance().enqueueSyncUserInfo(conversation.targetUserId.get());
+        FetchMessageHistoryManager.getInstance().enqueueFetchMessageHistory(
+                conversation._sessionUserId.get(),
+                SignGenerator.nextSign(),
+                conversation.localConversationType.get(),
+                conversation.targetUserId.get(),
+                0,
+                true
+        );
+    }
+
     @Nullable
     public IMConversation getConversation(
             final long sessionUserId,
@@ -108,6 +124,8 @@ public class IMConversationManager {
                         conversationType,
                         targetUserId
                 );
+                insertConversation.applyLogicField(sessionUserId);
+
                 final boolean insertSuccess = ConversationDatabaseProvider.getInstance().insertConversation(
                         sessionUserId,
                         insertConversation);
@@ -136,6 +154,7 @@ public class IMConversationManager {
                 IMLog.e(e, "sessionUserId:%s, conversationType:%s, targetUserId:%s",
                         sessionUserId, conversationType, targetUserId);
                 RuntimeMode.fixme(e);
+
                 // fallback
                 return IMConversationFactory.create(insertConversation);
             }
@@ -331,6 +350,7 @@ public class IMConversationManager {
 
         final List<IMConversation> filterItems = new ArrayList<>();
         for (Conversation item : page.items) {
+            syncConversationRelationInfo(item);
             filterItems.add(IMConversationFactory.create(item));
         }
 

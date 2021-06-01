@@ -4,10 +4,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.FetchMessageHistoryManager;
 import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.SignGenerator;
 import com.masonsoft.imsdk.core.db.Conversation;
 import com.masonsoft.imsdk.core.db.ConversationDatabaseProvider;
 import com.masonsoft.imsdk.core.db.ConversationFactory;
@@ -17,7 +15,6 @@ import com.masonsoft.imsdk.core.db.DatabaseSessionWriteLock;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.observable.FetchConversationListObservable;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
-import com.masonsoft.imsdk.user.UserInfoSyncManager;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
@@ -49,9 +46,9 @@ public class ReceivedProtoMessageConversationListProcessor extends ReceivedProto
                 conversationList.size(), sessionUserId, updateTime);
 
         if (!conversationList.isEmpty()) {
-            syncConversationUserInfo(conversationList);
+            // syncConversationUserInfo(conversationList);
             updateConversationList(sessionUserId, conversationList);
-            syncLastMessages(sessionUserId, conversationList);
+            // syncLastMessages(sessionUserId, conversationList);
         }
 
         if (updateTime > 0) {
@@ -62,13 +59,13 @@ public class ReceivedProtoMessageConversationListProcessor extends ReceivedProto
         return true;
     }
 
-    private void syncConversationUserInfo(@NonNull final List<Conversation> conversationList) {
-        final List<Long> userIdList = new ArrayList<>();
-        for (Conversation conversation : conversationList) {
-            userIdList.add(conversation.targetUserId.get());
-        }
-        UserInfoSyncManager.getInstance().enqueueSyncUserInfoList(userIdList);
-    }
+//    private void syncConversationUserInfo(@NonNull final List<Conversation> conversationList) {
+//        final List<Long> userIdList = new ArrayList<>();
+//        for (Conversation conversation : conversationList) {
+//            userIdList.add(conversation.targetUserId.get());
+//        }
+//        UserInfoSyncManager.getInstance().enqueueSyncUserInfoList(userIdList);
+//    }
 
     private void updateConversationList(final long sessionUserId, @NonNull final List<Conversation> conversationList) {
         final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
@@ -113,25 +110,25 @@ public class ReceivedProtoMessageConversationListProcessor extends ReceivedProto
         }
     }
 
-    /**
-     * 同步会话的最后一页消息数据
-     *
-     * @param sessionUserId
-     * @param conversationList
-     */
-    private void syncLastMessages(final long sessionUserId, @NonNull final List<Conversation> conversationList) {
-        for (Conversation conversation : conversationList) {
-            if (!conversation.localId.isUnset()) {
-                FetchMessageHistoryManager.getInstance().enqueueFetchMessageHistory(
-                        sessionUserId,
-                        SignGenerator.nextSign(),
-                        conversation.localConversationType.get(),
-                        conversation.targetUserId.get(),
-                        0,
-                        true
-                );
-            }
-        }
-    }
+//    /**
+//     * 同步会话的最后一页消息数据
+//     *
+//     * @param sessionUserId
+//     * @param conversationList
+//     */
+//    private void syncLastMessages(final long sessionUserId, @NonNull final List<Conversation> conversationList) {
+//        for (Conversation conversation : conversationList) {
+//            if (!conversation.localId.isUnset()) {
+//                FetchMessageHistoryManager.getInstance().enqueueFetchMessageHistory(
+//                        sessionUserId,
+//                        SignGenerator.nextSign(),
+//                        conversation.localConversationType.get(),
+//                        conversation.targetUserId.get(),
+//                        0,
+//                        true
+//                );
+//            }
+//        }
+//    }
 
 }
