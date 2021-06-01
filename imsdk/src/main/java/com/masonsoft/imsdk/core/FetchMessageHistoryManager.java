@@ -455,7 +455,6 @@ public class FetchMessageHistoryManager {
                             mRemoteMessageEnd = mLocalMinRemoteMessageIdWithSameBlockId;
                             if (mRemoteMessageEnd <= 1) {
                                 // 所有消息已经获取完整
-                                //noinspection ConstantConditions
                                 IMLog.v("ignore. all message are loaded. sessionUserId:%s, conversationType:%s, targetUserId:%s, history:%s",
                                         mSessionUserId, mConversationType, mTargetUserId, mHistory);
                                 return null;
