@@ -36,8 +36,10 @@ public class HomeFragmentPresenter extends PagePresenter<UnionTypeItemObject, Un
     @Nullable
     @Override
     protected SingleSource<Collection<UnionTypeItemObject>> createInitRequest() throws Exception {
-        final List<Spark> sparkList = DefaultApi.getSparks();
-        return Single.just(create(sparkList)).delay(2, TimeUnit.SECONDS);
+        return Single.just("")
+                .map(input -> DefaultApi.getSparks())
+                .map(this::create)
+                .delay(2, TimeUnit.SECONDS);
     }
 
     @Override
@@ -68,8 +70,9 @@ public class HomeFragmentPresenter extends PagePresenter<UnionTypeItemObject, Un
     @Nullable
     @Override
     protected SingleSource<Collection<UnionTypeItemObject>> createNextPageRequest() throws Exception {
-        final List<Spark> sparkList = DefaultApi.getSparks();
-        return Single.just(create(sparkList));
+        return Single.just("")
+                .map(input -> DefaultApi.getSparks())
+                .map(this::create);
     }
 
     @Override
