@@ -223,7 +223,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
         }
         final boolean needShowTime = needShowTime(dataObject);
         if (!needShowTime) {
-            messageTimeView.setVisibility(View.GONE);
+            ViewUtil.setVisibilityIfChanged(messageTimeView, View.GONE);
             return;
         }
 
@@ -233,12 +233,12 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
         }
         if (currentMessageTime <= 0) {
             SampleLog.v("invalid current message time: %s", currentMessageTime);
-            messageTimeView.setVisibility(View.GONE);
+            ViewUtil.setVisibilityIfChanged(messageTimeView, View.GONE);
             return;
         }
 
         messageTimeView.setText(formatTime(currentMessageTime));
-        messageTimeView.setVisibility(View.VISIBLE);
+        ViewUtil.setVisibilityIfChanged(messageTimeView, View.VISIBLE);
     }
 
     protected String formatTime(long time) {

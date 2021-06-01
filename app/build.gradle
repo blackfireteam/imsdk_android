@@ -99,7 +99,7 @@ dependencies {
     implementation 'me.relex:photodraweeview:2.0.0'
     implementation 'com.github.tbruyelle:rxpermissions:0.12'
 
-    debugImplementation rootProject.ext.bcfg.deps.leakcanary
+    // debugImplementation rootProject.ext.bcfg.deps.leakcanary
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

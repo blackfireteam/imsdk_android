@@ -58,6 +58,14 @@ public class MSIMConversation {
         return mConversation.messageLastRead.getOrDefault(defaultValue);
     }
 
+    public long getLastModify() {
+        return getLastModify(0L);
+    }
+
+    public long getLastModify(long defaultValue) {
+        return mConversation.lastModifyMs.getOrDefault(defaultValue);
+    }
+
     public long getSeq() {
         return getSeq(0L);
     }

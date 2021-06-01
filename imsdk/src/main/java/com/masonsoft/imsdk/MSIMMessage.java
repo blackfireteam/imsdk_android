@@ -104,6 +104,14 @@ public class MSIMMessage {
         return messageType == MSIMConstants.MessageType.REVOKED;
     }
 
+    public long getLastModify() {
+        return getLastModify(0L);
+    }
+
+    public long getLastModify(long defaultValue) {
+        return mMessage.lastModifyMs.getOrDefault(defaultValue);
+    }
+
     public long getTimeMs() {
         return getTimeMs(0L);
     }
