@@ -24,12 +24,18 @@ public class MSIMWeakCallback<T> extends AutoRemoveDuplicateRunnable implements 
 
     @Override
     public void onCallback(@NonNull T payload) {
-        dispatch(() -> {
+        final Object tag = getOnCallbackTag(payload);
+        dispatch(tag, () -> {
             final MSIMCallback<T> out = mOutRef.get();
             if (out != null) {
                 out.onCallback(payload);
             }
         });
+    }
+
+    @Nullable
+    protected Object getOnCallbackTag(@NonNull T payload) {
+        return null;
     }
 
 }

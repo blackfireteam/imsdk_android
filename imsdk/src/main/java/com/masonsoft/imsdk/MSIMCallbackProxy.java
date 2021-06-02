@@ -22,11 +22,17 @@ public class MSIMCallbackProxy<T> extends AutoRemoveDuplicateRunnable implements
 
     @Override
     public void onCallback(@NonNull T payload) {
-        dispatch(new Object(), () -> {
+        final Object tag = getOnCallbackTag(payload);
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onCallback(payload);
             }
         });
+    }
+
+    @Nullable
+    protected Object getOnCallbackTag(@NonNull T payload) {
+        return null;
     }
 
 }

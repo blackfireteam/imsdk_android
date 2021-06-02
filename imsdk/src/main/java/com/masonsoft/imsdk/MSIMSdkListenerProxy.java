@@ -13,6 +13,10 @@ public class MSIMSdkListenerProxy extends AutoRemoveDuplicateRunnable implements
     @Nullable
     private final MSIMSdkListener mOut;
 
+    private final Object mConnectStateTag = new Object();
+    private final Object mSignInStateTag = new Object();
+    private final Object mSignOutStateTag = new Object();
+
     public MSIMSdkListenerProxy(@Nullable MSIMSdkListener listener) {
         this(listener, false);
     }
@@ -22,109 +26,170 @@ public class MSIMSdkListenerProxy extends AutoRemoveDuplicateRunnable implements
         mOut = listener;
     }
 
-    private final Object mConnectStateTag = new Object();
-
     @Override
     public void onConnecting() {
-        dispatch(mConnectStateTag, () -> {
+        final Object tag = getOnConnectingTag();
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onConnecting();
             }
         });
     }
 
+    @Nullable
+    protected Object getOnConnectingTag() {
+        return mConnectStateTag;
+    }
+
     @Override
     public void onConnectSuccess() {
-        dispatch(mConnectStateTag, () -> {
+        final Object tag = getOnConnectSuccessTag();
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onConnectSuccess();
             }
         });
     }
 
+    @Nullable
+    protected Object getOnConnectSuccessTag() {
+        return mConnectStateTag;
+    }
+
     @Override
     public void onConnectClosed() {
-        dispatch(mConnectStateTag, () -> {
+        final Object tag = getOnConnectClosedTag();
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onConnectClosed();
             }
         });
     }
 
-    private final Object mSignInStateTag = new Object();
+    @Nullable
+    protected Object getOnConnectClosedTag() {
+        return mConnectStateTag;
+    }
 
     @Override
     public void onSigningIn() {
-        dispatch(mSignInStateTag, () -> {
+        final Object tag = getOnSigningInTag();
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onSigningIn();
             }
         });
     }
 
+    @Nullable
+    protected Object getOnSigningInTag() {
+        return mSignInStateTag;
+    }
+
     @Override
     public void onSignInSuccess() {
-        dispatch(mSignInStateTag, () -> {
+        final Object tag = getOnSignInSuccessTag();
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onSignInSuccess();
             }
         });
     }
 
+    @Nullable
+    protected Object getOnSignInSuccessTag() {
+        return mSignInStateTag;
+    }
+
     @Override
     public void onSignInFail(@NonNull GeneralResult result) {
-        dispatch(mSignInStateTag, () -> {
+        final Object tag = getOnSignInFailTag(result);
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onSignInFail(result);
             }
         });
     }
 
+    @Nullable
+    protected Object getOnSignInFailTag(@NonNull GeneralResult result) {
+        return mSignInStateTag;
+    }
+
     @Override
     public void onKickedOffline() {
-        dispatch(() -> {
+        final Object tag = getOnKickedOfflineTag();
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onKickedOffline();
             }
         });
     }
 
+    @Nullable
+    protected Object getOnKickedOfflineTag() {
+        return null;
+    }
+
     @Override
     public void onTokenExpired() {
-        dispatch(() -> {
+        final Object tag = getOnTokenExpiredTag();
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onTokenExpired();
             }
         });
     }
 
-    private final Object mSignOutStateTag = new Object();
+    @Nullable
+    protected Object getOnTokenExpiredTag() {
+        return null;
+    }
+
 
     @Override
     public void onSigningOut() {
-        dispatch(mSignOutStateTag, () -> {
+        final Object tag = getOnSigningOutTag();
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onSigningOut();
             }
         });
     }
 
+    @Nullable
+    protected Object getOnSigningOutTag() {
+        return mSignOutStateTag;
+    }
+
     @Override
     public void onSignOutSuccess() {
-        dispatch(mSignOutStateTag, () -> {
+        final Object tag = getOnSignOutSuccessTag();
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onSignOutSuccess();
             }
         });
     }
 
+    @Nullable
+    protected Object getOnSignOutSuccessTag() {
+        return mSignOutStateTag;
+    }
+
     @Override
     public void onSignOutFail(@NonNull GeneralResult result) {
-        dispatch(mSignOutStateTag, () -> {
+        final Object tag = getOnSignOutFailTag(result);
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onSignOutFail(result);
             }
         });
+    }
+
+    @Nullable
+    protected Object getOnSignOutFailTag(@NonNull GeneralResult result) {
+        return mSignOutStateTag;
     }
 
 }

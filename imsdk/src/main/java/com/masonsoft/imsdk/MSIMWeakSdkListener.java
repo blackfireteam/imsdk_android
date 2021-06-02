@@ -15,6 +15,10 @@ public class MSIMWeakSdkListener extends AutoRemoveDuplicateRunnable implements 
     @NonNull
     private final WeakReference<MSIMSdkListener> mOutRef;
 
+    private final Object mSignInStateTag = new Object();
+    private final Object mConnectStateTag = new Object();
+    private final Object mSignOutStateTag = new Object();
+
     public MSIMWeakSdkListener(@Nullable MSIMSdkListener listener) {
         this(listener, false);
     }
@@ -24,11 +28,10 @@ public class MSIMWeakSdkListener extends AutoRemoveDuplicateRunnable implements 
         mOutRef = new WeakReference<>(listener);
     }
 
-    private final Object mConnectStateTag = new Object();
-
     @Override
     public void onConnecting() {
-        dispatch(mConnectStateTag, () -> {
+        final Object tag = getOnConnectingTag();
+        dispatch(tag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onConnecting();
@@ -36,9 +39,15 @@ public class MSIMWeakSdkListener extends AutoRemoveDuplicateRunnable implements 
         });
     }
 
+    @Nullable
+    protected Object getOnConnectingTag() {
+        return mConnectStateTag;
+    }
+
     @Override
     public void onConnectSuccess() {
-        dispatch(mConnectStateTag, () -> {
+        final Object tag = getOnConnectSuccessTag();
+        dispatch(tag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onConnectSuccess();
@@ -46,9 +55,15 @@ public class MSIMWeakSdkListener extends AutoRemoveDuplicateRunnable implements 
         });
     }
 
+    @Nullable
+    protected Object getOnConnectSuccessTag() {
+        return mConnectStateTag;
+    }
+
     @Override
     public void onConnectClosed() {
-        dispatch(mConnectStateTag, () -> {
+        final Object tag = getOnConnectClosedTag();
+        dispatch(tag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onConnectClosed();
@@ -56,11 +71,15 @@ public class MSIMWeakSdkListener extends AutoRemoveDuplicateRunnable implements 
         });
     }
 
-    private final Object mSignInStateTag = new Object();
+    @Nullable
+    protected Object getOnConnectClosedTag() {
+        return mConnectStateTag;
+    }
 
     @Override
     public void onSigningIn() {
-        dispatch(mSignInStateTag, () -> {
+        final Object tag = getOnSigningInTag();
+        dispatch(tag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onSigningIn();
@@ -68,9 +87,15 @@ public class MSIMWeakSdkListener extends AutoRemoveDuplicateRunnable implements 
         });
     }
 
+    @Nullable
+    protected Object getOnSigningInTag() {
+        return mSignInStateTag;
+    }
+
     @Override
     public void onSignInSuccess() {
-        dispatch(mSignInStateTag, () -> {
+        final Object tag = getOnSignInSuccessTag();
+        dispatch(tag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onSignInSuccess();
@@ -78,9 +103,15 @@ public class MSIMWeakSdkListener extends AutoRemoveDuplicateRunnable implements 
         });
     }
 
+    @Nullable
+    protected Object getOnSignInSuccessTag() {
+        return mSignInStateTag;
+    }
+
     @Override
     public void onSignInFail(@NonNull GeneralResult result) {
-        dispatch(mSignInStateTag, () -> {
+        final Object tag = getOnSignInFailTag(result);
+        dispatch(tag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onSignInFail(result);
@@ -88,9 +119,15 @@ public class MSIMWeakSdkListener extends AutoRemoveDuplicateRunnable implements 
         });
     }
 
+    @Nullable
+    protected Object getOnSignInFailTag(@NonNull GeneralResult result) {
+        return mSignInStateTag;
+    }
+
     @Override
     public void onKickedOffline() {
-        dispatch(() -> {
+        final Object tag = getOnKickedOfflineTag();
+        dispatch(tag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onKickedOffline();
@@ -98,9 +135,15 @@ public class MSIMWeakSdkListener extends AutoRemoveDuplicateRunnable implements 
         });
     }
 
+    @Nullable
+    protected Object getOnKickedOfflineTag() {
+        return null;
+    }
+
     @Override
     public void onTokenExpired() {
-        dispatch(() -> {
+        final Object tag = getOnTokenExpiredTag();
+        dispatch(tag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onTokenExpired();
@@ -108,11 +151,16 @@ public class MSIMWeakSdkListener extends AutoRemoveDuplicateRunnable implements 
         });
     }
 
-    private final Object mSignOutStateTag = new Object();
+    @Nullable
+    protected Object getOnTokenExpiredTag() {
+        return null;
+    }
+
 
     @Override
     public void onSigningOut() {
-        dispatch(mSignOutStateTag, () -> {
+        final Object tag = getOnSigningOutTag();
+        dispatch(tag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onSigningOut();
@@ -120,9 +168,15 @@ public class MSIMWeakSdkListener extends AutoRemoveDuplicateRunnable implements 
         });
     }
 
+    @Nullable
+    protected Object getOnSigningOutTag() {
+        return mSignOutStateTag;
+    }
+
     @Override
     public void onSignOutSuccess() {
-        dispatch(mSignOutStateTag, () -> {
+        final Object tag = getOnSignOutSuccessTag();
+        dispatch(tag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onSignOutSuccess();
@@ -130,14 +184,25 @@ public class MSIMWeakSdkListener extends AutoRemoveDuplicateRunnable implements 
         });
     }
 
+    @Nullable
+    protected Object getOnSignOutSuccessTag() {
+        return mSignOutStateTag;
+    }
+
     @Override
     public void onSignOutFail(@NonNull GeneralResult result) {
-        dispatch(mSignOutStateTag, () -> {
+        final Object tag = getOnSignOutFailTag(result);
+        dispatch(tag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onSignOutFail(result);
             }
         });
+    }
+
+    @Nullable
+    protected Object getOnSignOutFailTag(@NonNull GeneralResult result) {
+        return mSignOutStateTag;
     }
 
 }

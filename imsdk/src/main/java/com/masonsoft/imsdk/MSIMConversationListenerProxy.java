@@ -21,7 +21,7 @@ public class MSIMConversationListenerProxy extends AutoRemoveDuplicateRunnable i
 
     @Override
     public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-        final String tag = "onConversationChanged_" + sessionUserId + "_" + conversationId + "_" + conversationType + "_" + targetUserId;
+        final Object tag = getOnConversationChangedTag(sessionUserId, conversationId, conversationType, targetUserId);
         dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onConversationChanged(sessionUserId, conversationId, conversationType, targetUserId);
@@ -29,14 +29,24 @@ public class MSIMConversationListenerProxy extends AutoRemoveDuplicateRunnable i
         });
     }
 
+    @Nullable
+    protected Object getOnConversationChangedTag(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+        return "getOnConversationChangedTag_" + sessionUserId + "_" + conversationId + "_" + conversationType + "_" + targetUserId;
+    }
+
     @Override
     public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-        final String tag = "onConversationCreated_" + sessionUserId + "_" + conversationId + "_" + conversationType + "_" + targetUserId;
+        final Object tag = getOnConversationCreatedTag(sessionUserId, conversationId, conversationType, targetUserId);
         dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onConversationCreated(sessionUserId, conversationId, conversationType, targetUserId);
             }
         });
+    }
+
+    @Nullable
+    protected Object getOnConversationCreatedTag(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+        return "getOnConversationCreatedTag_" + sessionUserId + "_" + conversationId + "_" + conversationType + "_" + targetUserId;
     }
 
 }

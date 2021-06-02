@@ -237,7 +237,13 @@ public abstract class MSIMConversationChangedViewHelper {
                 requestLoadData(false);
             });
         }
-    });
+    }) {
+        @Override
+        public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+            // 转发 onConversationCreated 至 onConversationChanged
+            super.onConversationChanged(sessionUserId, conversationId, conversationType, targetUserId);
+        }
+    };
 
     private static class RefreshArgs {
         final long sessionUserId;
