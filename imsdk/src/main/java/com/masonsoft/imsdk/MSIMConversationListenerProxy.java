@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 /**
  * @since 1.0
  */
-public class MSIMConversationListenerProxy extends RunOnUiThread implements MSIMConversationListener {
+public class MSIMConversationListenerProxy extends AutoRemoveDuplicateRunnable implements MSIMConversationListener {
 
     @Nullable
     private final MSIMConversationListener mOut;
@@ -21,7 +21,8 @@ public class MSIMConversationListenerProxy extends RunOnUiThread implements MSIM
 
     @Override
     public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-        runOrPost(() -> {
+        final String tag = "onConversationChanged_" + sessionUserId + "_" + conversationId + "_" + conversationType + "_" + targetUserId;
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onConversationChanged(sessionUserId, conversationId, conversationType, targetUserId);
             }
@@ -30,7 +31,8 @@ public class MSIMConversationListenerProxy extends RunOnUiThread implements MSIM
 
     @Override
     public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-        runOrPost(() -> {
+        final String tag = "onConversationCreated_" + sessionUserId + "_" + conversationId + "_" + conversationType + "_" + targetUserId;
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onConversationCreated(sessionUserId, conversationId, conversationType, targetUserId);
             }

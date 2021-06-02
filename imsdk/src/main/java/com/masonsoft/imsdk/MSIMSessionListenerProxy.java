@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 /**
  * @since 1.0
  */
-public class MSIMSessionListenerProxy extends RunOnUiThread implements MSIMSessionListener {
+public class MSIMSessionListenerProxy extends AutoRemoveDuplicateRunnable implements MSIMSessionListener {
 
     @Nullable
     private final MSIMSessionListener mOut;
@@ -21,7 +21,8 @@ public class MSIMSessionListenerProxy extends RunOnUiThread implements MSIMSessi
 
     @Override
     public void onSessionUserIdChanged() {
-        runOrPost(() -> {
+        final String tag = "onSessionUserIdChanged";
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onSessionUserIdChanged();
             }
@@ -30,7 +31,8 @@ public class MSIMSessionListenerProxy extends RunOnUiThread implements MSIMSessi
 
     @Override
     public void onSessionChanged() {
-        runOrPost(() -> {
+        final String tag = "onSessionChanged";
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onSessionChanged();
             }

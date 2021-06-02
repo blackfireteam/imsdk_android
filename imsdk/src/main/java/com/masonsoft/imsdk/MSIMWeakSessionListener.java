@@ -8,7 +8,7 @@ import java.lang.ref.WeakReference;
 /**
  * @since 1.0
  */
-public class MSIMWeakSessionListener extends RunOnUiThread implements MSIMSessionListener {
+public class MSIMWeakSessionListener extends AutoRemoveDuplicateRunnable implements MSIMSessionListener {
 
     @NonNull
     private final WeakReference<MSIMSessionListener> mOutRef;
@@ -24,7 +24,8 @@ public class MSIMWeakSessionListener extends RunOnUiThread implements MSIMSessio
 
     @Override
     public void onSessionChanged() {
-        runOrPost(() -> {
+        final String tag = "onSessionChanged";
+        dispatch(tag, () -> {
             final MSIMSessionListener out = mOutRef.get();
             if (out != null) {
                 out.onSessionChanged();
@@ -34,7 +35,8 @@ public class MSIMWeakSessionListener extends RunOnUiThread implements MSIMSessio
 
     @Override
     public void onSessionUserIdChanged() {
-        runOrPost(() -> {
+        final String tag = "onSessionUserIdChanged";
+        dispatch(tag, () -> {
             final MSIMSessionListener out = mOutRef.get();
             if (out != null) {
                 out.onSessionUserIdChanged();

@@ -8,7 +8,7 @@ import java.lang.ref.WeakReference;
 /**
  * @since 1.0
  */
-public class MSIMWeakMessageListener extends RunOnUiThread implements MSIMMessageListener {
+public class MSIMWeakMessageListener extends AutoRemoveDuplicateRunnable implements MSIMMessageListener {
 
     @NonNull
     private final WeakReference<MSIMMessageListener> mOutRef;
@@ -24,7 +24,8 @@ public class MSIMWeakMessageListener extends RunOnUiThread implements MSIMMessag
 
     @Override
     public void onMultiMessageChanged(long sessionUserId) {
-        runOrPost(() -> {
+        final String tag = "onMultiMessageChanged_" + sessionUserId;
+        dispatch(tag, () -> {
             final MSIMMessageListener out = mOutRef.get();
             if (out != null) {
                 out.onMultiMessageChanged(sessionUserId);
@@ -34,7 +35,8 @@ public class MSIMWeakMessageListener extends RunOnUiThread implements MSIMMessag
 
     @Override
     public void onMessageCreated(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-        runOrPost(() -> {
+        final String tag = "onMessageCreated_" + sessionUserId + "_" + conversationType + "_" + targetUserId + "_" + localMessageId;
+        dispatch(tag, () -> {
             final MSIMMessageListener out = mOutRef.get();
             if (out != null) {
                 out.onMessageCreated(sessionUserId, conversationType, targetUserId, localMessageId);
@@ -44,7 +46,8 @@ public class MSIMWeakMessageListener extends RunOnUiThread implements MSIMMessag
 
     @Override
     public void onMessageChanged(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-        runOrPost(() -> {
+        final String tag = "onMessageChanged_" + sessionUserId + "_" + conversationType + "_" + targetUserId + "_" + localMessageId;
+        dispatch(tag, () -> {
             final MSIMMessageListener out = mOutRef.get();
             if (out != null) {
                 out.onMessageChanged(sessionUserId, conversationType, targetUserId, localMessageId);

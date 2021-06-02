@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 /**
  * @since 1.0
  */
-public class MSIMUserInfoListenerProxy extends RunOnUiThread implements MSIMUserInfoListener {
+public class MSIMUserInfoListenerProxy extends AutoRemoveDuplicateRunnable implements MSIMUserInfoListener {
 
     @Nullable
     private final MSIMUserInfoListener mOut;
@@ -21,7 +21,8 @@ public class MSIMUserInfoListenerProxy extends RunOnUiThread implements MSIMUser
 
     @Override
     public void onUserInfoChanged(long userId) {
-        runOrPost(() -> {
+        final String tag = "onUserInfoChanged_" + userId;
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onUserInfoChanged(userId);
             }

@@ -8,7 +8,7 @@ import java.lang.ref.WeakReference;
 /**
  * @since 1.0
  */
-public class MSIMWeakCallback<T> extends RunOnUiThread implements MSIMCallback<T> {
+public class MSIMWeakCallback<T> extends AutoRemoveDuplicateRunnable implements MSIMCallback<T> {
 
     @NonNull
     private final WeakReference<MSIMCallback<T>> mOutRef;
@@ -24,7 +24,7 @@ public class MSIMWeakCallback<T> extends RunOnUiThread implements MSIMCallback<T
 
     @Override
     public void onCallback(@NonNull T payload) {
-        runOrPost(() -> {
+        dispatch(() -> {
             final MSIMCallback<T> out = mOutRef.get();
             if (out != null) {
                 out.onCallback(payload);

@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 /**
  * @since 1.0
  */
-public class MSIMCallbackProxy<T> extends RunOnUiThread implements MSIMCallback<T> {
+public class MSIMCallbackProxy<T> extends AutoRemoveDuplicateRunnable implements MSIMCallback<T> {
 
     @Nullable
     private final MSIMCallback<T> mOut;
@@ -22,7 +22,7 @@ public class MSIMCallbackProxy<T> extends RunOnUiThread implements MSIMCallback<
 
     @Override
     public void onCallback(@NonNull T payload) {
-        runOrPost(() -> {
+        dispatch(new Object(), () -> {
             if (mOut != null) {
                 mOut.onCallback(payload);
             }

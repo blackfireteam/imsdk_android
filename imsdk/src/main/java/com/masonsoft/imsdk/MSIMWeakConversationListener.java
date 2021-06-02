@@ -8,7 +8,7 @@ import java.lang.ref.WeakReference;
 /**
  * @since 1.0
  */
-public class MSIMWeakConversationListener extends RunOnUiThread implements MSIMConversationListener {
+public class MSIMWeakConversationListener extends AutoRemoveDuplicateRunnable implements MSIMConversationListener {
 
     @NonNull
     private final WeakReference<MSIMConversationListener> mOutRef;
@@ -24,7 +24,8 @@ public class MSIMWeakConversationListener extends RunOnUiThread implements MSIMC
 
     @Override
     public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-        runOrPost(() -> {
+        final String tag = "onConversationCreated_" + sessionUserId + "_" + conversationId + "_" + conversationType + "_" + targetUserId;
+        dispatch(tag, () -> {
             final MSIMConversationListener out = mOutRef.get();
             if (out != null) {
                 out.onConversationCreated(sessionUserId, conversationId, conversationType, targetUserId);
@@ -34,7 +35,8 @@ public class MSIMWeakConversationListener extends RunOnUiThread implements MSIMC
 
     @Override
     public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-        runOrPost(() -> {
+        final String tag = "onConversationChanged_" + sessionUserId + "_" + conversationId + "_" + conversationType + "_" + targetUserId;
+        dispatch(tag, () -> {
             final MSIMConversationListener out = mOutRef.get();
             if (out != null) {
                 out.onConversationChanged(sessionUserId, conversationId, conversationType, targetUserId);

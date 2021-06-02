@@ -8,7 +8,7 @@ import com.masonsoft.imsdk.lang.GeneralResult;
 /**
  * @since 1.0
  */
-public class MSIMSdkListenerProxy extends RunOnUiThread implements MSIMSdkListener {
+public class MSIMSdkListenerProxy extends AutoRemoveDuplicateRunnable implements MSIMSdkListener {
 
     @Nullable
     private final MSIMSdkListener mOut;
@@ -22,9 +22,11 @@ public class MSIMSdkListenerProxy extends RunOnUiThread implements MSIMSdkListen
         mOut = listener;
     }
 
+    private final Object mConnectStateTag = new Object();
+
     @Override
     public void onConnecting() {
-        runOrPost(() -> {
+        dispatch(mConnectStateTag, () -> {
             if (mOut != null) {
                 mOut.onConnecting();
             }
@@ -33,7 +35,7 @@ public class MSIMSdkListenerProxy extends RunOnUiThread implements MSIMSdkListen
 
     @Override
     public void onConnectSuccess() {
-        runOrPost(() -> {
+        dispatch(mConnectStateTag, () -> {
             if (mOut != null) {
                 mOut.onConnectSuccess();
             }
@@ -42,16 +44,18 @@ public class MSIMSdkListenerProxy extends RunOnUiThread implements MSIMSdkListen
 
     @Override
     public void onConnectClosed() {
-        runOrPost(() -> {
+        dispatch(mConnectStateTag, () -> {
             if (mOut != null) {
                 mOut.onConnectClosed();
             }
         });
     }
 
+    private final Object mSignInStateTag = new Object();
+
     @Override
     public void onSigningIn() {
-        runOrPost(() -> {
+        dispatch(mSignInStateTag, () -> {
             if (mOut != null) {
                 mOut.onSigningIn();
             }
@@ -60,7 +64,7 @@ public class MSIMSdkListenerProxy extends RunOnUiThread implements MSIMSdkListen
 
     @Override
     public void onSignInSuccess() {
-        runOrPost(() -> {
+        dispatch(mSignInStateTag, () -> {
             if (mOut != null) {
                 mOut.onSignInSuccess();
             }
@@ -69,7 +73,7 @@ public class MSIMSdkListenerProxy extends RunOnUiThread implements MSIMSdkListen
 
     @Override
     public void onSignInFail(@NonNull GeneralResult result) {
-        runOrPost(() -> {
+        dispatch(mSignInStateTag, () -> {
             if (mOut != null) {
                 mOut.onSignInFail(result);
             }
@@ -78,7 +82,7 @@ public class MSIMSdkListenerProxy extends RunOnUiThread implements MSIMSdkListen
 
     @Override
     public void onKickedOffline() {
-        runOrPost(() -> {
+        dispatch(() -> {
             if (mOut != null) {
                 mOut.onKickedOffline();
             }
@@ -87,16 +91,18 @@ public class MSIMSdkListenerProxy extends RunOnUiThread implements MSIMSdkListen
 
     @Override
     public void onTokenExpired() {
-        runOrPost(() -> {
+        dispatch(() -> {
             if (mOut != null) {
                 mOut.onTokenExpired();
             }
         });
     }
 
+    private final Object mSignOutStateTag = new Object();
+
     @Override
     public void onSigningOut() {
-        runOrPost(() -> {
+        dispatch(mSignOutStateTag, () -> {
             if (mOut != null) {
                 mOut.onSigningOut();
             }
@@ -105,7 +111,7 @@ public class MSIMSdkListenerProxy extends RunOnUiThread implements MSIMSdkListen
 
     @Override
     public void onSignOutSuccess() {
-        runOrPost(() -> {
+        dispatch(mSignOutStateTag, () -> {
             if (mOut != null) {
                 mOut.onSignOutSuccess();
             }
@@ -114,7 +120,7 @@ public class MSIMSdkListenerProxy extends RunOnUiThread implements MSIMSdkListen
 
     @Override
     public void onSignOutFail(@NonNull GeneralResult result) {
-        runOrPost(() -> {
+        dispatch(mSignOutStateTag, () -> {
             if (mOut != null) {
                 mOut.onSignOutFail(result);
             }

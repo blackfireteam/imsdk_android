@@ -10,7 +10,7 @@ import java.lang.ref.WeakReference;
 /**
  * @since 1.0
  */
-public class MSIMWeakSdkListener extends RunOnUiThread implements MSIMSdkListener {
+public class MSIMWeakSdkListener extends AutoRemoveDuplicateRunnable implements MSIMSdkListener {
 
     @NonNull
     private final WeakReference<MSIMSdkListener> mOutRef;
@@ -24,9 +24,11 @@ public class MSIMWeakSdkListener extends RunOnUiThread implements MSIMSdkListene
         mOutRef = new WeakReference<>(listener);
     }
 
+    private final Object mConnectStateTag = new Object();
+
     @Override
     public void onConnecting() {
-        runOrPost(() -> {
+        dispatch(mConnectStateTag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onConnecting();
@@ -36,7 +38,7 @@ public class MSIMWeakSdkListener extends RunOnUiThread implements MSIMSdkListene
 
     @Override
     public void onConnectSuccess() {
-        runOrPost(() -> {
+        dispatch(mConnectStateTag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onConnectSuccess();
@@ -46,7 +48,7 @@ public class MSIMWeakSdkListener extends RunOnUiThread implements MSIMSdkListene
 
     @Override
     public void onConnectClosed() {
-        runOrPost(() -> {
+        dispatch(mConnectStateTag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onConnectClosed();
@@ -54,9 +56,11 @@ public class MSIMWeakSdkListener extends RunOnUiThread implements MSIMSdkListene
         });
     }
 
+    private final Object mSignInStateTag = new Object();
+
     @Override
     public void onSigningIn() {
-        runOrPost(() -> {
+        dispatch(mSignInStateTag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onSigningIn();
@@ -66,7 +70,7 @@ public class MSIMWeakSdkListener extends RunOnUiThread implements MSIMSdkListene
 
     @Override
     public void onSignInSuccess() {
-        runOrPost(() -> {
+        dispatch(mSignInStateTag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onSignInSuccess();
@@ -76,7 +80,7 @@ public class MSIMWeakSdkListener extends RunOnUiThread implements MSIMSdkListene
 
     @Override
     public void onSignInFail(@NonNull GeneralResult result) {
-        runOrPost(() -> {
+        dispatch(mSignInStateTag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onSignInFail(result);
@@ -86,7 +90,7 @@ public class MSIMWeakSdkListener extends RunOnUiThread implements MSIMSdkListene
 
     @Override
     public void onKickedOffline() {
-        runOrPost(() -> {
+        dispatch(() -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onKickedOffline();
@@ -96,7 +100,7 @@ public class MSIMWeakSdkListener extends RunOnUiThread implements MSIMSdkListene
 
     @Override
     public void onTokenExpired() {
-        runOrPost(() -> {
+        dispatch(() -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onTokenExpired();
@@ -104,9 +108,11 @@ public class MSIMWeakSdkListener extends RunOnUiThread implements MSIMSdkListene
         });
     }
 
+    private final Object mSignOutStateTag = new Object();
+
     @Override
     public void onSigningOut() {
-        runOrPost(() -> {
+        dispatch(mSignOutStateTag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onSigningOut();
@@ -116,7 +122,7 @@ public class MSIMWeakSdkListener extends RunOnUiThread implements MSIMSdkListene
 
     @Override
     public void onSignOutSuccess() {
-        runOrPost(() -> {
+        dispatch(mSignOutStateTag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onSignOutSuccess();
@@ -126,7 +132,7 @@ public class MSIMWeakSdkListener extends RunOnUiThread implements MSIMSdkListene
 
     @Override
     public void onSignOutFail(@NonNull GeneralResult result) {
-        runOrPost(() -> {
+        dispatch(mSignOutStateTag, () -> {
             final MSIMSdkListener out = mOutRef.get();
             if (out != null) {
                 out.onSignOutFail(result);

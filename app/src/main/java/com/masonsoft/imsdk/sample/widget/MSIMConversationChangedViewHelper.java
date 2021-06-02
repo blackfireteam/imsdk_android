@@ -14,6 +14,10 @@ import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.util.Objects;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
+
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.DisposableHolder;
@@ -96,6 +100,12 @@ public abstract class MSIMConversationChangedViewHelper {
 
     @UiThread
     public void requestLoadData(boolean reset) {
+        SampleLog.v("[%s][requestLoadData][onUi] ============= onConversationChangedInternal sessionUserId:%s, conversationId:%s",
+                Objects.defaultObjectTag(MSIMConversationChangedViewHelper.this),
+                mSessionUserId,
+                mConversationId
+        );
+
         Preconditions.checkArgument(Threads.isUi());
 
         // abort last
@@ -106,6 +116,12 @@ public abstract class MSIMConversationChangedViewHelper {
         }
         mRequestHolder.set(Single.just("")
                 .map(input -> {
+                    SampleLog.v("[%s][requestLoadData][onIO] ============= onConversationChangedInternal sessionUserId:%s, conversationId:%s",
+                            Objects.defaultObjectTag(MSIMConversationChangedViewHelper.this),
+                            mSessionUserId,
+                            mConversationId
+                    );
+
                     final MSIMConversation conversation;
                     if (mByConversationId) {
                         conversation = MSIMManager.getInstance().getConversationManager().getConversation(
@@ -164,18 +180,77 @@ public abstract class MSIMConversationChangedViewHelper {
             onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId);
         }
 
+        private final ReentrantLock mRefreshLock = new ReentrantLock();
+        private List<RefreshArgs> mRefreshArgsList = new ArrayList<>();
+
         private void onConversationChangedInternal(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
             if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
                 return;
             }
 
+            SampleLog.v("[%s] ============= onConversationChangedInternal sessionUserId:%s, conversationId:%s",
+                    Objects.defaultObjectTag(MSIMConversationChangedViewHelper.this),
+                    sessionUserId,
+                    conversationId
+            );
+
+            mRefreshLock.lock();
+            try {
+                mRefreshArgsList.add(new RefreshArgs(sessionUserId, conversationId, conversationType, targetUserId));
+            } finally {
+                mRefreshLock.unlock();
+            }
+
             Threads.postUi(() -> {
-                if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
+                final List<RefreshArgs> refreshArgsList;
+                mRefreshLock.lock();
+                try {
+                    refreshArgsList = mRefreshArgsList;
+                    mRefreshArgsList = new ArrayList<>();
+                } finally {
+                    mRefreshLock.unlock();
+                }
+
+                RefreshArgs firstMatchRefreshArgs = null;
+                if (refreshArgsList != null) {
+                    for (RefreshArgs refreshArgs : refreshArgsList) {
+                        if (!notMatch(refreshArgs.sessionUserId, refreshArgs.conversationId, refreshArgs.conversationType, refreshArgs.targetUserId)) {
+                            firstMatchRefreshArgs = refreshArgs;
+                            break;
+                        }
+                    }
+                }
+
+                if (firstMatchRefreshArgs == null) {
                     return;
                 }
+
+                SampleLog.v("[%s] ============= [merge size:%s] onConversationChangedInternal sessionUserId:%s, conversationId:%s",
+                        Objects.defaultObjectTag(MSIMConversationChangedViewHelper.this),
+                        refreshArgsList.size(),
+                        firstMatchRefreshArgs.sessionUserId,
+                        firstMatchRefreshArgs.conversationId
+                );
+                requestLoadData(false);
+                requestLoadData(false);
+                requestLoadData(false);
                 requestLoadData(false);
             });
         }
     });
+
+    private static class RefreshArgs {
+        final long sessionUserId;
+        final long conversationId;
+        final int conversationType;
+        final long targetUserId;
+
+        private RefreshArgs(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+            this.sessionUserId = sessionUserId;
+            this.conversationId = conversationId;
+            this.conversationType = conversationType;
+            this.targetUserId = targetUserId;
+        }
+    }
 
 }

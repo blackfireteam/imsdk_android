@@ -8,7 +8,7 @@ import java.lang.ref.WeakReference;
 /**
  * @since 1.0
  */
-public class MSIMWeakUserInfoListener extends RunOnUiThread implements MSIMUserInfoListener {
+public class MSIMWeakUserInfoListener extends AutoRemoveDuplicateRunnable implements MSIMUserInfoListener {
 
     @NonNull
     private final WeakReference<MSIMUserInfoListener> mOutRef;
@@ -24,7 +24,8 @@ public class MSIMWeakUserInfoListener extends RunOnUiThread implements MSIMUserI
 
     @Override
     public void onUserInfoChanged(long userId) {
-        runOrPost(() -> {
+        final String tag = "onUserInfoChanged_" + userId;
+        dispatch(tag, () -> {
             final MSIMUserInfoListener out = mOutRef.get();
             if (out != null) {
                 out.onUserInfoChanged(userId);

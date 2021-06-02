@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 /**
  * @since 1.0
  */
-public class MSIMMessageListenerProxy extends RunOnUiThread implements MSIMMessageListener {
+public class MSIMMessageListenerProxy extends AutoRemoveDuplicateRunnable implements MSIMMessageListener {
 
     @Nullable
     private final MSIMMessageListener mOut;
@@ -21,7 +21,8 @@ public class MSIMMessageListenerProxy extends RunOnUiThread implements MSIMMessa
 
     @Override
     public void onMessageChanged(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-        runOrPost(() -> {
+        final String tag = "onMessageChanged_" + sessionUserId + "_" + conversationType + "_" + targetUserId + "_" + localMessageId;
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onMessageChanged(sessionUserId, conversationType, targetUserId, localMessageId);
             }
@@ -30,7 +31,8 @@ public class MSIMMessageListenerProxy extends RunOnUiThread implements MSIMMessa
 
     @Override
     public void onMessageCreated(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-        runOrPost(() -> {
+        final String tag = "onMessageCreated_" + sessionUserId + "_" + conversationType + "_" + targetUserId + "_" + localMessageId;
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onMessageCreated(sessionUserId, conversationType, targetUserId, localMessageId);
             }
@@ -39,7 +41,8 @@ public class MSIMMessageListenerProxy extends RunOnUiThread implements MSIMMessa
 
     @Override
     public void onMultiMessageChanged(long sessionUserId) {
-        runOrPost(() -> {
+        final String tag = "onMultiMessageChanged_" + sessionUserId;
+        dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onMultiMessageChanged(sessionUserId);
             }
