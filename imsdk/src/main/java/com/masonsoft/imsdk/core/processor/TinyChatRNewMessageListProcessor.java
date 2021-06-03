@@ -1,7 +1,5 @@
 package com.masonsoft.imsdk.core.processor;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -161,113 +159,105 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
 
         final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
         synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
-            final SQLiteDatabase database = databaseHelper.getDBHelper().getWritableDatabase();
-            database.beginTransaction();
-            try {
-                int conversationUnreadCountDiff = 0;
-                Message conversationBestShowMessage = null;
+            int conversationUnreadCountDiff = 0;
+            Message conversationBestShowMessage = null;
 
-                for (Message message : messageList) {
-                    final boolean actionMessage = message.localActionMessage.get() > 0;
-                    final long remoteMessageId = message.remoteMessageId.get();
-                    // 设置 block id
-                    message.localBlockId.set(blockId);
+            for (Message message : messageList) {
+                final boolean actionMessage = message.localActionMessage.get() > 0;
+                final long remoteMessageId = message.remoteMessageId.get();
+                // 设置 block id
+                message.localBlockId.set(blockId);
 
-                    final Message dbMessage = MessageDatabaseProvider.getInstance().getMessageWithRemoteMessageId(
+                final Message dbMessage = MessageDatabaseProvider.getInstance().getMessageWithRemoteMessageId(
+                        sessionUserId,
+                        conversationType,
+                        targetUserId,
+                        remoteMessageId);
+                if (dbMessage == null) {
+                    // 如果消息在本地不存在，则入库
+                    if (!MessageDatabaseProvider.getInstance().insertMessage(
                             sessionUserId,
                             conversationType,
                             targetUserId,
-                            remoteMessageId);
-                    if (dbMessage == null) {
-                        // 如果消息在本地不存在，则入库
-                        if (!MessageDatabaseProvider.getInstance().insertMessage(
-                                sessionUserId,
-                                conversationType,
-                                targetUserId,
-                                message)) {
-                            final Throwable e = new IllegalAccessError("unexpected insertMessage return false " + message);
-                            IMLog.e(e);
-                        } else {
-                            // 新消息入库成功
-                            if (!actionMessage) {
-                                conversationUnreadCountDiff++;
-                                if (conversationBestShowMessage == null
-                                        || conversationBestShowMessage.localSeq.get() < message.localSeq.get()) {
-                                    conversationBestShowMessage = message;
-                                }
-                            }
-                        }
+                            message)) {
+                        final Throwable e = new IllegalAccessError("unexpected insertMessage return false " + message);
+                        IMLog.e(e);
                     } else {
-                        // 消息已经存在
-                        // 回写 localId
-                        message.localId.set(dbMessage.localId.get());
-
-                        // 更新必要字段
-                        boolean requireUpdate = false;
-                        final Message messageUpdate = new Message();
-                        messageUpdate.applyLogicField(sessionUserId, conversationType, targetUserId);
-                        messageUpdate.localId.set(dbMessage.localId.get());
-
-                        {
-                            // 校验是否需要更新 message type
-                            final int dbMessageType = dbMessage.messageType.get();
-                            final int newMessageType = message.messageType.get();
-                            if (dbMessageType != newMessageType) {
-                                requireUpdate = true;
-                                messageUpdate.messageType.set(newMessageType);
+                        // 新消息入库成功
+                        if (!actionMessage) {
+                            conversationUnreadCountDiff++;
+                            if (conversationBestShowMessage == null
+                                    || conversationBestShowMessage.localSeq.get() < message.localSeq.get()) {
+                                conversationBestShowMessage = message;
                             }
                         }
-                        {
-                            // 校验是否需要更新 block id
-                            final long dbMessageBlockId = dbMessage.localBlockId.get();
-                            final long newMessageBlockId = message.localBlockId.get();
-                            Preconditions.checkArgument(newMessageBlockId > 0);
-                            if (dbMessageBlockId != newMessageBlockId) {
-                                requireUpdate = true;
-                                messageUpdate.localBlockId.set(newMessageBlockId);
-                            }
-                        }
+                    }
+                } else {
+                    // 消息已经存在
+                    // 回写 localId
+                    message.localId.set(dbMessage.localId.get());
 
-                        if (requireUpdate) {
-                            if (!MessageDatabaseProvider.getInstance().updateMessage(
-                                    sessionUserId, conversationType, targetUserId, messageUpdate)) {
-                                final Throwable e = new IllegalAccessError("unexpected updateMessage return false " + messageUpdate);
-                                IMLog.e(e);
-                            }
+                    // 更新必要字段
+                    boolean requireUpdate = false;
+                    final Message messageUpdate = new Message();
+                    messageUpdate.applyLogicField(sessionUserId, conversationType, targetUserId);
+                    messageUpdate.localId.set(dbMessage.localId.get());
+
+                    {
+                        // 校验是否需要更新 message type
+                        final int dbMessageType = dbMessage.messageType.get();
+                        final int newMessageType = message.messageType.get();
+                        if (dbMessageType != newMessageType) {
+                            requireUpdate = true;
+                            messageUpdate.messageType.set(newMessageType);
+                        }
+                    }
+                    {
+                        // 校验是否需要更新 block id
+                        final long dbMessageBlockId = dbMessage.localBlockId.get();
+                        final long newMessageBlockId = message.localBlockId.get();
+                        Preconditions.checkArgument(newMessageBlockId > 0);
+                        if (dbMessageBlockId != newMessageBlockId) {
+                            requireUpdate = true;
+                            messageUpdate.localBlockId.set(newMessageBlockId);
+                        }
+                    }
+
+                    if (requireUpdate) {
+                        if (!MessageDatabaseProvider.getInstance().updateMessage(
+                                sessionUserId, conversationType, targetUserId, messageUpdate)) {
+                            final Throwable e = new IllegalAccessError("unexpected updateMessage return false " + messageUpdate);
+                            IMLog.e(e);
                         }
                     }
                 }
+            }
 
-                // expand block id
-                MessageBlock.expandBlockId(sessionUserId, conversationType, targetUserId, minMessage.remoteMessageId.get());
+            // expand block id
+            MessageBlock.expandBlockId(sessionUserId, conversationType, targetUserId, minMessage.remoteMessageId.get());
 
-                try {
-                    // 更新未读消息数
-                    if (conversationUnreadCountDiff != 0) {
-                        IMConversationManager.getInstance().increaseConversationUnreadCount(
-                                sessionUserId,
-                                conversationType,
-                                targetUserId,
-                                conversationUnreadCountDiff
-                        );
-                    }
-
-                    // 更新对应会话的最后一条关联消息
-                    if (conversationBestShowMessage != null) {
-                        IMConversationManager.getInstance().updateConversationLastMessage(
-                                sessionUserId,
-                                conversationType,
-                                targetUserId,
-                                conversationBestShowMessage.localId.get()
-                        );
-                    }
-                } catch (Throwable e) {
-                    IMLog.e(e);
+            try {
+                // 更新未读消息数
+                if (conversationUnreadCountDiff != 0) {
+                    IMConversationManager.getInstance().increaseConversationUnreadCount(
+                            sessionUserId,
+                            conversationType,
+                            targetUserId,
+                            conversationUnreadCountDiff
+                    );
                 }
 
-                database.setTransactionSuccessful();
-            } finally {
-                database.endTransaction();
+                // 更新对应会话的最后一条关联消息
+                if (conversationBestShowMessage != null) {
+                    IMConversationManager.getInstance().updateConversationLastMessage(
+                            sessionUserId,
+                            conversationType,
+                            targetUserId,
+                            conversationBestShowMessage.localId.get()
+                    );
+                }
+            } catch (Throwable e) {
+                IMLog.e(e);
             }
         }
     }

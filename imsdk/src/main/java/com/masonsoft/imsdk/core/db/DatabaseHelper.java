@@ -529,27 +529,18 @@ public final class DatabaseHelper {
         mDBHelper = new SQLiteOpenHelper(ContextUtil.getContext(), dbName, null, DB_VERSION) {
             @Override
             public void onCreate(SQLiteDatabase db) {
-                db.beginTransaction();
-                try {
-                    // 创建会话表
-                    db.execSQL(getSQLCreateTableConversation());
-                    // 创建会话表索引
-                    for (String sqlIndex : getSQLIndexTableConversation()) {
-                        db.execSQL(sqlIndex);
-                    }
+                // 创建会话表
+                db.execSQL(getSQLCreateTableConversation());
+                // 创建会话表索引
+                for (String sqlIndex : getSQLIndexTableConversation()) {
+                    db.execSQL(sqlIndex);
+                }
 
-                    // 创建消息发送队列表
-                    db.execSQL(getSQLCreateTableLocalSendingMessage());
-                    // 创建消息发送队列表索引
-                    for (String sqlIndex : getSQLIndexTableLocalSendingMessage()) {
-                        db.execSQL(sqlIndex);
-                    }
-
-                    db.setTransactionSuccessful();
-                } catch (Throwable e) {
-                    IMLog.e(e);
-                } finally {
-                    db.endTransaction();
+                // 创建消息发送队列表
+                db.execSQL(getSQLCreateTableLocalSendingMessage());
+                // 创建消息发送队列表索引
+                for (String sqlIndex : getSQLIndexTableLocalSendingMessage()) {
+                    db.execSQL(sqlIndex);
                 }
             }
 
@@ -644,22 +635,11 @@ public final class DatabaseHelper {
 
             // create table message and index
             final SQLiteDatabase db = mDBHelper.getWritableDatabase();
-            db.beginTransaction();
-            try {
-
-                // 创建消息表
-                db.execSQL(getSQLCreateTableMessage(tableName));
-                // 创建消息表索引
-                for (String sqlIndex : getSQLIndexTableMessage(tableName)) {
-                    db.execSQL(sqlIndex);
-                }
-
-                db.setTransactionSuccessful();
-            } catch (Throwable e) {
-                IMLog.e(e);
-                throw e;
-            } finally {
-                db.endTransaction();
+            // 创建消息表
+            db.execSQL(getSQLCreateTableMessage(tableName));
+            // 创建消息表索引
+            for (String sqlIndex : getSQLIndexTableMessage(tableName)) {
+                db.execSQL(sqlIndex);
             }
 
             mTableMessageCreateFlagMap.put(tableName, Boolean.TRUE);

@@ -1,7 +1,5 @@
 package com.masonsoft.imsdk.core.processor;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.IMConstants;
@@ -70,42 +68,35 @@ public class ReceivedProtoMessageConversationListProcessor extends ReceivedProto
     private void updateConversationList(final long sessionUserId, @NonNull final List<Conversation> conversationList) {
         final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
         synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
-            final SQLiteDatabase database = databaseHelper.getDBHelper().getWritableDatabase();
-            database.beginTransaction();
-            try {
-                for (Conversation conversation : conversationList) {
-                    conversation.applyLogicField(sessionUserId);
-                    final long targetUserId = conversation.targetUserId.get();
-                    final int conversationType = IMConstants.ConversationType.C2C;
+            for (Conversation conversation : conversationList) {
+                conversation.applyLogicField(sessionUserId);
+                final long targetUserId = conversation.targetUserId.get();
+                final int conversationType = IMConstants.ConversationType.C2C;
 
-                    // 设置会话的类型
-                    conversation.localConversationType.set(conversationType);
+                // 设置会话的类型
+                conversation.localConversationType.set(conversationType);
 
-                    final Conversation dbConversation = ConversationDatabaseProvider
-                            .getInstance()
-                            .getConversationByTargetUserId(sessionUserId, conversationType, targetUserId);
+                final Conversation dbConversation = ConversationDatabaseProvider
+                        .getInstance()
+                        .getConversationByTargetUserId(sessionUserId, conversationType, targetUserId);
 
-                    if (dbConversation == null) {
-                        // 会话在本地不存在
-                        if (!ConversationDatabaseProvider.getInstance().insertConversation(sessionUserId, conversation)) {
-                            final Throwable e = new IllegalAccessError("unexpected insertConversation return false " + conversation);
-                            IMLog.e(e);
-                        }
-                    } else {
-                        // 会话已经存在
-                        // 回写 localId
-                        conversation.localId.set(dbConversation.localId.get());
-                        if (!ConversationDatabaseProvider.getInstance().updateConversation(
-                                sessionUserId,
-                                conversation)) {
-                            final Throwable e = new IllegalAccessError("unexpected updateConversation return false " + conversation);
-                            IMLog.e(e);
-                        }
+                if (dbConversation == null) {
+                    // 会话在本地不存在
+                    if (!ConversationDatabaseProvider.getInstance().insertConversation(sessionUserId, conversation)) {
+                        final Throwable e = new IllegalAccessError("unexpected insertConversation return false " + conversation);
+                        IMLog.e(e);
+                    }
+                } else {
+                    // 会话已经存在
+                    // 回写 localId
+                    conversation.localId.set(dbConversation.localId.get());
+                    if (!ConversationDatabaseProvider.getInstance().updateConversation(
+                            sessionUserId,
+                            conversation)) {
+                        final Throwable e = new IllegalAccessError("unexpected updateConversation return false " + conversation);
+                        IMLog.e(e);
                     }
                 }
-                database.setTransactionSuccessful();
-            } finally {
-                database.endTransaction();
             }
         }
     }

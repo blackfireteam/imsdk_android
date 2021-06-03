@@ -1,7 +1,5 @@
 package com.masonsoft.imsdk.core.processor;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.IMConstants;
@@ -199,59 +197,50 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
             // 清空 block id
             dbMessageInsert.localBlockId.clear();
 
-            final SQLiteDatabase db = databaseHelper.getDBHelper().getWritableDatabase();
-            db.beginTransaction();
-            try {
-                // 插入消息表
-                if (MessageDatabaseProvider.getInstance().insertMessage(
+            // 插入消息表
+            if (MessageDatabaseProvider.getInstance().insertMessage(
+                    sessionUserId,
+                    conversationType,
+                    targetUserId,
+                    dbMessageInsert)) {
+
+                // 消息表对应记录插入成功后，在上传队列表插入新记录
+                final LocalSendingMessage localSendingMessageInsert = new LocalSendingMessage();
+                localSendingMessageInsert.conversationType.set(conversationType);
+                localSendingMessageInsert.messageLocalId.set(dbMessageInsert.localId.get());
+                localSendingMessageInsert.targetUserId.set(targetUserId);
+                // 重置 abort id
+                localSendingMessageInsert.localAbortId.set(IMConstants.AbortId.RESET);
+                // 设置发送状态为 IDLE
+                localSendingMessageInsert.localSendStatus.set(IMConstants.SendStatus.IDLE);
+                if (LocalSendingMessageProvider.getInstance().insertLocalSendingMessage(
                         sessionUserId,
-                        conversationType,
-                        targetUserId,
-                        dbMessageInsert)) {
+                        localSendingMessageInsert)) {
+                    IMLog.v("success insertLocalSendingMessage: %s", localSendingMessageInsert);
 
-                    // 消息表对应记录插入成功后，在上传队列表插入新记录
-                    final LocalSendingMessage localSendingMessageInsert = new LocalSendingMessage();
-                    localSendingMessageInsert.conversationType.set(conversationType);
-                    localSendingMessageInsert.messageLocalId.set(dbMessageInsert.localId.get());
-                    localSendingMessageInsert.targetUserId.set(targetUserId);
-                    // 重置 abort id
-                    localSendingMessageInsert.localAbortId.set(IMConstants.AbortId.RESET);
-                    // 设置发送状态为 IDLE
-                    localSendingMessageInsert.localSendStatus.set(IMConstants.SendStatus.IDLE);
-                    if (LocalSendingMessageProvider.getInstance().insertLocalSendingMessage(
+                    // 提示成功入队
+                    target.getEnqueueCallback().onCallback(GeneralResult.success().withPayload(target));
+
+                    // 通知上传任务队列检查新内容
+                    IMSessionMessageUploadManager.getInstance().notifySyncLocalSendingMessage(sessionUserId);
+
+                    // 更新对应会话的最后一条关联消息
+                    IMConversationManager.getInstance().updateConversationLastMessage(
                             sessionUserId,
-                            localSendingMessageInsert)) {
-                        IMLog.v("success insertLocalSendingMessage: %s", localSendingMessageInsert);
+                            conversationType,
+                            targetUserId,
+                            dbMessageInsert.localId.get()
+                    );
 
-                        // 上传对列表插入成功后，设置事务完成
-                        db.setTransactionSuccessful();
-
-                        // 提示成功入队
-                        target.getEnqueueCallback().onCallback(GeneralResult.success().withPayload(target));
-
-                        // 通知上传任务队列检查新内容
-                        IMSessionMessageUploadManager.getInstance().notifySyncLocalSendingMessage(sessionUserId);
-
-                        // 更新对应会话的最后一条关联消息
-                        IMConversationManager.getInstance().updateConversationLastMessage(
-                                sessionUserId,
-                                conversationType,
-                                targetUserId,
-                                dbMessageInsert.localId.get()
-                        );
-
-                        // 返回 true, 终止后续 processor
-                        return true;
-                    } else {
-                        final Throwable e = new IllegalAccessError("insertLocalSendingMessage return false");
-                        IMLog.e(e);
-                    }
+                    // 返回 true, 终止后续 processor
+                    return true;
                 } else {
-                    final Throwable e = new IllegalAccessError("insertMessage return false");
+                    final Throwable e = new IllegalAccessError("insertLocalSendingMessage return false");
                     IMLog.e(e);
                 }
-            } finally {
-                db.endTransaction();
+            } else {
+                final Throwable e = new IllegalAccessError("insertMessage return false");
+                IMLog.e(e);
             }
         }
 

@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.IMConstants;
-import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 
 import io.github.idonans.core.Singleton;
@@ -86,24 +85,14 @@ public class UserInfoDatabaseHelper {
         mDBHelper = new SQLiteOpenHelper(ContextUtil.getContext(), dbName, null, DB_VERSION) {
             @Override
             public void onCreate(SQLiteDatabase db) {
-                try {
-                    db.beginTransaction();
+                db.execSQL(getSQLCreateTableUserInfo());
+                for (String sqlIndex : getSQLIndexTableUserInfo()) {
+                    db.execSQL(sqlIndex);
+                }
 
-                    db.execSQL(getSQLCreateTableUserInfo());
-                    for (String sqlIndex : getSQLIndexTableUserInfo()) {
-                        db.execSQL(sqlIndex);
-                    }
-
-                    db.execSQL(getSQLCreateTableUserInfoSync());
-                    for (String sqlIndex : getSQLIndexTableUserInfoSync()) {
-                        db.execSQL(sqlIndex);
-                    }
-
-                    db.setTransactionSuccessful();
-                } catch (Throwable e) {
-                    IMLog.e(e);
-                } finally {
-                    db.endTransaction();
+                db.execSQL(getSQLCreateTableUserInfoSync());
+                for (String sqlIndex : getSQLIndexTableUserInfoSync()) {
+                    db.execSQL(sqlIndex);
                 }
             }
 
