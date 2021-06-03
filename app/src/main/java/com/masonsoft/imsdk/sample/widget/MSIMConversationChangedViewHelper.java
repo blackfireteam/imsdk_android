@@ -238,10 +238,11 @@ public abstract class MSIMConversationChangedViewHelper {
             });
         }
     }) {
+        @Nullable
         @Override
-        public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            // 转发 onConversationCreated 至 onConversationChanged
-            super.onConversationChanged(sessionUserId, conversationId, conversationType, targetUserId);
+        protected Object getOnConversationCreatedTag(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+            // merge created, changed callback
+            return super.getOnConversationChangedTag(sessionUserId, conversationId, conversationType, targetUserId);
         }
     };
 

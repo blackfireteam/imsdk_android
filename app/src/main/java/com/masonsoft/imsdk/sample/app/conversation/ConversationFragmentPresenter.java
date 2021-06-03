@@ -7,6 +7,7 @@ import androidx.annotation.UiThread;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMConversationListener;
+import com.masonsoft.imsdk.MSIMConversationListenerProxy;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
@@ -52,7 +53,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
                 reloadWithNewSessionUserId();
             }
         };
-        mConversationListener = new MSIMConversationListener() {
+        mConversationListener = new MSIMConversationListenerProxy(new MSIMConversationListener() {
             @Override
             public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
                 addOrUpdateConversation(sessionUserId, conversationId);
@@ -61,6 +62,13 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
             @Override
             public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
                 addOrUpdateConversation(sessionUserId, conversationId);
+            }
+        }) {
+            @Nullable
+            @Override
+            protected Object getOnConversationCreatedTag(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
+                // merge created, changed callback
+                return super.getOnConversationChangedTag(sessionUserId, conversationId, conversationType, targetUserId);
             }
         };
         MSIMManager.getInstance().getConversationManager().addConversationListener(mConversationListener);
