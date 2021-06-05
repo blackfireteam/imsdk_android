@@ -161,11 +161,11 @@ public class ConversationFragment extends SystemInsetsFragment {
                             }
                         }
                         if (removedPosition >= 0 && removedPosition == insertPosition) {
-                            SampleLog.v(Objects.defaultObjectTag(this) + " ignore. replaceConversation removedPosition:%s, insertPosition:%s", removedPosition, insertPosition);
+                            SampleLog.v(Objects.defaultObjectTag(this) + " ignore. replaceConversation removedPosition:%s, insertPosition:%s %s", removedPosition, insertPosition, updateConversation);
                             return;
                         }
 
-                        SampleLog.v(Objects.defaultObjectTag(this) + " replaceConversation removedPosition:%s, insertPosition:%s", removedPosition, insertPosition);
+                        SampleLog.v(Objects.defaultObjectTag(this) + " replaceConversation removedPosition:%s, insertPosition:%s %s", removedPosition, insertPosition, updateConversation);
 
                         if (removedPosition >= 0) {
                             groupArrayList.removeGroupItem(getGroupContent(), removedPosition);
