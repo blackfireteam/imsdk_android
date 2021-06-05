@@ -143,8 +143,6 @@ public class ConversationFragment extends SystemInsetsFragment {
 
                                 if (!delete) {
                                     final MSIMConversation existsConversation = (MSIMConversation) ((DataObject<?>) existsOne.itemObject).object;
-                                    SampleLog.v("updateConversation===>" + updateConversation);
-                                    SampleLog.v("existsConversation===>" + existsConversation);
                                     if (updateConversation.getSeq() > existsConversation.getSeq() && insertPosition == -1) {
                                         insertPosition = i;
                                     }
