@@ -81,16 +81,12 @@ public class DiscoverFragment extends SystemInsetsFragment {
             public int getSpanSize(int position) {
                 final UnionTypeAdapter adapter = (UnionTypeAdapter) recyclerView.getAdapter();
                 if (adapter != null) {
-                    // TODO FIXME
-                    /*
                     final int[] groupAndPosition = adapter.getGroupAndPosition(position);
                     if (groupAndPosition != null) {
-                        if (groupAndPosition[0] == ViewImpl.GROUP_DEFAULT) {
+                        if (groupAndPosition[0] == mView.getGroupContent()) {
                             return 1;
                         }
                     }
-                    */
-                    return 1;
                 }
 
                 return spanCount;
@@ -100,16 +96,12 @@ public class DiscoverFragment extends SystemInsetsFragment {
             public int getSpanIndex(int position, int spanCount) {
                 final UnionTypeAdapter adapter = (UnionTypeAdapter) recyclerView.getAdapter();
                 if (adapter != null) {
-                    // TODO FIXME
-                    /*
                     final int[] groupAndPosition = adapter.getGroupAndPosition(position);
                     if (groupAndPosition != null) {
-                        if (groupAndPosition[0] == ViewImpl.GROUP_DEFAULT) {
+                        if (groupAndPosition[0] == mView.getGroupContent()) {
                             return groupAndPosition[1] % spanCount;
                         }
                     }
-                    */
-                    return position % 2;
                 }
 
                 return 0;
