@@ -3,6 +3,8 @@ package com.masonsoft.imsdk.sample.app.conversation;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.annotation.WorkerThread;
+import androidx.core.util.Pair;
 
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMConversation;
@@ -19,9 +21,13 @@ import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.thread.TaskQueue;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.lang.DisposableHolder;
@@ -92,48 +98,85 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         return getView() == null;
     }
 
+    @NonNull
+    private final Object mAddOrUpdateConversationMergeLock = new Object();
+    @NonNull
+    private Set<Pair<Long, Long>> mAddOrUpdateConversationDataSet = new HashSet<>();
+    private final TaskQueue mAddOrUpdateConversationActionQueue = new TaskQueue(1);
+
     private void addOrUpdateConversation(long sessionUserId, long conversationId) {
         if (isAbort(sessionUserId)) {
             return;
         }
 
-        Threads.postBackground(() -> {
-            if (isAbort(sessionUserId)) {
-                return;
+        synchronized (mAddOrUpdateConversationMergeLock) {
+            mAddOrUpdateConversationDataSet.add(Pair.create(sessionUserId, conversationId));
+        }
+
+        mAddOrUpdateConversationActionQueue.skipQueue();
+        mAddOrUpdateConversationActionQueue.enqueue(() -> {
+            final Set<Pair<Long, Long>> dataSet;
+            synchronized (mAddOrUpdateConversationMergeLock) {
+                dataSet = mAddOrUpdateConversationDataSet;
+                mAddOrUpdateConversationDataSet = new HashSet<>();
             }
-            final MSIMConversation conversation = MSIMManager.getInstance().getConversationManager().getConversation(sessionUserId, conversationId);
-            if (isAbort(sessionUserId)) {
-                return;
+
+            final long bestSessionUserId = getSessionUserId();
+            final List<MSIMConversation> updateList = new ArrayList<>();
+            for (Pair<Long, Long> dataPair : dataSet) {
+                Preconditions.checkNotNull(dataPair.first);
+                Preconditions.checkNotNull(dataPair.second);
+                if (bestSessionUserId != dataPair.first) {
+                    continue;
+                }
+                final MSIMConversation conversation = MSIMManager.getInstance().getConversationManager().getConversation(dataPair.first, dataPair.second);
+                if (conversation != null) {
+                    updateList.add(conversation);
+                }
             }
-            if (conversation != null) {
-                Threads.postUi(() -> {
-                    if (isAbort(sessionUserId)) {
-                        return;
-                    }
-                    addOrUpdateConversation(conversation);
+            if (!updateList.isEmpty()) {
+                Collections.sort(updateList, (o1Object, o2Object) -> {
+                    final long o1ObjectSeq = o1Object.getSeq();
+                    final long o2ObjectSeq = o2Object.getSeq();
+                    final long diff = o1ObjectSeq - o2ObjectSeq;
+                    return diff == 0 ? 0 : (diff < 0 ? 1 : -1);
                 });
+
+                if (isAbort(bestSessionUserId)) {
+                    return;
+                }
+                addOrUpdateConversation(updateList);
             }
         });
     }
 
-    private void addOrUpdateConversation(@Nullable MSIMConversation conversation) {
-        if (conversation == null) {
+    @WorkerThread
+    private void addOrUpdateConversation(@Nullable List<MSIMConversation> updateList) {
+        if (updateList == null || updateList.isEmpty()) {
             return;
         }
 
-        final UnionTypeItemObject unionTypeItemObject = createDefault(conversation);
-        if (unionTypeItemObject == null) {
+        final List<UnionTypeItemObject> unionTypeItemObjectList = new ArrayList<>();
+        for (MSIMConversation conversation : updateList) {
+            final UnionTypeItemObject unionTypeItemObject = createDefault(conversation);
+            if (unionTypeItemObject != null) {
+                unionTypeItemObjectList.add(unionTypeItemObject);
+            }
+        }
+
+        if (unionTypeItemObjectList.isEmpty()) {
             return;
         }
+
         final ConversationFragment.ViewImpl view = getView();
         if (view == null) {
             return;
         }
         final TimeDiffDebugHelper timeDiffDebugHelper = new TimeDiffDebugHelper(Objects.defaultObjectTag(this));
         timeDiffDebugHelper.mark();
-        view.replaceConversation(unionTypeItemObject);
+        view.mergeSortedConversationList(unionTypeItemObjectList);
         timeDiffDebugHelper.mark();
-        timeDiffDebugHelper.print("addOrUpdateConversation targetUserId:" + conversation.getTargetUserId() + ", sessionUserId:" + conversation.getSessionUserId());
+        timeDiffDebugHelper.print("mergeSortedConversationList unionTypeItemObjectList size:" + unionTypeItemObjectList.size());
     }
 
     @Nullable

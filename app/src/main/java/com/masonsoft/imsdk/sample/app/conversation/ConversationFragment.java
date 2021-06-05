@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.common.collect.Lists;
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -20,11 +20,14 @@ import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.widget.DividerItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
+import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
@@ -109,16 +112,17 @@ public class ConversationFragment extends SystemInsetsFragment {
             setAlwaysHideNoMoreData(true);
         }
 
-        public void replaceConversation(@NonNull final UnionTypeItemObject unionTypeItemObject) {
-            final String tag = Objects.defaultObjectTag(this);
-            SampleLog.v(tag + " replaceConversation " + Objects.defaultObjectTag(unionTypeItemObject));
+        @WorkerThread
+        void mergeSortedConversationList(@NonNull final List<UnionTypeItemObject> unionTypeItemObjectList) {
+            final String tag = Objects.defaultObjectTag(this) + "[mergeSortedConversationList][" + System.currentTimeMillis() + "][size:]" + unionTypeItemObjectList.size();
+            SampleLog.v(tag);
             getAdapter().getData().beginTransaction()
                     .add((transaction, groupArrayList) -> {
                         if (groupArrayList.getGroupItemsSize(getGroupContent()) == 0) {
                             // request init page
                             Threads.postUi(() -> {
                                 if (mPresenter != null) {
-                                    SampleLog.v(tag + " page content is empty, use requestInit instead of replace");
+                                    SampleLog.v(tag + " use requestInit instead of merge");
                                     if (!mPresenter.getInitRequestStatus().isLoading()) {
                                         mPresenter.requestInit(true);
                                     }
@@ -127,58 +131,51 @@ public class ConversationFragment extends SystemInsetsFragment {
                             return;
                         }
 
-                        // replace
-                        final MSIMConversation updateConversation = (MSIMConversation) ((DataObject<?>) unionTypeItemObject.itemObject).object;
-                        final boolean delete = updateConversation.isDelete();
-                        final List<UnionTypeItemObject> groupDefaultList = groupArrayList.getGroupItems(getGroupContent());
-                        int removedPosition = -1;
-                        int insertPosition = -1;
-                        if (groupDefaultList != null) {
-                            final int size = groupDefaultList.size();
-                            for (int i = 0; i < size; i++) {
-                                final UnionTypeItemObject existsOne = groupDefaultList.get(i);
-                                if (existsOne.isSameItem(unionTypeItemObject)) {
-                                    removedPosition = i;
-                                }
+                        final TimeDiffDebugHelper innerMergeTimeDiffDebugHelper = new TimeDiffDebugHelper("innerMergeTimeDiffDebugHelper[" + tag + "]");
 
-                                if (!delete) {
-                                    final MSIMConversation existsConversation = (MSIMConversation) ((DataObject<?>) existsOne.itemObject).object;
-                                    if (updateConversation.getSeq() > existsConversation.getSeq() && insertPosition == -1) {
-                                        insertPosition = i;
-                                    }
+                        final List<UnionTypeItemObject> currentList = groupArrayList.getGroupItems(getGroupContent());
+                        Preconditions.checkNotNull(currentList);
 
-                                    if (removedPosition >= 0 && insertPosition >= 0) {
-                                        if (removedPosition < insertPosition) {
-                                            insertPosition--;
-                                        }
-                                        break;
-                                    }
-                                } else {
-                                    if (removedPosition >= 0) {
+                        // merge
+                        // 第一步，从原来的列表中删除重复元素
+                        {
+                            innerMergeTimeDiffDebugHelper.mark();
+                            for (UnionTypeItemObject unionTypeItemObject : unionTypeItemObjectList) {
+                                for (int i = 0; i < currentList.size(); i++) {
+                                    if (currentList.get(i).isSameItem(unionTypeItemObject)) {
+                                        currentList.remove(i);
                                         break;
                                     }
                                 }
                             }
-                        }
-                        if (removedPosition >= 0 && removedPosition == insertPosition) {
-                            SampleLog.v(Objects.defaultObjectTag(this) + " ignore. replaceConversation removedPosition:%s, insertPosition:%s %s", removedPosition, insertPosition, updateConversation);
-                            return;
+                            innerMergeTimeDiffDebugHelper.print("rm duplicate");
                         }
 
-                        SampleLog.v(Objects.defaultObjectTag(this) + " replaceConversation removedPosition:%s, insertPosition:%s %s", removedPosition, insertPosition, updateConversation);
+                        // 第二步，去除 unionTypeItemObjectList 中已删除的元素
+                        innerMergeTimeDiffDebugHelper.mark();
+                        for (int i = unionTypeItemObjectList.size() - 1; i >= 0; i--) {
+                            final MSIMConversation updateConversation = (MSIMConversation) ((DataObject<?>) unionTypeItemObjectList.get(i).itemObject).object;
+                            if (updateConversation.isDelete()) {
+                                unionTypeItemObjectList.remove(i);
+                            }
+                        }
+                        innerMergeTimeDiffDebugHelper.print("rm delete");
 
-                        if (removedPosition >= 0) {
-                            groupArrayList.removeGroupItem(getGroupContent(), removedPosition);
-                        }
-
-                        if (delete) {
-                            return;
-                        }
-                        if (insertPosition >= 0) {
-                            groupArrayList.insertGroupItems(getGroupContent(), insertPosition, Lists.newArrayList(unionTypeItemObject));
-                        } else {
-                            groupArrayList.appendGroupItems(getGroupContent(), Lists.newArrayList(unionTypeItemObject));
-                        }
+                        // 第三步，将 unionTypeItemObjectList 与 currentList 合并(这两个都是有序列表，且其中不包含重复元素)
+                        innerMergeTimeDiffDebugHelper.mark();
+                        currentList.addAll(0, unionTypeItemObjectList);
+                        innerMergeTimeDiffDebugHelper.mark();
+                        innerMergeTimeDiffDebugHelper.print("add all");
+                        Collections.sort(currentList, (o1, o2) -> {
+                            final MSIMConversation o1Object = (MSIMConversation) ((DataObject<?>) o1.itemObject).object;
+                            final MSIMConversation o2Object = (MSIMConversation) ((DataObject<?>) o2.itemObject).object;
+                            final long o1ObjectSeq = o1Object.getSeq();
+                            final long o2ObjectSeq = o2Object.getSeq();
+                            final long diff = o1ObjectSeq - o2ObjectSeq;
+                            return diff == 0 ? 0 : (diff < 0 ? 1 : -1);
+                        });
+                        innerMergeTimeDiffDebugHelper.mark();
+                        innerMergeTimeDiffDebugHelper.print("sort");
                     })
                     .commit();
         }
