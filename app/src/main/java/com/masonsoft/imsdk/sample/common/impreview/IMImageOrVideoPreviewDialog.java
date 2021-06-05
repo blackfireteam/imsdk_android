@@ -106,7 +106,7 @@ public class IMImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedL
         }
     }
 
-    class ViewImpl extends UnionTypeStatusPageView {
+    class ViewImpl extends UnionTypeStatusPageView<Object> {
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
             super(adapter);
             setAlwaysHideNoMoreData(true);

@@ -42,13 +42,13 @@ import com.masonsoft.imsdk.sample.widget.CustomSoftKeyboard;
 import com.masonsoft.imsdk.util.Objects;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
-import java.util.Collection;
 import java.util.List;
 
 import io.github.idonans.core.AbortSignal;
 import io.github.idonans.core.FormValidator;
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.PermissionUtil;
+import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.lang.util.ViewUtil;
@@ -612,7 +612,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
         }
     }
 
-    class ViewImpl extends UnionTypeStatusPageView {
+    class ViewImpl extends UnionTypeStatusPageView<GeneralResult> {
 
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
             super(adapter);
@@ -706,15 +706,8 @@ public class SingleChatFragment extends SystemInsetsFragment {
         }
 
         @Override
-        public void onInitDataEmpty() {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onInitDataEmpty");
-            super.onInitDataEmpty();
-        }
-
-        @Override
-        public void onInitDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onInitDataLoad items size:" + items.size());
-            super.onInitDataLoad(items);
+        public void onInitRequestResult(@NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
+            super.onInitRequestResult(result);
 
             final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
             if (binding == null) {
@@ -722,62 +715,49 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 return;
             }
 
-            if (!items.isEmpty()) {
-                Threads.postUi(() -> {
-                    if (mDataAdapter != null) {
-                        int count = mDataAdapter.getItemCount();
-                        if (count > 0) {
-                            scrollToPosition(binding.recyclerView, count - 1);
-                            sendMarkAsRead();
-                        }
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void onPrePageDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onPrePageDataLoad items size:" + items.size());
-            super.onPrePageDataLoad(items);
-        }
-
-        @Override
-        public void onNextPageDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onNextPageDataLoad items size:" + items.size());
-            super.onNextPageDataLoad(items);
-
-            final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
-            if (binding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
-                return;
-            }
-
-            if (!items.isEmpty()) {
-                Threads.postUi(() -> {
-                    if (mDataAdapter != null) {
-                        int count = mDataAdapter.getItemCount();
-                        if (count > 0) {
-                            boolean autoScroll = false;
-                            int lastPosition = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-                            if (lastPosition >= count - 1 - items.size()) {
-                                // 当前滚动到最后
-                                autoScroll = true;
-                            }
-                            if (autoScroll) {
+            if (result.items != null && !result.items.isEmpty()) {
+                getAdapter().getData().beginTransaction()
+                        .commit(() -> {
+                            final int count = getAdapter().getItemCount();
+                            if (count > 0) {
                                 scrollToPosition(binding.recyclerView, count - 1);
                                 sendMarkAsRead();
-                            } else {
-                                // 显示向下的箭头
-                                showNewMessagesTipView();
                             }
-                        }
-                    }
-                });
+                        });
             }
         }
 
-        public Activity getActivity() {
-            return SingleChatFragment.this.getActivity();
+        @Override
+        public void onNextPageRequestResult(@NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
+            super.onNextPageRequestResult(result);
+
+            final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+            if (binding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            if (result.items != null && !result.items.isEmpty()) {
+                getAdapter().getData().beginTransaction()
+                        .commit(() -> {
+                            final int count = getAdapter().getItemCount();
+                            if (count > 0) {
+                                boolean autoScroll = false;
+                                int lastPosition = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                                if (lastPosition >= count - 1 - result.items.size()) {
+                                    // 当前滚动到最后
+                                    autoScroll = true;
+                                }
+                                if (autoScroll) {
+                                    scrollToPosition(binding.recyclerView, count - 1);
+                                    sendMarkAsRead();
+                                } else {
+                                    // 显示向下的箭头
+                                    showNewMessagesTipView();
+                                }
+                            }
+                        });
+            }
         }
     }
 

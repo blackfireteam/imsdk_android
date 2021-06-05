@@ -14,17 +14,17 @@ import java.util.List;
 import java.util.Objects;
 
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
-import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.uniontype.DeepDiff;
 import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 
-public class DiscoverFragmentPresenter extends PagePresenter<UnionTypeItemObject, UnionTypeStatusPageView> {
+public class DiscoverFragmentPresenter extends PagePresenter<UnionTypeItemObject, Object, DiscoverFragment.ViewImpl> {
 
     public DiscoverFragmentPresenter(DiscoverFragment.ViewImpl view) {
-        super(view, false, false);
+        super(view);
         DiscoverUserObservable.DEFAULT.registerObserver(mDiscoverUserObserver);
     }
 
@@ -69,23 +69,10 @@ public class DiscoverFragmentPresenter extends PagePresenter<UnionTypeItemObject
 
     @Nullable
     @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createInitRequest() throws Exception {
+    protected SingleSource<DynamicResult<UnionTypeItemObject, Object>> createInitRequest() throws Exception {
         final List<Long> userIdList = DiscoverUserManager.getInstance().getOnlineUserList();
-        return Single.just(create(userIdList));
-    }
-
-    @Nullable
-    @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createPrePageRequest() throws Exception {
-        // ignore
-        return null;
-    }
-
-    @Nullable
-    @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createNextPageRequest() throws Exception {
-        // ignore
-        return null;
+        return Single.just(create(userIdList))
+                .map(input -> new DynamicResult<UnionTypeItemObject, Object>().setItems(input));
     }
 
     @NonNull

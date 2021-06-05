@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.collect.Lists;
 import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleConversationFragmentBinding;
@@ -20,9 +21,9 @@ import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.widget.DividerItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
 
-import java.util.Collection;
 import java.util.List;
 
+import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.uniontype.Host;
@@ -101,109 +102,87 @@ public class ConversationFragment extends SystemInsetsFragment {
         mViewImpl = null;
     }
 
-    class ViewImpl extends UnionTypeStatusPageView {
+    class ViewImpl extends UnionTypeStatusPageView<GeneralResult> {
 
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
             super(adapter);
             setAlwaysHideNoMoreData(true);
         }
 
-        @Override
-        public void onInitDataEmpty() {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onInitDataEmpty");
-            super.onInitDataEmpty();
-        }
-
-        @Override
-        public void onInitDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onInitDataLoad items size:" + items.size());
-            super.onInitDataLoad(items);
-        }
-
-        @Override
-        public void onPrePageDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onPrePageDataLoad items size:" + items.size());
-            super.onPrePageDataLoad(items);
-        }
-
-        @Override
-        public void onNextPageDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onNextPageDataLoad items size:" + items.size());
-            super.onNextPageDataLoad(items);
-        }
-
         public void replaceConversation(@NonNull final UnionTypeItemObject unionTypeItemObject) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " replaceConversation " + Objects.defaultObjectTag(unionTypeItemObject));
-            if (!hasPageContent()) {
-                SampleLog.v(Objects.defaultObjectTag(this) + " page content is empty, use requestInit instead of replace");
-                if (!mPresenter.getInitRequestStatus().isLoading()) {
-                    mPresenter.requestInit(true);
-                }
-                return;
-            }
-
-            final MSIMConversation updateConversation = (MSIMConversation) ((DataObject<?>) unionTypeItemObject.itemObject).object;
-            final boolean delete = updateConversation.isDelete();
-            final List<UnionTypeItemObject> groupDefaultList = getAdapter().getData().getGroupItems(GROUP_DEFAULT);
-            int removedPosition = -1;
-            int insertPosition = -1;
-            if (groupDefaultList != null) {
-                final int size = groupDefaultList.size();
-                for (int i = 0; i < size; i++) {
-                    final UnionTypeItemObject existsOne = groupDefaultList.get(i);
-                    if (existsOne.isSameItem(unionTypeItemObject)) {
-                        removedPosition = i;
-                    }
-
-                    if (!delete) {
-                        final MSIMConversation existsConversation = (MSIMConversation) ((DataObject<?>) existsOne.itemObject).object;
-                        SampleLog.v("updateConversation===>" + updateConversation);
-                        SampleLog.v("existsConversation===>" + existsConversation);
-                        if (updateConversation.getSeq() > existsConversation.getSeq() && insertPosition == -1) {
-                            insertPosition = i;
+            final String tag = Objects.defaultObjectTag(this);
+            SampleLog.v(tag + " replaceConversation " + Objects.defaultObjectTag(unionTypeItemObject));
+            getAdapter().getData().beginTransaction()
+                    .add((transaction, groupArrayList) -> {
+                        if (groupArrayList.getGroupItemsSize(getGroupContent()) == 0) {
+                            // request init page
+                            Threads.postUi(() -> {
+                                if (mPresenter != null) {
+                                    SampleLog.v(tag + " page content is empty, use requestInit instead of replace");
+                                    if (!mPresenter.getInitRequestStatus().isLoading()) {
+                                        mPresenter.requestInit(true);
+                                    }
+                                }
+                            });
+                            return;
                         }
 
-                        if (removedPosition >= 0 && insertPosition >= 0) {
-                            if (removedPosition < insertPosition) {
-                                insertPosition--;
+                        // replace
+                        final MSIMConversation updateConversation = (MSIMConversation) ((DataObject<?>) unionTypeItemObject.itemObject).object;
+                        final boolean delete = updateConversation.isDelete();
+                        final List<UnionTypeItemObject> groupDefaultList = groupArrayList.getGroupItems(getGroupContent());
+                        int removedPosition = -1;
+                        int insertPosition = -1;
+                        if (groupDefaultList != null) {
+                            final int size = groupDefaultList.size();
+                            for (int i = 0; i < size; i++) {
+                                final UnionTypeItemObject existsOne = groupDefaultList.get(i);
+                                if (existsOne.isSameItem(unionTypeItemObject)) {
+                                    removedPosition = i;
+                                }
+
+                                if (!delete) {
+                                    final MSIMConversation existsConversation = (MSIMConversation) ((DataObject<?>) existsOne.itemObject).object;
+                                    SampleLog.v("updateConversation===>" + updateConversation);
+                                    SampleLog.v("existsConversation===>" + existsConversation);
+                                    if (updateConversation.getSeq() > existsConversation.getSeq() && insertPosition == -1) {
+                                        insertPosition = i;
+                                    }
+
+                                    if (removedPosition >= 0 && insertPosition >= 0) {
+                                        if (removedPosition < insertPosition) {
+                                            insertPosition--;
+                                        }
+                                        break;
+                                    }
+                                } else {
+                                    if (removedPosition >= 0) {
+                                        break;
+                                    }
+                                }
                             }
-                            break;
                         }
-                    } else {
+                        if (removedPosition >= 0 && removedPosition == insertPosition) {
+                            SampleLog.v(Objects.defaultObjectTag(this) + " ignore. replaceConversation removedPosition:%s, insertPosition:%s", removedPosition, insertPosition);
+                            return;
+                        }
+
+                        SampleLog.v(Objects.defaultObjectTag(this) + " replaceConversation removedPosition:%s, insertPosition:%s", removedPosition, insertPosition);
+
                         if (removedPosition >= 0) {
-                            break;
+                            groupArrayList.removeGroupItem(getGroupContent(), removedPosition);
                         }
-                    }
-                }
-            }
-            if (removedPosition >= 0 && removedPosition == insertPosition) {
-                SampleLog.v(Objects.defaultObjectTag(this) + " ignore. replaceConversation removedPosition:%s, insertPosition:%s", removedPosition, insertPosition);
-                return;
-            }
 
-            SampleLog.v(Objects.defaultObjectTag(this) + " replaceConversation removedPosition:%s, insertPosition:%s", removedPosition, insertPosition);
-
-            if (removedPosition >= 0) {
-                if (!getAdapter().removeGroupItem(GROUP_DEFAULT, removedPosition)) {
-                    final Throwable e = new IllegalAccessError("fail to removeGroupItem GROUP_DEFAULT removedPosition:" + removedPosition);
-                    SampleLog.e(e);
-                }
-            }
-
-            if (delete) {
-                return;
-            }
-            if (insertPosition >= 0) {
-                if (!getAdapter().insertGroupItems(GROUP_DEFAULT, insertPosition, Lists.newArrayList(unionTypeItemObject))) {
-                    final Throwable e = new IllegalAccessError("fail to insertGroupItems GROUP_DEFAULT insertPosition:" + insertPosition);
-                    SampleLog.e(e);
-                }
-            } else {
-                if (!getAdapter().appendGroupItems(GROUP_DEFAULT, Lists.newArrayList(unionTypeItemObject))) {
-                    final Throwable e = new IllegalAccessError("fail to appendGroupItems GROUP_DEFAULT");
-                    SampleLog.e(e);
-                }
-            }
+                        if (delete) {
+                            return;
+                        }
+                        if (insertPosition >= 0) {
+                            groupArrayList.insertGroupItems(getGroupContent(), insertPosition, Lists.newArrayList(unionTypeItemObject));
+                        } else {
+                            groupArrayList.appendGroupItems(getGroupContent(), Lists.newArrayList(unionTypeItemObject));
+                        }
+                    })
+                    .commit();
         }
     }
 

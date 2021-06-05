@@ -144,7 +144,9 @@ public class HomeFragment extends SystemInsetsFragment {
                 final DataObject<Spark> itemObject = (DataObject<Spark>) originObject.itemObject;
                 final Spark spark = itemObject.object;
 
-                adapter.removeItem(position);
+                adapter.getData().beginTransaction()
+                        .add((transaction, groupArrayList) -> groupArrayList.removeItem(position))
+                        .commit();
 
                 if (payload instanceof Bundle) {
                     Bundle args = (Bundle) payload;
@@ -228,10 +230,11 @@ public class HomeFragment extends SystemInsetsFragment {
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
-    class ViewImpl extends UnionTypeStatusPageView {
+    class ViewImpl extends UnionTypeStatusPageView<Object> {
 
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
-            super(adapter, true);
+            super(adapter);
+            setClearContentWhenRequestInit(true);
         }
 
     }

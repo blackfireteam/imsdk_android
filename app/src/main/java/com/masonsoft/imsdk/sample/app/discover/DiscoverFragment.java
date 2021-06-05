@@ -20,6 +20,7 @@ import com.masonsoft.imsdk.util.Objects;
 
 import java.util.List;
 
+import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
@@ -80,12 +81,16 @@ public class DiscoverFragment extends SystemInsetsFragment {
             public int getSpanSize(int position) {
                 final UnionTypeAdapter adapter = (UnionTypeAdapter) recyclerView.getAdapter();
                 if (adapter != null) {
+                    // TODO FIXME
+                    /*
                     final int[] groupAndPosition = adapter.getGroupAndPosition(position);
                     if (groupAndPosition != null) {
                         if (groupAndPosition[0] == ViewImpl.GROUP_DEFAULT) {
                             return 1;
                         }
                     }
+                    */
+                    return 1;
                 }
 
                 return spanCount;
@@ -95,12 +100,16 @@ public class DiscoverFragment extends SystemInsetsFragment {
             public int getSpanIndex(int position, int spanCount) {
                 final UnionTypeAdapter adapter = (UnionTypeAdapter) recyclerView.getAdapter();
                 if (adapter != null) {
+                    // TODO FIXME
+                    /*
                     final int[] groupAndPosition = adapter.getGroupAndPosition(position);
                     if (groupAndPosition != null) {
                         if (groupAndPosition[0] == ViewImpl.GROUP_DEFAULT) {
                             return groupAndPosition[1] % spanCount;
                         }
                     }
+                    */
+                    return position % 2;
                 }
 
                 return 0;
@@ -122,41 +131,72 @@ public class DiscoverFragment extends SystemInsetsFragment {
         mPresenter.requestInit();
     }
 
-    class ViewImpl extends UnionTypeStatusPageView {
+    class ViewImpl extends UnionTypeStatusPageView<Object> {
 
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
-            super(adapter, true);
+            super(adapter);
+            setClearContentWhenRequestInit(true);
         }
 
         public void removeUser(@NonNull final UnionTypeItemObject unionTypeItemObject) {
-            final List<UnionTypeItemObject> groupDefaultList = getAdapter().getData().getGroupItems(GROUP_DEFAULT);
-            int removedPosition = -1;
-            if (groupDefaultList != null) {
-                final int size = groupDefaultList.size();
-                for (int i = 0; i < size; i++) {
-                    final UnionTypeItemObject existsOne = groupDefaultList.get(i);
-                    if (existsOne.isSameItem(unionTypeItemObject)) {
-                        removedPosition = i;
-                        break;
-                    }
-                }
-            }
-            if (removedPosition >= 0) {
-                getAdapter().removeGroupItem(GROUP_DEFAULT, removedPosition);
-            }
+            getAdapter().getData().beginTransaction()
+                    .add((transaction, groupArrayList) -> {
+                        final List<UnionTypeItemObject> groupDefaultList = groupArrayList.getGroupItems(getGroupContent());
+                        int removedPosition = -1;
+                        if (groupDefaultList != null) {
+                            final int size = groupDefaultList.size();
+                            for (int i = 0; i < size; i++) {
+                                final UnionTypeItemObject existsOne = groupDefaultList.get(i);
+                                if (existsOne.isSameItem(unionTypeItemObject)) {
+                                    removedPosition = i;
+                                    break;
+                                }
+                            }
+                        }
+                        if (removedPosition >= 0) {
+                            groupArrayList.removeGroupItem(getGroupContent(), removedPosition);
+                        }
+                    })
+                    .commit();
+
+
         }
 
         public void replaceUser(@NonNull final UnionTypeItemObject unionTypeItemObject) {
-            if (!hasPageContent()) {
-                SampleLog.v(Objects.defaultObjectTag(this) + " page content is empty, use requestInit instead of replace");
-                mPresenter.requestInit(true);
-                return;
-            }
+            getAdapter().getData().beginTransaction()
+                    .add((transaction, groupArrayList) -> {
+                        if (groupArrayList.getGroupItemsSize(getGroupContent()) == 0) {
+                            // request init
+                            Threads.postUi(() -> {
+                                if (mPresenter != null) {
+                                    SampleLog.v(Objects.defaultObjectTag(this) + " page content is empty, use requestInit instead of replace");
+                                    if (!mPresenter.getInitRequestStatus().isLoading()) {
+                                        mPresenter.requestInit(true);
+                                    }
+                                }
+                            });
+                            return;
+                        }
 
-            removeUser(unionTypeItemObject);
-            getAdapter().appendGroupItems(GROUP_DEFAULT, Lists.newArrayList(unionTypeItemObject));
+                        final List<UnionTypeItemObject> groupDefaultList = groupArrayList.getGroupItems(getGroupContent());
+                        int removedPosition = -1;
+                        if (groupDefaultList != null) {
+                            final int size = groupDefaultList.size();
+                            for (int i = 0; i < size; i++) {
+                                final UnionTypeItemObject existsOne = groupDefaultList.get(i);
+                                if (existsOne.isSameItem(unionTypeItemObject)) {
+                                    removedPosition = i;
+                                    break;
+                                }
+                            }
+                        }
+                        if (removedPosition >= 0) {
+                            groupArrayList.removeGroupItem(getGroupContent(), removedPosition);
+                        }
+                        groupArrayList.appendGroupItems(getGroupContent(), Lists.newArrayList(unionTypeItemObject));
+                    })
+                    .commit();
         }
-
     }
 
     private void clearPresenter() {

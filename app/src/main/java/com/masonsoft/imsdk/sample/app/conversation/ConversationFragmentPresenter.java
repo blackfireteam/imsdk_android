@@ -9,6 +9,8 @@ import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMConversationListener;
 import com.masonsoft.imsdk.MSIMConversationListenerProxy;
 import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.lang.GeneralResult;
+import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
@@ -17,20 +19,18 @@ import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
-import io.github.idonans.dynamic.page.PageView;
-import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.uniontype.DeepDiff;
 import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 
-public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemObject, UnionTypeStatusPageView> {
+public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemObject, GeneralResult, ConversationFragment.ViewImpl> {
 
     private static final boolean DEBUG = true;
 
@@ -46,7 +46,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     @UiThread
     public ConversationFragmentPresenter(@NonNull ConversationFragment.ViewImpl view) {
-        super(view, false, true);
+        super(view);
         mSessionUserIdChangedViewHelper = new SessionUserIdChangedViewHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
@@ -155,7 +155,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     @Nullable
     @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createInitRequest() throws Exception {
+    protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createInitRequest() throws Exception {
         SampleLog.v(Objects.defaultObjectTag(this) + " createInitRequest");
         if (DEBUG) {
             SampleLog.v(Objects.defaultObjectTag(this) + " createInitRequest sessionUserId:%s, mConversationType:%s, pageSize:%s",
@@ -187,38 +187,33 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
                         target.add(item);
                     }
 
-                    return target;
+                    return new DynamicResult<UnionTypeItemObject, GeneralResult>()
+                            .setItems(target)
+                            .setPayload(page.generalResult)
+                            .setError(GeneralResultException.createOrNull(page.generalResult));
                 });
     }
 
     @Override
-    protected void onInitRequestResult(@NonNull PageView<UnionTypeItemObject> view, @NonNull Collection<UnionTypeItemObject> items) {
+    protected void onInitRequestResult(@NonNull ConversationFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
         SampleLog.v(Objects.defaultObjectTag(this) + " onInitRequestResult");
-        if (DEBUG) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onInitRequestResult items size:%s", items.size());
-        }
         // 记录上一页，下一页参数
-        if (items.isEmpty()) {
+        if (result.items == null || result.items.isEmpty()) {
             mFirstConversationSeq = -1;
             mLastConversationSeq = -1;
+            setNextPageRequestEnable(false);
         } else {
-            mFirstConversationSeq = ((MSIMConversation) ((DataObject) ((UnionTypeItemObject) ((List) items).get(0)).itemObject).object).getSeq();
-            mLastConversationSeq = ((MSIMConversation) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).getSeq();
+            mFirstConversationSeq = ((MSIMConversation) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(0)).itemObject).object).getSeq();
+            mLastConversationSeq = ((MSIMConversation) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(result.items.size() - 1)).itemObject).object).getSeq();
+            setNextPageRequestEnable(true);
         }
-        super.onInitRequestResult(view, items);
+
+        super.onInitRequestResult(view, result);
     }
 
     @Nullable
     @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createPrePageRequest() throws Exception {
-        final Throwable e = new IllegalAccessError("not support");
-        SampleLog.e(e);
-        return null;
-    }
-
-    @Nullable
-    @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createNextPageRequest() throws Exception {
+    protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createNextPageRequest() throws Exception {
         SampleLog.v(Objects.defaultObjectTag(this) + " createNextPageRequest");
         if (DEBUG) {
             SampleLog.v(Objects.defaultObjectTag(this) + " createNextPageRequest sessionUserId:%s, mConversationType:%s, pageSize:%s, mLastConversationSeq:%s",
@@ -256,22 +251,22 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
                         target.add(item);
                     }
 
-                    return target;
+                    return new DynamicResult<UnionTypeItemObject, GeneralResult>()
+                            .setItems(target)
+                            .setPayload(page.generalResult)
+                            .setError(GeneralResultException.createOrNull(page.generalResult));
                 });
     }
 
     @Override
-    protected void onNextPageRequestResult(@NonNull PageView<UnionTypeItemObject> view, @NonNull Collection<UnionTypeItemObject> items) {
+    protected void onNextPageRequestResult(@NonNull ConversationFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
         SampleLog.v(Objects.defaultObjectTag(this) + " onNextPageRequestResult");
-        if (DEBUG) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onNextPageRequestResult items size:%s", items.size());
+        // 记录上一页，下一页参数
+        if (result.items != null && !result.items.isEmpty()) {
+            mLastConversationSeq = ((MSIMConversation) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(result.items.size() - 1)).itemObject).object).getSeq();
         }
 
-        // 记录上一页，下一页参数
-        if (!items.isEmpty()) {
-            mLastConversationSeq = ((MSIMConversation) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).getSeq();
-        }
-        super.onNextPageRequestResult(view, items);
+        super.onNextPageRequestResult(view, result);
     }
 
     @Override

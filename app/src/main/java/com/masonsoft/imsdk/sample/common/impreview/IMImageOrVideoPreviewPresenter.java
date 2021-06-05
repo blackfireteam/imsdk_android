@@ -10,6 +10,7 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMSessionManager;
+import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
@@ -17,18 +18,16 @@ import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageViewHolder;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
-import io.github.idonans.dynamic.page.PageView;
-import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 
-public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemObject, UnionTypeStatusPageView> {
+public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemObject, Object, IMImageOrVideoPreviewDialog.ViewImpl> {
 
     private static final boolean DEBUG = Constants.DEBUG_WIDGET;
 
@@ -41,7 +40,9 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
 
     @UiThread
     public IMImageOrVideoPreviewPresenter(@NonNull IMImageOrVideoPreviewDialog.ViewImpl view, long targetUserId, long initMessageSeq) {
-        super(view, initMessageSeq >= 0, initMessageSeq >= 0);
+        super(view);
+        setPrePageRequestEnable(initMessageSeq >= 0);
+        setNextPageRequestEnable(initMessageSeq >= 0);
         mSessionUserId = IMSessionManager.getInstance().getSessionUserId();
         mConversationType = MSIMConstants.ConversationType.C2C;
         mTargetUserId = targetUserId;
@@ -50,13 +51,15 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     }
 
     void showInitMessage(MSIMMessage initMessage) {
-        UnionTypeStatusPageView view = getView();
+        IMImageOrVideoPreviewDialog.ViewImpl view = getView();
         if (view == null) {
             return;
         }
 
-        view.hideInitLoading();
-        view.onInitDataLoad(Lists.newArrayList(create(initMessage, true)));
+        view.onInitRequestResult(
+                new DynamicResult<UnionTypeItemObject, Object>()
+                        .setItems(Lists.newArrayList(create(initMessage, true)))
+        );
     }
 
     private final UnionTypeViewHolderListeners.OnItemClickListener mOnHolderItemClickListener = viewHolder -> {
@@ -87,13 +90,13 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
 
     @Nullable
     @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createInitRequest() throws Exception {
+    protected SingleSource<DynamicResult<UnionTypeItemObject, Object>> createInitRequest() throws Exception {
         return null;
     }
 
     @Nullable
     @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createPrePageRequest() throws Exception {
+    protected SingleSource<DynamicResult<UnionTypeItemObject, Object>> createPrePageRequest() throws Exception {
         SampleLog.v("createPrePageRequest");
         if (DEBUG) {
             SampleLog.v("createPrePageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, firstMessageSeq:%s",
@@ -134,27 +137,27 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
                         target.add(item);
                     }
 
-                    return target;
+                    return new DynamicResult<UnionTypeItemObject, Object>()
+                            .setItems(target)
+                            .setPayload(page.generalResult)
+                            .setError(GeneralResultException.createOrNull(page.generalResult));
                 });
     }
 
     @Override
-    protected void onPrePageRequestResult(@NonNull PageView<UnionTypeItemObject> view, @NonNull Collection<UnionTypeItemObject> items) {
+    protected void onPrePageRequestResult(@NonNull IMImageOrVideoPreviewDialog.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, Object> result) {
         IMLog.v("onPrePageRequestResult");
-        if (DEBUG) {
-            IMLog.v("onPrePageRequestResult items size:%s", items.size());
-        }
 
         // 记录上一页，下一页参数
-        if (!items.isEmpty()) {
-            mFirstMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(0)).itemObject).object).getSeq();
+        if (result.items != null && !result.items.isEmpty()) {
+            mFirstMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(0)).itemObject).object).getSeq();
         }
-        super.onPrePageRequestResult(view, items);
+        super.onPrePageRequestResult(view, result);
     }
 
     @Nullable
     @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createNextPageRequest() throws Exception {
+    protected SingleSource<DynamicResult<UnionTypeItemObject, Object>> createNextPageRequest() throws Exception {
         SampleLog.v("createNextPageRequest");
         if (DEBUG) {
             SampleLog.v("createNextPageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, lastMessageSeq:%s",
@@ -194,22 +197,22 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
                         target.add(item);
                     }
 
-                    return target;
+                    return new DynamicResult<UnionTypeItemObject, Object>()
+                            .setItems(target)
+                            .setPayload(page.generalResult)
+                            .setError(GeneralResultException.createOrNull(page.generalResult));
                 });
     }
 
     @Override
-    protected void onNextPageRequestResult(@NonNull PageView<UnionTypeItemObject> view, @NonNull Collection<UnionTypeItemObject> items) {
+    protected void onNextPageRequestResult(@NonNull IMImageOrVideoPreviewDialog.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, Object> result) {
         IMLog.v("onNextPageRequestResult");
-        if (DEBUG) {
-            IMLog.v("onNextPageRequestResult items size:%s", items.size());
-        }
 
         // 记录上一页，下一页参数
-        if (!items.isEmpty()) {
-            mLastMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).getSeq();
+        if (result.items != null && !result.items.isEmpty()) {
+            mLastMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(result.items.size() - 1)).itemObject).object).getSeq();
         }
-        super.onNextPageRequestResult(view, items);
+        super.onNextPageRequestResult(view, result);
     }
 
 }

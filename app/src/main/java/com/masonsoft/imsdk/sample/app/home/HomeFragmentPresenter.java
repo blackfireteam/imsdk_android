@@ -14,83 +14,57 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.thread.Threads;
+import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
-import io.github.idonans.dynamic.page.PageView;
-import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 
-public class HomeFragmentPresenter extends PagePresenter<UnionTypeItemObject, UnionTypeStatusPageView> {
+public class HomeFragmentPresenter extends PagePresenter<UnionTypeItemObject, Object, HomeFragment.ViewImpl> {
 
     public HomeFragmentPresenter(HomeFragment.ViewImpl view) {
-        super(view, false, true);
+        super(view);
     }
 
     @Nullable
     @Override
-    public HomeFragment.ViewImpl getView() {
-        return (HomeFragment.ViewImpl) super.getView();
-    }
-
-    @Nullable
-    @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createInitRequest() throws Exception {
+    protected SingleSource<DynamicResult<UnionTypeItemObject, Object>> createInitRequest() throws Exception {
         return Single.just("")
                 .map(input -> DefaultApi.getSparks())
                 .map(this::create)
+                .map(input -> new DynamicResult<UnionTypeItemObject, Object>().setItems(input))
                 .delay(2, TimeUnit.SECONDS);
     }
 
     @Override
-    protected void onInitRequestResult(@NonNull PageView<UnionTypeItemObject> view, @NonNull Collection<UnionTypeItemObject> items) {
-        super.onInitRequestResult(view, items);
+    protected void onInitRequestResult(@NonNull HomeFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, Object> result) {
+        super.onInitRequestResult(view, result);
 
-        if (items.isEmpty()) {
+        if (result.items == null || result.items.isEmpty()) {
             setLastRetryListener(() -> requestInit(true));
         } else {
             setLastRetryListener(null);
         }
     }
 
-    @Override
-    protected void onInitRequestError(@NonNull PageView<UnionTypeItemObject> view, @NonNull Throwable e) {
-        super.onInitRequestError(view, e);
-
-        setLastRetryListener(() -> requestInit(true));
-    }
-
     @Nullable
     @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createPrePageRequest() throws Exception {
-        // ignore
-        return null;
-    }
-
-    @Nullable
-    @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createNextPageRequest() throws Exception {
+    protected SingleSource<DynamicResult<UnionTypeItemObject, Object>> createNextPageRequest() throws Exception {
         return Single.just("")
                 .map(input -> DefaultApi.getSparks())
-                .map(this::create);
+                .map(this::create)
+                .map(input -> new DynamicResult<UnionTypeItemObject, Object>().setItems(input));
     }
 
     @Override
-    protected void onNextPageRequestResult(@NonNull PageView<UnionTypeItemObject> view, @NonNull Collection<UnionTypeItemObject> items) {
-        super.onNextPageRequestResult(view, items);
+    protected void onNextPageRequestResult(@NonNull HomeFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, Object> result) {
+        super.onNextPageRequestResult(view, result);
 
-        if (items.isEmpty()) {
+        if (result.items == null || result.items.isEmpty()) {
             setLastRetryListener(() -> requestNextPage(true));
         } else {
             setLastRetryListener(null);
         }
-    }
-
-    @Override
-    protected void onNextPageRequestError(@NonNull PageView<UnionTypeItemObject> view, @NonNull Throwable e) {
-        super.onNextPageRequestError(view, e);
-
-        setLastRetryListener(() -> requestNextPage(true));
     }
 
     private Collection<UnionTypeItemObject> create(Collection<Spark> input) {

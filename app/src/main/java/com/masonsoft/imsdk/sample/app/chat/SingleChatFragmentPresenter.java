@@ -8,8 +8,9 @@ import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMSessionManager;
+import com.masonsoft.imsdk.lang.GeneralResult;
+import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
@@ -17,19 +18,17 @@ import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageViewHolder;
 import com.masonsoft.imsdk.sample.widget.MSIMConversationChangedViewHelper;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
-import io.github.idonans.dynamic.page.PageView;
-import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 
-public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObject, UnionTypeStatusPageView> {
+public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObject, GeneralResult, SingleChatFragment.ViewImpl> {
 
     private static final boolean DEBUG = true;
 
@@ -47,7 +46,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     @UiThread
     public SingleChatFragmentPresenter(@NonNull SingleChatFragment.ViewImpl view) {
-        super(view, true, true);
+        super(view);
         mSessionUserId = IMSessionManager.getInstance().getSessionUserId();
         mTargetUserId = view.getTargetUserId();
 
@@ -120,7 +119,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     @Nullable
     @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createInitRequest() throws Exception {
+    protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createInitRequest() throws Exception {
         SampleLog.v("createInitRequest");
         if (DEBUG) {
             SampleLog.v("createInitRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s",
@@ -143,7 +142,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                         messageList = new ArrayList<>();
                     }
                     Collections.reverse(messageList);
-                    List<UnionTypeItemObject> target = new ArrayList<>();
+                    final List<UnionTypeItemObject> target = new ArrayList<>();
                     for (MSIMMessage message : messageList) {
                         UnionTypeItemObject item = createDefault(message);
                         if (item == null) {
@@ -155,31 +154,34 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                         target.add(item);
                     }
 
-                    return target;
+                    return new DynamicResult<UnionTypeItemObject, GeneralResult>()
+                            .setItems(target)
+                            .setPayload(page.generalResult)
+                            .setError(GeneralResultException.createOrNull(page.generalResult));
                 });
     }
 
     @Override
-    protected void onInitRequestResult(@NonNull PageView<UnionTypeItemObject> view, @NonNull Collection<UnionTypeItemObject> items) {
-        IMLog.v("onInitRequestResult");
-        if (DEBUG) {
-            IMLog.v("onInitRequestResult items size:%s", items.size());
-        }
-
+    protected void onInitRequestResult(@NonNull SingleChatFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
         // 记录上一页，下一页参数
-        if (items.isEmpty()) {
+        if (result.items == null || result.items.isEmpty()) {
             mFirstMessageSeq = -1;
             mLastMessageSeq = -1;
+            setPrePageRequestEnable(false);
+            setNextPageRequestEnable(false);
         } else {
-            mFirstMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(0)).itemObject).object).getSeq();
-            mLastMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).getSeq();
+            mFirstMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(0)).itemObject).object).getSeq();
+            mLastMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(result.items.size() - 1)).itemObject).object).getSeq();
+            setPrePageRequestEnable(true);
+            setNextPageRequestEnable(true);
         }
-        super.onInitRequestResult(view, items);
+
+        super.onInitRequestResult(view, result);
     }
 
     @Nullable
     @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createPrePageRequest() throws Exception {
+    protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createPrePageRequest() throws Exception {
         SampleLog.v("createPrePageRequest");
         if (DEBUG) {
             SampleLog.v("createPrePageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, firstMessageSeq:%s",
@@ -220,27 +222,25 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                         target.add(item);
                     }
 
-                    return target;
+                    return new DynamicResult<UnionTypeItemObject, GeneralResult>()
+                            .setItems(target)
+                            .setPayload(page.generalResult)
+                            .setError(GeneralResultException.createOrNull(page.generalResult));
                 });
     }
 
     @Override
-    protected void onPrePageRequestResult(@NonNull PageView<UnionTypeItemObject> view, @NonNull Collection<UnionTypeItemObject> items) {
-        IMLog.v("onPrePageRequestResult");
-        if (DEBUG) {
-            IMLog.v("onPrePageRequestResult items size:%s", items.size());
-        }
-
+    protected void onPrePageRequestResult(@NonNull SingleChatFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
         // 记录上一页，下一页参数
-        if (!items.isEmpty()) {
-            mFirstMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(0)).itemObject).object).getSeq();
+        if (result.items != null && !result.items.isEmpty()) {
+            mFirstMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(0)).itemObject).object).getSeq();
         }
-        super.onPrePageRequestResult(view, items);
+        super.onPrePageRequestResult(view, result);
     }
 
     @Nullable
     @Override
-    protected SingleSource<Collection<UnionTypeItemObject>> createNextPageRequest() throws Exception {
+    protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createNextPageRequest() throws Exception {
         SampleLog.v("createNextPageRequest");
         if (DEBUG) {
             SampleLog.v("createNextPageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, lastMessageSeq:%s",
@@ -280,22 +280,20 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                         target.add(item);
                     }
 
-                    return target;
+                    return new DynamicResult<UnionTypeItemObject, GeneralResult>()
+                            .setItems(target)
+                            .setPayload(page.generalResult)
+                            .setError(GeneralResultException.createOrNull(page.generalResult));
                 });
     }
 
     @Override
-    protected void onNextPageRequestResult(@NonNull PageView<UnionTypeItemObject> view, @NonNull Collection<UnionTypeItemObject> items) {
-        IMLog.v("onNextPageRequestResult");
-        if (DEBUG) {
-            IMLog.v("onNextPageRequestResult items size:%s", items.size());
-        }
-
+    protected void onNextPageRequestResult(@NonNull SingleChatFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
         // 记录上一页，下一页参数
-        if (!items.isEmpty()) {
-            mLastMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) items).get(items.size() - 1)).itemObject).object).getSeq();
+        if (result.items != null && !result.items.isEmpty()) {
+            mLastMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(result.items.size() - 1)).itemObject).object).getSeq();
         }
-        super.onNextPageRequestResult(view, items);
+        super.onNextPageRequestResult(view, result);
     }
 
     @Override

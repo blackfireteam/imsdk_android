@@ -62,7 +62,6 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                 .setParentView(parentView)
                 .dimBackground(true)
                 .create();
-        //noinspection ConstantConditions,ConstantConditions
         mBinding = ImsdkSampleCommonMediaPickerDialogBinding.bind(mViewDialog.getContentView());
 
         mGridView = new GridView(mBinding);
@@ -129,14 +128,33 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         }
         if (mUnionTypeMediaData.mediaData.bucketSelected != null) {
             List<UnionTypeItemObject> gridItems = mUnionTypeMediaData.unionTypeGridItemsMap.get(mUnionTypeMediaData.mediaData.bucketSelected);
-            mGridView.mDataAdapter.setGroupItems(0, gridItems);
+            mGridView.mDataAdapter.getData()
+                    .beginTransaction()
+                    .add((transaction, groupArrayList) -> {
+                        // mGridView.mDataAdapter.setGroupItems(0, gridItems);
+                        groupArrayList.setGroupItems(0, gridItems);
+                    })
+                    .commit();
 
             List<UnionTypeItemObject> pagerItems = mUnionTypeMediaData.unionTypePagerItemsMap.get(mUnionTypeMediaData.mediaData.bucketSelected);
-            mPagerView.mDataAdapter.setGroupItems(0, pagerItems);
-            //noinspection ConstantConditions
-            mPagerView.mRecyclerView.getLayoutManager().scrollToPosition(mUnionTypeMediaData.pagerPendingIndex);
+            mPagerView.mDataAdapter.getData()
+                    .beginTransaction()
+                    .add((transaction, groupArrayList) -> {
+                        // mPagerView.mDataAdapter.setGroupItems(0, pagerItems);
+                        groupArrayList.setGroupItems(0, pagerItems);
+                    })
+                    .commit(() -> {
+                        mPagerView.mRecyclerView.getLayoutManager().scrollToPosition(mUnionTypeMediaData.pagerPendingIndex);
+                    });
+
         }
-        mBucketView.mDataAdapter.setGroupItems(0, mUnionTypeMediaData.unionTypeBucketItems);
+        mBucketView.mDataAdapter.getData()
+                .beginTransaction()
+                .add((transaction, groupArrayList) -> {
+                    //mBucketView.mDataAdapter.setGroupItems(0, mUnionTypeMediaData.unionTypeBucketItems);
+                    groupArrayList.setGroupItems(0, mUnionTypeMediaData.unionTypeBucketItems);
+                })
+                .commit();
 
         String bucketSelectedName = I18nResources.getString(R.string.imsdk_sample_custom_soft_keyboard_item_media);
         if (mUnionTypeMediaData.mediaData.bucketSelected != null
