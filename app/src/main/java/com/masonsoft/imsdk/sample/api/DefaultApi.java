@@ -43,6 +43,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class DefaultApi {
 
     private static final long TIMEOUT_MS = 20 * 1000L;
+    private static final OkHttpClient SHARE_HTTP_CLIENT = createDefaultApiOkHttpClient();
 
     private DefaultApi() {
     }
@@ -82,7 +83,8 @@ public class DefaultApi {
                 .post(requestBody)
                 .build();
 
-        final OkHttpClient okHttpClient = createDefaultApiOkHttpClient();
+        //noinspection UnnecessaryLocalVariable
+        final OkHttpClient okHttpClient = SHARE_HTTP_CLIENT;
         try {
             final Response response = okHttpClient.newCall(request).execute();
             //noinspection ConstantConditions
