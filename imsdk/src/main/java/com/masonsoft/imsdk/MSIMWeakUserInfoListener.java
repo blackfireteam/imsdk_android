@@ -24,13 +24,18 @@ public class MSIMWeakUserInfoListener extends AutoRemoveDuplicateRunnable implem
 
     @Override
     public void onUserInfoChanged(long userId) {
-        final String tag = "onUserInfoChanged_" + userId;
+        final String tag = getOnUserInfoChangedTag(userId);
         dispatch(tag, () -> {
             final MSIMUserInfoListener out = mOutRef.get();
             if (out != null) {
                 out.onUserInfoChanged(userId);
             }
         });
+    }
+
+    @Nullable
+    protected String getOnUserInfoChangedTag(long userId) {
+        return "onUserInfoChanged_" + userId;
     }
 
 }
