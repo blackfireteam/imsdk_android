@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.common.collect.Lists;
 import com.masonsoft.imsdk.MSIMCallback;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
@@ -50,6 +51,7 @@ import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.PermissionUtil;
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
+import io.github.idonans.dynamic.uniontype.loadingstatus.UnionTypeLoadingStatus;
 import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
@@ -708,6 +710,44 @@ public class SingleChatFragment extends SystemInsetsFragment {
             return mTargetUserId;
         }
 
+        private void showInitRequest(boolean delay) {
+            getAdapter().getData().beginTransaction()
+                    .add((transaction, groupArrayList) -> {
+                        final SingleChatFragmentPresenter presenter = (SingleChatFragmentPresenter) getPresenter();
+                        if (presenter == null) {
+                            return;
+                        }
+                        if (!presenter.getInitRequestStatus().isLoading()) {
+                            return;
+                        }
+
+                        if (delay) {
+                            Threads.postUi(() -> {
+                                if (presenter.getInitRequestStatus().isLoading()) {
+                                    showInitRequest(false);
+                                }
+                            }, 150L);
+                            return;
+                        }
+
+                        // 清除当前页面内容
+                        groupArrayList.removeAll();
+                        // 显示一个全屏的 loading
+                        groupArrayList.setGroupItems(
+                                getGroupHeader(),
+                                Lists.newArrayList(
+                                        new UnionTypeItemObject(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_LARGE, new Object())
+                                )
+                        );
+                    })
+                    .commit();
+        }
+
+        @Override
+        public void onInitRequest() {
+            showInitRequest(true);
+        }
+
         @Override
         public void onInitRequestResult(@NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
             super.onInitRequestResult(result);
@@ -728,6 +768,78 @@ public class SingleChatFragment extends SystemInsetsFragment {
                             }
                         });
             }
+        }
+
+        private void showPrePageRequest(boolean delay) {
+            getAdapter().getData().beginTransaction()
+                    .add((transaction, groupArrayList) -> {
+                        final SingleChatFragmentPresenter presenter = (SingleChatFragmentPresenter) getPresenter();
+                        if (presenter == null) {
+                            return;
+                        }
+                        if (!presenter.getPrePageRequestStatus().isLoading()) {
+                            return;
+                        }
+
+                        if (delay) {
+                            Threads.postUi(() -> {
+                                if (presenter.getPrePageRequestStatus().isLoading()) {
+                                    showPrePageRequest(false);
+                                }
+                            }, 150L);
+                            return;
+                        }
+
+                        // 使用小的 loading
+                        groupArrayList.setGroupItems(
+                                getGroupHeader(),
+                                Lists.newArrayList(
+                                        new UnionTypeItemObject(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
+                                )
+                        );
+                    })
+                    .commit();
+        }
+
+        @Override
+        public void onPrePageRequest() {
+            showPrePageRequest(true);
+        }
+
+        private void showNextPageRequest(boolean delay) {
+            getAdapter().getData().beginTransaction()
+                    .add((transaction, groupArrayList) -> {
+                        final SingleChatFragmentPresenter presenter = (SingleChatFragmentPresenter) getPresenter();
+                        if (presenter == null) {
+                            return;
+                        }
+                        if (!presenter.getNextPageRequestStatus().isLoading()) {
+                            return;
+                        }
+
+                        if (delay) {
+                            Threads.postUi(() -> {
+                                if (presenter.getNextPageRequestStatus().isLoading()) {
+                                    showNextPageRequest(false);
+                                }
+                            }, 150L);
+                            return;
+                        }
+
+                        // 使用小的 loading
+                        groupArrayList.setGroupItems(
+                                getGroupFooter(),
+                                Lists.newArrayList(
+                                        new UnionTypeItemObject(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
+                                )
+                        );
+                    })
+                    .commit();
+        }
+
+        @Override
+        public void onNextPageRequest() {
+            showNextPageRequest(true);
         }
 
         @Override
