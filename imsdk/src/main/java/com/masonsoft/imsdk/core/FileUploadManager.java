@@ -7,7 +7,9 @@ import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 
 import com.masonsoft.imsdk.lang.ImageInfo;
+import com.masonsoft.imsdk.lang.MediaInfo;
 import com.masonsoft.imsdk.util.BitmapUtil;
+import com.masonsoft.imsdk.util.MediaUtil;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.io.File;
@@ -39,16 +41,34 @@ public class FileUploadManager {
         return INSTANCE.get();
     }
 
+    private static final class CacheEntity {
+        final String mimeType;
+        final String accessUrl;
+
+        public CacheEntity(String mimeType, String accessUrl) {
+            this.mimeType = mimeType;
+            this.accessUrl = accessUrl;
+        }
+
+        @Override
+        public String toString() {
+            return "CacheEntity{" +
+                    "mimeType='" + mimeType + '\'' +
+                    ", accessUrl='" + accessUrl + '\'' +
+                    '}';
+        }
+    }
+
     private static class MemoryFullCache {
 
         private static final MemoryFullCache DEFAULT = new MemoryFullCache();
 
         private static final int MEMORY_CACHE_SIZE = 100;
         @NonNull
-        private final LruCache<String, String> mFullCaches = new LruCache<>(MEMORY_CACHE_SIZE);
+        private final LruCache<String, CacheEntity> mFullCaches = new LruCache<>(MEMORY_CACHE_SIZE);
 
-        private void addFullCache(@NonNull String filePath, @NonNull String accessUrl) {
-            mFullCaches.put(filePath, accessUrl);
+        private void addFullCache(@NonNull String filePath, @NonNull CacheEntity cacheEntity) {
+            mFullCaches.put(filePath, cacheEntity);
         }
 
         private void removeFullCache(@NonNull String filePath) {
@@ -56,7 +76,7 @@ public class FileUploadManager {
         }
 
         @Nullable
-        private String getFullCache(@NonNull String filePath) {
+        private CacheEntity getFullCache(@NonNull String filePath) {
             return mFullCaches.get(filePath);
         }
     }
@@ -87,35 +107,35 @@ public class FileUploadManager {
 
         @NonNull
         @Override
-        public String uploadFile(@NonNull String fileUri, @NonNull Progress progress) throws Throwable {
-            final String cache = MemoryFullCache.DEFAULT.getFullCache(fileUri);
+        public String uploadFile(@NonNull String filePath, @Nullable String mimeType, @NonNull Progress progress) throws Throwable {
+            final CacheEntity cache = MemoryFullCache.DEFAULT.getFullCache(filePath);
             if (cache != null) {
                 IMLog.v(Objects.defaultObjectTag(this) + " uploadFile cache hit. %s -> %s",
-                        fileUri, cache);
-                return cache;
+                        filePath, cache);
+                return cache.accessUrl;
             }
 
-            final String compressFilePath = compressImage(fileUri);
-            IMLog.v(Objects.defaultObjectTag(this) + " compress image %s -> %s", fileUri, compressFilePath);
+            final String[] outMimeType = new String[1];
+            final String compressFilePath = compressFile(filePath, outMimeType);
+            IMLog.v(Objects.defaultObjectTag(this) + " compress file %s -> %s, mimeType:%s",
+                    filePath, compressFilePath, outMimeType[0]);
 
             final FileUploadProvider provider = mProvider;
             if (provider != null) {
-                final String accessUrl = provider.uploadFile(compressFilePath, progress);
-                MemoryFullCache.DEFAULT.addFullCache(fileUri, accessUrl);
+                final String accessUrl = provider.uploadFile(compressFilePath, outMimeType[0], progress);
+                MemoryFullCache.DEFAULT.addFullCache(filePath, new CacheEntity(outMimeType[0], accessUrl));
                 return accessUrl;
             }
             throw new IllegalAccessError("provider not found");
         }
 
         /**
-         * 压缩图片
-         *
-         * @param fileUri 图片 Uri
-         * @return 如果成功压缩图片，返回压缩后的图片路径。如果不是图片格式，返回原始路径。
-         * @throws Throwable
+         * 压缩文件。如果成功压缩，返回压缩后的文件路径。否则返回原始路径。
          */
         @NonNull
-        private String compressImage(@NonNull String fileUri) throws Throwable {
+        private String compressFile(@NonNull String fileUri, @NonNull String[] outMimeType) throws Throwable {
+            outMimeType[0] = null;
+
             final Uri uri = Uri.parse(fileUri);
             final String scheme = uri.getScheme();
             File tmpFile = null;
@@ -123,7 +143,7 @@ public class FileUploadManager {
             if ("content".equalsIgnoreCase(scheme)) {
                 InputStream is = null;
                 try {
-                    tmpFile = TmpFileManager.getInstance().createNewTmpFileQuietly("__compress_image_copy_", null);
+                    tmpFile = TmpFileManager.getInstance().createNewTmpFileQuietly("__compress_file_copy_", null);
                     if (tmpFile == null) {
                         throw new IllegalAccessError("tmp file create fail");
                     }
@@ -147,22 +167,41 @@ public class FileUploadManager {
             if (!FileUtil.isFile(file)) {
                 throw new IllegalAccessError(filePath + " is not a exists file");
             }
+            final Uri targetFileUri = Uri.fromFile(file);
 
-            final ImageInfo imageInfo = BitmapUtil.decodeImageInfo(Uri.fromFile(file));
-            if (imageInfo == null) {
-                // not a image
-                return filePath;
+            {
+                // 先猜测该文件是否是图片
+                final ImageInfo imageInfo = BitmapUtil.decodeImageInfo(targetFileUri);
+                if (imageInfo != null) {
+                    // 是图片
+                    outMimeType[0] = imageInfo.mimeType;
+
+                    if (imageInfo.isGif()) {
+                        // gif 图不压缩
+                        return filePath;
+                    }
+
+                    // 压缩图片
+                    final File compressedFile = Luban.with(ContextUtil.getContext())
+                            .get(filePath);
+                    return compressedFile.getAbsolutePath();
+                }
             }
 
-            if (imageInfo.isGif()) {
-                // gif 图不压缩
-                return filePath;
+            {
+                // 猜测该文件是否是视频或者音频
+                final MediaInfo mediaInfo = MediaUtil.decodeMediaInfo(targetFileUri);
+                if (mediaInfo != null) {
+                    // 是视频或者音频
+                    outMimeType[0] = mediaInfo.mimeType;
+                    // 视频或者音频不压缩
+                    return filePath;
+                }
             }
 
-            // 压缩图片
-            final File compressedFile = Luban.with(ContextUtil.getContext())
-                    .get(filePath);
-            return compressedFile.getAbsolutePath();
+            // 其它文件格式不压缩
+            // 返回原始文件内容
+            return filePath;
         }
 
     }

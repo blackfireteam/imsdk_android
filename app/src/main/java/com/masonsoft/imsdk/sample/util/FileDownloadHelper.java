@@ -224,7 +224,7 @@ public class FileDownloadHelper {
                     throw new IllegalArgumentException("DownloadTask run fail to get fileExtension from " + mServerUrl);
                 }
                 // 本地生成唯一文件名
-                final String unionFilename = FilenameUtil.createUnionFilename(fileExtension);
+                final String unionFilename = FilenameUtil.createUnionFilename(fileExtension, null);
                 final File dir = FileUtil.getAppMediaDir();
                 if (dir == null) {
                     throw new IllegalArgumentException("DownloadTask run fail to get app media dir");

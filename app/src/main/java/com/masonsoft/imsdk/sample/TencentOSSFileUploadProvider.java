@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk.sample;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.FileUploadProvider;
 import com.masonsoft.imsdk.sample.util.FilenameUtil;
@@ -32,7 +33,7 @@ public class TencentOSSFileUploadProvider implements FileUploadProvider {
 
     @NonNull
     @Override
-    public String uploadFile(@NonNull String filePath, @NonNull Progress progress) throws Throwable {
+    public String uploadFile(@NonNull String filePath, @Nullable String mimeType, @NonNull Progress progress) throws Throwable {
         final String fileExtension = FileUtil.getFileExtensionFromUrl(filePath);
 
         final QCloudCredentialProvider credentialProvider =
@@ -48,7 +49,7 @@ public class TencentOSSFileUploadProvider implements FileUploadProvider {
         final TransferManager transferManager =
                 new TransferManager(cosXmlService, transferConfig);
         final String bucket = "msim-1252460681";
-        final String cosPath = "im_image/Android_" + FilenameUtil.createUnionFilename(fileExtension);
+        final String cosPath = "im_image/Android_" + FilenameUtil.createUnionFilename(fileExtension, mimeType);
         //noinspection UnnecessaryLocalVariable
         final String srcPath = filePath;
 

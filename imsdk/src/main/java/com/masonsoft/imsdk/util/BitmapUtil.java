@@ -111,7 +111,7 @@ public class BitmapUtil {
                 return imageInfo;
             }
         } catch (Throwable e) {
-            IMLog.e(e);
+            IMLog.w(e);
         }
         return null;
     }
@@ -147,7 +147,7 @@ public class BitmapUtil {
                 }
             }
         } catch (Throwable e) {
-            IMLog.e(e);
+            IMLog.w(e);
         } finally {
             if (!success) {
                 FileUtil.deleteFileQuietly(file);

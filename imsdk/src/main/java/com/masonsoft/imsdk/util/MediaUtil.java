@@ -77,7 +77,7 @@ public class MediaUtil {
 
             return mediaInfo;
         } catch (Throwable e) {
-            IMLog.e(e);
+            IMLog.w(e);
             throw new RuntimeException(e);
         }
     }
@@ -127,7 +127,7 @@ public class MediaUtil {
                 return mediaInfo;
             }
         } catch (Throwable e) {
-            IMLog.e(e);
+            IMLog.w(e);
         }
         return null;
     }
