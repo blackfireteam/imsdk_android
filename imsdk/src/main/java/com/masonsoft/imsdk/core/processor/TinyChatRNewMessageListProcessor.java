@@ -100,6 +100,7 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
         final List<Message> messageList = new ArrayList<>();
         for (SessionProtoByteMessageWrapper target : chatRList) {
             final ProtoMessage.ChatR chatR = (ProtoMessage.ChatR) target.getProtoByteMessageWrapper().getProtoMessageObject();
+            Preconditions.checkNotNull(chatR);
             final Message message = MessageFactory.create(chatR);
 
             {
