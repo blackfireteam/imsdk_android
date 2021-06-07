@@ -21,12 +21,17 @@ public class MSIMUserInfoListenerProxy extends AutoRemoveDuplicateRunnable imple
 
     @Override
     public void onUserInfoChanged(long userId) {
-        final String tag = "onUserInfoChanged_" + userId;
+        final String tag = getOnUserInfoChangedTag(userId);
         dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onUserInfoChanged(userId);
             }
         });
+    }
+
+    @Nullable
+    protected String getOnUserInfoChangedTag(long userId) {
+        return "onUserInfoChanged_" + userId;
     }
 
 }
