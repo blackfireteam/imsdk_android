@@ -107,7 +107,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                         }
                     };
                     final FileUploadProvider fileUploadProvider = FileUploadManager.getInstance().getFileUploadProvider();
-                    return fileUploadProvider.uploadFile(photoUri.toString(), progress);
+                    return fileUploadProvider.uploadFile(photoUri.toString(), null, progress);
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

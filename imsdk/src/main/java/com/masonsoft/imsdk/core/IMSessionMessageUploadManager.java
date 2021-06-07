@@ -462,7 +462,7 @@ public class IMSessionMessageUploadManager {
             private String uploadFile(final String fileUri, @NonNull final Progress progress) {
                 try {
                     final String accessUrl = FileUploadManager.getInstance().getFileUploadProvider()
-                            .uploadFile(fileUri, progress);
+                            .uploadFile(fileUri, null, progress);
                     IMLog.v("uploadFile success %s -> %s", fileUri, accessUrl);
                     return accessUrl;
                 } catch (Throwable e) {
