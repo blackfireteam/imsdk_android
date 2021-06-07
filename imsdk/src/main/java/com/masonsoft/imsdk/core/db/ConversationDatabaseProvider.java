@@ -221,10 +221,7 @@ public class ConversationDatabaseProvider {
     public int getAllUnreadCount(final long sessionUserId) {
         final Integer cache = MemoryAllUnreadCountCache.DEFAULT.getAllUnreadCountCache(sessionUserId);
         if (cache != null) {
-            if (cache != null) {
-                IMLog.v("getAllUnreadCount cache hit sessionUserId:%s", sessionUserId);
-                return cache;
-            }
+            IMLog.v("getAllUnreadCount cache hit sessionUserId:%s", sessionUserId);
             return cache;
         }
 
@@ -398,8 +395,6 @@ public class ConversationDatabaseProvider {
 
     /**
      * 插入一条会话。新会话插入成功时，会自动设置会话的 localId
-     *
-     * @return
      */
     public boolean insertConversation(
             final long sessionUserId,
