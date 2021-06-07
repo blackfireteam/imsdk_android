@@ -21,7 +21,7 @@ public class MSIMSessionListenerProxy extends AutoRemoveDuplicateRunnable implem
 
     @Override
     public void onSessionUserIdChanged() {
-        final String tag = "onSessionUserIdChanged";
+        final String tag = getOnSessionUserIdChangedTag();
         dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onSessionUserIdChanged();
@@ -29,14 +29,24 @@ public class MSIMSessionListenerProxy extends AutoRemoveDuplicateRunnable implem
         });
     }
 
+    @Nullable
+    protected String getOnSessionUserIdChangedTag() {
+        return "onSessionUserIdChanged";
+    }
+
     @Override
     public void onSessionChanged() {
-        final String tag = "onSessionChanged";
+        final String tag = getOnSessionChangedTag();
         dispatch(tag, () -> {
             if (mOut != null) {
                 mOut.onSessionChanged();
             }
         });
+    }
+
+    @Nullable
+    protected String getOnSessionChangedTag() {
+        return "onSessionChanged";
     }
 
 }

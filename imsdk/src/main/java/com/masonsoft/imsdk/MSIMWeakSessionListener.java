@@ -24,7 +24,7 @@ public class MSIMWeakSessionListener extends AutoRemoveDuplicateRunnable impleme
 
     @Override
     public void onSessionChanged() {
-        final String tag = "onSessionChanged";
+        final String tag = getOnSessionChangedTag();
         dispatch(tag, () -> {
             final MSIMSessionListener out = mOutRef.get();
             if (out != null) {
@@ -33,15 +33,25 @@ public class MSIMWeakSessionListener extends AutoRemoveDuplicateRunnable impleme
         });
     }
 
+    @Nullable
+    protected String getOnSessionChangedTag() {
+        return "onSessionChanged";
+    }
+
     @Override
     public void onSessionUserIdChanged() {
-        final String tag = "onSessionUserIdChanged";
+        final String tag = getOnSessionUserIdChanged();
         dispatch(tag, () -> {
             final MSIMSessionListener out = mOutRef.get();
             if (out != null) {
                 out.onSessionUserIdChanged();
             }
         });
+    }
+
+    @Nullable
+    protected String getOnSessionUserIdChanged() {
+        return "onSessionUserIdChanged";
     }
 
 }
