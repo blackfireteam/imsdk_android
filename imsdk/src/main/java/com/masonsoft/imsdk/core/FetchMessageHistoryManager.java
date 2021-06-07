@@ -153,7 +153,7 @@ public class FetchMessageHistoryManager {
                     mAllRunningTasks.add(task);
                     mQueue.enqueue(task, true);
                 }
-            }), true);
+            }));
         }
 
         private boolean dispatchTcpResponse(final long sign, @NonNull final SessionProtoByteMessageWrapper wrapper) {
