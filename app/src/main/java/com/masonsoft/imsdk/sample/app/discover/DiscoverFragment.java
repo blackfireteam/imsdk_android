@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleDiscoverFragmentBinding;
+import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
 import com.masonsoft.imsdk.sample.widget.GridItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
@@ -186,7 +187,24 @@ public class DiscoverFragment extends SystemInsetsFragment {
                         if (removedPosition >= 0) {
                             groupArrayList.removeGroupItem(getGroupContent(), removedPosition);
                         }
-                        groupArrayList.insertGroupItems(getGroupContent(), 0, Lists.newArrayList(unionTypeItemObject));
+
+                        if (unionTypeItemObject.itemObject instanceof DataObject) {
+                            try {
+                                //noinspection unchecked
+                                final DataObject<Long> uidObject = (DataObject<Long>) unionTypeItemObject.itemObject;
+                                final Long uid = uidObject.object;
+                                if (uid != null && uid > 10000000000L) {
+                                    // 新上线的手机号码展示在最前面
+                                    groupArrayList.insertGroupItems(getGroupContent(), 0, Lists.newArrayList(unionTypeItemObject));
+                                    return;
+                                }
+                            } catch (Throwable e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        // 默认新上线的展示在结尾
+                        groupArrayList.appendGroupItems(getGroupContent(), Lists.newArrayList(unionTypeItemObject));
                     })
                     .commit();
         }
