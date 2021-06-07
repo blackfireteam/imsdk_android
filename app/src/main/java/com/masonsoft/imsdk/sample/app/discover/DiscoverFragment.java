@@ -108,6 +108,7 @@ public class DiscoverFragment extends SystemInsetsFragment {
             }
         });
 
+        recyclerView.setItemAnimator(null);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new GridItemDecoration(spanCount, DimenUtil.dp2px(15), true));
         recyclerView.setHasFixedSize(true);
