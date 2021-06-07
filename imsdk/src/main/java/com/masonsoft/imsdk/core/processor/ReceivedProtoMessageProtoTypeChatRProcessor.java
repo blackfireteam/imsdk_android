@@ -3,6 +3,7 @@ package com.masonsoft.imsdk.core.processor;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.core.IMLog;
+import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
@@ -44,10 +45,9 @@ public class ReceivedProtoMessageProtoTypeChatRProcessor extends ReceivedProtoMe
                     mCurrentBatch = null;
                 }
             }
-            if (mCurrentBatch == null) {
-                mCurrentBatch = new Batch(target);
-                mCurrentBatch.doNextBatch();
-            }
+
+            mCurrentBatch = new Batch(target);
+            mCurrentBatch.doNextBatch();
         }
         mTimeDiffDebugHelper.mark();
         mTimeDiffDebugHelper.print();
@@ -120,6 +120,7 @@ public class ReceivedProtoMessageProtoTypeChatRProcessor extends ReceivedProtoMe
                     processor.doProcess(targetList);
                 } catch (Throwable e) {
                     IMLog.e(e);
+                    RuntimeMode.fixme(e);
                 }
                 mTimeDiffDebugHelper.mark();
                 mTimeDiffDebugHelper.print("batch size:" + targetList.size());

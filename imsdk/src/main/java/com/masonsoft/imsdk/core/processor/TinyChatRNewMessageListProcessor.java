@@ -17,6 +17,7 @@ import com.masonsoft.imsdk.core.db.MessageFactory;
 import com.masonsoft.imsdk.core.db.Sequence;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
+import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.Processor;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
@@ -41,13 +42,25 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
             return true;
         }
 
+        SessionTcpClient sessionTcpClient = null;
+        long maxMessageTime = 0L;
+
         // 按照 targetUserId 分组
         final Map<Long, List<SessionProtoByteMessageWrapper>> targetMap = new HashMap<>();
         long sessionUserId = 0L;
         for (SessionProtoByteMessageWrapper target : targetList) {
             Preconditions.checkArgument(sessionUserId == 0L || sessionUserId == target.getSessionUserId());
             sessionUserId = target.getSessionUserId();
+            Preconditions.checkArgument(sessionTcpClient == null || sessionTcpClient == target.getSessionTcpClient());
+            sessionTcpClient = target.getSessionTcpClient();
             final ProtoMessage.ChatR chatR = (ProtoMessage.ChatR) target.getProtoByteMessageWrapper().getProtoMessageObject();
+            Preconditions.checkNotNull(chatR);
+
+            {
+                final long messageTime = chatR.getMsgTime();
+                maxMessageTime = Math.max(maxMessageTime, messageTime);
+            }
+
             final boolean received = sessionUserId != chatR.getFromUid();
             final long targetUserId = received ? chatR.getFromUid() : chatR.getToUid();
             List<SessionProtoByteMessageWrapper> list = targetMap.get(targetUserId);
@@ -68,6 +81,11 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
             mTimeDiffDebugHelper.mark();
             mTimeDiffDebugHelper.print("list size:" + list.size() + "/" + targetList.size());
         }
+
+        if (sessionTcpClient != null) {
+            sessionTcpClient.setConversationListUpdateTimeTmp(maxMessageTime);
+        }
+
         return true;
     }
 
