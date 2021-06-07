@@ -72,6 +72,7 @@ public class IMConversationManager {
         final Conversation conversation = ConversationDatabaseProvider.getInstance()
                 .getConversation(sessionUserId, conversationId);
         if (conversation != null) {
+            syncConversationRelationInfo(conversation);
             return IMConversationFactory.create(conversation);
         }
         return null;
@@ -97,6 +98,7 @@ public class IMConversationManager {
                         conversationType,
                         targetUserId);
         if (conversation != null) {
+            syncConversationRelationInfo(conversation);
             return IMConversationFactory.create(conversation);
         }
         return null;
@@ -115,6 +117,7 @@ public class IMConversationManager {
                             conversationType,
                             targetUserId);
             if (conversation != null) {
+                syncConversationRelationInfo(conversation);
                 return IMConversationFactory.create(conversation);
             } else {
                 // try create conversation
@@ -147,6 +150,7 @@ public class IMConversationManager {
                 }
 
                 if (targetConversation != null) {
+                    syncConversationRelationInfo(targetConversation);
                     return IMConversationFactory.create(targetConversation);
                 }
 
@@ -155,6 +159,7 @@ public class IMConversationManager {
                         sessionUserId, conversationType, targetUserId);
                 RuntimeMode.fixme(e);
 
+                syncConversationRelationInfo(insertConversation);
                 // fallback
                 return IMConversationFactory.create(insertConversation);
             }
