@@ -19,6 +19,7 @@ import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.Processor;
+import com.masonsoft.imsdk.user.UserInfoSyncManager;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
@@ -93,11 +94,21 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
      * chatRList 中的消息都是同一个会话的，并且连续
      */
     private void doProcessWithSameTargetUserId(final long sessionUserId, final long targetUserId, @NonNull final List<SessionProtoByteMessageWrapper> chatRList) {
+
+
         Preconditions.checkArgument(!chatRList.isEmpty());
         final List<Message> messageList = new ArrayList<>();
         for (SessionProtoByteMessageWrapper target : chatRList) {
             final ProtoMessage.ChatR chatR = (ProtoMessage.ChatR) target.getProtoByteMessageWrapper().getProtoMessageObject();
             final Message message = MessageFactory.create(chatR);
+
+            {
+                // 同步 from user id 的用户信息
+                final long fromUserIdLastModifyMs = message.remoteFromUserProfileLastModifyMs.getOrDefault(0L);
+                final long fromUserId = message.fromUserId.getOrDefault(0L);
+                UserInfoSyncManager.getInstance().enqueueSyncUserInfo(fromUserId, fromUserIdLastModifyMs);
+            }
+
             // 接收到新消息
             // 设置新消息的 seq
             message.localSeq.set(Sequence.create(SignGenerator.nextMicroSeconds()));
