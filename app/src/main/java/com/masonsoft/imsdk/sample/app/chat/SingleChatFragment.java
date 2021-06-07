@@ -101,10 +101,12 @@ public class SingleChatFragment extends SystemInsetsFragment {
     }
 
     private static void smoothScrollToPosition(RecyclerView recyclerView, int position) {
+        SampleLog.v("smoothScrollToPosition recyclerView:%s position:%s", recyclerView, position);
         recyclerView.smoothScrollToPosition(position);
     }
 
     private static void scrollToPosition(RecyclerView recyclerView, int position) {
+        SampleLog.v("scrollToPosition recyclerView:%s position:%s", recyclerView, position);
         recyclerView.scrollToPosition(position);
     }
 
@@ -185,6 +187,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 Threads.postUi(() -> {
                     int count = mDataAdapter.getItemCount();
                     if (count > 0) {
+                        //noinspection ConstantConditions
                         final int firstPosition = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
                         final int lastPosition = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findLastVisibleItemPosition();
                         final int archPosition = Math.max(0, count - 3);
@@ -205,7 +208,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                                     super.onScrolled(recyclerView, dx, dy);
                                     binding.recyclerView.removeOnScrollListener(this);
                                     SampleLog.v("onSoftKeyboardLayoutShown scrollWithAnimation:false addOnScrollListener onScrolled");
-                                    smoothScrollToPosition(binding.recyclerView, count - 1);
+                                    smoothScrollToPosition(binding.recyclerView, mDataAdapter.getItemCount() - 1);
                                 }
                             });
                             scrollToPosition(binding.recyclerView, archPosition);
@@ -741,10 +744,12 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 getAdapter().getData().beginTransaction()
                         .commit(() -> {
                             final int count = getAdapter().getItemCount();
+                            final int footerCount = getAdapter().getGroupItemsSize(getGroupFooter());
                             if (count > 0) {
                                 boolean autoScroll = false;
+                                //noinspection ConstantConditions
                                 int lastPosition = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-                                if (lastPosition >= count - 1 - result.items.size()) {
+                                if (lastPosition >= count - (footerCount + 1) - result.items.size()) {
                                     // 当前滚动到最后
                                     autoScroll = true;
                                 }
