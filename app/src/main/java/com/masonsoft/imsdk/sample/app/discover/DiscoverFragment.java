@@ -186,7 +186,7 @@ public class DiscoverFragment extends SystemInsetsFragment {
                         if (removedPosition >= 0) {
                             groupArrayList.removeGroupItem(getGroupContent(), removedPosition);
                         }
-                        groupArrayList.appendGroupItems(getGroupContent(), Lists.newArrayList(unionTypeItemObject));
+                        groupArrayList.insertGroupItems(getGroupContent(), 0, Lists.newArrayList(unionTypeItemObject));
                     })
                     .commit();
         }
