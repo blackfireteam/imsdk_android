@@ -11,6 +11,7 @@ import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.common.TopActivity;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentNoticeDialog;
+import com.masonsoft.imsdk.util.TimeUtil;
 
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.Threads;
@@ -37,85 +38,97 @@ public class IMTokenOfflineManager {
     private boolean mAttached;
 
     private String mConnectStateHumanString;
+    private long mConnectStateHumanStringTimeMs;
     private String mSignStateHumanString;
+    private long mSignStateHumanStringTimeMs;
 
     @NonNull
     private final MSIMSdkListener mSdkListener = new MSIMSdkListener() {
         @Override
         public void onConnecting() {
-            SampleLog.v("onConnecting");
-            mConnectStateHumanString = "onConnecting";
+            SampleLog.v("%s onConnecting", this);
+            setConnectStateHumanString("onConnecting");
         }
 
         @Override
         public void onConnectSuccess() {
-            SampleLog.v("onConnectSuccess");
-            mConnectStateHumanString = "onConnectSuccess";
+            SampleLog.v("%s onConnectSuccess", this);
+            setConnectStateHumanString("onConnectSuccess");
         }
 
         @Override
         public void onConnectClosed() {
-            SampleLog.v("onConnectClosed");
-            mConnectStateHumanString = "onConnectClosed";
+            SampleLog.v("%s onConnectClosed", this);
+            setConnectStateHumanString("onConnectClosed");
         }
 
         @Override
         public void onSigningIn() {
-            SampleLog.v("onSigningIn");
-            mSignStateHumanString = "onSigningIn";
+            SampleLog.v("%s onSigningIn", this);
+            setSignStateHumanString("onSigningIn");
         }
 
         @Override
         public void onSignInSuccess() {
-            SampleLog.v("onSignInSuccess");
-            mSignStateHumanString = "onSignInSuccess";
+            SampleLog.v("%s onSignInSuccess", this);
+            setSignStateHumanString("onSignInSuccess");
         }
 
         @Override
         public void onSignInFail(@NonNull GeneralResult result) {
-            SampleLog.v("onSignInFail result:%s", result);
-            mSignStateHumanString = "onSignInFail:" + result.getCause().message;
+            SampleLog.v("%s onSignInFail result:%s", this, result);
+            setSignStateHumanString("onSignInFail:" + result.getCause().message);
         }
 
         @Override
         public void onKickedOffline() {
-            SampleLog.v("onKickedOffline");
-            mSignStateHumanString = "onKickedOffline";
+            SampleLog.v("%s onKickedOffline", this);
+            setSignStateHumanString("onKickedOffline");
             setLastKickedOffline();
         }
 
         @Override
         public void onTokenExpired() {
-            SampleLog.v("onTokenExpired");
-            mSignStateHumanString = "onTokenExpired";
+            SampleLog.v("%s onTokenExpired", this);
+            setSignStateHumanString("onTokenExpired");
             setLastTokenExpired();
         }
 
         @Override
         public void onSigningOut() {
-            SampleLog.v("onSigningOut");
-            mSignStateHumanString = "onSigningOut";
+            SampleLog.v("%s onSigningOut", this);
+            setSignStateHumanString("onSigningOut");
         }
 
         @Override
         public void onSignOutSuccess() {
-            SampleLog.v("onSignOutSuccess");
-            mSignStateHumanString = "onSignOutSuccess";
+            SampleLog.v("%s onSignOutSuccess", this);
+            setSignStateHumanString("onSignOutSuccess");
         }
 
         @Override
         public void onSignOutFail(@NonNull GeneralResult result) {
-            SampleLog.v("onSignOutFail result:%s", result);
-            mSignStateHumanString = "onSignOutFail:" + result.getCause().message;
+            SampleLog.v("%s onSignOutFail result:%s", this, result);
+            setSignStateHumanString("onSignOutFail:" + result.getCause().message);
         }
     };
 
+    private void setConnectStateHumanString(String connectStateHumanString) {
+        mConnectStateHumanString = connectStateHumanString;
+        mConnectStateHumanStringTimeMs = System.currentTimeMillis();
+    }
+
+    private void setSignStateHumanString(String signStateHumanString) {
+        mSignStateHumanString = signStateHumanString;
+        mSignStateHumanStringTimeMs = System.currentTimeMillis();
+    }
+
     public String getConnectStateHumanString() {
-        return mConnectStateHumanString;
+        return mConnectStateHumanString + "[" + TimeUtil.msToHumanString(this.mConnectStateHumanStringTimeMs) + "]";
     }
 
     public String getSignStateHumanString() {
-        return mSignStateHumanString;
+        return mSignStateHumanString + "[" + TimeUtil.msToHumanString(this.mSignStateHumanStringTimeMs) + "]";
     }
 
     private IMTokenOfflineManager() {
