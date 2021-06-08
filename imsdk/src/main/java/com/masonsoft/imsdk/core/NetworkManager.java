@@ -43,11 +43,12 @@ public class NetworkManager {
     private void registerNetworkCallback() {
         try {
             final ConnectivityManager connectivityManager = (ConnectivityManager) ContextUtil.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            final NetworkRequest networkRequest = new NetworkRequest.Builder()
-                    .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-                    .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                    .build();
-            connectivityManager.registerNetworkCallback(networkRequest, mNetworkCallback);
+            connectivityManager.registerNetworkCallback(
+                    new NetworkRequest.Builder()
+                            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                            .build(),
+                    mNetworkCallback);
         } catch (Throwable e) {
             IMLog.e(e);
         }
