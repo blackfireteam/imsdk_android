@@ -208,7 +208,10 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
                     } else {
                         // 新消息入库成功
                         if (!actionMessage) {
-                            conversationUnreadCountDiff++;
+                            if (message.fromUserId.get() != sessionUserId) {
+                                // 如果是收到的别人的消息，累加未读消息数
+                                conversationUnreadCountDiff++;
+                            }
                             if (conversationBestShowMessage == null
                                     || conversationBestShowMessage.localSeq.get() < message.localSeq.get()) {
                                 conversationBestShowMessage = message;
