@@ -23,16 +23,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/session_state"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="connect state" />
-
             <com.masonsoft.imsdk.sample.widget.SessionUserCacheAvatar
                 android:id="@+id/avatar"
                 android:layout_width="116dp"
@@ -190,6 +180,16 @@
             android:background="@drawable/imsdk_sample_button_background_selector"
             android:text="@string/imsdk_sample_button_text_sign_out"
             android:textColor="@color/imsdk_sample_button_text_selector" />
+
+        <TextView
+            android:id="@+id/session_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="connect state" />
 
         <io.github.idonans.systeminsets.SystemInsetsFrameLayout
             android:id="@+id/bottom_system_insets"
