@@ -5,8 +5,8 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.user.UserInfo;
-import com.masonsoft.imsdk.user.UserInfoManager;
 import com.masonsoft.imsdk.user.UserInfoFactory;
+import com.masonsoft.imsdk.user.UserInfoManager;
 
 /**
  * 收到一个用户信息
@@ -24,7 +24,7 @@ public class ReceivedProtoMessageProtoTypeProfileProcessor extends ReceivedProto
             @NonNull SessionProtoByteMessageWrapper target,
             @NonNull ProtoMessage.Profile protoMessageObject) {
         final UserInfo userInfo = UserInfoFactory.create(protoMessageObject);
-        UserInfoManager.getInstance().insertOrUpdateUser(userInfo);
+        UserInfoManager.getInstance().enqueueInsertOrUpdateUser(userInfo);
         return true;
     }
 

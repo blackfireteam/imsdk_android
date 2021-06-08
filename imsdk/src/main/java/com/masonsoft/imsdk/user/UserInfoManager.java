@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 import io.github.idonans.core.Singleton;
+import io.github.idonans.core.thread.TaskQueue;
 
 /**
  * 用户信息管理。会缓存一部分用户信息到内存中。
@@ -61,6 +62,8 @@ public class UserInfoManager {
         }
     }
 
+    private final TaskQueue mUpdateQueue = new TaskQueue(1);
+
     private UserInfoManager() {
     }
 
@@ -94,6 +97,14 @@ public class UserInfoManager {
         }
 
         return UserInfoDatabaseProvider.getInstance().getUserInfoByUserIdList(userIdList);
+    }
+
+    public void enqueueInsertOrUpdateUser(UserInfo userInfo) {
+        if (userInfo == null) {
+            return;
+        }
+
+        mUpdateQueue.enqueue(() -> insertOrUpdateUser(userInfo), true);
     }
 
     /**

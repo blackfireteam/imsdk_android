@@ -6,8 +6,8 @@ import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.message.SessionProtoByteMessageWrapper;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.user.UserInfo;
-import com.masonsoft.imsdk.user.UserInfoManager;
 import com.masonsoft.imsdk.user.UserInfoFactory;
+import com.masonsoft.imsdk.user.UserInfoManager;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class ReceivedProtoMessageProtoTypeProfileListProcessor extends ReceivedP
                 }
 
                 final UserInfo userInfo = UserInfoFactory.create(profile);
-                UserInfoManager.getInstance().insertOrUpdateUser(userInfo);
+                UserInfoManager.getInstance().enqueueInsertOrUpdateUser(userInfo);
             }
             final long timeInterval = System.currentTimeMillis() - timeStart;
             IMLog.v(Objects.defaultObjectTag(this) + " got %s profile, process use %s ms", size, timeInterval);
