@@ -22,6 +22,7 @@ import com.masonsoft.imsdk.lang.GeneralErrorCode;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.user.UserInfoSyncManager;
 import com.masonsoft.imsdk.util.Objects;
+import com.masonsoft.imsdk.util.TimeUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -633,7 +634,9 @@ public class IMSessionManager {
             final String tag = Objects.defaultObjectTag(this);
             builder.append(tag).append("--:\n");
             builder.append(" mFirstCreateTimeMs:").append(this.mFirstCreateTimeMs).append("\n");
+            builder.append(TimeUtil.msToHumanString(this.mFirstCreateTimeMs)).append("\n");
             builder.append(" mLastCreateTimeMs:").append(this.mLastCreateTimeMs).append("\n");
+            builder.append(TimeUtil.msToHumanString(this.mLastCreateTimeMs)).append("\n");
             builder.append(" mRetryCount:").append(this.mRetryCount).append("\n");
             builder.append(tag).append("-- end\n");
         }
@@ -643,7 +646,9 @@ public class IMSessionManager {
             @SuppressWarnings("StringBufferReplaceableByString") final StringBuilder builder = new StringBuilder();
             builder.append(Objects.defaultObjectTag(this));
             builder.append(" mFirstCreateTimeMs:").append(this.mFirstCreateTimeMs);
+            builder.append(" ").append(TimeUtil.msToHumanString(this.mFirstCreateTimeMs));
             builder.append(" mLastCreateTimeMs:").append(this.mLastCreateTimeMs);
+            builder.append(" ").append(this.mLastCreateTimeMs);
             builder.append(" mRetryCount:").append(this.mRetryCount);
             return builder.toString();
         }
