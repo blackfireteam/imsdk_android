@@ -33,11 +33,6 @@ public class TinyChatRProcessor extends ReceivedProtoMessageProtoTypeProcessor<P
 
     @Override
     protected boolean doNotNullProtoMessageObjectProcess(@NonNull SessionProtoByteMessageWrapper wrapper, @NonNull ProtoMessage.ChatR target) {
-        {
-            final long messageTime = target.getMsgTime();
-            wrapper.getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
-        }
-
         final Message message = MessageFactory.create(target);
         // 接收到新消息
         // 设置新消息的 seq
@@ -199,6 +194,11 @@ public class TinyChatRProcessor extends ReceivedProtoMessageProtoTypeProcessor<P
                     }
                 }
             }
+        }
+
+        {
+            final long messageTime = target.getMsgTime();
+            wrapper.getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
         }
 
         return true;

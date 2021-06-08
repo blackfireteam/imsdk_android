@@ -283,11 +283,6 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
                 IMLog.e(e);
             }
         }
-
-        {
-            final long messageTime = maxMessage.remoteMessageTime.get();
-            chatRList.get(0).getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
-        }
     }
 
 }

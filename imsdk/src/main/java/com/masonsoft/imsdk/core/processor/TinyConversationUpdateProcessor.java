@@ -58,11 +58,6 @@ public class TinyConversationUpdateProcessor extends ReceivedProtoMessageProtoTy
                 return true;
             }
 
-            {
-                final long messageTime = protoMessageObject.getUpdateTime();
-                target.getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
-            }
-
             final Conversation conversationUpdate = new Conversation();
             conversationUpdate.localId.set(dbConversation.localId.get());
             if (event == EVENT_MSG_LAST_READ) {
@@ -86,6 +81,9 @@ public class TinyConversationUpdateProcessor extends ReceivedProtoMessageProtoTy
                     conversationUpdate)) {
                 final Throwable e = new IllegalAccessError("unexpected updateConversation return false " + conversationUpdate);
                 IMLog.e(e);
+            } else {
+                final long messageTime = protoMessageObject.getUpdateTime();
+                target.getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
             }
         }
 

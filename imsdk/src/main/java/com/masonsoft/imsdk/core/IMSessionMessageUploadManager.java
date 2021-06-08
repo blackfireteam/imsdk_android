@@ -570,12 +570,6 @@ public class IMSessionMessageUploadManager {
                                     return true;
                                 }
 
-                                {
-                                    //noinspection UnnecessaryLocalVariable
-                                    final long messageTime = msgTime;
-                                    target.getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
-                                }
-
                                 final Message messageUpdate = new Message();
                                 messageUpdate.localId.set(message.localId.get());
                                 messageUpdate.remoteMessageId.set(msgId);
@@ -601,6 +595,10 @@ public class IMSessionMessageUploadManager {
                                                 + " unexpected. updateMessage return false, sign:%s, messageUpdate:%s", getSign(), messageUpdate);
                                         moveToState(STATE_FAIL);
                                         return true;
+                                    } else {
+                                        //noinspection UnnecessaryLocalVariable
+                                        final long messageTime = msgTime;
+                                        target.getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
                                     }
                                 }
 
