@@ -494,8 +494,8 @@ public class FetchMessageHistoryManager {
                     }
                 }
 
-                if (mRemoteMessageStart <= 1
-                        || (mRemoteMessageEnd > 0 && mRemoteMessageEnd - mRemoteMessageStart <= 1)) {
+                if (mRemoteMessageEnd <= 1
+                        || (mRemoteMessageStart > 0 && mRemoteMessageEnd > 0 && mRemoteMessageEnd - mRemoteMessageStart <= 1)) {
                     IMLog.v("ignore. invalid remoteMessageStart:%s, remoteMessageEnd:%s", mRemoteMessageStart, mRemoteMessageEnd);
                     return null;
                 }
