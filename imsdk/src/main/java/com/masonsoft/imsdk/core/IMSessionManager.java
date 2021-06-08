@@ -643,12 +643,13 @@ public class IMSessionManager {
 
         @NonNull
         public String toShortString() {
-            @SuppressWarnings("StringBufferReplaceableByString") final StringBuilder builder = new StringBuilder();
+            //noinspection StringBufferReplaceableByString
+            final StringBuilder builder = new StringBuilder();
             builder.append(Objects.defaultObjectTag(this));
             builder.append(" mFirstCreateTimeMs:").append(this.mFirstCreateTimeMs);
             builder.append(" ").append(TimeUtil.msToHumanString(this.mFirstCreateTimeMs));
             builder.append(" mLastCreateTimeMs:").append(this.mLastCreateTimeMs);
-            builder.append(" ").append(this.mLastCreateTimeMs);
+            builder.append(" ").append(TimeUtil.msToHumanString(this.mLastCreateTimeMs));
             builder.append(" mRetryCount:").append(this.mRetryCount);
             return builder.toString();
         }
