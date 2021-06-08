@@ -312,6 +312,16 @@ public class MineFragment extends SystemInsetsFragment {
 
     class ViewImpl implements DynamicView {
 
+        public void onSessionStateChanged() {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onSessionStateChanged");
+            if (mBinding == null) {
+                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            syncSessionState();
+        }
+
         public void showSessionUserInfo(@Nullable MSIMUserInfo userInfo) {
             SampleLog.v(Objects.defaultObjectTag(this) + " showSessionUserInfo userInfo:%s", userInfo);
             if (mBinding == null) {

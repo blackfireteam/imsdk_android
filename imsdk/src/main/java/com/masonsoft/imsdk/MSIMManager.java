@@ -38,17 +38,25 @@ public class MSIMManager {
 
     private String mAppId;
     @NonNull
-    private MSIMSdkListener mSdkListener = new MSIMSdkListenerAdapter();
+    private final WeakObservable<MSIMSdkListener> mSdkListeners = new WeakObservable<>();
     @SuppressWarnings("FieldCanBeLocal")
     private final TokenOfflineObservable.TokenOfflineObserver mTokenOfflineObserver = new TokenOfflineObservable.TokenOfflineObserver() {
         @Override
         public void onKickedOffline(@NonNull Session session, int errorCode, String errorMessage) {
-            mSdkListener.onKickedOffline();
+            mSdkListeners.forEach(listener -> {
+                if (listener != null) {
+                    listener.onKickedOffline();
+                }
+            });
         }
 
         @Override
         public void onTokenExpired(@NonNull Session session, int errorCode, String errorMessage) {
-            mSdkListener.onTokenExpired();
+            mSdkListeners.forEach(listener -> {
+                if (listener != null) {
+                    listener.onTokenExpired();
+                }
+            });
         }
     };
     @SuppressWarnings("FieldCanBeLocal")
@@ -57,11 +65,23 @@ public class MSIMManager {
         public void onConnectionStateChanged(@NonNull SessionTcpClient sessionTcpClient) {
             final int state = sessionTcpClient.getState();
             if (state == SessionTcpClient.STATE_CONNECTING) {
-                mSdkListener.onConnecting();
+                mSdkListeners.forEach(listener -> {
+                    if (listener != null) {
+                        listener.onConnecting();
+                    }
+                });
             } else if (state == SessionTcpClient.STATE_CONNECTED) {
-                mSdkListener.onConnectSuccess();
+                mSdkListeners.forEach(listener -> {
+                    if (listener != null) {
+                        listener.onConnectSuccess();
+                    }
+                });
             } else if (state == SessionTcpClient.STATE_CLOSED) {
-                mSdkListener.onConnectClosed();
+                mSdkListeners.forEach(listener -> {
+                    if (listener != null) {
+                        listener.onConnectClosed();
+                    }
+                });
             }
         }
 
@@ -69,11 +89,23 @@ public class MSIMManager {
         public void onSignInStateChanged(@NonNull SessionTcpClient sessionTcpClient, @NonNull SignInMessagePacket messagePacket) {
             final int state = messagePacket.getState();
             if (state == MessagePacket.STATE_GOING) {
-                mSdkListener.onSigningIn();
+                mSdkListeners.forEach(listener -> {
+                    if (listener != null) {
+                        listener.onSigningIn();
+                    }
+                });
             } else if (state == MessagePacket.STATE_SUCCESS) {
-                mSdkListener.onSignInSuccess();
+                mSdkListeners.forEach(listener -> {
+                    if (listener != null) {
+                        listener.onSignInSuccess();
+                    }
+                });
             } else if (state == MessagePacket.STATE_FAIL) {
-                mSdkListener.onSignInFail(GeneralResult.valueOf(messagePacket.getErrorCode(), messagePacket.getErrorMessage()));
+                mSdkListeners.forEach(listener -> {
+                    if (listener != null) {
+                        listener.onSignInFail(GeneralResult.valueOf(messagePacket.getErrorCode(), messagePacket.getErrorMessage()));
+                    }
+                });
             }
         }
 
@@ -81,11 +113,23 @@ public class MSIMManager {
         public void onSignOutStateChanged(@NonNull SessionTcpClient sessionTcpClient, @NonNull SignOutMessagePacket messagePacket) {
             final int state = messagePacket.getState();
             if (state == MessagePacket.STATE_GOING) {
-                mSdkListener.onSigningOut();
+                mSdkListeners.forEach(listener -> {
+                    if (listener != null) {
+                        listener.onSigningOut();
+                    }
+                });
             } else if (state == MessagePacket.STATE_SUCCESS) {
-                mSdkListener.onSignOutSuccess();
+                mSdkListeners.forEach(listener -> {
+                    if (listener != null) {
+                        listener.onSignOutSuccess();
+                    }
+                });
             } else if (state == MessagePacket.STATE_FAIL) {
-                mSdkListener.onSignOutFail(GeneralResult.valueOf(messagePacket.getErrorCode(), messagePacket.getErrorMessage()));
+                mSdkListeners.forEach(listener -> {
+                    if (listener != null) {
+                        listener.onSignOutFail(GeneralResult.valueOf(messagePacket.getErrorCode(), messagePacket.getErrorMessage()));
+                    }
+                });
             }
         }
     };
@@ -124,7 +168,19 @@ public class MSIMManager {
 
     public void initSdk(String appId, @Nullable MSIMSdkListener listener) {
         mAppId = appId;
-        mSdkListener = new MSIMSdkListenerProxy(listener);
+        addSdkListener(listener);
+    }
+
+    public void addSdkListener(@Nullable MSIMSdkListener listener) {
+        if (listener != null) {
+            mSdkListeners.registerObserver(listener);
+        }
+    }
+
+    public void removeSdkListener(@Nullable MSIMSdkListener listener) {
+        if (listener != null) {
+            mSdkListeners.unregisterObserver(listener);
+        }
     }
 
     public void addSessionListener(@Nullable MSIMSessionListener listener) {
