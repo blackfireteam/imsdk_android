@@ -253,7 +253,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
         @Nullable
         public static UnionTypeItemObject createDefault(DataObject<MSIMMessage> dataObject, long sessionUserId) {
             // 区分消息是收到的还是发送的
-            final boolean received = dataObject.object.getReceiver() == sessionUserId;
+            final boolean received = dataObject.object.getSender() != sessionUserId;
             final int messageType = dataObject.object.getMessageType();
 
             // 已撤回的消息
@@ -333,7 +333,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
         @Nullable
         public static UnionTypeItemObject createPreviewDefault(DataObject<MSIMMessage> dataObject, long sessionUserId) {
             // 区分消息是收到的还是发送的
-            final boolean received = dataObject.object.getReceiver() == sessionUserId;
+            final boolean received = dataObject.object.getSender() != sessionUserId;
             final long messageType = dataObject.object.getMessageType();
 
             // 视频消息
@@ -403,7 +403,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             }
 
             // 区分消息是收到的还是发送的
-            final boolean received = message.getReceiver() == MSIMManager.getInstance().getSessionUserId();
+            final boolean received = message.getSender() != MSIMManager.getInstance().getSessionUserId();
             HolderFinder holderFinder = new HolderFinder();
             holderFinder.holder = holder;
             holderFinder.position = position;
