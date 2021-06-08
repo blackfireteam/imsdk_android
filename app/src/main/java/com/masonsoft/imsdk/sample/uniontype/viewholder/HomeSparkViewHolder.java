@@ -5,6 +5,7 @@ import android.app.Activity;
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.CustomIMMessageFactory;
@@ -119,14 +120,11 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
     private void sendLikeMessage(long targetUserId) {
         final MSIMMessage message = CustomIMMessageFactory.createCustomMessageLike();
-        // TODO FIXME
-        /*
-        IMMessageQueueManager.getInstance().enqueueSendSessionMessage(
-                imMessage,
-                targetUserId,
-                new EnqueueCallbackAdapter<>()
+        MSIMManager.getInstance().getMessageManager().sendMessage(
+                MSIMManager.getInstance().getSessionUserId(),
+                message,
+                targetUserId
         );
-        */
     }
 
     private static class ExtraUiData {
