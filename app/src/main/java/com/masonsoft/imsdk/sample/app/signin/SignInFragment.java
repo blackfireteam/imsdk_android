@@ -41,8 +41,8 @@ public class SignInFragment extends SystemInsetsFragment {
 
     private static final String DEFAULT_API_SERVER_INTERNET = "https://im.ekfree.com:18788";
     private static final String DEFAULT_IM_SERVER_INTERNET = "im.ekfree.com:18888";
-    private static final String DEFAULT_API_SERVER_LOCAL = "https://192.168.50.253:18788";
-    private static final String DEFAULT_IM_SERVER_LOCAL = "192.168.50.253:18888";
+    private static final String DEFAULT_API_SERVER_LOCAL = "https://192.168.50.188:18788";
+    private static final String DEFAULT_IM_SERVER_LOCAL = "192.168.50.188:18888";
     private boolean mCurrentApiServerInternet = true;
 
     @Nullable
