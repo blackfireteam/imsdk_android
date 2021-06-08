@@ -94,8 +94,6 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
      * chatRList 中的消息都是同一个会话的，并且连续
      */
     private void doProcessWithSameTargetUserId(final long sessionUserId, final long targetUserId, @NonNull final List<SessionProtoByteMessageWrapper> chatRList) {
-
-
         Preconditions.checkArgument(!chatRList.isEmpty());
         final List<Message> messageList = new ArrayList<>();
         for (SessionProtoByteMessageWrapper target : chatRList) {
@@ -132,11 +130,6 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
                 minMessage = lastMessage;
                 maxMessage = firstMessage;
             }
-        }
-
-        {
-            final long messageTime = maxMessage.remoteMessageTime.get();
-            chatRList.get(0).getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
         }
 
         final long fromUserId = maxMessage.fromUserId.get();
@@ -289,6 +282,11 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
             } catch (Throwable e) {
                 IMLog.e(e);
             }
+        }
+
+        {
+            final long messageTime = maxMessage.remoteMessageTime.get();
+            chatRList.get(0).getSessionTcpClient().setConversationListUpdateTimeTmp(messageTime);
         }
     }
 
