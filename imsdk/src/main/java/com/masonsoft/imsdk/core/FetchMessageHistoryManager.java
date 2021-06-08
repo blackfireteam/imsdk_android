@@ -474,7 +474,6 @@ public class FetchMessageHistoryManager {
                             final long remoteMessageEnd = conversation.remoteMessageEnd.get();
                             if (mRemoteMessageStart >= remoteMessageEnd) {
                                 // 所有消息已经获取完整
-                                //noinspection ConstantConditions
                                 IMLog.v("ignore. all message are loaded. sessionUserId:%s, conversationType:%s, targetUserId:%s, history:%s",
                                         mSessionUserId, mConversationType, mTargetUserId, mHistory);
                                 return null;
@@ -493,6 +492,12 @@ public class FetchMessageHistoryManager {
                             }
                         }
                     }
+                }
+
+                if (mRemoteMessageStart <= 1
+                        || (mRemoteMessageEnd > 0 && mRemoteMessageEnd - mRemoteMessageStart <= 1)) {
+                    IMLog.v("ignore. invalid remoteMessageStart:%s, remoteMessageEnd:%s", mRemoteMessageStart, mRemoteMessageEnd);
+                    return null;
                 }
 
                 IMLog.v("ProtoMessage.GetHistory sign:%s, targetUserId:%s, blockId:%s," +
