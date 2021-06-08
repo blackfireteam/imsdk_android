@@ -50,6 +50,7 @@
     <string name="imsdk_sample_hint_refresh_retry">点击刷新试试</string>
     <string name="imsdk_sample_hint_no_more">没有更多了</string>
     <string name="imsdk_sample_switch_setting">设置</string>
+    <string name="imsdk_sample_open_app_setting">打开系统设置</string>
     <string name="imsdk_sample_switch_internet_server_default">重置(切换)默认值</string>
     <string name="imsdk_sample_button_text_cancel">取消</string>
     <string name="imsdk_sample_button_text_submit">确认</string>

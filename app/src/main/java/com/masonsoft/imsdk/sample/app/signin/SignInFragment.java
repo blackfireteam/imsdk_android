@@ -1,7 +1,10 @@
 package com.masonsoft.imsdk.sample.app.signin;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -133,8 +136,22 @@ public class SignInFragment extends SystemInsetsFragment {
         });
 
         ViewUtil.onClick(mBinding.submit, v -> onSubmit());
+        ViewUtil.onClick(mBinding.openAppSettings, v -> openAppSettings());
 
         return mBinding.getRoot();
+    }
+
+    private void openAppSettings() {
+        try {
+            SampleLog.v("openAppSettings");
+
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.parse("package:" + getContext().getPackageName()));
+            startActivity(intent);
+        } catch (Throwable e) {
+            SampleLog.e(e);
+        }
     }
 
     @Override
