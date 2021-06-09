@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import com.masonsoft.imsdk.core.IMManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignInMessagePacket;
@@ -14,6 +15,7 @@ import com.masonsoft.imsdk.core.observable.TokenOfflineObservable;
 import com.masonsoft.imsdk.core.session.Session;
 import com.masonsoft.imsdk.core.session.SessionTcpClient;
 import com.masonsoft.imsdk.lang.GeneralResult;
+import com.masonsoft.imsdk.util.RxJavaUtil;
 import com.masonsoft.imsdk.util.WeakObservable;
 
 import io.github.idonans.core.Singleton;
@@ -161,6 +163,8 @@ public class MSIMManager {
     };
 
     private MSIMManager() {
+        RxJavaUtil.setErrorHandler();
+
         TokenOfflineObservable.DEFAULT.registerObserver(mTokenOfflineObserver);
         SessionTcpClientObservable.DEFAULT.registerObserver(mSessionTcpClientObserver);
         SessionObservable.DEFAULT.registerObserver(mSessionObserver);
@@ -169,6 +173,8 @@ public class MSIMManager {
     public void initSdk(String appId, @Nullable MSIMSdkListener listener) {
         mAppId = appId;
         addSdkListener(listener);
+
+        Threads.postBackground(() -> IMManager.getInstance().start());
     }
 
     public void addSdkListener(@Nullable MSIMSdkListener listener) {
