@@ -81,11 +81,9 @@ public class LocalSettingsManager {
 
     public static class Settings {
 
-        // im.ekfree.com
-        // 192.168.50.254
-        public String apiServer = "https://im.ekfree.com:18788";
+        public String apiServer;
         public String imToken;
-        public String imServer = "im.ekfree.com:18888";
+        public String imServer;
 
         public boolean hasValidSession() {
             return !TextUtils.isEmpty(this.imServer)

@@ -16,9 +16,7 @@ import androidx.annotation.Nullable;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.Constants;
-import com.masonsoft.imsdk.sample.IMTokenOfflineManager;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
@@ -102,19 +100,6 @@ public class MineFragment extends SystemInsetsFragment {
         return mBinding.getRoot();
     }
 
-    private void syncSessionState() {
-        if (mBinding == null) {
-            return;
-        }
-        final StringBuilder builder = new StringBuilder();
-        builder.append(IMTokenOfflineManager.getInstance().getConnectStateHumanString());
-        builder.append("\n");
-        builder.append(IMTokenOfflineManager.getInstance().getSignStateHumanString());
-        builder.append("\n");
-        builder.append(IMSessionManager.getInstance().getSessionTcpClientProxyConfig());
-        mBinding.sessionState.setText(builder);
-    }
-
     private void clearCheckedChangeListener() {
         if (mBinding == null) {
             SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
@@ -143,15 +128,6 @@ public class MineFragment extends SystemInsetsFragment {
         mView = new ViewImpl();
         mPresenter = new MineFragmentPresenter(mView);
         mPresenter.requestSyncSessionUserInfo();
-
-        syncSessionState();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        syncSessionState();
     }
 
     private void startModifyAvatar() {
@@ -311,16 +287,6 @@ public class MineFragment extends SystemInsetsFragment {
     }
 
     class ViewImpl implements DynamicView {
-
-        public void onSessionStateChanged() {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onSessionStateChanged");
-            if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
-                return;
-            }
-
-            syncSessionState();
-        }
 
         public void showSessionUserInfo(@Nullable MSIMUserInfo userInfo) {
             SampleLog.v(Objects.defaultObjectTag(this) + " showSessionUserInfo userInfo:%s", userInfo);

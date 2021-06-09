@@ -2,17 +2,13 @@ package com.masonsoft.imsdk.sample.app.mine;
 
 import android.net.Uri;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMManager;
-import com.masonsoft.imsdk.MSIMSdkListener;
-import com.masonsoft.imsdk.MSIMSessionListener;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.FileUploadProvider;
 import com.masonsoft.imsdk.core.IMSessionManager;
-import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.api.DefaultApi;
@@ -21,7 +17,6 @@ import com.masonsoft.imsdk.sample.widget.UserCacheChangedViewHelper;
 import com.masonsoft.imsdk.user.UserInfoManager;
 
 import io.github.idonans.core.Progress;
-import io.github.idonans.core.thread.BatchQueue;
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.dynamic.DynamicPresenter;
@@ -37,93 +32,8 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
     @SuppressWarnings("unused")
     private final SessionUserCacheChangedViewHelper mSessionUserCacheChangedViewHelper = new SessionUserCacheChangedViewHelper();
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private final BatchQueue<Boolean> mSessionStateChangedQueue = new BatchQueue<>(true);
-
     public MineFragmentPresenter(MineFragment.ViewImpl view) {
         super(view);
-
-        mSessionStateChangedQueue.setConsumer(payloadList -> onSessionStateChanged());
-        MSIMManager.getInstance().addSessionListener(mSessionListener);
-        MSIMManager.getInstance().addSdkListener(mSdkListener);
-    }
-
-    @SuppressWarnings("FieldCanBeLocal")
-    private final MSIMSessionListener mSessionListener = new MSIMSessionListener() {
-        @Override
-        public void onSessionChanged() {
-            mSessionStateChangedQueue.add(true);
-        }
-
-        @Override
-        public void onSessionUserIdChanged() {
-            mSessionStateChangedQueue.add(true);
-        }
-    };
-
-    @SuppressWarnings("FieldCanBeLocal")
-    private final MSIMSdkListener mSdkListener = new MSIMSdkListener() {
-        @Override
-        public void onConnecting() {
-            mSessionStateChangedQueue.add(true);
-        }
-
-        @Override
-        public void onConnectSuccess() {
-            mSessionStateChangedQueue.add(true);
-        }
-
-        @Override
-        public void onConnectClosed() {
-            mSessionStateChangedQueue.add(true);
-        }
-
-        @Override
-        public void onSigningIn() {
-            mSessionStateChangedQueue.add(true);
-        }
-
-        @Override
-        public void onSignInSuccess() {
-            mSessionStateChangedQueue.add(true);
-        }
-
-        @Override
-        public void onSignInFail(@NonNull GeneralResult result) {
-            mSessionStateChangedQueue.add(true);
-        }
-
-        @Override
-        public void onKickedOffline() {
-            mSessionStateChangedQueue.add(true);
-        }
-
-        @Override
-        public void onTokenExpired() {
-            mSessionStateChangedQueue.add(true);
-        }
-
-        @Override
-        public void onSigningOut() {
-            mSessionStateChangedQueue.add(true);
-        }
-
-        @Override
-        public void onSignOutSuccess() {
-            mSessionStateChangedQueue.add(true);
-        }
-
-        @Override
-        public void onSignOutFail(@NonNull GeneralResult result) {
-            mSessionStateChangedQueue.add(true);
-        }
-    };
-
-    private void onSessionStateChanged() {
-        final MineFragment.ViewImpl view = getView();
-        if (view != null) {
-            view.onSessionStateChanged();
-        }
     }
 
     private class SessionUserCacheChangedViewHelper extends UserCacheChangedViewHelper {

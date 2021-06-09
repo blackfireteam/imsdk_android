@@ -110,8 +110,11 @@ public class SignInFragment extends SystemInsetsFragment {
         });
 
         final LocalSettingsManager.Settings settings = LocalSettingsManager.getInstance().getSettings();
-        mBinding.apiServer.setText(settings.apiServer);
-        mBinding.imServer.setText(String.valueOf(settings.imServer));
+        if (!TextUtils.isEmpty(settings.apiServer)) {
+            // 猜测内外网
+            mCurrentApiServerInternet = !settings.apiServer.contains("192.168");
+        }
+        refreshShowCurrentApiServer();
         mBinding.settingsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 ViewUtil.setVisibilityIfChanged(mBinding.resetServer, View.VISIBLE);
@@ -126,19 +129,27 @@ public class SignInFragment extends SystemInsetsFragment {
 
         ViewUtil.onClick(mBinding.resetServer, v -> {
             mCurrentApiServerInternet = !mCurrentApiServerInternet;
-            if (mCurrentApiServerInternet) {
-                mBinding.apiServer.setText(DEFAULT_API_SERVER_INTERNET);
-                mBinding.imServer.setText(DEFAULT_IM_SERVER_INTERNET);
-            } else {
-                mBinding.apiServer.setText(DEFAULT_API_SERVER_LOCAL);
-                mBinding.imServer.setText(DEFAULT_IM_SERVER_LOCAL);
-            }
+            refreshShowCurrentApiServer();
         });
 
         ViewUtil.onClick(mBinding.submit, v -> onSubmit());
         ViewUtil.onClick(mBinding.openAppSettings, v -> openAppSettings());
 
         return mBinding.getRoot();
+    }
+
+    private void refreshShowCurrentApiServer() {
+        if (mBinding == null) {
+            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+        if (mCurrentApiServerInternet) {
+            mBinding.apiServer.setText(DEFAULT_API_SERVER_INTERNET);
+            mBinding.imServer.setText(DEFAULT_IM_SERVER_INTERNET);
+        } else {
+            mBinding.apiServer.setText(DEFAULT_API_SERVER_LOCAL);
+            mBinding.imServer.setText(DEFAULT_IM_SERVER_LOCAL);
+        }
     }
 
     private void openAppSettings() {
