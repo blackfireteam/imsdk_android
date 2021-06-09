@@ -176,6 +176,8 @@ public class ConversationFragment extends SystemInsetsFragment {
                         });
                         innerMergeTimeDiffDebugHelper.mark();
                         innerMergeTimeDiffDebugHelper.print("sort");
+
+                        groupArrayList.removeGroup(getGroupHeader());
                     })
                     .commit();
         }
