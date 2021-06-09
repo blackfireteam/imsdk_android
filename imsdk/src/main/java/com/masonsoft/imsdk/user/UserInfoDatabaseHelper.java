@@ -98,7 +98,7 @@ public class UserInfoDatabaseHelper {
 
             @Override
             public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-                throw new IllegalAccessError("need config database upgrade from " + oldVersion + " to " + newVersion);
+                throw new IllegalStateException("need config database upgrade from " + oldVersion + " to " + newVersion);
             }
         };
     }

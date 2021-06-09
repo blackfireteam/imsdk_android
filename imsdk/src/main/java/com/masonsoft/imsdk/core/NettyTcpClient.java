@@ -217,10 +217,10 @@ public abstract class NettyTcpClient extends TcpClient {
     protected byte[] message2Bytes(ProtoByteMessage protoByteMessage) {
         final int messageType = protoByteMessage.getType();
         if (messageType < 0) {
-            throw new IllegalAccessError("message2Bytes invalid message type " + messageType);
+            throw new IllegalStateException("message2Bytes invalid message type " + messageType);
         }
         if (messageType > MAX_MESSAGE_TYPE_VALUE) {
-            throw new IllegalAccessError("message2Bytes message type too large " + messageType + ", max:" + MAX_MESSAGE_TYPE_VALUE);
+            throw new IllegalStateException("message2Bytes message type too large " + messageType + ", max:" + MAX_MESSAGE_TYPE_VALUE);
         }
 
         byte[] tmpMessageData = protoByteMessage.getData();
@@ -251,7 +251,7 @@ public abstract class NettyTcpClient extends TcpClient {
 
         int messageDataLength = messageData.length + 4;
         if (messageDataLength > MAX_MESSAGE_DATA_LENGTH) {
-            throw new IllegalAccessError("message2Bytes message data too large " + messageDataLength + ", max:" + MAX_MESSAGE_DATA_LENGTH);
+            throw new IllegalStateException("message2Bytes message data too large " + messageDataLength + ", max:" + MAX_MESSAGE_DATA_LENGTH);
         }
 
         final int header = (messageDataLength << 12) + (messageType << 2) + (isEncrypt << 1) + isZip;

@@ -196,7 +196,7 @@ public class OtherMessageManager {
                 @Override
                 public void onStateChanged(MessagePacket packet, int oldState, int newState) {
                     if (packet != mOtherMessagePacket) {
-                        final Throwable e = new IllegalAccessError("invalid packet:" + Objects.defaultObjectTag(packet)
+                        final Throwable e = new IllegalStateException("invalid packet:" + Objects.defaultObjectTag(packet)
                                 + ", mOtherMessagePacket:" + Objects.defaultObjectTag(mOtherMessagePacket));
                         IMLog.e(e);
                         return;
@@ -288,7 +288,7 @@ public class OtherMessageManager {
             @Nullable
             private MessagePacket buildMessagePacket() {
                 if (!mBuildOtherMessagePacket.weakCompareAndSet(false, true)) {
-                    throw new IllegalAccessError("buildMessagePacket only support called once");
+                    throw new IllegalStateException("buildMessagePacket only support called once");
                 }
 
                 mOtherMessagePacket = mOtherMessage.getMessagePacket();
@@ -299,12 +299,12 @@ public class OtherMessageManager {
             private boolean dispatchTcpResponse(final long sign, @NonNull final SessionProtoByteMessageWrapper wrapper) {
                 final MessagePacket otherMessagePacket = mOtherMessagePacket;
                 if (otherMessagePacket == null) {
-                    final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected mOtherMessagePacket is null");
+                    final Throwable e = new IllegalStateException(Objects.defaultObjectTag(this) + " unexpected mOtherMessagePacket is null");
                     IMLog.e(e);
                     return false;
                 }
                 if (mSign != sign) {
-                    final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected sign not match mSign:" + mSign + ", sign:" + sign);
+                    final Throwable e = new IllegalStateException(Objects.defaultObjectTag(this) + " unexpected sign not match mSign:" + mSign + ", sign:" + sign);
                     IMLog.e(e);
                     return false;
                 }

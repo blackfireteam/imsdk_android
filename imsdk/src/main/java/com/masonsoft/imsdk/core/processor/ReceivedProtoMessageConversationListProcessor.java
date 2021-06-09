@@ -86,7 +86,7 @@ public class ReceivedProtoMessageConversationListProcessor extends ReceivedProto
                 if (dbConversation == null) {
                     // 会话在本地不存在
                     if (!ConversationDatabaseProvider.getInstance().insertConversation(sessionUserId, conversation)) {
-                        final Throwable e = new IllegalAccessError("unexpected insertConversation return false " + conversation);
+                        final Throwable e = new IllegalStateException("unexpected insertConversation return false " + conversation);
                         IMLog.e(e);
                     }
                 } else {
@@ -96,7 +96,7 @@ public class ReceivedProtoMessageConversationListProcessor extends ReceivedProto
                     if (!ConversationDatabaseProvider.getInstance().updateConversation(
                             sessionUserId,
                             conversation)) {
-                        final Throwable e = new IllegalAccessError("unexpected updateConversation return false " + conversation);
+                        final Throwable e = new IllegalStateException("unexpected updateConversation return false " + conversation);
                         IMLog.e(e);
                     }
                 }

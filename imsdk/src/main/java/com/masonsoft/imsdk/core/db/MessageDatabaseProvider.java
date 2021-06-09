@@ -805,7 +805,7 @@ public class MessageDatabaseProvider {
                     message.toContentValues());
             if (rowId == -1) {
                 IMLog.e(
-                        new IllegalAccessError("insert message fail"),
+                        new IllegalStateException("insert message fail"),
                         "fail to insert message with sessionUserId:%s, conversationType:%s, targetUserId:%s",
                         sessionUserId, conversationType, targetUserId
                 );
@@ -869,8 +869,7 @@ public class MessageDatabaseProvider {
                     whereArgs.toArray(new String[]{})
             );
             if (rowsAffected != 1) {
-                IMLog.e(
-                        new IllegalAccessError("unexpected update message"),
+                IMLog.e(new IllegalStateException("unexpected update message"),
                         "update message with sessionUserId:%s, message localId:%s, conversationType:%s, targetUserId:%s affected %s rows",
                         sessionUserId,
                         message.localId.get(),

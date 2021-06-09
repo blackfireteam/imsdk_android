@@ -117,7 +117,7 @@ public class IMSessionMessageUploadManager {
                 @Override
                 public void onStateChanged(MessagePacket packet, int oldState, int newState) {
                     if (packet != mChatSMessagePacket) {
-                        final Throwable e = new IllegalAccessError("invalid packet:" + Objects.defaultObjectTag(packet)
+                        final Throwable e = new IllegalStateException("invalid packet:" + Objects.defaultObjectTag(packet)
                                 + ", mChatSMessagePacket:" + Objects.defaultObjectTag(mChatSMessagePacket));
                         IMLog.e(e);
                         return;
@@ -217,7 +217,7 @@ public class IMSessionMessageUploadManager {
             @Nullable
             private MessagePacket buildMessagePacket() {
                 if (!mBuildChatSMessagePacket.weakCompareAndSet(false, true)) {
-                    throw new IllegalAccessError("buildMessagePacket only support called once");
+                    throw new IllegalStateException("buildMessagePacket only support called once");
                 }
 
                 final Message message = this.mMessage;
@@ -454,7 +454,7 @@ public class IMSessionMessageUploadManager {
                     return chatSMessagePacket;
                 }
 
-                final Throwable e = new IllegalAccessError("unknown message type:" + messageType + " " + message);
+                final Throwable e = new IllegalStateException("unknown message type:" + messageType + " " + message);
                 IMLog.e(e);
                 return null;
             }
@@ -474,12 +474,12 @@ public class IMSessionMessageUploadManager {
             private boolean dispatchTcpResponse(final long sign, @NonNull final SessionProtoByteMessageWrapper wrapper) {
                 final ChatSMessagePacket chatSMessagePacket = mChatSMessagePacket;
                 if (chatSMessagePacket == null) {
-                    final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected mChatSMessagePacket is null");
+                    final Throwable e = new IllegalStateException(Objects.defaultObjectTag(this) + " unexpected mChatSMessagePacket is null");
                     IMLog.e(e);
                     return false;
                 }
                 if (mSign != sign) {
-                    final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected sign not match mSign:" + mSign + ", sign:" + sign);
+                    final Throwable e = new IllegalStateException(Objects.defaultObjectTag(this) + " unexpected sign not match mSign:" + mSign + ", sign:" + sign);
                     IMLog.e(e);
                     return false;
                 }
@@ -881,7 +881,7 @@ public class IMSessionMessageUploadManager {
                     for (LocalSendingMessage localSendingMessage : localSendingMessageList) {
                         final SessionMessageObjectWrapperTask oldTask = getTask(localSendingMessage);
                         if (oldTask != null) {
-                            final Throwable e = new IllegalAccessError("unexpected localSendingMessage already exists in task. "
+                            final Throwable e = new IllegalStateException("unexpected localSendingMessage already exists in task. "
                                     + localSendingMessage + ", oldTask:" + Objects.defaultObjectTag(oldTask));
                             IMLog.e(e);
                             continue;

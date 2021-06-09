@@ -226,7 +226,7 @@ public class FetchMessageHistoryManager {
                 @Override
                 public void onStateChanged(MessagePacket packet, int oldState, int newState) {
                     if (packet != mFetchMessageHistoryMessagePacket) {
-                        final Throwable e = new IllegalAccessError("invalid packet:" + Objects.defaultObjectTag(packet)
+                        final Throwable e = new IllegalStateException("invalid packet:" + Objects.defaultObjectTag(packet)
                                 + ", mFetchMessageHistoryMessagePacket:" + Objects.defaultObjectTag(mFetchMessageHistoryMessagePacket));
                         IMLog.e(e);
                         return;
@@ -321,7 +321,7 @@ public class FetchMessageHistoryManager {
             @Nullable
             private MessagePacket buildMessagePacket() {
                 if (!mBuildFetchMessageHistoryMessagePacket.weakCompareAndSet(false, true)) {
-                    throw new IllegalAccessError("buildMessagePacket only support called once");
+                    throw new IllegalStateException("buildMessagePacket only support called once");
                 }
 
                 final Conversation conversation = ConversationDatabaseProvider.getInstance().getConversationByTargetUserId(
@@ -527,12 +527,12 @@ public class FetchMessageHistoryManager {
             private boolean dispatchTcpResponse(final long sign, @NonNull final SessionProtoByteMessageWrapper wrapper) {
                 final FetchMessageHistoryMessagePacket fetchMessageHistoryMessagePacket = mFetchMessageHistoryMessagePacket;
                 if (fetchMessageHistoryMessagePacket == null) {
-                    final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected mFetchMessageHistoryMessagePacket is null");
+                    final Throwable e = new IllegalStateException(Objects.defaultObjectTag(this) + " unexpected mFetchMessageHistoryMessagePacket is null");
                     IMLog.e(e);
                     return false;
                 }
                 if (mSign != sign) {
-                    final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected sign not match mSign:" + mSign + ", sign:" + sign);
+                    final Throwable e = new IllegalStateException(Objects.defaultObjectTag(this) + " unexpected sign not match mSign:" + mSign + ", sign:" + sign);
                     IMLog.e(e);
                     return false;
                 }
@@ -600,7 +600,7 @@ public class FetchMessageHistoryManager {
                                 }
 
                                 if (!doNotNullProcessChatRBatchInternal(chatRBatch)) {
-                                    final Throwable e = new IllegalAccessError("unexpected. doNotNullProcessChatRBatchInternal return false. sign:" + getSign());
+                                    final Throwable e = new IllegalStateException("unexpected. doNotNullProcessChatRBatchInternal return false. sign:" + getSign());
                                     IMLog.e(e);
                                 }
                                 moveToState(STATE_SUCCESS);
@@ -792,7 +792,7 @@ public class FetchMessageHistoryManager {
                                         conversationType,
                                         targetUserId,
                                         message)) {
-                                    final Throwable e = new IllegalAccessError("unexpected insertMessage return false " + message);
+                                    final Throwable e = new IllegalStateException("unexpected insertMessage return false " + message);
                                     IMLog.e(e);
                                 } else {
                                     // 新消息入库成功
@@ -837,7 +837,7 @@ public class FetchMessageHistoryManager {
                                 if (requireUpdate) {
                                     if (!MessageDatabaseProvider.getInstance().updateMessage(
                                             sessionUserId, conversationType, targetUserId, messageUpdate)) {
-                                        final Throwable e = new IllegalAccessError("unexpected updateMessage return false " + messageUpdate);
+                                        final Throwable e = new IllegalStateException("unexpected updateMessage return false " + messageUpdate);
                                         IMLog.e(e);
                                     }
                                 }

@@ -671,7 +671,7 @@ public class IMSessionManager {
             @Override
             public void onStateChanged(MessagePacket packet, int oldState, int newState) {
                 if (mFetchConversationListMessagePacket != packet) {
-                    final Throwable e = new IllegalAccessError("invalid packet:" + Objects.defaultObjectTag(packet)
+                    final Throwable e = new IllegalStateException("invalid packet:" + Objects.defaultObjectTag(packet)
                             + ", mFetchConversationListMessagePacket:" + Objects.defaultObjectTag(mFetchConversationListMessagePacket));
                     IMLog.e(e);
                     return;

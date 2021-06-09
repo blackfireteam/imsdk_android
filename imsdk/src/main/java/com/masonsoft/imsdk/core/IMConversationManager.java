@@ -154,7 +154,7 @@ public class IMConversationManager {
                     return IMConversationFactory.create(targetConversation);
                 }
 
-                final Throwable e = new IllegalAccessError("unexpected. targetConversation is null.");
+                final Throwable e = new IllegalStateException("unexpected. targetConversation is null.");
                 IMLog.e(e, "sessionUserId:%s, conversationType:%s, targetUserId:%s",
                         sessionUserId, conversationType, targetUserId);
                 RuntimeMode.fixme(e);
@@ -181,21 +181,21 @@ public class IMConversationManager {
                                                    final long targetUserId,
                                                    final Message message) {
         if (message == null) {
-            final Throwable e = new IllegalAccessError("unexpected. message is null");
+            final Throwable e = new IllegalStateException("unexpected. message is null");
             IMLog.e(e);
             RuntimeMode.fixme(e);
             return false;
         }
 
         if (message.localId.isUnset()) {
-            final Throwable e = new IllegalAccessError("unexpected. message's localId is unset");
+            final Throwable e = new IllegalStateException("unexpected. message's localId is unset");
             IMLog.e(e);
             RuntimeMode.fixme(e);
             return false;
         }
 
         if (message.messageType.isUnset()) {
-            final Throwable e = new IllegalAccessError("unexpected. message's messageType is unset");
+            final Throwable e = new IllegalStateException("unexpected. message's messageType is unset");
             IMLog.e(e);
             RuntimeMode.fixme(e);
             return false;
@@ -244,7 +244,7 @@ public class IMConversationManager {
                     conversationType,
                     targetUserId);
             if (conversation.id.isUnset()) {
-                final Throwable e = new IllegalAccessError("unexpected. conversation id is unset");
+                final Throwable e = new IllegalStateException("unexpected. conversation id is unset");
                 IMLog.e(e);
                 RuntimeMode.fixme(e);
                 return false;
@@ -270,13 +270,13 @@ public class IMConversationManager {
             final IMConversation imConversation = getOrCreateConversationByTargetUserId(
                     sessionUserId, conversationType, targetUserId);
             if (imConversation.id.isUnset()) {
-                final Throwable e = new IllegalAccessError("unexpected. conversation's id is unset");
+                final Throwable e = new IllegalStateException("unexpected. conversation's id is unset");
                 IMLog.e(e);
                 RuntimeMode.fixme(e);
                 return;
             }
             if (imConversation.id.get() <= 0) {
-                final Throwable e = new IllegalAccessError("unexpected. conversation's id is invalid " + imConversation.id.get());
+                final Throwable e = new IllegalStateException("unexpected. conversation's id is invalid " + imConversation.id.get());
                 IMLog.e(e);
                 RuntimeMode.fixme(e);
                 return;
@@ -315,7 +315,7 @@ public class IMConversationManager {
                     conversationUpdate.localTimeMs.set(newShowMessage.localTimeMs.get());
                     conversationUpdate.localSeq.set(newShowMessage.localSeq.get());
                     if (!ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate)) {
-                        final Throwable e = new IllegalAccessError("unexpected. updateConversation return false");
+                        final Throwable e = new IllegalStateException("unexpected. updateConversation return false");
                         IMLog.e(e, "sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
                                 sessionUserId,
                                 conversationType,

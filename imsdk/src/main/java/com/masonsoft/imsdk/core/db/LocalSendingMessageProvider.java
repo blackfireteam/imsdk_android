@@ -390,8 +390,7 @@ public class LocalSendingMessageProvider {
                     null,
                     localSendingMessage.toContentValues());
             if (rowId == -1) {
-                IMLog.e(
-                        new IllegalAccessError("insert localSendingMessage fail"),
+                IMLog.e(new IllegalStateException("insert localSendingMessage fail"),
                         "fail to insert localSendingMessage with sessionUserId:%s, conversationType:%s, targetUserId:%s, messageLocalId:%s",
                         sessionUserId,
                         localSendingMessage.conversationType.get(),
@@ -542,8 +541,7 @@ public class LocalSendingMessageProvider {
                     where.toString(),
                     whereArgs.toArray(new String[]{}));
             if (rowsAffected != 1) {
-                IMLog.e(
-                        new IllegalAccessError("unexpected update localSendingMessage"),
+                IMLog.e(new IllegalStateException("unexpected update localSendingMessage"),
                         "update localSendingMessage with sessionUserId:%s, localSendingMessage localId:%s, affected %s rows",
                         sessionUserId,
                         localSendingMessage.localId.get(),
@@ -561,8 +559,7 @@ public class LocalSendingMessageProvider {
                         cache.messageLocalId.get()
                 );
             } else if (cache == null) {
-                IMLog.e(
-                        new IllegalAccessError("unexpected localSendingMessage not found"),
+                IMLog.e(new IllegalStateException("unexpected localSendingMessage not found"),
                         "getLocalSendingMessage return null with sessionUserId:%s, localSendingMessage localId:%s",
                         sessionUserId,
                         localSendingMessage.localId.get()

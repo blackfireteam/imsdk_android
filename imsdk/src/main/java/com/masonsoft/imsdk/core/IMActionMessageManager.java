@@ -208,7 +208,7 @@ public class IMActionMessageManager {
                 @Override
                 public void onStateChanged(MessagePacket packet, int oldState, int newState) {
                     if (packet != mActionMessagePacket) {
-                        final Throwable e = new IllegalAccessError("invalid packet:" + Objects.defaultObjectTag(packet)
+                        final Throwable e = new IllegalStateException("invalid packet:" + Objects.defaultObjectTag(packet)
                                 + ", mActionMessagePacket:" + Objects.defaultObjectTag(mActionMessagePacket));
                         IMLog.e(e);
                         return;
@@ -300,7 +300,7 @@ public class IMActionMessageManager {
             @Nullable
             private MessagePacket buildMessagePacket() {
                 if (!mBuildActionMessagePacket.weakCompareAndSet(false, true)) {
-                    throw new IllegalAccessError("buildMessagePacket only support called once");
+                    throw new IllegalStateException("buildMessagePacket only support called once");
                 }
 
                 final int actionType = mActionMessage.getActionType();
@@ -373,7 +373,7 @@ public class IMActionMessageManager {
                     return deleteConversationActionMessagePacket;
                 }
 
-                final Throwable e = new IllegalAccessError("unknown action type:" + actionType + " " + mActionMessage.getActionObject());
+                final Throwable e = new IllegalStateException("unknown action type:" + actionType + " " + mActionMessage.getActionObject());
                 IMLog.e(e);
                 return null;
             }
@@ -382,12 +382,12 @@ public class IMActionMessageManager {
                                                 @NonNull final SessionProtoByteMessageWrapper target) {
                 final ActionMessagePacket actionMessagePacket = mActionMessagePacket;
                 if (actionMessagePacket == null) {
-                    final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected mActionMessagePacket is null");
+                    final Throwable e = new IllegalStateException(Objects.defaultObjectTag(this) + " unexpected mActionMessagePacket is null");
                     IMLog.e(e);
                     return false;
                 }
                 if (mSign != sign) {
-                    final Throwable e = new IllegalAccessError(Objects.defaultObjectTag(this) + " unexpected sign not match mSign:" + mSign + ", sign:" + sign);
+                    final Throwable e = new IllegalStateException(Objects.defaultObjectTag(this) + " unexpected sign not match mSign:" + mSign + ", sign:" + sign);
                     IMLog.e(e);
                     return false;
                 }
@@ -464,7 +464,7 @@ public class IMActionMessageManager {
                                 }
 
                                 if (!doNotNullProcessChatRInternal(target)) {
-                                    final Throwable e = new IllegalAccessError("unexpected. doNotNullProcessChatRInternal return false. sign:" + getSign());
+                                    final Throwable e = new IllegalStateException("unexpected. doNotNullProcessChatRInternal return false. sign:" + getSign());
                                     IMLog.e(e);
                                 }
                                 moveToState(STATE_SUCCESS);
@@ -544,7 +544,7 @@ public class IMActionMessageManager {
                                 }
 
                                 if (!doNotNullProcessConversationUpdateInternal(target)) {
-                                    final Throwable e = new IllegalAccessError("unexpected. doNotNullProcessLastReadMsgInternal return false. sign:" + getSign());
+                                    final Throwable e = new IllegalStateException("unexpected. doNotNullProcessLastReadMsgInternal return false. sign:" + getSign());
                                     IMLog.e(e);
                                 }
                                 moveToState(STATE_SUCCESS);
@@ -625,7 +625,7 @@ public class IMActionMessageManager {
                                 }
 
                                 if (!doNotNullProcessConversationUpdateInternal(target)) {
-                                    final Throwable e = new IllegalAccessError("unexpected. doNotNullProcessConversationUpdateInternal return false. sign:" + getSign());
+                                    final Throwable e = new IllegalStateException("unexpected. doNotNullProcessConversationUpdateInternal return false. sign:" + getSign());
                                     IMLog.e(e);
                                 }
                                 moveToState(STATE_SUCCESS);

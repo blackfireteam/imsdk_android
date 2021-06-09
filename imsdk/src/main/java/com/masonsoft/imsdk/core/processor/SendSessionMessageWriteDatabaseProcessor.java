@@ -142,7 +142,7 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                 // 返回 true, 终止后续 processor
                 return true;
             } else {
-                final Throwable e = new IllegalAccessError("updateLocalSendingMessage return false");
+                final Throwable e = new IllegalStateException("updateLocalSendingMessage return false");
                 IMLog.e(e);
             }
         }
@@ -235,11 +235,11 @@ public class SendSessionMessageWriteDatabaseProcessor extends SendSessionMessage
                     // 返回 true, 终止后续 processor
                     return true;
                 } else {
-                    final Throwable e = new IllegalAccessError("insertLocalSendingMessage return false");
+                    final Throwable e = new IllegalStateException("insertLocalSendingMessage return false");
                     IMLog.e(e);
                 }
             } else {
-                final Throwable e = new IllegalAccessError("insertMessage return false");
+                final Throwable e = new IllegalStateException("insertMessage return false");
                 IMLog.e(e);
             }
         }

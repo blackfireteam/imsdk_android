@@ -19,7 +19,7 @@ public class OtherMessage {
         @Override
         public void onStateChanged(MessagePacket packet, int oldState, int newState) {
             if (mMessagePacket != packet) {
-                final Throwable e = new IllegalAccessError("MessagePacket is not equal");
+                final Throwable e = new IllegalStateException("MessagePacket is not equal");
                 IMLog.e(e);
                 return;
             }

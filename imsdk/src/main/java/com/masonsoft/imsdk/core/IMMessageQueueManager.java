@@ -100,7 +100,7 @@ public class IMMessageQueueManager {
         public void run() {
             try {
                 if (!mReceivedMessageProcessor.doProcess(mSessionProtoByteMessageWrapper)) {
-                    Throwable e = new IllegalAccessError("ReceivedMessageTask SessionProtoByteMessageWrapper do process fail " + mSessionProtoByteMessageWrapper.toShortString());
+                    Throwable e = new IllegalStateException("ReceivedMessageTask SessionProtoByteMessageWrapper do process fail " + mSessionProtoByteMessageWrapper.toShortString());
                     IMLog.v(e);
                 }
             } catch (Throwable e) {
@@ -174,7 +174,7 @@ public class IMMessageQueueManager {
         public void run() {
             try {
                 if (!mSendSessionMessageProcessor.doProcess(mSessionMessage)) {
-                    Throwable e = new IllegalAccessError("SendSessionMessageTask IMSessionMessage do process fail");
+                    Throwable e = new IllegalStateException("SendSessionMessageTask IMSessionMessage do process fail");
                     IMLog.v(e);
 
                     mSessionMessage.getEnqueueCallback().onCallback(
@@ -253,7 +253,7 @@ public class IMMessageQueueManager {
         public void run() {
             try {
                 if (!mSendActionMessageProcessor.doProcess(mActionMessage)) {
-                    Throwable e = new IllegalAccessError("SendActionMessageTask mActionMessage do process fail");
+                    Throwable e = new IllegalStateException("SendActionMessageTask mActionMessage do process fail");
                     IMLog.v(e);
 
                     mActionMessage.getEnqueueCallback().onCallback(

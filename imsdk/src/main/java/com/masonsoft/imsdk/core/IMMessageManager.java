@@ -71,7 +71,7 @@ public class IMMessageManager {
                         message.localId.get()
                 );
                 if (localSendingMessage == null) {
-                    final Throwable e = new IllegalAccessError("localSendingMessage not found: " + message);
+                    final Throwable e = new IllegalStateException("localSendingMessage not found: " + message);
                     IMLog.e(e);
                 } else {
                     final long localSendingMessageLocalId = localSendingMessage.localId.get();
@@ -290,7 +290,7 @@ public class IMMessageManager {
                             conversationType,
                             targetUserId);
             if (conversation == null) {
-                final Throwable e = new IllegalAccessError("unexpected. conversation is null");
+                final Throwable e = new IllegalStateException("unexpected. conversation is null");
                 IMLog.e(e, "sessionUserId:%s, conversationType:%s, targetUserId:%s",
                         sessionUserId,
                         conversationType,

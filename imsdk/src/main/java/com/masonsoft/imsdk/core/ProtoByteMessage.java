@@ -776,7 +776,7 @@ public class ProtoByteMessage {
             } catch (Throwable e) {
                 IMLog.e(e);
             }
-            IMLog.e(new IllegalAccessError(), "fail to decode protoByteMessage:%s", protoByteMessage.toString());
+            IMLog.e(new IllegalStateException(), "fail to decode protoByteMessage:%s", protoByteMessage.toString());
             return null;
         }
 

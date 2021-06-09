@@ -79,7 +79,7 @@ public class TinyConversationUpdateProcessor extends ReceivedProtoMessageProtoTy
             if (!ConversationDatabaseProvider.getInstance().updateConversation(
                     sessionUserId,
                     conversationUpdate)) {
-                final Throwable e = new IllegalAccessError("unexpected updateConversation return false " + conversationUpdate);
+                final Throwable e = new IllegalStateException("unexpected updateConversation return false " + conversationUpdate);
                 IMLog.e(e);
             } else {
                 final long messageTime = protoMessageObject.getUpdateTime();

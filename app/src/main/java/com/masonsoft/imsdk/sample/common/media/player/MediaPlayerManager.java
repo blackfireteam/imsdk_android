@@ -110,7 +110,7 @@ public class MediaPlayerManager {
             File parent = FileUtil.getAppCacheDir();
             File cacheDir = new File(parent, CACHE_DIR_NAME);
             if (!FileUtil.createDir(cacheDir)) {
-                throw new IllegalAccessError("fail to create media cache dir, parent:" + parent + ", cacheDirName:" + CACHE_DIR_NAME);
+                throw new IllegalStateException("fail to create media cache dir, parent:" + parent + ", cacheDirName:" + CACHE_DIR_NAME);
             }
             FileUtil.createNewFileQuietly(new File(cacheDir, ".nomedia"));
             return cacheDir;

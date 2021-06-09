@@ -203,7 +203,7 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
                             conversationType,
                             targetUserId,
                             message)) {
-                        final Throwable e = new IllegalAccessError("unexpected insertMessage return false " + message);
+                        final Throwable e = new IllegalStateException("unexpected insertMessage return false " + message);
                         IMLog.e(e);
                     } else {
                         // 新消息入库成功
@@ -252,7 +252,7 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
                     if (requireUpdate) {
                         if (!MessageDatabaseProvider.getInstance().updateMessage(
                                 sessionUserId, conversationType, targetUserId, messageUpdate)) {
-                            final Throwable e = new IllegalAccessError("unexpected updateMessage return false " + messageUpdate);
+                            final Throwable e = new IllegalStateException("unexpected updateMessage return false " + messageUpdate);
                             IMLog.e(e);
                         }
                     }

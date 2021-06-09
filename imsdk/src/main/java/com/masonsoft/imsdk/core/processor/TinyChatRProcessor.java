@@ -133,7 +133,7 @@ public class TinyChatRProcessor extends ReceivedProtoMessageProtoTypeProcessor<P
                             message
                     );
                 } else {
-                    final Throwable e = new IllegalAccessError("unexpected insertMessage return false " + message);
+                    final Throwable e = new IllegalStateException("unexpected insertMessage return false " + message);
                     IMLog.e(e);
                 }
             } else {
@@ -151,7 +151,7 @@ public class TinyChatRProcessor extends ReceivedProtoMessageProtoTypeProcessor<P
                             conversationType,
                             targetUserId,
                             messageUpdate)) {
-                        final Throwable e = new IllegalAccessError("unexpected updateMessage return false " + messageUpdate);
+                        final Throwable e = new IllegalStateException("unexpected updateMessage return false " + messageUpdate);
                         IMLog.e(e);
                     }
                 }
@@ -177,7 +177,7 @@ public class TinyChatRProcessor extends ReceivedProtoMessageProtoTypeProcessor<P
                                 conversationType,
                                 targetUserId,
                                 messageUpdate)) {
-                            final Throwable e = new IllegalAccessError("unexpected updateMessage return false " + messageUpdate);
+                            final Throwable e = new IllegalStateException("unexpected updateMessage return false " + messageUpdate);
                             IMLog.e(e);
                         }
                     } else {
@@ -188,7 +188,7 @@ public class TinyChatRProcessor extends ReceivedProtoMessageProtoTypeProcessor<P
                                 targetUserId,
                                 dbMessage.localBlockId.get(),
                                 generateBlockId)) {
-                            final Throwable e = new IllegalAccessError("unexpected updateBlockId return false");
+                            final Throwable e = new IllegalStateException("unexpected updateBlockId return false");
                             IMLog.e(e);
                         }
                     }

@@ -235,7 +235,7 @@ public class ConversationDatabaseProvider {
                     + DatabaseHelper.ColumnsConversation.C_DELETE + "=0";
             cursor = db.rawQuery(sql, null);
             if (!cursor.moveToFirst()) {
-                throw new IllegalAccessError("unexpected. getAllUnreadCount cursor.moveToFirst return false.");
+                throw new IllegalStateException("unexpected. getAllUnreadCount cursor.moveToFirst return false.");
             }
             final int count = CursorUtil.getInt(cursor, 0);
             IMLog.v("getAllUnreadCount sessionUserId:%s, count:%s", sessionUserId, count);
@@ -441,8 +441,7 @@ public class ConversationDatabaseProvider {
                     null,
                     conversation.toContentValues());
             if (rowId == -1) {
-                IMLog.e(
-                        new IllegalAccessError("insert conversation fail"),
+                IMLog.e(new IllegalStateException("insert conversation fail"),
                         "fail to insert conversation with sessionUserId:%s, localConversationType:%s, targetUserId:%s",
                         sessionUserId, conversation.localConversationType.get(), conversation.targetUserId.get()
                 );
@@ -537,7 +536,7 @@ public class ConversationDatabaseProvider {
                         readConversation.localConversationType.get(),
                         readConversation.targetUserId.get());
             } else {
-                final Throwable e = new IllegalAccessError("conversation not found with sessionUserId:" + sessionUserId + ", conversation localId:" + conversation.localId.get());
+                final Throwable e = new IllegalStateException("conversation not found with sessionUserId:" + sessionUserId + ", conversation localId:" + conversation.localId.get());
                 IMLog.e(e);
             }
             return rowsAffected > 0;

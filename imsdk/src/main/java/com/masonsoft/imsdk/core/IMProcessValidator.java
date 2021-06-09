@@ -12,7 +12,7 @@ public class IMProcessValidator {
      */
     public static void validateProcess() {
         if (!ProcessManager.getInstance().isMainProcess()) {
-            final Throwable e = new IllegalAccessError("current process is not main process");
+            final Throwable e = new IllegalStateException("current process is not main process");
             IMLog.e(e);
             RuntimeMode.fixme(e);
         }

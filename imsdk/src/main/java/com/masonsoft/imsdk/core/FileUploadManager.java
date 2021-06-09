@@ -126,7 +126,7 @@ public class FileUploadManager {
                 MemoryFullCache.DEFAULT.addFullCache(filePath, new CacheEntity(outMimeType[0], accessUrl));
                 return accessUrl;
             }
-            throw new IllegalAccessError("provider not found");
+            throw new IllegalStateException("provider not found");
         }
 
         /**
@@ -145,7 +145,7 @@ public class FileUploadManager {
                 try {
                     tmpFile = TmpFileManager.getInstance().createNewTmpFileQuietly("__compress_file_copy_", null);
                     if (tmpFile == null) {
-                        throw new IllegalAccessError("tmp file create fail");
+                        throw new IllegalStateException("tmp file create fail");
                     }
                     is = ContextUtil.getContext().getContentResolver().openInputStream(uri);
                     IOUtil.copy(is, tmpFile, null, null);
@@ -165,7 +165,7 @@ public class FileUploadManager {
 
             final File file = new File(filePath);
             if (!FileUtil.isFile(file)) {
-                throw new IllegalAccessError(filePath + " is not a exists file");
+                throw new IllegalStateException(filePath + " is not a exists file");
             }
             final Uri targetFileUri = Uri.fromFile(file);
 
