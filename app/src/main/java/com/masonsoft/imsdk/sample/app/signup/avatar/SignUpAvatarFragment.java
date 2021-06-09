@@ -74,6 +74,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = ImsdkSampleSignUpAvatarFragmentBinding.inflate(inflater, container, false);
+        mBinding.pickAvatar.setUrl("res://app/" + R.drawable.imsdk_sample_ic_add);
 
         validateSubmitState();
 
