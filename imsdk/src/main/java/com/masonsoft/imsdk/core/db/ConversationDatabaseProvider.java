@@ -508,8 +508,7 @@ public class ConversationDatabaseProvider {
                     whereArgs.toArray(new String[]{})
             );
             if (rowsAffected != 1) {
-                IMLog.e(
-                        new IllegalAccessException("update conversation fail"),
+                IMLog.e(new IllegalStateException("update conversation fail"),
                         "unexpected. update conversation with sessionUserId:% conversation localId:%s affected %s rows",
                         sessionUserId,
                         conversation.localId.get(),

@@ -163,7 +163,7 @@ public class UserInfoDatabaseProvider {
             );
 
             if (rowId <= 0) {
-                Throwable e = new IllegalAccessException("insertUserInfo for user id:" + user.uid.get() + " return rowId " + rowId);
+                Throwable e = new IllegalStateException("insertUserInfo for user id:" + user.uid.get() + " return rowId " + rowId);
                 IMLog.e(e);
                 RuntimeMode.fixme(e);
             } else {
@@ -253,7 +253,7 @@ public class UserInfoDatabaseProvider {
             );
 
             if (rowsAffected != 1) {
-                Throwable e = new IllegalAccessException("updateUserInfo for user id:" + user.uid.get() + " rowsAffected " + rowsAffected);
+                Throwable e = new IllegalStateException("updateUserInfo for user id:" + user.uid.get() + " rowsAffected " + rowsAffected);
                 IMLog.e(e);
                 RuntimeMode.fixme(e);
                 return false;

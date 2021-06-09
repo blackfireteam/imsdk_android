@@ -111,7 +111,7 @@ public class UserInfoSyncDatabaseProvider {
             );
 
             if (rowId <= 0) {
-                Throwable e = new IllegalAccessException("insertUserInfoSync for user id:" + userInfoSync.uid.get() + " return rowId " + rowId);
+                Throwable e = new IllegalStateException("insertUserInfoSync for user id:" + userInfoSync.uid.get() + " return rowId " + rowId);
                 IMLog.e(e);
                 RuntimeMode.fixme(e);
             } else {
@@ -198,7 +198,7 @@ public class UserInfoSyncDatabaseProvider {
             );
 
             if (rowsAffected != 1) {
-                Throwable e = new IllegalAccessException("updateUserInfoSync for user id:" + userInfoSync.uid.get() + " rowsAffected " + rowsAffected);
+                Throwable e = new IllegalStateException("updateUserInfoSync for user id:" + userInfoSync.uid.get() + " rowsAffected " + rowsAffected);
                 IMLog.e(e);
                 RuntimeMode.fixme(e);
                 return false;

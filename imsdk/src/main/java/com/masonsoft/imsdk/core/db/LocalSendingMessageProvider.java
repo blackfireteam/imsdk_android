@@ -601,8 +601,7 @@ public class LocalSendingMessageProvider {
                     whereArgs.toArray(new String[]{})
             );
             if (rowsAffected != 1) {
-                IMLog.e(
-                        new IllegalAccessException("remove localSendingMessage fail"),
+                IMLog.e(new IllegalStateException("remove localSendingMessage fail"),
                         "unexpected. remove localSendingMessage with sessionUserId:% localSendingMessage localId:%s affected %s rows",
                         sessionUserId,
                         localId,
