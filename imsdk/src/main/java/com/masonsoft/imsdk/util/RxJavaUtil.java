@@ -12,7 +12,7 @@ public class RxJavaUtil {
     public static void setErrorHandler() {
         RxJavaPlugins.setErrorHandler(e -> {
             e.printStackTrace();
-            IMLog.w(new RuntimeException("RxJavaUtil", e));
+            IMLog.e(new RuntimeException("RxJavaUtil", e));
         });
     }
 
