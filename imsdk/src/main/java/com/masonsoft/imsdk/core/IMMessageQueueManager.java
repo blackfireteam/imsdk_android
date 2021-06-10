@@ -100,29 +100,32 @@ public class IMMessageQueueManager {
 
             mTimeDiffDebugHelper = new TimeDiffDebugHelper(Objects.defaultObjectTag(this)
                     + " [type:" + sessionProtoByteMessageWrapper.getProtoByteMessageWrapper().getOrigin().getType() + "]");
+            markAndPrint(1);
+        }
+
+        private void markAndPrint(int step) {
+            final StringBuilder builder = new StringBuilder();
+            builder.append("[step:").append(step).append("]");
+            mReceivedMessageQueue.printDetail(builder);
+            mTimeDiffDebugHelper.mark();
+            final long diffWithLastMs = mTimeDiffDebugHelper.getDiffWithLastMs();
+            if (diffWithLastMs > 10L) {
+                builder.append("[WARN slow:").append(diffWithLastMs).append("]");
+            }
+            mTimeDiffDebugHelper.print(builder.toString());
         }
 
         @Override
         public void run() {
             try {
-                final StringBuilder builder = new StringBuilder();
-                mReceivedMessageQueue.printDetail(builder);
-                mTimeDiffDebugHelper.mark();
-                mTimeDiffDebugHelper.print(builder.toString());
+                markAndPrint(2);
 
                 if (!mReceivedMessageProcessor.doProcess(mSessionProtoByteMessageWrapper)) {
                     Throwable e = new IllegalStateException("ReceivedMessageTask SessionProtoByteMessageWrapper do process fail " + mSessionProtoByteMessageWrapper.toShortString());
                     IMLog.v(e);
                 }
 
-                mTimeDiffDebugHelper.mark();
-                builder.setLength(0);
-                mReceivedMessageQueue.printDetail(builder);
-                final long diffWithLastMs = mTimeDiffDebugHelper.getDiffWithLastMs();
-                if (diffWithLastMs > 30L) {
-                    builder.append("[WARN slow:").append(diffWithLastMs).append("]");
-                }
-                mTimeDiffDebugHelper.print(builder.toString());
+                markAndPrint(3);
             } catch (Throwable e) {
                 IMLog.e(e, "SessionProtoByteMessageWrapper:%s", mSessionProtoByteMessageWrapper.toShortString());
                 RuntimeMode.fixme(e);
