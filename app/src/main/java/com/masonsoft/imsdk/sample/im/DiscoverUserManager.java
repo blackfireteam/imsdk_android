@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.idonans.core.Singleton;
+import io.github.idonans.core.thread.TaskQueue;
 
 public class DiscoverUserManager {
 
@@ -29,6 +30,8 @@ public class DiscoverUserManager {
     public static DiscoverUserManager getInstance() {
         return INSTANCE.get();
     }
+
+    private final TaskQueue mAddOrRemoveOnlineUserQueue = new TaskQueue(1);
 
     @NonNull
     private final List<Long> mOnlineUserList = new ArrayList<>();
@@ -50,6 +53,10 @@ public class DiscoverUserManager {
         }
     }
 
+    private void addOnlineAsync(long userId) {
+        mAddOrRemoveOnlineUserQueue.enqueue(() -> addOnline(userId));
+    }
+
     private void addOnline(Long userId) {
         SampleLog.v(Objects.defaultObjectTag(this) + " addOnline userId:%s", userId);
         synchronized (mOnlineUserList) {
@@ -59,6 +66,10 @@ public class DiscoverUserManager {
         }
 
         DiscoverUserObservable.DEFAULT.notifyDiscoverUserOnline(userId);
+    }
+
+    private void removeOnlineAsync(long userId) {
+        mAddOrRemoveOnlineUserQueue.enqueue(() -> removeOnline(userId));
     }
 
     private void removeOnline(Long userId) {
@@ -82,12 +93,12 @@ public class DiscoverUserManager {
             if (protoMessageObject instanceof ProtoMessage.ProfileOnline) {
                 final MSIMUserInfo.Editor userInfo = createUserInfo((ProtoMessage.ProfileOnline) protoMessageObject);
                 MSIMManager.getInstance().getUserInfoManager().insertOrUpdateUserInfo(userInfo);
-                addOnline(userInfo.getUserInfo().getUserId());
+                addOnlineAsync(userInfo.getUserInfo().getUserId());
                 return true;
             }
 
             if (protoMessageObject instanceof ProtoMessage.UsrOffline) {
-                removeOnline(((ProtoMessage.UsrOffline) protoMessageObject).getUid());
+                removeOnlineAsync(((ProtoMessage.UsrOffline) protoMessageObject).getUid());
                 return true;
             }
 
