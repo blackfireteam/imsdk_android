@@ -15,6 +15,8 @@ import com.masonsoft.imsdk.core.processor.SendSessionMessageRecoveryProcessor;
 import com.masonsoft.imsdk.core.processor.SendSessionMessageWriteDatabaseProcessor;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.MultiProcessor;
+import com.masonsoft.imsdk.util.Objects;
+import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.TaskQueue;
@@ -89,20 +91,38 @@ public class IMMessageQueueManager {
 
     private class ReceivedMessageTask implements Runnable {
 
+        private final TimeDiffDebugHelper mTimeDiffDebugHelper;
         @NonNull
         private final SessionProtoByteMessageWrapper mSessionProtoByteMessageWrapper;
 
         private ReceivedMessageTask(@NonNull SessionProtoByteMessageWrapper sessionProtoByteMessageWrapper) {
             mSessionProtoByteMessageWrapper = sessionProtoByteMessageWrapper;
+
+            mTimeDiffDebugHelper = new TimeDiffDebugHelper(Objects.defaultObjectTag(this)
+                    + " [type:" + sessionProtoByteMessageWrapper.getProtoByteMessageWrapper().getOrigin().getType() + "]");
         }
 
         @Override
         public void run() {
             try {
+                final StringBuilder builder = new StringBuilder();
+                mReceivedMessageQueue.printDetail(builder);
+                mTimeDiffDebugHelper.mark();
+                mTimeDiffDebugHelper.print(builder.toString());
+
                 if (!mReceivedMessageProcessor.doProcess(mSessionProtoByteMessageWrapper)) {
                     Throwable e = new IllegalStateException("ReceivedMessageTask SessionProtoByteMessageWrapper do process fail " + mSessionProtoByteMessageWrapper.toShortString());
                     IMLog.v(e);
                 }
+
+                mTimeDiffDebugHelper.mark();
+                builder.setLength(0);
+                mReceivedMessageQueue.printDetail(builder);
+                final long diffWithLastMs = mTimeDiffDebugHelper.getDiffWithLastMs();
+                if (diffWithLastMs > 30L) {
+                    builder.append("[WARN slow:").append(diffWithLastMs).append("]");
+                }
+                mTimeDiffDebugHelper.print(builder.toString());
             } catch (Throwable e) {
                 IMLog.e(e, "SessionProtoByteMessageWrapper:%s", mSessionProtoByteMessageWrapper.toShortString());
                 RuntimeMode.fixme(e);

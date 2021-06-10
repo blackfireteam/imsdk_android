@@ -53,6 +53,10 @@ public class DiscoverUserManager {
         }
     }
 
+    private void insertOrUpdateUserInfoAsync(MSIMUserInfo.Editor userInfo) {
+        mAddOrRemoveOnlineUserQueue.enqueue(() -> MSIMManager.getInstance().getUserInfoManager().insertOrUpdateUserInfo(userInfo));
+    }
+
     private void addOnlineAsync(long userId) {
         mAddOrRemoveOnlineUserQueue.enqueue(() -> addOnline(userId));
     }
@@ -92,7 +96,7 @@ public class DiscoverUserManager {
 
             if (protoMessageObject instanceof ProtoMessage.ProfileOnline) {
                 final MSIMUserInfo.Editor userInfo = createUserInfo((ProtoMessage.ProfileOnline) protoMessageObject);
-                MSIMManager.getInstance().getUserInfoManager().insertOrUpdateUserInfo(userInfo);
+                insertOrUpdateUserInfoAsync(userInfo);
                 addOnlineAsync(userInfo.getUserInfo().getUserId());
                 return true;
             }

@@ -30,6 +30,10 @@ public class TimeDiffDebugHelper {
         mMarkCount++;
     }
 
+    public long getDiffWithLastMs() {
+        return TimeUnit.NANOSECONDS.toMillis(mDiffWithLast);
+    }
+
     public void print() {
         this.print("");
     }
