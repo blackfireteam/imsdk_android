@@ -120,14 +120,17 @@ public class ConversationFragment extends SystemInsetsFragment {
                     .add((transaction, groupArrayList) -> {
                         if (groupArrayList.getGroupItemsSize(getGroupContent()) == 0) {
                             // request init page
-                            Threads.postUi(() -> {
-                                if (mPresenter != null) {
-                                    SampleLog.v(tag + " use requestInit instead of merge");
-                                    if (!mPresenter.getInitRequestStatus().isLoading()) {
-                                        mPresenter.requestInit(true);
+                            ConversationFragmentPresenter presenter = mPresenter;
+                            if (presenter != null && !presenter.getInitRequestStatus().isLoading()) {
+                                Threads.postUi(() -> {
+                                    if (mPresenter != null) {
+                                        if (!mPresenter.getInitRequestStatus().isLoading()) {
+                                            SampleLog.v(tag + " use requestInit instead of merge");
+                                            mPresenter.requestInit(true);
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
                             return;
                         }
 
