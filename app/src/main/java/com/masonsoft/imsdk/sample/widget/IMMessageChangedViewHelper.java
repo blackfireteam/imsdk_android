@@ -159,6 +159,12 @@ public abstract class IMMessageChangedViewHelper {
                 requestLoadData(false);
             });
         }
-    });
+    }) {
+        @Nullable
+        @Override
+        protected String getOnMessageChangedTag(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
+            return super.getOnMessageCreatedTag(sessionUserId, conversationType, targetUserId, localMessageId);
+        }
+    };
 
 }
