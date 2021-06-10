@@ -232,9 +232,6 @@ public abstract class MSIMConversationChangedViewHelper {
                         firstMatchRefreshArgs.conversationId
                 );
                 requestLoadData(false);
-                requestLoadData(false);
-                requestLoadData(false);
-                requestLoadData(false);
             });
         }
     }) {
