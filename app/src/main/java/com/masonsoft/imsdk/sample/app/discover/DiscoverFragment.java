@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -132,7 +133,9 @@ public class DiscoverFragment extends SystemInsetsFragment {
             setClearContentWhenRequestInit(true);
         }
 
+        @WorkerThread
         public void removeUser(@NonNull final UnionTypeItemObject unionTypeItemObject) {
+            Preconditions.checkArgument(!Threads.isUi());
             getAdapter().getData().beginTransaction()
                     .add((transaction, groupArrayList) -> {
                         final List<UnionTypeItemObject> groupDefaultList = groupArrayList.getGroupItems(getGroupContent());
@@ -156,7 +159,9 @@ public class DiscoverFragment extends SystemInsetsFragment {
 
         }
 
+        @WorkerThread
         public void replaceUser(@NonNull final UnionTypeItemObject unionTypeItemObject) {
+            Preconditions.checkArgument(!Threads.isUi());
             getAdapter().getData().beginTransaction()
                     .add((transaction, groupArrayList) -> {
                         if (groupArrayList.getGroupItemsSize(getGroupContent()) == 0) {

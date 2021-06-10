@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import io.github.idonans.core.thread.Threads;
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.uniontype.DeepDiff;
@@ -38,32 +37,22 @@ public class DiscoverFragmentPresenter extends PagePresenter<UnionTypeItemObject
     private final DiscoverUserObservable.DiscoverUserObserver mDiscoverUserObserver = new DiscoverUserObservable.DiscoverUserObserver() {
         @Override
         public void onDiscoverUserOnline(long userId) {
-            if (getView() == null) {
+            final DiscoverFragment.ViewImpl view = getView();
+            if (view == null) {
                 return;
             }
             final UnionTypeItemObject unionTypeItemObject = create(userId);
-            Threads.postUi(() -> {
-                final DiscoverFragment.ViewImpl view = getView();
-                if (view == null) {
-                    return;
-                }
-                view.replaceUser(unionTypeItemObject);
-            });
+            view.replaceUser(unionTypeItemObject);
         }
 
         @Override
         public void onDiscoverUserOffline(long userId) {
-            if (getView() == null) {
+            final DiscoverFragment.ViewImpl view = getView();
+            if (view == null) {
                 return;
             }
             final UnionTypeItemObject unionTypeItemObject = create(userId);
-            Threads.postUi(() -> {
-                final DiscoverFragment.ViewImpl view = getView();
-                if (view == null) {
-                    return;
-                }
-                view.removeUser(unionTypeItemObject);
-            });
+            view.removeUser(unionTypeItemObject);
         }
     };
 
