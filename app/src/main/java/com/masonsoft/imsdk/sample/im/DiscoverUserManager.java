@@ -53,12 +53,12 @@ public class DiscoverUserManager {
         }
     }
 
-    private void insertOrUpdateUserInfoAsync(MSIMUserInfo.Editor userInfo) {
-        mAddOrRemoveOnlineUserQueue.enqueue(() -> MSIMManager.getInstance().getUserInfoManager().insertOrUpdateUserInfo(userInfo));
-    }
-
-    private void addOnlineAsync(long userId) {
-        mAddOrRemoveOnlineUserQueue.enqueue(() -> addOnline(userId));
+    private void addOnlineAsync(ProtoMessage.ProfileOnline profileOnline) {
+        mAddOrRemoveOnlineUserQueue.enqueue(() -> {
+            final MSIMUserInfo.Editor userInfo = createUserInfo(profileOnline);
+            MSIMManager.getInstance().getUserInfoManager().insertOrUpdateUserInfo(userInfo);
+            addOnline(userInfo.getUserInfo().getUserId());
+        });
     }
 
     private void addOnline(Long userId) {
@@ -95,9 +95,7 @@ public class DiscoverUserManager {
             }
 
             if (protoMessageObject instanceof ProtoMessage.ProfileOnline) {
-                final MSIMUserInfo.Editor userInfo = createUserInfo((ProtoMessage.ProfileOnline) protoMessageObject);
-                insertOrUpdateUserInfoAsync(userInfo);
-                addOnlineAsync(userInfo.getUserInfo().getUserId());
+                addOnlineAsync((ProtoMessage.ProfileOnline) protoMessageObject);
                 return true;
             }
 
