@@ -131,6 +131,7 @@ public class ConversationFragment extends SystemInsetsFragment {
                     .add((transaction, groupArrayList) -> {
                         if (groupArrayList.getGroupItemsSize(getGroupContent()) == 0) {
                             // request init page
+                            SampleLog.v(tag + " try use requestInit instead of merge");
                             ConversationFragmentPresenter presenter = mPresenter;
                             if (presenter != null && !presenter.getInitRequestStatus().isLoading()) {
                                 Threads.postUi(() -> {
@@ -189,7 +190,7 @@ public class ConversationFragment extends SystemInsetsFragment {
                             return diff == 0 ? 0 : (diff < 0 ? 1 : -1);
                         });
                         innerMergeTimeDiffDebugHelper.mark();
-                        innerMergeTimeDiffDebugHelper.print("sort");
+                        innerMergeTimeDiffDebugHelper.print("sort current list size:" + currentList.size());
 
                         groupArrayList.removeGroup(getGroupHeader());
                     })
@@ -200,7 +201,7 @@ public class ConversationFragment extends SystemInsetsFragment {
                         }
                         //noinspection ConstantConditions
                         final int position = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
-                        if (position <= 2) {
+                        if (position <= 0) {
                             autoScrollToTop[0] = true;
                         }
                     }, () -> {

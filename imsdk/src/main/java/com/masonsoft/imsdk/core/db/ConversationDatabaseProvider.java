@@ -522,8 +522,9 @@ public class ConversationDatabaseProvider {
             }
             MemoryFullCache.DEFAULT.removeFullCache(sessionUserId, conversation.localId.get());
 
-            // 当会话的未读消息数发生更新时，需要移除未读消息总数的缓存
-            if (!conversation.localUnreadCount.isUnset()) {
+            // 当会话的未读消息数发生更新或者删除状态发生更新时，需要移除未读消息总数的缓存
+            if (!conversation.localUnreadCount.isUnset()
+                    || !conversation.delete.isUnset()) {
                 MemoryAllUnreadCountCache.DEFAULT.removeAllUnreadCountCache(sessionUserId);
             }
 
