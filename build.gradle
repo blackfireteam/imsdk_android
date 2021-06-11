@@ -1,5 +1,5 @@
 buildscript {
-    apply from: 'https://raw.githubusercontent.com/idonans/Example/master/versions.gradle'
+    apply from: 'https://raw.githubusercontent.com/idonans/Example/master/versions.gradle?'
     rootProject.ext.bcfg.addRepos(repositories)
     dependencies {
         classpath rootProject.ext.bcfg.deps.android_gradle_plugin
