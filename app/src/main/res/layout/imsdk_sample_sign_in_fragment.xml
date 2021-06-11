@@ -104,8 +104,10 @@
         android:padding="15dp"
         android:textColor="@android:color/darker_gray"
         android:textSize="12sp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/submit"
-        tools:text="connect state" />
+        tools:text="connect state"
+        tools:visibility="visible" />
 
     <io.github.idonans.systeminsets.SystemInsetsFrameLayout
         android:id="@+id/bottom_system_insets"
