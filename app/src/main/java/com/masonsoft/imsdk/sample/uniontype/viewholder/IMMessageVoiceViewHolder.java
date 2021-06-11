@@ -63,6 +63,10 @@ public abstract class IMMessageVoiceViewHolder extends IMMessageViewHolder {
         if (element != null) {
             durationMs = element.getDurationMs();
         }
+
+        if (durationMs < 1000L) {
+            durationMs = 1000L;
+        }
         mAudioDurationText.setText(durationMs / 1000 + " ''");
 
         mAudioView.setOnLongClickListener(v -> {
