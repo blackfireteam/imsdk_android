@@ -191,7 +191,9 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                 final int position = viewHolder.getAdapterPosition();
                 mUnionTypeMediaData.pagerPendingIndex = Math.max(position, 0);
                 notifyMediaDataChanged();
-                mPagerView.show();
+                mPagerView.mDataAdapter.getData().beginTransaction().add((transaction, groupArrayList) -> {
+                    // ignore
+                }).commit(() -> mPagerView.show());
             });
 
             mRecyclerView.setAdapter(mDataAdapter);
