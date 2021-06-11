@@ -15,5 +15,7 @@
         <item name="android:progressDrawable">
             @drawable/imsdk_sample_progress_view_progress_drawable
         </item>
+        <item name="includeProgressStart">true</item>
+        <item name="includeProgressEnd">true</item>
     </style>
 </resources>

@@ -93,7 +93,9 @@ public class ImageLayout extends ClipLayout {
                 GenericDraweeHierarchyBuilder.newInstance(context.getResources())
                         .setActualImageScaleType(getScaleType(mScaleType))
                         .setPlaceholderImage(mPlaceHolderLoading)
+                        .setPlaceholderImageScaleType(ScalingUtils.ScaleType.FIT_XY)
                         .setFailureImage(mPlaceHolderFail)
+                        .setFailureImageScaleType(ScalingUtils.ScaleType.FIT_XY)
                         .build();
         mDraweeView.setHierarchy(hierarchy);
         addView(mDraweeView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);

@@ -43,11 +43,16 @@ public class ProgressView extends View {
     private float mCurrentProgress;
     private final Rect mProgressBounds = new Rect();
 
+    private boolean mIncludeProgressStart = true;
+    private boolean mIncludeProgressEnd = true;
+
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ProgressView, defStyleAttr,
                 defStyleRes);
         mOrientation = a.getInt(R.styleable.ProgressView_android_orientation, mOrientation);
         mProgressDrawable = a.getDrawable(R.styleable.ProgressView_android_progressDrawable);
+        mIncludeProgressStart = a.getBoolean(R.styleable.ProgressView_includeProgressStart, mIncludeProgressStart);
+        mIncludeProgressEnd = a.getBoolean(R.styleable.ProgressView_includeProgressEnd, mIncludeProgressEnd);
         a.recycle();
 
         if (isInEditMode()) {
@@ -99,6 +104,16 @@ public class ProgressView extends View {
         super.onDraw(canvas);
         final Drawable drawable = mProgressDrawable;
         if (drawable == null) {
+            return;
+        }
+
+        final int progressStart = 0;
+        final int progressEnd = 1;
+        if (mCurrentProgress == progressStart && !mIncludeProgressStart) {
+            return;
+        }
+
+        if (mCurrentProgress == progressEnd && !mIncludeProgressEnd) {
             return;
         }
 

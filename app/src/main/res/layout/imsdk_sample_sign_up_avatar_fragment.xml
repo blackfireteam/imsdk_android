@@ -9,6 +9,7 @@
         android:id="@+id/pick_avatar"
         android:layout_width="224dp"
         android:layout_height="224dp"
+        app:imagePlaceHolderLoading="@drawable/imsdk_sample_ic_add_center_inside"
         app:layout_constraintBottom_toTopOf="@id/submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,7 +20,8 @@
             android:id="@+id/progress_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            app:includeProgressStart="false" />
     </com.masonsoft.imsdk.sample.widget.ImageLayout>
 
     <Button
