@@ -70,6 +70,8 @@
                     android:id="@+id/image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    app:imagePlaceHolderFail="#d1d1d1"
+                    app:imagePlaceHolderLoading="#d1d1d1"
                     app:roundSize="16dp" />
             </com.masonsoft.imsdk.sample.widget.ResizeImageView>
         </com.google.android.flexbox.FlexboxLayout>
