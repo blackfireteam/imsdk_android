@@ -105,6 +105,16 @@ public class ConversationFragment extends SystemInsetsFragment {
         mViewImpl = null;
     }
 
+    private static void smoothScrollToPosition(RecyclerView recyclerView, int position) {
+        SampleLog.v("smoothScrollToPosition recyclerView:%s position:%s", recyclerView, position);
+        recyclerView.smoothScrollToPosition(position);
+    }
+
+    private static void scrollToPosition(RecyclerView recyclerView, int position) {
+        SampleLog.v("scrollToPosition recyclerView:%s position:%s", recyclerView, position);
+        recyclerView.scrollToPosition(position);
+    }
+
     class ViewImpl extends UnionTypeStatusPageView<GeneralResult> {
 
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
@@ -116,6 +126,7 @@ public class ConversationFragment extends SystemInsetsFragment {
         void mergeSortedConversationList(@NonNull final List<UnionTypeItemObject> unionTypeItemObjectList) {
             final String tag = Objects.defaultObjectTag(this) + "[mergeSortedConversationList][" + System.currentTimeMillis() + "][size:]" + unionTypeItemObjectList.size();
             SampleLog.v(tag);
+            final boolean[] autoScrollToTop = {false};
             getAdapter().getData().beginTransaction()
                     .add((transaction, groupArrayList) -> {
                         if (groupArrayList.getGroupItemsSize(getGroupContent()) == 0) {
@@ -182,7 +193,25 @@ public class ConversationFragment extends SystemInsetsFragment {
 
                         groupArrayList.removeGroup(getGroupHeader());
                     })
-                    .commit();
+                    .commit(() -> {
+                        final ImsdkSampleConversationFragmentBinding binding = mBinding;
+                        if (binding == null) {
+                            return;
+                        }
+                        //noinspection ConstantConditions
+                        final int position = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+                        if (position <= 2) {
+                            autoScrollToTop[0] = true;
+                        }
+                    }, () -> {
+                        final ImsdkSampleConversationFragmentBinding binding = mBinding;
+                        if (binding == null) {
+                            return;
+                        }
+                        if (autoScrollToTop[0]) {
+                            scrollToPosition(binding.recyclerView, 0);
+                        }
+                    });
         }
     }
 
