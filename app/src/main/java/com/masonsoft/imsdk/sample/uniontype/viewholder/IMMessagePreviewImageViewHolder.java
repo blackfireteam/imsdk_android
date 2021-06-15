@@ -4,11 +4,14 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.masonsoft.imsdk.MSIMImageElement;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
+import com.masonsoft.imsdk.sample.util.UrlUtil;
 import com.masonsoft.imsdk.sample.widget.ThumbPhotoDraweeView;
 
 import io.github.idonans.uniontype.Host;
@@ -32,7 +35,15 @@ public class IMMessagePreviewImageViewHolder extends IMMessageViewHolder {
         if (element != null) {
             url = element.getUrl();
         }
-        mImage.setPhotoUri(url == null ? null : Uri.parse(url));
+
+        final ImageRequest imageRequest;
+        if (url == null) {
+            imageRequest = null;
+        } else {
+            imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(UrlUtil.alignUrl(url)))
+                    .build();
+        }
+        mImage.setImageUrl(null, imageRequest);
 
         mImage.setOnViewTapListener((view, x, y) -> {
             UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();

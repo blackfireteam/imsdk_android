@@ -4,6 +4,9 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.common.ItemClickUnionTypeAdapter;
@@ -12,6 +15,7 @@ import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplMediaPicke
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.util.Objects;
 
+import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
@@ -41,7 +45,16 @@ public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
             ViewUtil.setVisibilityIfChanged(mBinding.videoFlag, View.GONE);
             mBinding.durationText.setText(null);
         }
-        mBinding.image.setPhotoUri(mediaInfo.uri);
+
+        // grid image resize 80dp
+        mBinding.image.setImageUrl(
+                ImageRequestBuilder.newBuilderWithSource(mediaInfo.uri)
+                        .setResizeOptions(ResizeOptions.forSquareSize(DimenUtil.dp2px(80)))
+                        .setCacheChoice(ImageRequest.CacheChoice.DEFAULT)
+                        .build(),
+                ImageRequestBuilder.newBuilderWithSource(mediaInfo.uri)
+                        .build()
+        );
 
         mBinding.image.setOnPhotoTapListener((view, x, y) -> {
             if (itemObject.getExtHolderItemClick1() != null) {

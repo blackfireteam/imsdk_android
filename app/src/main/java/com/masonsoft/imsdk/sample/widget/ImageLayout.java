@@ -23,6 +23,7 @@ import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.masonsoft.imsdk.sample.R;
+import com.masonsoft.imsdk.sample.util.UrlUtil;
 
 import io.github.idonans.core.util.DimenUtil;
 
@@ -128,7 +129,7 @@ public class ImageLayout extends ClipLayout {
     public void setImageUrl(@Nullable String thumb, @Nullable String... firstAvailable) {
         ImageRequest thumbRequest = null;
         if (thumb != null) {
-            thumbRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(alignUrl(thumb)))
+            thumbRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(UrlUtil.alignUrl(thumb)))
                     .setResizeOptions(createResizeOptions())
                     .setCacheChoice(createCacheChoice())
                     .build();
@@ -146,7 +147,7 @@ public class ImageLayout extends ClipLayout {
                 firstAvailableRequest[i] = null;
                 continue;
             }
-            firstAvailableRequest[i] = ImageRequestBuilder.newBuilderWithSource(Uri.parse(alignUrl(url)))
+            firstAvailableRequest[i] = ImageRequestBuilder.newBuilderWithSource(Uri.parse(UrlUtil.alignUrl(url)))
                     .setResizeOptions(createResizeOptions())
                     .setCacheChoice(createCacheChoice())
                     .build();
@@ -162,16 +163,6 @@ public class ImageLayout extends ClipLayout {
                 .setAutoPlayAnimations(mAutoPlay)
                 .build();
         mDraweeView.setController(controller);
-    }
-
-    @Nullable
-    public String alignUrl(@Nullable String url) {
-        if (url != null) {
-            if (url.startsWith("/")) {
-                url = "file://" + url;
-            }
-        }
-        return url;
     }
 
     private static ScalingUtils.ScaleType getScaleType(@ScaleType int scaleType) {
