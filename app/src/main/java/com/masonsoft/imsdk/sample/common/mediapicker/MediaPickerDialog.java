@@ -366,7 +366,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
     }
 
     public void show() {
-        mViewDialog.show();
+        Threads.postUi(() -> mViewDialog.show(), 220L);
     }
 
     public void hide() {
