@@ -45,7 +45,7 @@ public class IMMessagePreviewImageViewHolder extends IMMessageViewHolder {
         }
         mImage.setImageUrl(null, imageRequest);
 
-        mImage.setOnViewTapListener((view, x, y) -> {
+        mImage.setOnClickListener(v -> {
             UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();
             if (listener != null) {
                 listener.onItemClick(this);
