@@ -15,10 +15,10 @@ import com.masonsoft.imsdk.core.message.packet.MessagePacket;
 import com.masonsoft.imsdk.core.message.packet.PingMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignInMessagePacket;
 import com.masonsoft.imsdk.core.message.packet.SignOutMessagePacket;
-import com.masonsoft.imsdk.core.observable.TokenOfflineObservable;
 import com.masonsoft.imsdk.core.observable.MessagePacketStateObservable;
 import com.masonsoft.imsdk.core.observable.SessionObservable;
 import com.masonsoft.imsdk.core.observable.SessionTcpClientObservable;
+import com.masonsoft.imsdk.core.observable.TokenOfflineObservable;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 import com.masonsoft.imsdk.lang.MultiProcessor;
 import com.masonsoft.imsdk.lang.NotNullProcessor;
@@ -118,7 +118,7 @@ public class SessionTcpClient extends NettyTcpClient {
                 // 登录失败
                 final int errorCode = packet.getErrorCode();
                 final String errorMessage = packet.getErrorMessage();
-                if (errorCode == 4) {
+                if (errorCode == 4 || errorCode == 9) {
                     // token 非法
                     // 断开长连接
                     IMSessionManager.getInstance().setSession(null);
