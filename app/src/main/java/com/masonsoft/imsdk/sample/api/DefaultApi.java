@@ -139,7 +139,7 @@ public class DefaultApi {
         requestArgs.put("blocked", 0);
         requestArgs.put("hold", 0);
         requestArgs.put("deleted", 0);
-        requestArgs.put("verified", 0);
+        requestArgs.put("verified", 1);
 
         requestApiServer(url, requestArgs, null);
         return new Object();
