@@ -805,7 +805,7 @@ public class IMSessionManager {
                         sessionTcpClient.signOut();
                     } else {
                         // 获取当前登录用户的 profile
-                        UserInfoSyncManager.getInstance().enqueueSyncUserInfo(sessionUserId);
+                        UserInfoSyncManager.getInstance().enqueueSyncUserInfo(sessionUserId, true);
                         // 读取会话列表
                         mFetchConversationListMessagePacket = FetchConversationListMessagePacket.create(getConversationListLastSyncTimeBySessionUserId(sessionUserId));
                         mFetchConversationListMessagePacket.getMessagePacketStateObservable().registerObserver(mFetchConversationListMessagePacketStateObserver);
