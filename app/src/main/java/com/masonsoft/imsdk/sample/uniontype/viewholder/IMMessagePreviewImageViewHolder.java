@@ -9,13 +9,13 @@ import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
+import com.masonsoft.imsdk.sample.widget.ThumbPhotoDraweeView;
 
 import io.github.idonans.uniontype.Host;
-import me.relex.photodraweeview.PhotoDraweeView;
 
 public class IMMessagePreviewImageViewHolder extends IMMessageViewHolder {
 
-    private final PhotoDraweeView mImage;
+    private final ThumbPhotoDraweeView mImage;
 
     public IMMessagePreviewImageViewHolder(@NonNull Host host) {
         super(host, R.layout.imsdk_sample_union_type_impl_im_message_preview_image);

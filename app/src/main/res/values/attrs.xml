@@ -19,6 +19,7 @@
         <attr name="imageResizePercent" format="float" />
         <attr name="imageResize" format="dimension|reference" />
         <attr name="smallCache" format="boolean" />
+        <attr name="autoPlay" format="boolean" />
     </declare-styleable>
     <declare-styleable name="UserCacheAvatar">
         <attr name="avatarSize">

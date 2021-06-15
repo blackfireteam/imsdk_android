@@ -39,7 +39,7 @@ public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
             ViewUtil.setVisibilityIfChanged(mBinding.videoFlag, View.GONE);
             mBinding.durationText.setText(null);
         }
-        mBinding.image.setUrl(mediaInfo.uri.toString());
+        mBinding.image.setImageUrl(null, mediaInfo.uri.toString());
         int selectedIndex = mediaData.indexOfSelected(mediaInfo);
         if (selectedIndex >= 0) {
             mBinding.flagSelect.setSelected(true);

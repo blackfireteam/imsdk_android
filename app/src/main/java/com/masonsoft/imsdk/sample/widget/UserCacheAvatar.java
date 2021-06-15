@@ -73,7 +73,7 @@ public class UserCacheAvatar extends ImageLayout {
     }
 
     private void loadAvatar(String url) {
-        setUrl(url);
+        setImageUrl(null, url);
     }
 
 }

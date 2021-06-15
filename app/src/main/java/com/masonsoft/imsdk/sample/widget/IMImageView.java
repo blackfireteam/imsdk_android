@@ -81,7 +81,7 @@ public class IMImageView extends ImageLayout {
             }
         }
 
-        this.setFirstAvailableUrls(null, firstAvailableUrls.toArray(new String[]{}));
+        setImageUrl(null, firstAvailableUrls.toArray(new String[]{}));
     }
 
 }

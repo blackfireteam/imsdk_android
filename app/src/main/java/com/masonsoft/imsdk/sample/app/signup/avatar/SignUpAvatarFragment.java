@@ -167,7 +167,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
             return;
         }
 
-        mBinding.pickAvatar.setUrl(uri.toString());
+        mBinding.pickAvatar.setImageUrl(null, uri.toString());
         mPresenter.uploadAvatar(uri);
     }
 

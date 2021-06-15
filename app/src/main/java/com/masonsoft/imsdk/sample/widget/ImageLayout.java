@@ -7,7 +7,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import androidx.annotation.IntDef;
@@ -18,14 +17,12 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.masonsoft.imsdk.sample.R;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import io.github.idonans.core.util.DimenUtil;
 
@@ -69,6 +66,7 @@ public class ImageLayout extends ClipLayout {
     private float mImageResizePercent = 1.5f;
     private int mImageResize = -1;
     private boolean mSmallCache;
+    private boolean mAutoPlay = true;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ImageLayout, defStyleAttr,
@@ -79,6 +77,7 @@ public class ImageLayout extends ClipLayout {
         mImageResizePercent = a.getFloat(R.styleable.ImageLayout_imageResizePercent, mImageResizePercent);
         mImageResize = a.getDimensionPixelOffset(R.styleable.ImageLayout_imageResize, mImageResize);
         mSmallCache = a.getBoolean(R.styleable.ImageLayout_smallCache, mSmallCache);
+        mAutoPlay = a.getBoolean(R.styleable.ImageLayout_autoPlay, mAutoPlay);
         a.recycle();
 
         if (mPlaceHolderLoading == null) {
@@ -102,7 +101,7 @@ public class ImageLayout extends ClipLayout {
     }
 
     @Nullable
-    private ResizeOptions createResizeOptions() {
+    public ResizeOptions createResizeOptions() {
         if (mImageResize > 0) {
             return ResizeOptions.forSquareSize(mImageResize);
         }
@@ -115,7 +114,7 @@ public class ImageLayout extends ClipLayout {
     }
 
     @NonNull
-    private ImageRequest.CacheChoice createCacheChoice() {
+    public ImageRequest.CacheChoice createCacheChoice() {
         return mSmallCache ? ImageRequest.CacheChoice.SMALL : ImageRequest.CacheChoice.DEFAULT;
     }
 
@@ -126,89 +125,53 @@ public class ImageLayout extends ClipLayout {
         }
     }
 
-    public void setFirstAvailableUrls(@Nullable String thumbUrl, @Nullable String[] firstAvailableUrls) {
-        List<ImageRequest> firstAvailableRequests = new ArrayList<>();
-        if (firstAvailableUrls != null) {
-            for (String url : firstAvailableUrls) {
-                if (TextUtils.isEmpty(url)) {
-                    continue;
-                }
-                url = alignUrl(url);
-                firstAvailableRequests.add(
-                        ImageRequestBuilder
-                                .newBuilderWithSource(Uri.parse(url))
-                                .setResizeOptions(createResizeOptions())
-                                .setCacheChoice(createCacheChoice())
-                                .build());
-            }
-        }
-
-        if (firstAvailableRequests.isEmpty()) {
-            setUrl(thumbUrl, null);
-            return;
-        }
-
-        ImageRequest thumbImageRequest = null;
-        if (!TextUtils.isEmpty(thumbUrl)) {
-            thumbUrl = alignUrl(thumbUrl);
-            thumbImageRequest = ImageRequestBuilder
-                    .newBuilderWithSource(Uri.parse(thumbUrl))
+    public void setImageUrl(@Nullable String thumb, @Nullable String... firstAvailable) {
+        ImageRequest thumbRequest = null;
+        if (thumb != null) {
+            thumbRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(alignUrl(thumb)))
                     .setResizeOptions(createResizeOptions())
                     .setCacheChoice(createCacheChoice())
                     .build();
         }
-        mDraweeView.setController(Fresco.newDraweeControllerBuilder()
-                .setOldController(mDraweeView.getController())
-                .setLowResImageRequest(thumbImageRequest)
-                .setFirstAvailableImageRequests(firstAvailableRequests.toArray(new ImageRequest[0]))
-                .setAutoPlayAnimations(true)
-                .build());
+
+        if (firstAvailable == null || firstAvailable.length <= 0) {
+            setImageUrl(thumbRequest);
+            return;
+        }
+
+        final ImageRequest[] firstAvailableRequest = new ImageRequest[firstAvailable.length];
+        for (int i = 0; i < firstAvailable.length; i++) {
+            final String url = firstAvailable[i];
+            if (url == null) {
+                firstAvailableRequest[i] = null;
+                continue;
+            }
+            firstAvailableRequest[i] = ImageRequestBuilder.newBuilderWithSource(Uri.parse(alignUrl(url)))
+                    .setResizeOptions(createResizeOptions())
+                    .setCacheChoice(createCacheChoice())
+                    .build();
+        }
+        setImageUrl(thumbRequest, firstAvailableRequest);
     }
 
-    private String alignUrl(String url) {
+    public void setImageUrl(@Nullable ImageRequest thumb, @Nullable ImageRequest... firstAvailable) {
+        final DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setOldController(mDraweeView.getController())
+                .setLowResImageRequest(thumb)
+                .setFirstAvailableImageRequests(firstAvailable)
+                .setAutoPlayAnimations(mAutoPlay)
+                .build();
+        mDraweeView.setController(controller);
+    }
+
+    @Nullable
+    public String alignUrl(@Nullable String url) {
         if (url != null) {
             if (url.startsWith("/")) {
                 url = "file://" + url;
             }
         }
         return url;
-    }
-
-    public void setUrl(@Nullable String thumbUrl, @Nullable String url) {
-        thumbUrl = alignUrl(thumbUrl);
-        url = alignUrl(url);
-
-        ImageRequest thumbImageRequest = null;
-        if (!TextUtils.isEmpty(thumbUrl)) {
-            thumbImageRequest = ImageRequestBuilder
-                    .newBuilderWithSource(Uri.parse(thumbUrl))
-                    .setResizeOptions(createResizeOptions())
-                    .setCacheChoice(createCacheChoice())
-                    .build();
-        }
-        ImageRequest imageRequest = null;
-        if (!TextUtils.isEmpty(url)) {
-            imageRequest = ImageRequestBuilder
-                    .newBuilderWithSource(Uri.parse(url))
-                    .setResizeOptions(createResizeOptions())
-                    .setCacheChoice(createCacheChoice())
-                    .build();
-        }
-
-        setImageRequest(thumbImageRequest, imageRequest);
-    }
-
-    public void setUrl(@Nullable String url) {
-        setUrl(null, url);
-    }
-
-    private void setImageRequest(@Nullable ImageRequest thumbImageRequest, @Nullable ImageRequest imageRequest) {
-        mDraweeView.setController(Fresco.newDraweeControllerBuilder()
-                .setOldController(mDraweeView.getController())
-                .setLowResImageRequest(thumbImageRequest)
-                .setImageRequest(imageRequest)
-                .setAutoPlayAnimations(true)
-                .build());
     }
 
     private static ScalingUtils.ScaleType getScaleType(@ScaleType int scaleType) {
@@ -249,6 +212,7 @@ public class ImageLayout extends ClipLayout {
             outTransform.postTranslate((int) (dx + 0.5f), (int) (dy + 0.5f));
         }
 
+        @NonNull
         @Override
         public String toString() {
             return "fix_width";

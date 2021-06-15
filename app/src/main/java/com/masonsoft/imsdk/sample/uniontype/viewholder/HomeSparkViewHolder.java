@@ -71,7 +71,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         mUnsafeLastBindItemObject = new WeakReference<>(itemObject);
         final Spark spark = itemObject.object;
 
-        mBinding.imageLayout.setUrl(spark.pic);
+        mBinding.imageLayout.setImageUrl(null, spark.pic);
         mBinding.username.setTargetUserId(spark.userId);
         updateLikeAndDislike(0, false);
 

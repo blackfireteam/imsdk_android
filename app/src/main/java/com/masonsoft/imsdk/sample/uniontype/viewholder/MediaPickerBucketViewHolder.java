@@ -32,7 +32,7 @@ public class MediaPickerBucketViewHolder extends UnionTypeViewHolder {
         if (mediaBucket.cover != null) {
             url = mediaBucket.cover.uri.toString();
         }
-        mBinding.image.setUrl(url);
+        mBinding.image.setImageUrl(null, url);
         mBinding.count.setText(String.valueOf(mediaBucket.mediaInfoList.size()));
         if (mediaBucket.allMediaInfo) {
             mBinding.title.setText(R.string.imsdk_sample_custom_soft_keyboard_item_media_bucket_all);
