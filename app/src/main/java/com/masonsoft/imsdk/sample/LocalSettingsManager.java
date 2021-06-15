@@ -58,6 +58,12 @@ public class LocalSettingsManager {
         }
     }
 
+    public void clearToken() {
+        final Settings settings = getSettings();
+        settings.imToken = null;
+        setSettings(settings);
+    }
+
     @NonNull
     public Settings getSettings() {
         return mSettings.copy();

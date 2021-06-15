@@ -283,9 +283,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                     }
 
                     // clear settings token
-                    final LocalSettingsManager.Settings settings = LocalSettingsManager.getInstance().getSettings();
-                    settings.imToken = null;
-                    LocalSettingsManager.getInstance().setSettings(settings);
+                    LocalSettingsManager.getInstance().clearToken();
 
                     if (result.isSuccess()) {
                         view.onSignOutSuccess();
@@ -304,9 +302,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                     }
 
                     // clear settings token
-                    final LocalSettingsManager.Settings settings = LocalSettingsManager.getInstance().getSettings();
-                    settings.imToken = null;
-                    LocalSettingsManager.getInstance().setSettings(settings);
+                    LocalSettingsManager.getInstance().clearToken();
 
                     view.onSignOutFail(e);
                 }));
