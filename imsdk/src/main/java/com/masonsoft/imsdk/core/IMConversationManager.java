@@ -231,6 +231,32 @@ public class IMConversationManager {
     }
 
     /**
+     * 清除会话的删除标记
+     *
+     * @return
+     */
+    public boolean clearConversationDeleteFlag(final long sessionUserId,
+                                               final int conversationType,
+                                               final long targetUserId) {
+        final DatabaseHelper databaseHelper = DatabaseProvider.getInstance().getDBHelper(sessionUserId);
+        synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
+            final IMConversation conversation = getConversationByTargetUserId(sessionUserId, conversationType, targetUserId);
+            if (conversation == null) {
+                // conversation not found
+                return false;
+            }
+            if (IMConstants.trueOfFalse(conversation.delete.getOrDefault(IMConstants.TRUE))) {
+                // 删除标记未指定或者已删除时，更新删除标记为未删除
+                final Conversation conversationUpdate = new Conversation();
+                conversationUpdate.localId.set(conversation.id.get());
+                conversationUpdate.delete.set(IMConstants.FALSE);
+                return ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate);
+            }
+            return false;
+        }
+    }
+
+    /**
      * 累加未读消息数
      */
     public boolean increaseConversationUnreadCount(final long sessionUserId,

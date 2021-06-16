@@ -184,6 +184,7 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
         synchronized (DatabaseSessionWriteLock.getInstance().getSessionWriteLock(databaseHelper)) {
             int conversationUnreadCountDiff = 0;
             Message conversationBestShowMessage = null;
+            boolean clearConversationDeleteFlag = false;
 
             for (Message message : messageList) {
                 final boolean actionMessage = message.localActionMessage.get() > 0;
@@ -208,6 +209,7 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
                     } else {
                         // 新消息入库成功
                         if (!actionMessage) {
+                            clearConversationDeleteFlag = true;
                             if (message.fromUserId.get() != sessionUserId) {
                                 // 如果是收到的别人的消息，累加未读消息数
                                 conversationUnreadCountDiff++;
@@ -263,6 +265,15 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
             MessageBlock.expandBlockId(sessionUserId, conversationType, targetUserId, minMessage.remoteMessageId.get());
 
             try {
+                // 清除删除标记
+                if (clearConversationDeleteFlag) {
+                    IMConversationManager.getInstance().clearConversationDeleteFlag(
+                            sessionUserId,
+                            conversationType,
+                            targetUserId
+                    );
+                }
+
                 // 更新未读消息数
                 if (conversationUnreadCountDiff != 0) {
                     IMConversationManager.getInstance().increaseConversationUnreadCount(
