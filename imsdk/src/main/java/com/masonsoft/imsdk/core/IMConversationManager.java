@@ -232,8 +232,6 @@ public class IMConversationManager {
 
     /**
      * 清除会话的删除标记
-     *
-     * @return
      */
     public boolean clearConversationDeleteFlag(final long sessionUserId,
                                                final int conversationType,
@@ -280,6 +278,8 @@ public class IMConversationManager {
             final Conversation conversationUpdate = new Conversation();
             conversationUpdate.localId.set(conversation.id.get());
             conversationUpdate.localUnreadCount.set(conversation.unreadCount.get() + unreadCountDiff);
+            // 同时清除删除标记
+            conversationUpdate.delete.set(IMConstants.FALSE);
             return ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate);
         }
     }
@@ -340,6 +340,8 @@ public class IMConversationManager {
                     conversationUpdate.localShowMessageId.set(localMessageId);
                     conversationUpdate.localTimeMs.set(newShowMessage.localTimeMs.get());
                     conversationUpdate.localSeq.set(newShowMessage.localSeq.get());
+                    // 同时清除删除标记
+                    conversationUpdate.delete.set(IMConstants.FALSE);
                     if (!ConversationDatabaseProvider.getInstance().updateConversation(sessionUserId, conversationUpdate)) {
                         final Throwable e = new IllegalStateException("unexpected. updateConversation return false");
                         IMLog.e(e, "sessionUserId:%s, conversationType:%s, targetUserId:%s, localMessageId:%s",
