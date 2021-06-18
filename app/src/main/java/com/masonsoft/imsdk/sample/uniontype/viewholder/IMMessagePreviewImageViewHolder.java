@@ -3,7 +3,9 @@ package com.masonsoft.imsdk.sample.uniontype.viewholder;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.masonsoft.imsdk.MSIMImageElement;
@@ -14,6 +16,10 @@ import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.sample.util.UrlUtil;
 import com.masonsoft.imsdk.sample.widget.ThumbPhotoDraweeView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.uniontype.Host;
 
 public class IMMessagePreviewImageViewHolder extends IMMessageViewHolder {
@@ -30,20 +36,20 @@ public class IMMessagePreviewImageViewHolder extends IMMessageViewHolder {
         super.onBindItemObject(position, itemObject);
 
         final MSIMMessage message = itemObject.object;
-        String url = null;
+
+        final List<String> firstAvailableUrls = new ArrayList<>();
         final MSIMImageElement element = message.getImageElement();
         if (element != null) {
-            url = element.getUrl();
+            final String localPath = element.getPath();
+            if (localPath != null) {
+                firstAvailableUrls.add(localPath);
+            }
+            final String url = element.getUrl();
+            if (url != null) {
+                firstAvailableUrls.add(url);
+            }
         }
-
-        final ImageRequest imageRequest;
-        if (url == null) {
-            imageRequest = null;
-        } else {
-            imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(UrlUtil.alignUrl(url)))
-                    .build();
-        }
-        mImage.setImageUrl(null, imageRequest);
+        setImageUrl(null, firstAvailableUrls.toArray(new String[]{}));
 
         mImage.setOnClickListener(v -> {
             UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();
@@ -51,6 +57,43 @@ public class IMMessagePreviewImageViewHolder extends IMMessageViewHolder {
                 listener.onItemClick(this);
             }
         });
+    }
+
+    public void setImageUrl(@Nullable String thumb, @Nullable String... firstAvailable) {
+        ImageRequest thumbRequest = null;
+        if (thumb != null) {
+            thumbRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(UrlUtil.alignUrl(thumb)))
+                    .setResizeOptions(createResizeOptions())
+                    .setCacheChoice(createCacheChoice())
+                    .build();
+        }
+
+        if (firstAvailable == null || firstAvailable.length <= 0) {
+            mImage.setImageUrl(thumbRequest);
+            return;
+        }
+
+        final ImageRequest[] firstAvailableRequest = new ImageRequest[firstAvailable.length];
+        for (int i = 0; i < firstAvailable.length; i++) {
+            final String url = firstAvailable[i];
+            if (url == null) {
+                firstAvailableRequest[i] = null;
+                continue;
+            }
+            firstAvailableRequest[i] = ImageRequestBuilder.newBuilderWithSource(Uri.parse(UrlUtil.alignUrl(url)))
+                    .setResizeOptions(createResizeOptions())
+                    .setCacheChoice(createCacheChoice())
+                    .build();
+        }
+        mImage.setImageUrl(thumbRequest, firstAvailableRequest);
+    }
+
+    private ResizeOptions createResizeOptions() {
+        return ResizeOptions.forSquareSize((int) (1.5f * DimenUtil.getSmallScreenWidth()));
+    }
+
+    private ImageRequest.CacheChoice createCacheChoice() {
+        return ImageRequest.CacheChoice.DEFAULT;
     }
 
 }
