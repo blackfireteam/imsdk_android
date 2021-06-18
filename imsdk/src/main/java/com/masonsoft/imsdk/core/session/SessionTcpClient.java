@@ -251,8 +251,6 @@ public class SessionTcpClient extends NettyTcpClient {
 
     /**
      * 判断当前长连接是否已经链接失败
-     *
-     * @return
      */
     public boolean isConnectFail() {
         if (!SessionValidator.isValid(mSession)) {
