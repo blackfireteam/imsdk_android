@@ -724,12 +724,13 @@ public class IMSessionManager {
         }
 
         private void connect() {
-            Preconditions.checkNotNull(mSessionTcpClient);
+            final SessionTcpClient sessionTcpClient = mSessionTcpClient;
+            Preconditions.checkNotNull(sessionTcpClient);
             IMLog.v(Objects.defaultObjectTag(this) + " before connect. SessionTcpClient state:%s",
-                    SessionTcpClient.stateToString(mSessionTcpClient.getState()));
-            mSessionTcpClient.connect();
+                    SessionTcpClient.stateToString(sessionTcpClient.getState()));
+            sessionTcpClient.connect();
             IMLog.v(Objects.defaultObjectTag(this) + " after connect. SessionTcpClient state:%s",
-                    SessionTcpClient.stateToString(mSessionTcpClient.getState()));
+                    SessionTcpClient.stateToString(sessionTcpClient.getState()));
         }
 
         @Override
@@ -745,7 +746,7 @@ public class IMSessionManager {
          * 认证消息(登录消息)在长连接内部自动维护(长连接首次建立成功时会自动发送登录消息)。
          */
         public boolean isOnline() {
-            SessionTcpClient sessionTcpClient = mSessionTcpClient;
+            final SessionTcpClient sessionTcpClient = mSessionTcpClient;
             return !isAbort() && sessionTcpClient != null && sessionTcpClient.isOnline();
         }
 
