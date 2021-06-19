@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 
 public class FragmentDelegateActivity extends AppCompatActivity {
 
@@ -24,11 +24,11 @@ public class FragmentDelegateActivity extends AppCompatActivity {
         boolean needCommit = false;
 
         if (fm.isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 
-        Fragment fragmentDelegate = (Fragment) fm.findFragmentByTag(fragmentDelegateTag);
+        Fragment fragmentDelegate = fm.findFragmentByTag(fragmentDelegateTag);
         if (fragmentDelegate == null) {
             fragmentDelegate = creator.createFragmentDelegate();
             ft.add(Window.ID_ANDROID_CONTENT, fragmentDelegate, fragmentDelegateTag);

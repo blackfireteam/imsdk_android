@@ -16,8 +16,8 @@ import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleConversationFragmentBinding;
-import com.masonsoft.imsdk.sample.uniontype.DataObject;
-import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
+import com.masonsoft.imsdk.uikit.uniontype.DataObject;
+import com.masonsoft.imsdk.uikit.uniontype.IMUIKitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.widget.DividerItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
@@ -77,7 +77,7 @@ public class ConversationFragment extends SystemInsetsFragment {
 
         UnionTypeAdapter adapter = new UnionTypeAdapter();
         adapter.setHost(Host.Factory.create(this, recyclerView, adapter));
-        adapter.setUnionTypeMapper(new UnionTypeMapperImpl());
+        adapter.setUnionTypeMapper(new IMUIKitUnionTypeMapper());
         mDataAdapter = adapter;
         mViewImpl = new ViewImpl(adapter);
         clearPresenter();

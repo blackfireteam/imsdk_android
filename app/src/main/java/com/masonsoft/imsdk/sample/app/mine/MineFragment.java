@@ -16,17 +16,17 @@ import androidx.annotation.Nullable;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
-import com.masonsoft.imsdk.sample.common.mediapicker.MediaData;
-import com.masonsoft.imsdk.sample.common.mediapicker.MediaPickerDialog;
-import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentConfirmDialog;
-import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentInputDialog;
-import com.masonsoft.imsdk.sample.common.simpledialog.SimpleLoadingDialog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMineFragmentBinding;
+import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
+import com.masonsoft.imsdk.uikit.common.mediapicker.MediaPickerDialog;
+import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentConfirmDialog;
+import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentInputDialog;
+import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleLoadingDialog;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
 
@@ -55,11 +55,11 @@ public class MineFragment extends SystemInsetsFragment {
     private void showSignOutLoadingDialog() {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
         if (mSignOutLoadingDialog == null) {
@@ -71,11 +71,11 @@ public class MineFragment extends SystemInsetsFragment {
     private void hideSignOutLoadingDialog() {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
         if (mSignOutLoadingDialog != null) {
@@ -102,7 +102,7 @@ public class MineFragment extends SystemInsetsFragment {
 
     private void clearCheckedChangeListener() {
         if (mBinding == null) {
-            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 
@@ -112,7 +112,7 @@ public class MineFragment extends SystemInsetsFragment {
 
     private void bindCheckedChangeListener() {
         if (mBinding == null) {
-            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 
@@ -133,11 +133,11 @@ public class MineFragment extends SystemInsetsFragment {
     private void startModifyAvatar() {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 
@@ -159,20 +159,20 @@ public class MineFragment extends SystemInsetsFragment {
 
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
         if (isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 
         if (mBinding == null) {
-            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
         if (mPresenter == null) {
-            SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.PRESENTER_IS_NULL);
             return;
         }
 
@@ -182,23 +182,23 @@ public class MineFragment extends SystemInsetsFragment {
     private void startModifyUsername() {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 
         if (mBinding == null) {
-            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
         final String unsafeCacheUsername = mBinding.username.getText().toString();
         final SimpleContentInputDialog dialog = new SimpleContentInputDialog(activity, unsafeCacheUsername);
         dialog.setOnBtnRightClickListener(input -> {
             if (mPresenter == null) {
-                SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.PRESENTER_IS_NULL);
                 return;
             }
 
@@ -216,16 +216,16 @@ public class MineFragment extends SystemInsetsFragment {
     private void onGoldChanged(boolean isChecked) {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 
         if (mPresenter == null) {
-            SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.PRESENTER_IS_NULL);
             return;
         }
         mPresenter.trySubmitGoldChanged(isChecked);
@@ -234,16 +234,16 @@ public class MineFragment extends SystemInsetsFragment {
     private void onVerifiedChanged(boolean isChecked) {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 
         if (mPresenter == null) {
-            SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.PRESENTER_IS_NULL);
             return;
         }
         mPresenter.trySubmitVerifiedChanged(isChecked);
@@ -252,11 +252,11 @@ public class MineFragment extends SystemInsetsFragment {
     private void requestSignOut() {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 
@@ -270,16 +270,16 @@ public class MineFragment extends SystemInsetsFragment {
     private void onSignOutConfirm() {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 
         if (mPresenter == null) {
-            SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.PRESENTER_IS_NULL);
             return;
         }
         showSignOutLoadingDialog();
@@ -291,7 +291,7 @@ public class MineFragment extends SystemInsetsFragment {
         public void showSessionUserInfo(@Nullable MSIMUserInfo userInfo) {
             SampleLog.v(Objects.defaultObjectTag(this) + " showSessionUserInfo userInfo:%s", userInfo);
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 
@@ -309,7 +309,7 @@ public class MineFragment extends SystemInsetsFragment {
         public void onAvatarUploadFail(Throwable e) {
             SampleLog.v(e, Objects.defaultObjectTag(this) + " onAvatarUploadFail");
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             mBinding.avatarProgressView.setProgress(0f);
@@ -319,7 +319,7 @@ public class MineFragment extends SystemInsetsFragment {
         public void onAvatarUploadProgress(@IntRange(from = 0, to = 100) int percent) {
             SampleLog.v(Objects.defaultObjectTag(this) + " onAvatarUploadProgress percent:%s", percent);
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             mBinding.avatarProgressView.setProgress(percent / 100f);
@@ -330,12 +330,12 @@ public class MineFragment extends SystemInsetsFragment {
 
             final Activity activity = getActivity();
             if (activity == null) {
-                SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
                 return;
             }
 
             if (mPresenter == null) {
-                SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.PRESENTER_IS_NULL);
                 return;
             }
             mPresenter.submitAvatar(avatarUrl);
@@ -344,7 +344,7 @@ public class MineFragment extends SystemInsetsFragment {
         public void onAvatarModifyFail(Throwable e) {
             SampleLog.v(e, Objects.defaultObjectTag(this) + " onAvatarModifyFail");
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             TipUtil.show(R.string.imsdk_sample_profile_modify_avatar_fail);
@@ -353,7 +353,7 @@ public class MineFragment extends SystemInsetsFragment {
         public void onAvatarModifySuccess() {
             SampleLog.v(Objects.defaultObjectTag(this) + " onAvatarModifySuccess");
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             TipUtil.show(R.string.imsdk_sample_profile_modify_avatar_success);
@@ -362,7 +362,7 @@ public class MineFragment extends SystemInsetsFragment {
         public void onNicknameModifyFail(Throwable e) {
             SampleLog.v(e, Objects.defaultObjectTag(this) + " onNicknameModifyFail");
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             TipUtil.show(R.string.imsdk_sample_profile_modify_nickname_fail);
@@ -371,7 +371,7 @@ public class MineFragment extends SystemInsetsFragment {
         public void onNicknameModifySuccess() {
             SampleLog.v(Objects.defaultObjectTag(this) + " onNicknameModifySuccess");
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             TipUtil.show(R.string.imsdk_sample_profile_modify_nickname_success);
@@ -380,7 +380,7 @@ public class MineFragment extends SystemInsetsFragment {
         public void onGoldModifySuccess() {
             SampleLog.v(Objects.defaultObjectTag(this) + " onGoldModifySuccess");
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             TipUtil.show(R.string.imsdk_sample_tip_action_general_success);
@@ -389,11 +389,11 @@ public class MineFragment extends SystemInsetsFragment {
         public void onGoldModifyFail(Throwable e) {
             SampleLog.v(e, Objects.defaultObjectTag(this) + " onGoldModifyFail");
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             if (mPresenter == null) {
-                SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.PRESENTER_IS_NULL);
                 return;
             }
             TipUtil.show(R.string.imsdk_sample_tip_action_general_fail);
@@ -403,7 +403,7 @@ public class MineFragment extends SystemInsetsFragment {
         public void onVerifiedModifySuccess() {
             SampleLog.v(Objects.defaultObjectTag(this) + " onVerifiedModifySuccess");
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             TipUtil.show(R.string.imsdk_sample_tip_action_general_success);
@@ -412,11 +412,11 @@ public class MineFragment extends SystemInsetsFragment {
         public void onVerifiedModifyFail(Throwable e) {
             SampleLog.v(e, Objects.defaultObjectTag(this) + " onVerifiedModifyFail");
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             if (mPresenter == null) {
-                SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.PRESENTER_IS_NULL);
                 return;
             }
             TipUtil.show(R.string.imsdk_sample_tip_action_general_fail);
@@ -428,11 +428,11 @@ public class MineFragment extends SystemInsetsFragment {
 
             final Activity activity = getActivity();
             if (activity == null) {
-                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 
@@ -444,11 +444,11 @@ public class MineFragment extends SystemInsetsFragment {
 
             final Activity activity = getActivity();
             if (activity == null) {
-                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 
@@ -462,11 +462,11 @@ public class MineFragment extends SystemInsetsFragment {
 
             final Activity activity = getActivity();
             if (activity == null) {
-                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
             if (mBinding == null) {
-                SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 

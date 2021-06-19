@@ -10,6 +10,7 @@ import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.uikit.widget.IMImageView;
+import com.masonsoft.imsdk.uikit.widget.ResizeImageView;
 
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;

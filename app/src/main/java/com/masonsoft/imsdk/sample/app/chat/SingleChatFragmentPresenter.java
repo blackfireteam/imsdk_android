@@ -12,9 +12,9 @@ import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.uniontype.DataObject;
-import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
-import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageViewHolder;
+import com.masonsoft.imsdk.uikit.uniontype.DataObject;
+import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
+import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMMessageViewHolder;
 import com.masonsoft.imsdk.uikit.widget.MSIMConversationChangedViewHelper;
 
 import java.util.ArrayList;

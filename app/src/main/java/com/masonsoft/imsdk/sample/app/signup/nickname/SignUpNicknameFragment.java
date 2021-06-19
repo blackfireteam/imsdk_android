@@ -12,13 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.signup.SignUpArgument;
 import com.masonsoft.imsdk.sample.app.signup.SignUpFragment;
 import com.masonsoft.imsdk.sample.app.signup.avatar.SignUpAvatarActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignUpNicknameFragmentBinding;
+import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 
 import io.github.idonans.core.FormValidator;
 import io.github.idonans.core.util.ToastUtil;
@@ -72,12 +72,12 @@ public class SignUpNicknameFragment extends SignUpFragment {
 
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
         if (mBinding == null) {
-            SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 

@@ -1,5 +1,8 @@
 package com.masonsoft.imsdk.uikit;
 
+import android.app.Activity;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import io.github.idonans.core.Singleton;
@@ -18,7 +21,7 @@ public class IMUIKitComponentManager {
     }
 
     public interface OnConversationViewClickListener {
-        void onConversationViewClick(long sessionUserId, long conversationId, long targetUserId);
+        void onConversationViewClick(@NonNull Activity activity, long sessionUserId, long conversationId, long targetUserId);
     }
 
     @Nullable
@@ -34,6 +37,13 @@ public class IMUIKitComponentManager {
     @Nullable
     public OnConversationViewClickListener getOnConversationViewClickListener() {
         return mOnConversationViewClickListener;
+    }
+
+    public void dispatchConversationViewClick(@NonNull Activity activity, long sessionUserId, long conversationId, long targetUserId) {
+        final OnConversationViewClickListener listener = mOnConversationViewClickListener;
+        if (listener != null) {
+            listener.onConversationViewClick(activity, sessionUserId, conversationId, targetUserId);
+        }
     }
 
 }

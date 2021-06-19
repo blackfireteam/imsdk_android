@@ -5,8 +5,8 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.sample.api.DefaultApi;
 import com.masonsoft.imsdk.sample.entity.Spark;
-import com.masonsoft.imsdk.sample.uniontype.DataObject;
-import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
+import com.masonsoft.imsdk.sample.uniontype.SampleUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -80,7 +80,7 @@ public class HomeFragmentPresenter extends PagePresenter<UnionTypeItemObject, Ob
     }
 
     private UnionTypeItemObject create(@NonNull Spark input) {
-        return UnionTypeItemObject.valueOf(UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_HOME_SPARK, new DataObject<>(input));
+        return UnionTypeItemObject.valueOf(SampleUnionTypeMapper.UNION_TYPE_IMPL_IM_HOME_SPARK, new DataObject<>(input));
     }
 
     private void setLastRetryListener(LastRetryListener listener) {

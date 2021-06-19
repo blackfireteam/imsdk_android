@@ -6,8 +6,8 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
+import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 
 import io.github.idonans.systeminsets.SystemUiHelper;
 
@@ -16,7 +16,7 @@ public class SingleChatActivity extends FragmentDelegateActivity {
     public static void start(Context context, long targetUserId) {
         Intent starter = new Intent(context, SingleChatActivity.class);
         starter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        starter.putExtra(Constants.ExtrasKey.TARGET_USER_ID, targetUserId);
+        starter.putExtra(IMUIKitConstants.ExtrasKey.TARGET_USER_ID, targetUserId);
         context.startActivity(starter);
     }
 
@@ -34,7 +34,7 @@ public class SingleChatActivity extends FragmentDelegateActivity {
                 .setLightNavigationBar()
                 .apply();
 
-        final long targetUserId = getIntent().getLongExtra(Constants.ExtrasKey.TARGET_USER_ID, 0L);
+        final long targetUserId = getIntent().getLongExtra(IMUIKitConstants.ExtrasKey.TARGET_USER_ID, 0L);
         setFragmentDelegate(FRAGMENT_TAG_SINGLE_CHAT, () -> SingleChatFragment.newInstance(targetUserId));
     }
 

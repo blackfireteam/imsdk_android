@@ -10,6 +10,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.masonsoft.imsdk.MSIMAudioElement;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.uikit.R;
+import com.masonsoft.imsdk.uikit.common.media.player.MediaPlayer;
 import com.masonsoft.imsdk.uikit.common.media.player.MediaPlayerDelegate;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.real.Real;
 

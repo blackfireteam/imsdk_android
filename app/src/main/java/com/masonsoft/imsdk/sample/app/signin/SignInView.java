@@ -5,12 +5,12 @@ import android.app.Activity;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.lang.GeneralResult;
-import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.app.signup.SignUpActivity;
 import com.masonsoft.imsdk.sample.app.signup.SignUpArgument;
+import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
 
@@ -28,7 +28,7 @@ public abstract class SignInView implements DynamicView {
         SampleLog.v(Objects.defaultObjectTag(this) + " onRequestSignUp userId:%s", userId);
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
@@ -42,7 +42,7 @@ public abstract class SignInView implements DynamicView {
 
         final SignInViewPresenter<?> presenter = getPresenter();
         if (presenter == null) {
-            SampleLog.e(Constants.ErrorLog.PRESENTER_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.PRESENTER_IS_NULL);
             return;
         }
         presenter.requestTcpSignIn(token);
@@ -53,7 +53,7 @@ public abstract class SignInView implements DynamicView {
 
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
@@ -65,7 +65,7 @@ public abstract class SignInView implements DynamicView {
 
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
@@ -77,7 +77,7 @@ public abstract class SignInView implements DynamicView {
 
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
@@ -90,7 +90,7 @@ public abstract class SignInView implements DynamicView {
 
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
@@ -106,7 +106,7 @@ public abstract class SignInView implements DynamicView {
 
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 

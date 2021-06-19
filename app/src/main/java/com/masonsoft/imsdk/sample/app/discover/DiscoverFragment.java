@@ -15,8 +15,8 @@ import com.google.common.collect.Lists;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleDiscoverFragmentBinding;
-import com.masonsoft.imsdk.sample.uniontype.DataObject;
-import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
+import com.masonsoft.imsdk.sample.uniontype.SampleUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.widget.GridItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
 
@@ -116,7 +116,7 @@ public class DiscoverFragment extends SystemInsetsFragment {
         recyclerView.setHasFixedSize(true);
         final UnionTypeAdapter adapter = new UnionTypeAdapter();
         adapter.setHost(Host.Factory.create(this, recyclerView, adapter));
-        adapter.setUnionTypeMapper(new UnionTypeMapperImpl());
+        adapter.setUnionTypeMapper(new SampleUnionTypeMapper());
 
         mView = new ViewImpl(adapter);
         clearPresenter();

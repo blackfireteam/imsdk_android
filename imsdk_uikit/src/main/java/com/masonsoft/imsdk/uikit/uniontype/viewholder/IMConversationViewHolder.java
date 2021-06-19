@@ -9,7 +9,11 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.I18nResources;
+import com.masonsoft.imsdk.uikit.IMUIKitComponentManager;
+import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.IMUIKitLog;
 import com.masonsoft.imsdk.uikit.R;
+import com.masonsoft.imsdk.uikit.common.impopup.IMChatConversationMenuDialog;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleUnionTypeImplImConversationBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 
@@ -53,16 +57,21 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
         ViewUtil.onClick(itemView, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
-                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+                IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
 
-            SingleChatActivity.start(innerActivity, targetUserId);
+            IMUIKitComponentManager.getInstance().dispatchConversationViewClick(
+                    innerActivity,
+                    sessionUserId,
+                    conversationId,
+                    targetUserId
+            );
         });
         itemView.setOnLongClickListener(v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
-                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+                IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return false;
             }
 
@@ -101,7 +110,7 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
                             conversation
                     );
                 } else {
-                    SampleLog.e("IMChatConversationMenuDialog onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
+                    IMUIKitLog.e("IMChatConversationMenuDialog onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
                             menuId, menuText, menuView);
                 }
             });

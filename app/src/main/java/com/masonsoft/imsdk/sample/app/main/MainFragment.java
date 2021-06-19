@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
-import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
@@ -22,6 +21,7 @@ import com.masonsoft.imsdk.sample.app.discover.DiscoverFragment;
 import com.masonsoft.imsdk.sample.app.home.HomeFragment;
 import com.masonsoft.imsdk.sample.app.mine.MineFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMainFragmentBinding;
+import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 
 public class MainFragment extends SystemInsetsFragment {
 
@@ -98,7 +98,7 @@ public class MainFragment extends SystemInsetsFragment {
         boolean needCommit = false;
 
         if (fm.isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 
@@ -190,7 +190,7 @@ public class MainFragment extends SystemInsetsFragment {
         boolean needCommit = false;
 
         if (fm.isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return null;
         }
 

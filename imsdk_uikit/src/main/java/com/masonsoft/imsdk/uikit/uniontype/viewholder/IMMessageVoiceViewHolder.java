@@ -21,6 +21,7 @@ import com.masonsoft.imsdk.uikit.common.microlifecycle.real.Real;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.real.RealHost;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
+import com.masonsoft.imsdk.uikit.widget.AudioPlayerView;
 import com.masonsoft.imsdk.uikit.widget.IMMessageAudioView;
 
 import io.github.idonans.uniontype.Host;

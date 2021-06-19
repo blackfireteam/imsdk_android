@@ -5,8 +5,8 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.sample.observable.DiscoverUserObservable;
-import com.masonsoft.imsdk.sample.uniontype.DataObject;
-import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
+import com.masonsoft.imsdk.sample.uniontype.SampleUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -79,7 +79,7 @@ public class DiscoverFragmentPresenter extends PagePresenter<UnionTypeItemObject
 
     @NonNull
     private UnionTypeItemObject create(@NonNull Long userId) {
-        return UnionTypeItemObject.valueOf(UnionTypeMapperImpl.UNION_TYPE_IMPL_IM_DISCOVER_USER, new DeepDiffDataObject(userId));
+        return UnionTypeItemObject.valueOf(SampleUnionTypeMapper.UNION_TYPE_IMPL_IM_DISCOVER_USER, new DeepDiffDataObject(userId));
     }
 
     private static class DeepDiffDataObject extends DataObject<Long> implements DeepDiff {

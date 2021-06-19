@@ -9,8 +9,9 @@ import com.masonsoft.imsdk.MSIMSdkListener;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
-import com.masonsoft.imsdk.sample.common.TopActivity;
-import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentNoticeDialog;
+import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.common.TopActivity;
+import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentNoticeDialog;
 import com.masonsoft.imsdk.util.TimeUtil;
 
 import io.github.idonans.core.Singleton;
@@ -176,12 +177,12 @@ public class IMTokenOfflineManager {
     private void showKickedOffline() {
         final Activity topActivity = TopActivity.getInstance().get();
         if (topActivity == null) {
-            SampleLog.v(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.v(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
 
         if (topActivity.isFinishing()) {
-            SampleLog.v(Constants.ErrorLog.ACTIVITY_IS_FINISHING);
+            SampleLog.v(IMUIKitConstants.ErrorLog.ACTIVITY_IS_FINISHING);
             return;
         }
 
@@ -197,12 +198,12 @@ public class IMTokenOfflineManager {
     private void showTokenExpired() {
         final Activity topActivity = TopActivity.getInstance().get();
         if (topActivity == null) {
-            SampleLog.v(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.v(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
 
         if (topActivity.isFinishing()) {
-            SampleLog.v(Constants.ErrorLog.ACTIVITY_IS_FINISHING);
+            SampleLog.v(IMUIKitConstants.ErrorLog.ACTIVITY_IS_FINISHING);
             return;
         }
 

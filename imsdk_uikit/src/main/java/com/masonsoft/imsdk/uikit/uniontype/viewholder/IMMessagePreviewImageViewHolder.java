@@ -14,6 +14,7 @@ import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.uikit.util.UrlUtil;
+import com.masonsoft.imsdk.uikit.widget.ThumbPhotoDraweeView;
 
 import java.util.ArrayList;
 import java.util.List;
