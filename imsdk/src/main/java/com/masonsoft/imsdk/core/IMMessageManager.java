@@ -290,8 +290,7 @@ public class IMMessageManager {
                             conversationType,
                             targetUserId);
             if (conversation == null) {
-                final Throwable e = new IllegalStateException("unexpected. conversation is null");
-                IMLog.e(e, "sessionUserId:%s, conversationType:%s, targetUserId:%s",
+                IMLog.v("conversation is null, sessionUserId:%s, conversationType:%s, targetUserId:%s",
                         sessionUserId,
                         conversationType,
                         targetUserId);
