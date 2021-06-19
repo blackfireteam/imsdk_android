@@ -22,8 +22,8 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.entity.Init;
 import com.masonsoft.imsdk.sample.entity.Spark;
 import com.masonsoft.imsdk.sample.im.FetchSparkMessagePacket;
-import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
-import com.masonsoft.imsdk.sample.util.RequestSignUtil;
+import com.masonsoft.imsdk.uikit.util.OkHttpClientUtil;
+import com.masonsoft.imsdk.uikit.util.RequestSignUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;

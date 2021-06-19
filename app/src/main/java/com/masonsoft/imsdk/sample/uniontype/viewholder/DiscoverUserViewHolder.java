@@ -4,12 +4,12 @@ import android.app.Activity;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplDiscoverUserBinding;
-import com.masonsoft.imsdk.sample.uniontype.DataObject;
+import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
@@ -39,12 +39,12 @@ public class DiscoverUserViewHolder extends UnionTypeViewHolder {
         ViewUtil.onClick(itemView, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
-                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
 
             if (userId <= 0) {
-                SampleLog.e(Constants.ErrorLog.INVALID_USER_ID);
+                SampleLog.e(IMUIKitConstants.ErrorLog.INVALID_USER_ID);
                 return;
             }
 

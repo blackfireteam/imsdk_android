@@ -27,7 +27,7 @@ import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentConfirmDialog
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentInputDialog;
 import com.masonsoft.imsdk.sample.common.simpledialog.SimpleLoadingDialog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMineFragmentBinding;
-import com.masonsoft.imsdk.sample.util.TipUtil;
+import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.dynamic.DynamicView;

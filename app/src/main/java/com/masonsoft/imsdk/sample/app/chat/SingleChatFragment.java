@@ -29,17 +29,15 @@ import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
-import com.masonsoft.imsdk.sample.common.media.audio.AudioRecordManager;
-import com.masonsoft.imsdk.sample.common.mediapicker.MediaData;
-import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManager;
-import com.masonsoft.imsdk.sample.common.microlifecycle.MicroLifecycleComponentManagerHost;
-import com.masonsoft.imsdk.sample.common.microlifecycle.VisibleRecyclerViewMicroLifecycleComponentManager;
-import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSingleChatFragmentBinding;
-import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
-import com.masonsoft.imsdk.sample.util.ActivityUtil;
-import com.masonsoft.imsdk.sample.util.EditTextUtil;
-import com.masonsoft.imsdk.sample.util.TipUtil;
-import com.masonsoft.imsdk.sample.widget.CustomSoftKeyboard;
+import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.common.media.audio.AudioRecordManager;
+import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
+import com.masonsoft.imsdk.uikit.common.microlifecycle.VisibleRecyclerViewMicroLifecycleComponentManager;
+import com.masonsoft.imsdk.uikit.uniontype.IMUIKitUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.util.ActivityUtil;
+import com.masonsoft.imsdk.uikit.util.EditTextUtil;
+import com.masonsoft.imsdk.uikit.util.TipUtil;
+import com.masonsoft.imsdk.uikit.widget.CustomSoftKeyboard;
 import com.masonsoft.imsdk.util.Objects;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
@@ -67,7 +65,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
     public static SingleChatFragment newInstance(long targetUserId) {
         Bundle args = new Bundle();
-        args.putLong(Constants.ExtrasKey.TARGET_USER_ID, targetUserId);
+        args.putLong(IMUIKitConstants.ExtrasKey.TARGET_USER_ID, targetUserId);
         SingleChatFragment fragment = new SingleChatFragment();
         fragment.setArguments(args);
         return fragment;
@@ -98,7 +96,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         final Bundle args = getArguments();
         if (args != null) {
-            mTargetUserId = args.getLong(Constants.ExtrasKey.TARGET_USER_ID, mTargetUserId);
+            mTargetUserId = args.getLong(IMUIKitConstants.ExtrasKey.TARGET_USER_ID, mTargetUserId);
         }
     }
 
@@ -147,7 +145,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         UnionTypeAdapter adapter = new UnionTypeAdapterImpl();
         adapter.setHost(Host.Factory.create(this, recyclerView, adapter));
-        adapter.setUnionTypeMapper(new UnionTypeMapperImpl());
+        adapter.setUnionTypeMapper(new IMUIKitUnionTypeMapper());
         mDataAdapter = adapter;
         mViewImpl = new ViewImpl(adapter);
         clearPresenter();
@@ -164,7 +162,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             protected boolean isTouchOutside(float rawX, float rawY) {
                 final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
                 if (binding == null) {
-                    SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                    SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                     return false;
                 }
 
@@ -182,7 +180,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             protected void onSoftKeyboardLayoutShown(boolean customSoftKeyboard, boolean systemSoftKeyboard) {
                 final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
                 if (binding == null) {
-                    SampleLog.e(Constants.ErrorLog.BINDING_IS_NULL);
+                    SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                     return;
                 }
 

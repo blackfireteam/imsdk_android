@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.masonsoft.imsdk.sample.widget.systeminsets.SoftKeyboardListenerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.masonsoft.imsdk.uikit.widget.systeminsets.SoftKeyboardListenerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/soft_keyboard_listener_layout"
@@ -38,7 +38,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/imsdk_sample_ic_arrow_left" />
 
-            <com.masonsoft.imsdk.sample.widget.UserCacheName
+            <com.masonsoft.imsdk.uikit.widget.UserCacheName
                 android:id="@+id/top_bar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -253,7 +253,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.masonsoft.imsdk.sample.widget.CustomSoftKeyboard
+        <com.masonsoft.imsdk.uikit.widget.CustomSoftKeyboard
             android:id="@+id/custom_soft_keyboard"
             android:layout_width="match_parent"
             android:layout_height="277dp"
@@ -291,4 +291,4 @@
             android:textSize="12sp"
             tools:text="录音" />
     </LinearLayout>
-</com.masonsoft.imsdk.sample.widget.systeminsets.SoftKeyboardListenerLayout>
+</com.masonsoft.imsdk.uikit.widget.systeminsets.SoftKeyboardListenerLayout>

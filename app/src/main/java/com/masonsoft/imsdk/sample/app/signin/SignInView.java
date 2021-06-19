@@ -11,7 +11,7 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.app.signup.SignUpActivity;
 import com.masonsoft.imsdk.sample.app.signup.SignUpArgument;
-import com.masonsoft.imsdk.sample.util.TipUtil;
+import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.dynamic.DynamicView;

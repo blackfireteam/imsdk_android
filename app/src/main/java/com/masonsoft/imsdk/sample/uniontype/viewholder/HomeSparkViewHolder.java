@@ -7,14 +7,14 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.sample.Constants;
 import com.masonsoft.imsdk.sample.CustomIMMessageFactory;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplHomeSparkBinding;
 import com.masonsoft.imsdk.sample.entity.Spark;
-import com.masonsoft.imsdk.sample.uniontype.DataObject;
+import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.lang.ref.WeakReference;
@@ -81,7 +81,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         ViewUtil.onClick(itemView, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
-                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
 
@@ -90,7 +90,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         ViewUtil.onClick(mBinding.actionLike, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
-                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
 
@@ -105,12 +105,12 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         ViewUtil.onClick(mBinding.actionChat, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
-                SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
 
             if (spark.userId <= 0) {
-                SampleLog.e(Constants.ErrorLog.INVALID_USER_ID);
+                SampleLog.e(IMUIKitConstants.ErrorLog.INVALID_USER_ID);
                 return;
             }
 

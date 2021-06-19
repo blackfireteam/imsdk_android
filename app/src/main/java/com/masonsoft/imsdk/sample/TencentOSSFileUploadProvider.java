@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.FileUploadProvider;
-import com.masonsoft.imsdk.sample.util.FilenameUtil;
+import com.masonsoft.imsdk.uikit.util.FilenameUtil;
 import com.tencent.cos.xml.CosXmlService;
 import com.tencent.cos.xml.CosXmlServiceConfig;
 import com.tencent.cos.xml.model.object.PutObjectRequest;

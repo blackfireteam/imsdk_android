@@ -21,10 +21,9 @@ import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
-import com.masonsoft.imsdk.sample.common.simpledialog.SimpleContentConfirmDialog;
-import com.masonsoft.imsdk.sample.common.simpledialog.SimpleLoadingDialog;
-import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
-import com.masonsoft.imsdk.sample.util.TipUtil;
+import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleLoadingDialog;
+import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.FormValidator;
@@ -58,11 +57,11 @@ public class SignInFragment extends SystemInsetsFragment {
     private void showSignInLoadingDialog() {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
         if (mSignInLoadingDialog == null) {
@@ -74,11 +73,11 @@ public class SignInFragment extends SystemInsetsFragment {
     private void hideSignInLoadingDialog() {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(Constants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (isStateSaved()) {
-            SampleLog.e(Constants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
         if (mSignInLoadingDialog != null) {

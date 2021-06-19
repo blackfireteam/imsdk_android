@@ -4,7 +4,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
-import com.masonsoft.imsdk.sample.widget.systeminsets.SoftKeyboardListenerLayout;
+import com.masonsoft.imsdk.uikit.widget.systeminsets.SoftKeyboardListenerLayout;
 
 import io.github.idonans.core.util.SystemUtil;
 import io.github.idonans.lang.util.ViewUtil;

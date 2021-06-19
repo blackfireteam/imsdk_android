@@ -15,7 +15,7 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.sample.uniontype.viewholder.IMMessageViewHolder;
-import com.masonsoft.imsdk.sample.widget.MSIMConversationChangedViewHelper;
+import com.masonsoft.imsdk.uikit.widget.MSIMConversationChangedViewHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;

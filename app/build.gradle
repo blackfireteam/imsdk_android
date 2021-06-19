@@ -60,44 +60,11 @@ android.applicationVariants.all { variant ->
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(path: ':imsdk')
+    implementation project(path: ':imsdk_uikit')
     // implementation 'io.github.blackfireteam.msimsdk:msimsdk:1.0-alpha0'
-
-    implementation rootProject.ext.bcfg.deps.androidx_appcompat
-    implementation rootProject.ext.bcfg.deps.androidx_constraintlayout
-    implementation rootProject.ext.bcfg.deps.idonans_appcontext
-    implementation rootProject.ext.bcfg.deps.idonans_core
-    implementation rootProject.ext.bcfg.deps.idonans_lang
-    implementation rootProject.ext.bcfg.deps.idonans_backstack
-    implementation rootProject.ext.bcfg.deps.idonans_systeminsets
-    implementation rootProject.ext.bcfg.deps.idonans_uniontype
-    implementation rootProject.ext.bcfg.deps.idonans_dynamic
-
-    implementation rootProject.ext.bcfg.deps.material
-    implementation rootProject.ext.bcfg.deps.guava
-    implementation rootProject.ext.bcfg.deps.gson
-    implementation rootProject.ext.bcfg.deps.rxbinding
-    implementation rootProject.ext.bcfg.deps.okhttp
-    implementation rootProject.ext.bcfg.deps.okhttp_logging_interceptor
-    implementation rootProject.ext.bcfg.deps.rxjava
-    implementation rootProject.ext.bcfg.deps.rxandroid
-
-    implementation rootProject.ext.bcfg.deps.fresco
-    implementation rootProject.ext.bcfg.deps.fresco_anim_gif
-    implementation rootProject.ext.bcfg.deps.fresco_anim_webp
-    implementation rootProject.ext.bcfg.deps.fresco_support_webp
-    implementation rootProject.ext.bcfg.deps.fresco_okhttp
-
-    implementation 'androidx.emoji:emoji-appcompat:1.1.0'
-    implementation 'androidx.emoji:emoji-bundled:1.1.0'
-    implementation "androidx.gridlayout:gridlayout:1.0.0"
-    implementation 'com.google.android:flexbox:2.0.1'
-    implementation 'com.google.android.exoplayer:exoplayer:2.13.3'
-    implementation 'com.google.android.exoplayer:extension-okhttp:2.13.3'
 
     implementation 'com.tencent.qcloud:cosxml:5.6.0'
     implementation 'me.relex:photodraweeview:2.0.0'
-    implementation 'com.github.tbruyelle:rxpermissions:0.12'
 
     // debugImplementation rootProject.ext.bcfg.deps.leakcanary
 

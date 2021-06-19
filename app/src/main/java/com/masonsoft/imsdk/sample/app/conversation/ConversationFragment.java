@@ -18,7 +18,7 @@ import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleConversationFragmentBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
-import com.masonsoft.imsdk.sample.widget.DividerItemDecoration;
+import com.masonsoft.imsdk.uikit.widget.DividerItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 

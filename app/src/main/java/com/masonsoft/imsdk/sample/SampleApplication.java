@@ -19,7 +19,7 @@ import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.sample.common.TopActivity;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
-import com.masonsoft.imsdk.sample.util.OkHttpClientUtil;
+import com.masonsoft.imsdk.uikit.util.OkHttpClientUtil;
 
 import io.github.idonans.core.manager.ProcessManager;
 

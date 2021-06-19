@@ -12,7 +12,7 @@
         tools:background="#ff999999"
         tools:layout_margin="20dp">
 
-        <com.masonsoft.imsdk.sample.widget.ImageLayout
+        <com.masonsoft.imsdk.uikit.widget.ImageLayout
             android:id="@+id/image_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -44,7 +44,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:alpha="0.5" />
 
-        <com.masonsoft.imsdk.sample.widget.UserCacheName
+        <com.masonsoft.imsdk.uikit.widget.UserCacheName
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -17,7 +17,7 @@ import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleDiscoverFragmentBinding;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
-import com.masonsoft.imsdk.sample.widget.GridItemDecoration;
+import com.masonsoft.imsdk.uikit.widget.GridItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.List;

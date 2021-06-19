@@ -16,7 +16,7 @@ import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.uniontype.DataObject;
 import com.masonsoft.imsdk.sample.uniontype.UnionTypeMapperImpl;
-import com.masonsoft.imsdk.sample.widget.SessionUserIdChangedViewHelper;
+import com.masonsoft.imsdk.uikit.widget.SessionUserIdChangedViewHelper;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 

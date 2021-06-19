@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.masonsoft.imsdk.sample.widget.SessionUserCacheAvatar
+            <com.masonsoft.imsdk.uikit.widget.SessionUserCacheAvatar
                 android:id="@+id/avatar"
                 android:layout_width="116dp"
                 android:layout_height="116dp"
@@ -36,11 +36,11 @@
                 app:roundAsCircle="true"
                 app:showBorder="true">
 
-                <com.masonsoft.imsdk.sample.widget.ProgressView
+                <com.masonsoft.imsdk.uikit.widget.ProgressView
                     android:id="@+id/avatar_progress_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-            </com.masonsoft.imsdk.sample.widget.SessionUserCacheAvatar>
+            </com.masonsoft.imsdk.uikit.widget.SessionUserCacheAvatar>
 
             <ImageView
                 android:id="@+id/action_edit_avatar"
@@ -52,7 +52,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/avatar"
                 app:layout_constraintEnd_toEndOf="@id/avatar" />
 
-            <com.masonsoft.imsdk.sample.widget.SessionUserCacheNameText
+            <com.masonsoft.imsdk.uikit.widget.SessionUserCacheNameText
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -181,7 +181,7 @@
             android:text="@string/imsdk_sample_button_text_sign_out"
             android:textColor="@color/imsdk_sample_button_text_selector" />
 
-        <com.masonsoft.imsdk.sample.widget.ConnectionStateDebugView
+        <com.masonsoft.imsdk.uikit.widget.ConnectionStateDebugView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="15dp"

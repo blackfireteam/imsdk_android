@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.masonsoft.imsdk.sample.widget.AspectRatioFrameLayout
+    <com.masonsoft.imsdk.uikit.widget.AspectRatioFrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -17,6 +17,6 @@
             android:indeterminate="true"
             android:indeterminateDrawable="@drawable/imsdk_sample_ic_meet_loading_large_circle_fg_animate"
             android:indeterminateOnly="true" />
-    </com.masonsoft.imsdk.sample.widget.AspectRatioFrameLayout>
+    </com.masonsoft.imsdk.uikit.widget.AspectRatioFrameLayout>
 
 </FrameLayout>
