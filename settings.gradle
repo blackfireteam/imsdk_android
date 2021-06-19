@@ -1,3 +1,4 @@
+include ':imsdk_uikit'
 include ':protobuf'
 include ':imsdk'
 include ':app'

@@ -1,0 +1,50 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    compileSdkVersion rootProject.ext.bcfg.ver.target_sdk
+    buildToolsVersion rootProject.ext.bcfg.ver.build_tools
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.bcfg.ver.min_sdk
+        targetSdkVersion rootProject.ext.bcfg.ver.target_sdk
+        versionCode rootProject.ext.bcfg.ver.versionCode
+        versionName rootProject.ext.bcfg.ver.versionName
+        buildConfigField("String", "LIB_NAME", "\"MSIMSDK_UIKIT\"")
+        buildConfigField("int", "LIB_VERSION_CODE", "$versionCode")
+        buildConfigField("String", "LIB_VERSION_NAME", "\"$versionName\"")
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+// 自定义生成的 aar 文件名
+android.libraryVariants.all { variant ->
+    variant.outputs.all {
+        if (outputFileName.endsWith(".aar")) {
+            outputFileName = "MSIMSDK_UIKIT_v${android.defaultConfig.versionName}_${variant.buildType.name}.aar"
+        }
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api project(path: ':imsdk')
+}
