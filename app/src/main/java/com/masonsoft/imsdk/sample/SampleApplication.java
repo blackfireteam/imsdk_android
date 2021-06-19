@@ -20,6 +20,7 @@ import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.sample.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.uikit.IMUIKitComponentManager;
+import com.masonsoft.imsdk.uikit.IMUIKitLog;
 import com.masonsoft.imsdk.uikit.common.TopActivity;
 import com.masonsoft.imsdk.uikit.util.OkHttpClientUtil;
 
@@ -34,6 +35,7 @@ public class SampleApplication extends Application {
         final boolean debug = BuildConfig.DEBUG;
         if (debug) {
             IMLog.setLogLevel(Log.VERBOSE);
+            IMUIKitLog.setLogLevel(Log.VERBOSE);
         }
         LocalSettingsManager.getInstance().start();
         DiscoverUserManager.getInstance().start();
