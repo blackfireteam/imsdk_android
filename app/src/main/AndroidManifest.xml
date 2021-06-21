@@ -26,7 +26,6 @@
         <activity android:name=".app.signup.SignUpActivity" />
         <activity android:name=".app.signup.nickname.SignUpNicknameActivity" />
         <activity android:name=".app.signup.avatar.SignUpAvatarActivity" />
-        <activity android:name="com.masonsoft.imsdk.uikit.app.chat.SingleChatActivity" />
     </application>
 
 </manifest>

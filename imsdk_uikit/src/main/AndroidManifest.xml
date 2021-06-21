@@ -2,4 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.masonsoft.imsdk.uikit">
 
+    <application>
+        <activity android:name=".app.chat.SingleChatActivity" />
+    </application>
 </manifest>
