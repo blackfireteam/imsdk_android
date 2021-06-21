@@ -7,7 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.core.IMSessionManager;
-import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
+import com.masonsoft.imsdk.uikit.app.FragmentDelegateActivity;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 
 import io.github.idonans.systeminsets.SystemUiHelper;

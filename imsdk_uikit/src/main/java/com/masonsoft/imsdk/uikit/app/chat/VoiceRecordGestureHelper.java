@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.app.chat;
+package com.masonsoft.imsdk.uikit.app.chat;
 
 import android.annotation.SuppressLint;
 import android.graphics.RectF;

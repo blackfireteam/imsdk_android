@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.app.chat.SingleChatActivity;
+import com.masonsoft.imsdk.uikit.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplDiscoverUserBinding;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;

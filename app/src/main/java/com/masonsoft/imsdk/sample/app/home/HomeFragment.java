@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleHomeFragmentBinding;
 import com.masonsoft.imsdk.sample.entity.Spark;
 import com.masonsoft.imsdk.sample.uniontype.SampleUnionTypeMapper;

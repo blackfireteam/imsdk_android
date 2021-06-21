@@ -10,7 +10,7 @@ import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.sample.CustomIMMessageFactory;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.app.chat.SingleChatActivity;
+import com.masonsoft.imsdk.uikit.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplHomeSparkBinding;
 import com.masonsoft.imsdk.sample.entity.Spark;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;

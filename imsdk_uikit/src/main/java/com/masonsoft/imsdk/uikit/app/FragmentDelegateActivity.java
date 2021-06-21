@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.app;
+package com.masonsoft.imsdk.uikit.app;
 
 import android.view.Window;
 
@@ -9,9 +9,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.IMUIKitLog;
 
+/**
+ * @since 1.0
+ */
 public class FragmentDelegateActivity extends AppCompatActivity {
 
     public interface FragmentDelegateCreator {
@@ -24,7 +27,7 @@ public class FragmentDelegateActivity extends AppCompatActivity {
         boolean needCommit = false;
 
         if (fm.isStateSaved()) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            IMUIKitLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 

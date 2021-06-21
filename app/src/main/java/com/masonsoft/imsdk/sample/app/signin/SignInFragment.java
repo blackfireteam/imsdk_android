@@ -19,7 +19,7 @@ import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentConfirmDialog;

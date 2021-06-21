@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.app.conversation;
+package com.masonsoft.imsdk.uikit.app.conversation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,7 +13,7 @@ import com.masonsoft.imsdk.MSIMConversationListenerProxy;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
-import com.masonsoft.imsdk.sample.SampleLog;
+import com.masonsoft.imsdk.uikit.IMUIKitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUIKitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.widget.SessionUserIdChangedViewHelper;
@@ -199,9 +199,9 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createInitRequest() throws Exception {
-        SampleLog.v(Objects.defaultObjectTag(this) + " createInitRequest");
+        IMUIKitLog.v(Objects.defaultObjectTag(this) + " createInitRequest");
         if (DEBUG) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " createInitRequest sessionUserId:%s, mConversationType:%s, pageSize:%s",
+            IMUIKitLog.v(Objects.defaultObjectTag(this) + " createInitRequest sessionUserId:%s, mConversationType:%s, pageSize:%s",
                     getSessionUserId(),
                     mConversationType,
                     mPageSize);
@@ -223,7 +223,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
                         UnionTypeItemObject item = createDefault(conversation);
                         if (item == null) {
                             if (DEBUG) {
-                                SampleLog.e(Objects.defaultObjectTag(this) + " createInitRequest ignore null UnionTypeItemObject");
+                                IMUIKitLog.e(Objects.defaultObjectTag(this) + " createInitRequest ignore null UnionTypeItemObject");
                             }
                             continue;
                         }
@@ -239,7 +239,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     @Override
     protected void onInitRequestResult(@NonNull ConversationFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
-        SampleLog.v(Objects.defaultObjectTag(this) + " onInitRequestResult");
+        IMUIKitLog.v(Objects.defaultObjectTag(this) + " onInitRequestResult");
         // 记录上一页，下一页参数
         if (result.items == null || result.items.isEmpty()) {
             mFirstConversationSeq = -1;
@@ -257,9 +257,9 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createNextPageRequest() throws Exception {
-        SampleLog.v(Objects.defaultObjectTag(this) + " createNextPageRequest");
+        IMUIKitLog.v(Objects.defaultObjectTag(this) + " createNextPageRequest");
         if (DEBUG) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " createNextPageRequest sessionUserId:%s, mConversationType:%s, pageSize:%s, mLastConversationSeq:%s",
+            IMUIKitLog.v(Objects.defaultObjectTag(this) + " createNextPageRequest sessionUserId:%s, mConversationType:%s, pageSize:%s, mLastConversationSeq:%s",
                     getSessionUserId(),
                     mConversationType,
                     mPageSize,
@@ -267,7 +267,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         }
 
         if (mLastConversationSeq <= 0) {
-            SampleLog.e(Objects.defaultObjectTag(this) + " createNextPageRequest invalid mLastConversationSeq:%s", mLastConversationSeq);
+            IMUIKitLog.e(Objects.defaultObjectTag(this) + " createNextPageRequest invalid mLastConversationSeq:%s", mLastConversationSeq);
             return null;
         }
 
@@ -287,7 +287,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
                         UnionTypeItemObject item = createDefault(conversation);
                         if (item == null) {
                             if (DEBUG) {
-                                SampleLog.e(Objects.defaultObjectTag(this) + " createNextPageRequest ignore null UnionTypeItemObject");
+                                IMUIKitLog.e(Objects.defaultObjectTag(this) + " createNextPageRequest ignore null UnionTypeItemObject");
                             }
                             continue;
                         }
@@ -303,7 +303,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     @Override
     protected void onNextPageRequestResult(@NonNull ConversationFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
-        SampleLog.v(Objects.defaultObjectTag(this) + " onNextPageRequestResult");
+        IMUIKitLog.v(Objects.defaultObjectTag(this) + " onNextPageRequestResult");
         // 记录上一页，下一页参数
         if (result.items != null && !result.items.isEmpty()) {
             mLastConversationSeq = ((MSIMConversation) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(result.items.size() - 1)).itemObject).object).getSeq();

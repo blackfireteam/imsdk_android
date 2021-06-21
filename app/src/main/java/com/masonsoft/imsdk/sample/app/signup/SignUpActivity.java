@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
+import com.masonsoft.imsdk.uikit.app.FragmentDelegateActivity;
 import com.masonsoft.imsdk.sample.app.signup.nickname.SignUpNicknameActivity;
 
 /**

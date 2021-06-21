@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.masonsoft.imsdk.sample.IMTokenOfflineManager;
-import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
 import com.masonsoft.imsdk.sample.app.signin.SignInActivity;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.app.FragmentDelegateActivity;
 
 import io.github.idonans.systeminsets.SystemUiHelper;
 

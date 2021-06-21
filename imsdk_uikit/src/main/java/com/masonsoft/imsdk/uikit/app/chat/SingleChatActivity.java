@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.app.chat;
+package com.masonsoft.imsdk.uikit.app.chat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,8 +6,8 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.sample.app.FragmentDelegateActivity;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.app.FragmentDelegateActivity;
 
 import io.github.idonans.systeminsets.SystemUiHelper;
 

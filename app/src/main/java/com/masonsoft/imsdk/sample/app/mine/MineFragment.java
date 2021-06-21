@@ -18,7 +18,7 @@ import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMineFragmentBinding;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;

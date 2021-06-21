@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.app.conversation;
+package com.masonsoft.imsdk.uikit.app.conversation;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.lang.GeneralResult;
-import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.sample.app.SystemInsetsFragment;
-import com.masonsoft.imsdk.sample.databinding.ImsdkSampleConversationFragmentBinding;
+import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleConversationFragmentBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUIKitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.widget.DividerItemDecoration;
@@ -55,7 +55,7 @@ public class ConversationFragment extends SystemInsetsFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        SampleLog.v("onCreateView %s", getClass());
+        IMUIKitLog.v("onCreateView %s", getClass());
         mBinding = ImsdkSampleConversationFragmentBinding.inflate(inflater, container, false);
 
         final RecyclerView recyclerView = mBinding.recyclerView;
@@ -106,12 +106,12 @@ public class ConversationFragment extends SystemInsetsFragment {
     }
 
     private static void smoothScrollToPosition(RecyclerView recyclerView, int position) {
-        SampleLog.v("smoothScrollToPosition recyclerView:%s position:%s", recyclerView, position);
+        IMUIKitLog.v("smoothScrollToPosition recyclerView:%s position:%s", recyclerView, position);
         recyclerView.smoothScrollToPosition(position);
     }
 
     private static void scrollToPosition(RecyclerView recyclerView, int position) {
-        SampleLog.v("scrollToPosition recyclerView:%s position:%s", recyclerView, position);
+        IMUIKitLog.v("scrollToPosition recyclerView:%s position:%s", recyclerView, position);
         recyclerView.scrollToPosition(position);
     }
 
@@ -125,19 +125,19 @@ public class ConversationFragment extends SystemInsetsFragment {
         @WorkerThread
         void mergeSortedConversationList(@NonNull final List<UnionTypeItemObject> unionTypeItemObjectList) {
             final String tag = Objects.defaultObjectTag(this) + "[mergeSortedConversationList][" + System.currentTimeMillis() + "][size:]" + unionTypeItemObjectList.size();
-            SampleLog.v(tag);
+            IMUIKitLog.v(tag);
             final boolean[] autoScrollToTop = {false};
             getAdapter().getData().beginTransaction()
                     .add((transaction, groupArrayList) -> {
                         if (groupArrayList.getGroupItemsSize(getGroupContent()) == 0) {
                             // request init page
-                            SampleLog.v(tag + " try use requestInit instead of merge");
+                            IMUIKitLog.v(tag + " try use requestInit instead of merge");
                             ConversationFragmentPresenter presenter = mPresenter;
                             if (presenter != null && !presenter.getInitRequestStatus().isLoading()) {
                                 Threads.postUi(() -> {
                                     if (mPresenter != null) {
                                         if (!mPresenter.getInitRequestStatus().isLoading()) {
-                                            SampleLog.v(tag + " use requestInit instead of merge");
+                                            IMUIKitLog.v(tag + " use requestInit instead of merge");
                                             mPresenter.requestInit(true);
                                         }
                                     }

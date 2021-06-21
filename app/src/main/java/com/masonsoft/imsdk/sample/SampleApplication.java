@@ -17,7 +17,7 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.DebugManager;
 import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.sample.app.chat.SingleChatActivity;
+import com.masonsoft.imsdk.uikit.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.uikit.IMUIKitComponentManager;
 import com.masonsoft.imsdk.uikit.IMUIKitLog;
