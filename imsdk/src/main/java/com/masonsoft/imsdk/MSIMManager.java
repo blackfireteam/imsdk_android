@@ -270,8 +270,10 @@ public class MSIMManager {
         return IMSessionManager.getInstance().getSession() != null;
     }
 
-    public void setSession() {
-
+    public void setSession(@NonNull String token, @NonNull String tcpServerAndPort) {
+        resetSignInOrSignOutTag();
+        final Session session = Session.create(token, tcpServerAndPort);
+        IMSessionManager.getInstance().setSession(session);
     }
 
     @NonNull
