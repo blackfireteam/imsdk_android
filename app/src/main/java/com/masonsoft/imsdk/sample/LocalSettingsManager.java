@@ -7,8 +7,7 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.masonsoft.imsdk.core.IMSessionManager;
-import com.masonsoft.imsdk.core.session.Session;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.Singleton;
@@ -40,7 +39,9 @@ public class LocalSettingsManager {
     public void start() {
         SampleLog.v(Objects.defaultObjectTag(this) + " start");
 
-        IMSessionManager.getInstance().setSession(mSettings.createSession());
+        if (mSettings.hasValidSession()) {
+            MSIMManager.getInstance().setSession(mSettings.imToken, mSettings.imServer);
+        }
     }
 
     private void restore() {
@@ -94,14 +95,6 @@ public class LocalSettingsManager {
         public boolean hasValidSession() {
             return !TextUtils.isEmpty(this.imServer)
                     && !TextUtils.isEmpty(this.imToken);
-        }
-
-        @Nullable
-        public Session createSession() {
-            if (hasValidSession()) {
-                return Session.create(this.imToken, this.imServer);
-            }
-            return null;
         }
 
         private Settings copy() {
