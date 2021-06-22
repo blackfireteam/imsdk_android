@@ -270,6 +270,10 @@ public class MSIMManager {
         return IMSessionManager.getInstance().getSession() != null;
     }
 
+    public void setSession() {
+
+    }
+
     @NonNull
     public MSIMMessageManager getMessageManager() {
         return MSIMMessageManager.getInstance();

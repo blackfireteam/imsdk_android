@@ -8,7 +8,6 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.FileUploadProvider;
-import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.api.DefaultApi;
@@ -132,7 +131,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
         mLastUploadAvatarTag = null;
         mRequestHolder.set(Single.just("")
                 .map(input -> {
-                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
                     Preconditions.checkArgument(sessionUserId > 0);
                     DefaultApi.updateAvatar(sessionUserId, avatarUrl);
                     UserInfoManager.getInstance().updateAvatar(sessionUserId, avatarUrl);
@@ -161,7 +160,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
     public void submitNickname(String nickname) {
         mRequestHolder.set(Single.just("")
                 .map(input -> {
-                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
                     Preconditions.checkArgument(sessionUserId > 0);
                     DefaultApi.updateNickname(sessionUserId, nickname);
                     UserInfoManager.getInstance().updateNickname(sessionUserId, nickname);
@@ -190,7 +189,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
     public void trySubmitGoldChanged(boolean isChecked) {
         mRequestHolder.set(Single.just("")
                 .map(input -> {
-                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
                     Preconditions.checkArgument(sessionUserId > 0);
                     final MSIMUserInfo sessionUserInfo = MSIMManager.getInstance().getUserInfoManager().getUserInfo(sessionUserId);
                     Preconditions.checkNotNull(sessionUserInfo);
@@ -232,7 +231,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
     public void trySubmitVerifiedChanged(boolean isChecked) {
         mRequestHolder.set(Single.just("")
                 .map(input -> {
-                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
                     Preconditions.checkArgument(sessionUserId > 0);
                     final MSIMUserInfo sessionUserInfo = MSIMManager.getInstance().getUserInfoManager().getUserInfo(sessionUserId);
                     Preconditions.checkNotNull(sessionUserInfo);

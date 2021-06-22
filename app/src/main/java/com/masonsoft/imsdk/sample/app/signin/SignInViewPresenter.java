@@ -1,7 +1,6 @@
 package com.masonsoft.imsdk.sample.app.signin;
 
 import com.masonsoft.imsdk.MSIMManager;
-import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.api.ApiResponseException;
@@ -66,7 +65,7 @@ public abstract class SignInViewPresenter<T extends SignInView> extends DynamicP
                     if (view == null) {
                         return;
                     }
-                    final long sessionUserId = IMSessionManager.getInstance().getSessionUserId();
+                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
                     if (sessionUserId > 0) {
                         view.onTcpSignInSuccess();
                     } else {
