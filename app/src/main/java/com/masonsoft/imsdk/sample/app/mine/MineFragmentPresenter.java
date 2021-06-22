@@ -11,6 +11,7 @@ import com.masonsoft.imsdk.core.FileUploadProvider;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.api.DefaultApi;
+import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.uikit.widget.SessionUserIdChangedViewHelper;
 import com.masonsoft.imsdk.uikit.widget.UserCacheChangedViewHelper;
 import com.masonsoft.imsdk.user.UserInfoManager;
@@ -283,6 +284,8 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
 
                     // clear settings token
                     LocalSettingsManager.getInstance().clearToken();
+                    // clear discover user
+                    DiscoverUserManager.getInstance().clearAllAsync();
 
                     if (result.isSuccess()) {
                         view.onSignOutSuccess();
@@ -302,6 +305,8 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
 
                     // clear settings token
                     LocalSettingsManager.getInstance().clearToken();
+                    // clear discover user
+                    DiscoverUserManager.getInstance().clearAllAsync();
 
                     view.onSignOutFail(e);
                 }));

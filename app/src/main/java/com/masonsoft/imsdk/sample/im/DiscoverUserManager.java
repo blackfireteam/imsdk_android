@@ -53,6 +53,15 @@ public class DiscoverUserManager {
         }
     }
 
+    public void clearAllAsync() {
+        mAddOrRemoveOnlineUserQueue.skipQueue();
+        mAddOrRemoveOnlineUserQueue.enqueue(() -> {
+            synchronized (mOnlineUserList) {
+                mOnlineUserList.clear();
+            }
+        });
+    }
+
     private void addOnlineAsync(ProtoMessage.ProfileOnline profileOnline) {
         mAddOrRemoveOnlineUserQueue.enqueue(() -> {
             final MSIMUserInfo.Editor userInfo = createUserInfo(profileOnline);
