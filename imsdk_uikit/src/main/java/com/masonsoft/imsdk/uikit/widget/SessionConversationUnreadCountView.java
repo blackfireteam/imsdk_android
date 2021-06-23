@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMConstants;
+import com.masonsoft.imsdk.MSIMConstants;
 
 public class SessionConversationUnreadCountView extends IMConversationUnreadCountView {
 
@@ -34,10 +34,10 @@ public class SessionConversationUnreadCountView extends IMConversationUnreadCoun
         mSessionUserIdChangedViewHelper = new SessionUserIdChangedViewHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
-                SessionConversationUnreadCountView.this.setConversation(sessionUserId, IMConstants.ID_ANY);
+                SessionConversationUnreadCountView.this.setConversation(sessionUserId, MSIMConstants.ID_ANY);
             }
         };
-        setConversation(mSessionUserIdChangedViewHelper.getSessionUserId(), IMConstants.ID_ANY);
+        setConversation(mSessionUserIdChangedViewHelper.getSessionUserId(), MSIMConstants.ID_ANY);
     }
 
 }
