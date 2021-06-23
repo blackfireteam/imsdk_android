@@ -17,7 +17,6 @@ import androidx.core.content.ContextCompat;
 
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.uikit.IMUIKitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.util.Objects;
@@ -118,7 +117,7 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
                 messageText = "[default]type:" + messageType + ", body:" + message.getBody();
         }
 
-        if (IMConstants.MessageType.isCustomMessage(messageType)) {
+        if (MSIMConstants.MessageType.isCustomMessage(messageType)) {
             messageText = "[自定义消息]";
         }
 

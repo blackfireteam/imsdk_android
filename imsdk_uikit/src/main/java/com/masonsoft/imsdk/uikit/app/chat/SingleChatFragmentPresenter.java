@@ -8,7 +8,6 @@ import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.uikit.IMUIKitLog;
@@ -47,7 +46,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     @UiThread
     public SingleChatFragmentPresenter(@NonNull SingleChatFragment.ViewImpl view) {
         super(view);
-        mSessionUserId = IMSessionManager.getInstance().getSessionUserId();
+        mSessionUserId = MSIMManager.getInstance().getSessionUserId();
         mTargetUserId = view.getTargetUserId();
 
         mConversationChangedViewHelper = new MSIMConversationChangedViewHelper() {

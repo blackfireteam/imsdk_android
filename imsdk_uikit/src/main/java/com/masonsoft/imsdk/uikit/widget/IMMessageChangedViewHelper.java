@@ -11,7 +11,6 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessageListener;
 import com.masonsoft.imsdk.MSIMMessageListenerProxy;
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.uikit.IMUIKitLog;
 import com.masonsoft.imsdk.util.Objects;
@@ -144,7 +143,7 @@ public abstract class IMMessageChangedViewHelper {
 
         @Override
         public void onMultiMessageChanged(long sessionUserId) {
-            onMessageChangedInternal(sessionUserId, IMConstants.ID_ANY, IMConstants.ID_ANY, IMConstants.ID_ANY);
+            onMessageChangedInternal(sessionUserId, MSIMConstants.ID_ANY, MSIMConstants.ID_ANY, MSIMConstants.ID_ANY);
         }
 
         private void onMessageChangedInternal(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {

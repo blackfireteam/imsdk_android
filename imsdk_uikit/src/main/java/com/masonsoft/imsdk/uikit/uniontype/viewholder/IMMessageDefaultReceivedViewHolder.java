@@ -5,7 +5,6 @@ import android.app.Activity;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 import com.masonsoft.imsdk.uikit.IMUIKitLog;
 import com.masonsoft.imsdk.uikit.R;
@@ -40,7 +39,7 @@ public class IMMessageDefaultReceivedViewHolder extends IMMessageDefaultViewHold
             }
 
             // TODO FIXME open profile ?
-            IMLog.w("require open profile");
+            IMUIKitLog.w("require open profile");
         });
     }
 

@@ -7,7 +7,6 @@ import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMImageElement;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMVideoElement;
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 import com.masonsoft.imsdk.uikit.IMUIKitLog;
 import com.masonsoft.imsdk.util.Objects;
@@ -62,7 +61,7 @@ public class IMImageView extends ImageLayout {
                     IMUIKitLog.v(Objects.defaultObjectTag(this) + " image message localPath:%s, url:%s",
                             localPath, url);
                 }
-            } else if (messageType == IMConstants.MessageType.VIDEO) {
+            } else if (messageType == MSIMConstants.MessageType.VIDEO) {
                 final MSIMVideoElement element = message.getVideoElement();
                 Preconditions.checkNotNull(element);
                 final String localThumbPath = element.getThumbPath();

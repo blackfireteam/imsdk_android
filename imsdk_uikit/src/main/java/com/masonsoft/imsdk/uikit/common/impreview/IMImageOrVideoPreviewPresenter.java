@@ -8,8 +8,6 @@ import com.google.common.collect.Lists;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 import com.masonsoft.imsdk.uikit.IMUIKitLog;
@@ -43,7 +41,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
         super(view);
         setPrePageRequestEnable(initMessageSeq >= 0);
         setNextPageRequestEnable(initMessageSeq >= 0);
-        mSessionUserId = IMSessionManager.getInstance().getSessionUserId();
+        mSessionUserId = MSIMManager.getInstance().getSessionUserId();
         mConversationType = MSIMConstants.ConversationType.C2C;
         mTargetUserId = targetUserId;
         mFirstMessageSeq = initMessageSeq;
@@ -146,7 +144,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
 
     @Override
     protected void onPrePageRequestResult(@NonNull IMImageOrVideoPreviewDialog.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, Object> result) {
-        IMLog.v("onPrePageRequestResult");
+        IMUIKitLog.v("onPrePageRequestResult");
 
         // 记录上一页，下一页参数
         if (result.items != null && !result.items.isEmpty()) {
@@ -206,7 +204,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
 
     @Override
     protected void onNextPageRequestResult(@NonNull IMImageOrVideoPreviewDialog.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, Object> result) {
-        IMLog.v("onNextPageRequestResult");
+        IMUIKitLog.v("onNextPageRequestResult");
 
         // 记录上一页，下一页参数
         if (result.items != null && !result.items.isEmpty()) {

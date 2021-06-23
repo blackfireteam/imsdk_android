@@ -12,9 +12,9 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 import com.masonsoft.imsdk.uikit.R;
 
@@ -99,7 +99,7 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
     @Nullable
     @Override
     protected Object loadCustomObject() {
-        if (getConversationId() == IMConstants.ID_ANY) {
+        if (getConversationId() == MSIMConstants.ID_ANY) {
             return MSIMManager.getInstance().getConversationManager().getAllUnreadCount(getSessionUserId());
         }
 
@@ -109,7 +109,7 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
     @Override
     protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
         long unreadCount = 0L;
-        if (getConversationId() == IMConstants.ID_ANY) {
+        if (getConversationId() == MSIMConstants.ID_ANY) {
             if (customObject instanceof Number) {
                 unreadCount = ((Number) customObject).longValue();
             }

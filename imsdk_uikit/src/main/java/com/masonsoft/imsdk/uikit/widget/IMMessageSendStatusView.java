@@ -17,7 +17,6 @@ import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMWeakCallback;
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.uikit.IMUIKitLog;
 import com.masonsoft.imsdk.uikit.R;
@@ -120,8 +119,8 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
     }
 
     private void syncState() {
-        if (mMessageSendStatus == IMConstants.SendStatus.IDLE
-                || mMessageSendStatus == IMConstants.SendStatus.SENDING) {
+        if (mMessageSendStatus == MSIMConstants.SendStatus.IDLE
+                || mMessageSendStatus == MSIMConstants.SendStatus.SENDING) {
             // 发送中
             final long delayTimeMs = 700L;
             boolean showSending = true;
@@ -141,7 +140,7 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
                 ViewUtil.setVisibilityIfChanged(mSendingView, View.GONE);
                 postDelayed(this::syncState, invalidateDelay);
             }
-        } else if (mMessageSendStatus == IMConstants.SendStatus.FAIL) {
+        } else if (mMessageSendStatus == MSIMConstants.SendStatus.FAIL) {
             // 发送失败
             ViewUtil.setVisibilityIfChanged(mSendFailView, View.VISIBLE);
             ViewUtil.setVisibilityIfChanged(mSendingView, View.GONE);
