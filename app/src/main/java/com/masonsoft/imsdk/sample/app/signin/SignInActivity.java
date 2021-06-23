@@ -6,9 +6,9 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMSessionManager;
-import com.masonsoft.imsdk.uikit.app.FragmentDelegateActivity;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
+import com.masonsoft.imsdk.uikit.app.FragmentDelegateActivity;
 
 import io.github.idonans.systeminsets.SystemUiHelper;
 
@@ -29,7 +29,7 @@ public class SignInActivity extends FragmentDelegateActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (IMSessionManager.getInstance().getSessionUserId() > 0) {
+        if (MSIMManager.getInstance().getSessionUserId() > 0) {
             // 已经登录
             MainActivity.start(this);
             finish();
