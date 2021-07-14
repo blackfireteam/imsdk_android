@@ -22,14 +22,7 @@ public class ConversationFactory {
         target.remoteShowMessageId.set(input.getShowMsgId());
         target.remoteUnread.set(input.getUnread());
         target.localUnreadCount.set(input.getUnread());
-        target.matched.set(IMConstants.trueOfFalse(input.getMatched()));
-        target.newMessage.set(IMConstants.trueOfFalse(input.getNewMsg()));
-        target.myMove.set(IMConstants.trueOfFalse(input.getMyMove()));
-        target.iceBreak.set(IMConstants.trueOfFalse(input.getIceBreak()));
-        target.tipFree.set(IMConstants.trueOfFalse(input.getTipFree()));
-        target.topAlbum.set(IMConstants.trueOfFalse(input.getTopAlbum()));
         target.iBlockU.set(IMConstants.trueOfFalse(input.getIBlockU()));
-        target.connected.set(IMConstants.trueOfFalse(input.getConnected()));
         target.delete.set(IMConstants.trueOfFalse(input.getDeleted()));
 
         final long showMessageTime = input.getShowMsgTime();
