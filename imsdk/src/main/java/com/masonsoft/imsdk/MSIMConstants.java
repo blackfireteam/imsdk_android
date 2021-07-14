@@ -31,6 +31,23 @@ public class MSIMConstants {
     }
 
     /**
+     * 性别
+     */
+    public static class Gender {
+
+        /**
+         * 男
+         */
+        public static final int MALE = IMConstants.Gender.MALE;
+
+        /**
+         * 女
+         */
+        public static final int FEMALE = IMConstants.Gender.FEMALE;
+
+    }
+
+    /**
      * 会话类型
      */
     public static class ConversationType {

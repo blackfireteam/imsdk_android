@@ -51,6 +51,23 @@ public final class IMConstants {
         }
     }
 
+    /**
+     * 性别
+     */
+    public static class Gender {
+
+        /**
+         * 男
+         */
+        public static final int MALE = 0;
+
+        /**
+         * 女
+         */
+        public static final int FEMALE = 1;
+
+    }
+
     public static class AbortId {
         /**
          * 重置
