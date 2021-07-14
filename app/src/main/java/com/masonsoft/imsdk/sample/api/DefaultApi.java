@@ -129,7 +129,7 @@ public class DefaultApi {
         requestArgs.put("uid", userId);
         requestArgs.put("nick_name", nickname);
         requestArgs.put("avatar", avatar);
-        requestArgs.put("gender", MSIMConstants.Gender.MALE);
+        requestArgs.put("gender", MSIMConstants.Gender.FEMALE);
 
         requestApiServer(url, requestArgs, null);
         return new Object();

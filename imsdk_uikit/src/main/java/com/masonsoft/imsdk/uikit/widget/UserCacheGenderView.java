@@ -31,24 +31,24 @@ public class UserCacheGenderView extends UserCacheDynamicImageView {
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         setScaleType(ScaleType.CENTER_INSIDE);
-        setGender(MSIMConstants.Gender.MALE);
+        setGender(MSIMConstants.Gender.FEMALE);
     }
 
     @Override
     protected void onUserCacheUpdate(@Nullable MSIMUserInfo userInfo) {
         if (userInfo == null) {
-            setGender(MSIMConstants.Gender.MALE);
+            setGender(MSIMConstants.Gender.FEMALE);
         } else {
             setGender(userInfo.getGender(MSIMConstants.Gender.MALE));
         }
     }
 
     private void setGender(int gender) {
-        if (gender == MSIMConstants.Gender.FEMALE) {
-            setImageResource(R.drawable.imsdk_sample_ic_gender_female);
-        } else {
-            // default male
+        if (gender == MSIMConstants.Gender.MALE) {
             setImageResource(R.drawable.imsdk_sample_ic_gender_male);
+        } else {
+            // default female
+            setImageResource(R.drawable.imsdk_sample_ic_gender_female);
         }
     }
 

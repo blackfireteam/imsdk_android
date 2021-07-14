@@ -44,7 +44,6 @@ public class MSIMConstants {
          * 女
          */
         public static final int FEMALE = IMConstants.Gender.FEMALE;
-
     }
 
     /**
