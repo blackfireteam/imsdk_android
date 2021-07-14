@@ -38,7 +38,8 @@ public class MSIMManager {
         return INSTANCE.get();
     }
 
-    private String mAppId;
+    private int mSubApp;
+
     @NonNull
     private final WeakObservable<MSIMSdkListener> mSdkListeners = new WeakObservable<>();
     @SuppressWarnings("FieldCanBeLocal")
@@ -170,8 +171,8 @@ public class MSIMManager {
         SessionObservable.DEFAULT.registerObserver(mSessionObserver);
     }
 
-    public void initSdk(String appId, @Nullable MSIMSdkListener listener) {
-        mAppId = appId;
+    public void initSdk(int subApp, @Nullable MSIMSdkListener listener) {
+        mSubApp = subApp;
         addSdkListener(listener);
 
         Threads.postBackground(() -> IMManager.getInstance().start());
@@ -291,8 +292,8 @@ public class MSIMManager {
         return MSIMUserInfoManager.getInstance();
     }
 
-    public final String getAppId() {
-        return mAppId;
+    public final int getSubApp() {
+        return mSubApp;
     }
 
 }

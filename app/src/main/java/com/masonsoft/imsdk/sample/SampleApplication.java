@@ -17,10 +17,10 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.DebugManager;
 import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.uikit.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.uikit.IMUIKitComponentManager;
 import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.uikit.common.TopActivity;
 import com.masonsoft.imsdk.uikit.util.OkHttpClientUtil;
 
@@ -56,7 +56,7 @@ public class SampleApplication extends Application {
         EmojiCompat.init(new BundledEmojiCompatConfig(this));
 
         // 初始化 im
-        MSIMManager.getInstance().initSdk("appId", IMTokenOfflineManager.getInstance().getSdkListener());
+        MSIMManager.getInstance().initSdk(Constants.SUB_APP, IMTokenOfflineManager.getInstance().getSdkListener());
         // 设置 im ui kit 组件跳转事件
         IMUIKitComponentManager.getInstance().setOnConversationViewClickListener(
                 (activity, sessionUserId, conversationId, targetUserId) ->

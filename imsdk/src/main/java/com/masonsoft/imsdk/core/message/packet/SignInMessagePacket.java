@@ -84,12 +84,13 @@ public class SignInMessagePacket extends NotNullTimeoutMessagePacket {
         return getState() == STATE_SUCCESS && mSessionUserId > 0;
     }
 
-    public static SignInMessagePacket create(final String token) {
+    public static SignInMessagePacket create(final String token, final int subApp) {
         final long sign = SignGenerator.nextSign();
         return new SignInMessagePacket(
                 ProtoByteMessage.Type.encode(ProtoMessage.ImLogin.newBuilder()
                         .setSign(sign)
                         .setToken(token)
+                        .setSubApp(subApp)
                         .build()),
                 sign
         );

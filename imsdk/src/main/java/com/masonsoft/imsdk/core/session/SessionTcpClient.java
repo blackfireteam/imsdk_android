@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMMessageQueueManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
@@ -108,7 +109,7 @@ public class SessionTcpClient extends NettyTcpClient {
     public SessionTcpClient(@NonNull Session session) {
         mSession = session;
 
-        mSignInMessagePacket = SignInMessagePacket.create(mSession.getToken());
+        mSignInMessagePacket = SignInMessagePacket.create(mSession.getToken(), MSIMManager.getInstance().getSubApp());
         mSignOutMessagePacket = SignOutMessagePacket.create();
 
         mSignInMessagePacketStateObserver = (packet, oldState, newState) -> {
