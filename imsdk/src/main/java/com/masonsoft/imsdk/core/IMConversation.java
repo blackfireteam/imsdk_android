@@ -86,49 +86,7 @@ public class IMConversation {
      * 自定义业务
      */
     @NonNull
-    public final StateProp<Integer> matched = new StateProp<>();
-
-    /**
-     * 自定义业务
-     */
-    @NonNull
-    public final StateProp<Integer> newMessage = new StateProp<>();
-
-    /**
-     * 自定义业务
-     */
-    @NonNull
-    public final StateProp<Integer> myMove = new StateProp<>();
-
-    /**
-     * 自定义业务
-     */
-    @NonNull
-    public final StateProp<Integer> iceBreak = new StateProp<>();
-
-    /**
-     * 自定义业务
-     */
-    @NonNull
-    public final StateProp<Integer> tipFree = new StateProp<>();
-
-    /**
-     * 自定义业务
-     */
-    @NonNull
-    public final StateProp<Integer> topAlbum = new StateProp<>();
-
-    /**
-     * 自定义业务
-     */
-    @NonNull
     public final StateProp<Integer> iBlockU = new StateProp<>();
-
-    /**
-     * 自定义业务
-     */
-    @NonNull
-    public final StateProp<Integer> connected = new StateProp<>();
 
     public void applyLogicField(long _sessionUserId) {
         this._sessionUserId.set(_sessionUserId);
@@ -149,14 +107,7 @@ public class IMConversation {
         this.unreadCount.apply(input.unreadCount);
         this.timeMs.apply(input.timeMs);
         this.delete.apply(input.delete);
-        this.matched.apply(input.matched);
-        this.newMessage.apply(input.newMessage);
-        this.myMove.apply(input.myMove);
-        this.iceBreak.apply(input.iceBreak);
-        this.tipFree.apply(input.tipFree);
-        this.topAlbum.apply(input.topAlbum);
         this.iBlockU.apply(input.iBlockU);
-        this.connected.apply(input.connected);
     }
 
     @NonNull
