@@ -92,7 +92,7 @@ public class MineFragment extends SystemInsetsFragment {
         mBinding = ImsdkSampleMineFragmentBinding.inflate(inflater, container, false);
         ViewUtil.onClick(mBinding.avatar, v -> startModifyAvatar());
         ViewUtil.onClick(mBinding.modifyUsername, v -> startModifyUsername());
-        mBinding.modifyGenderSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onGenderChanged(isChecked));
+        bindCheckedChangeListener();
         ViewUtil.onClick(mBinding.actionSignOut, v -> requestSignOut());
 
         mBinding.actionSignOut.setEnabled(MSIMManager.getInstance().hasSession());
