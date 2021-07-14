@@ -182,6 +182,24 @@ public class Message {
     @NonNull
     public final StateProp<Long> localBlockId = new StateProp<>();
 
+    /**
+     * @see ColumnsMessage#C_PUSH_TITLE
+     */
+    @NonNull
+    public final StateProp<String> pushTitle = new StateProp<>();
+
+    /**
+     * @see ColumnsMessage#C_PUSH_BODY
+     */
+    @NonNull
+    public final StateProp<String> pushBody = new StateProp<>();
+
+    /**
+     * @see ColumnsMessage#C_PUSH_SOUND
+     */
+    @NonNull
+    public final StateProp<String> pushSound = new StateProp<>();
+
     @NonNull
     public String toShortString() {
         final StringBuilder builder = new StringBuilder();
@@ -277,6 +295,9 @@ public class Message {
         this.zoom.apply(input.zoom);
         this.localActionMessage.apply(input.localActionMessage);
         this.localBlockId.apply(input.localBlockId);
+        this.pushTitle.apply(input.pushTitle);
+        this.pushBody.apply(input.pushBody);
+        this.pushSound.apply(input.pushSound);
     }
 
     @NonNull
@@ -354,6 +375,15 @@ public class Message {
         if (!this.localBlockId.isUnset()) {
             target.put(ColumnsMessage.C_LOCAL_BLOCK_ID, this.localBlockId.get());
         }
+        if (!this.pushTitle.isUnset()) {
+            target.put(ColumnsMessage.C_PUSH_TITLE, this.pushTitle.get());
+        }
+        if (!this.pushBody.isUnset()) {
+            target.put(ColumnsMessage.C_PUSH_BODY, this.pushBody.get());
+        }
+        if (!this.pushSound.isUnset()) {
+            target.put(ColumnsMessage.C_PUSH_SOUND, this.pushSound.get());
+        }
         return target;
     }
 
@@ -390,6 +420,9 @@ public class Message {
                     ColumnsMessage.C_ZOOM,
                     ColumnsMessage.C_LOCAL_ACTION_MSG,
                     ColumnsMessage.C_LOCAL_BLOCK_ID,
+                    ColumnsMessage.C_PUSH_TITLE,
+                    ColumnsMessage.C_PUSH_BODY,
+                    ColumnsMessage.C_PUSH_SOUND,
             };
         }
 
@@ -422,6 +455,9 @@ public class Message {
             target.zoom.set(CursorUtil.getLong(cursor, ++index));
             target.localActionMessage.set(CursorUtil.getInt(cursor, ++index));
             target.localBlockId.set(CursorUtil.getLong(cursor, ++index));
+            target.pushTitle.set(CursorUtil.getString(cursor, ++index));
+            target.pushBody.set(CursorUtil.getString(cursor, ++index));
+            target.pushSound.set(CursorUtil.getString(cursor, ++index));
             return target;
         }
     };
