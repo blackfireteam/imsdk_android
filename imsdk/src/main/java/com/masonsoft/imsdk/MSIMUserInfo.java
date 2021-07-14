@@ -3,7 +3,6 @@ package com.masonsoft.imsdk;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.user.UserInfo;
 
 public class MSIMUserInfo {
@@ -44,34 +43,20 @@ public class MSIMUserInfo {
         return mUserInfo.avatar.getOrDefault(defaultValue);
     }
 
-    public boolean isGold() {
-        return isGold(false);
+    public int getGender() {
+        return getGender(0);
     }
 
-    public boolean isGold(boolean defaultValue) {
-        if (mUserInfo.gold.isUnset()) {
-            return defaultValue;
-        }
-        final Integer gold = mUserInfo.gold.get();
-        if (gold == null) {
-            return defaultValue;
-        }
-        return gold == IMConstants.TRUE;
+    public int getGender(int defaultValue) {
+        return mUserInfo.gender.getOrDefault(defaultValue);
     }
 
-    public boolean isVerified() {
-        return isVerified(false);
+    public String getCustom() {
+        return getCustom(null);
     }
 
-    public boolean isVerified(boolean defaultValue) {
-        if (mUserInfo.verified.isUnset()) {
-            return defaultValue;
-        }
-        final Integer verified = mUserInfo.verified.get();
-        if (verified == null) {
-            return defaultValue;
-        }
-        return verified == IMConstants.TRUE;
+    public String getCustom(String defaultValue) {
+        return mUserInfo.custom.getOrDefault(defaultValue);
     }
 
     public static class Editor {
@@ -107,14 +92,14 @@ public class MSIMUserInfo {
         }
 
         @NonNull
-        public Editor setGold(final boolean gold) {
-            mUserInfoUpdate.gold.set(gold ? IMConstants.TRUE : IMConstants.FALSE);
+        public Editor setGender(final int gender) {
+            mUserInfoUpdate.gender.set(gender);
             return this;
         }
 
         @NonNull
-        public Editor setVerified(final boolean verified) {
-            mUserInfoUpdate.verified.set(verified ? IMConstants.TRUE : IMConstants.FALSE);
+        public Editor setCustom(final String custom) {
+            mUserInfoUpdate.custom.set(custom);
             return this;
         }
 

@@ -2,7 +2,6 @@ package com.masonsoft.imsdk.user;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.proto.ProtoMessage;
 
 /**
@@ -23,8 +22,8 @@ public class UserInfoFactory {
 
         target.nickname.set(input.getNickName());
         target.avatar.set(input.getAvatar());
-        target.gold.set(input.getGold() ? IMConstants.TRUE : IMConstants.FALSE);
-        target.verified.set(input.getVerified() ? IMConstants.TRUE : IMConstants.FALSE);
+        target.gender.set((int) input.getGender());
+        target.custom.set(input.getCustom());
         return target;
     }
 
@@ -33,8 +32,8 @@ public class UserInfoFactory {
         final UserInfo target = new UserInfo();
         target.uid.set(userId);
 
-        // 以当前时间作为更新时间
-        target.updateTimeMs.set(System.currentTimeMillis());
+        // 设置一个较小的时间作为更新时间
+        target.updateTimeMs.set(0L);
 
         return target;
     }

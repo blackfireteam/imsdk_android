@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 
-import com.masonsoft.imsdk.core.IMConstants;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.IMProcessValidator;
 import com.masonsoft.imsdk.core.observable.UserInfoObservable;
@@ -203,20 +202,20 @@ public class UserInfoManager {
     }
 
     /**
-     * 如果 gold 发生了变更，则更新
+     * 如果 gender 发生了变更，则更新
      */
-    public void updateGold(final long userId, final boolean gold) {
+    public void updateGender(final long userId, final int gender) {
         final UserInfo userInfoUpdate = new UserInfo();
-        userInfoUpdate.gold.set(gold ? IMConstants.TRUE : IMConstants.FALSE);
+        userInfoUpdate.gender.set(gender);
         this.updateManual(userId, userInfoUpdate);
     }
 
     /**
-     * 如果 verified 发生了变更，则更新
+     * 如果 custom 发生了变更，则更新
      */
-    public void updateVerified(final long userId, final boolean verified) {
+    public void updateCustom(final long userId, final String custom) {
         final UserInfo userInfoUpdate = new UserInfo();
-        userInfoUpdate.verified.set(verified ? IMConstants.TRUE : IMConstants.FALSE);
+        userInfoUpdate.custom.set(custom);
         this.updateManual(userId, userInfoUpdate);
     }
 
@@ -245,18 +244,18 @@ public class UserInfoManager {
                 }
 
                 if (!update) {
-                    if (!userInfoUpdate.gold.isUnset()) {
-                        final Integer oldGold = userInfo.gold.getOrDefault(null);
-                        if (!Objects.equals(oldGold, userInfoUpdate.gold.get())) {
+                    if (!userInfoUpdate.gender.isUnset()) {
+                        final Integer oldGender = userInfo.gender.getOrDefault(null);
+                        if (!Objects.equals(oldGender, userInfoUpdate.gender.get())) {
                             update = true;
                         }
                     }
                 }
 
                 if (!update) {
-                    if (!userInfoUpdate.verified.isUnset()) {
-                        final Integer oldVerified = userInfo.verified.getOrDefault(null);
-                        if (!Objects.equals(oldVerified, userInfoUpdate.verified.get())) {
+                    if (!userInfoUpdate.custom.isUnset()) {
+                        final String oldCustom = userInfo.custom.getOrDefault(null);
+                        if (!Objects.equals(oldCustom, userInfoUpdate.custom.get())) {
                             update = true;
                         }
                     }
@@ -285,11 +284,11 @@ public class UserInfoManager {
         if (!userInfoUpdate.nickname.isUnset()) {
             mergeUserInfo.nickname.apply(userInfoUpdate.nickname);
         }
-        if (!userInfoUpdate.gold.isUnset()) {
-            mergeUserInfo.gold.apply(userInfoUpdate.gold);
+        if (!userInfoUpdate.gender.isUnset()) {
+            mergeUserInfo.gender.apply(userInfoUpdate.gender);
         }
-        if (!userInfoUpdate.verified.isUnset()) {
-            mergeUserInfo.verified.apply(userInfoUpdate.verified);
+        if (!userInfoUpdate.custom.isUnset()) {
+            mergeUserInfo.custom.apply(userInfoUpdate.custom);
         }
 
         if (userInfoUpdate.updateTimeMs.isUnset()) {
