@@ -103,52 +103,10 @@ public class Conversation {
     public final StateProp<Integer> delete = new StateProp<>();
 
     /**
-     * @see ColumnsConversation#C_MATCHED
-     */
-    @NonNull
-    public final StateProp<Integer> matched = new StateProp<>();
-
-    /**
-     * @see ColumnsConversation#C_NEW_MSG
-     */
-    @NonNull
-    public final StateProp<Integer> newMessage = new StateProp<>();
-
-    /**
-     * @see ColumnsConversation#C_MY_MOVE
-     */
-    @NonNull
-    public final StateProp<Integer> myMove = new StateProp<>();
-
-    /**
-     * @see ColumnsConversation#C_ICE_BREAK
-     */
-    @NonNull
-    public final StateProp<Integer> iceBreak = new StateProp<>();
-
-    /**
-     * @see ColumnsConversation#C_TIP_FREE
-     */
-    @NonNull
-    public final StateProp<Integer> tipFree = new StateProp<>();
-
-    /**
-     * @see ColumnsConversation#C_TOP_ALBUM
-     */
-    @NonNull
-    public final StateProp<Integer> topAlbum = new StateProp<>();
-
-    /**
      * @see ColumnsConversation#C_I_BLOCK_U
      */
     @NonNull
     public final StateProp<Integer> iBlockU = new StateProp<>();
-
-    /**
-     * @see ColumnsConversation#C_CONNECTED
-     */
-    @NonNull
-    public final StateProp<Integer> connected = new StateProp<>();
 
     @NonNull
     public String toShortString() {
@@ -234,29 +192,8 @@ public class Conversation {
         if (!this.delete.isUnset()) {
             target.put(ColumnsConversation.C_DELETE, this.delete.get());
         }
-        if (!this.matched.isUnset()) {
-            target.put(ColumnsConversation.C_MATCHED, this.matched.get());
-        }
-        if (!this.newMessage.isUnset()) {
-            target.put(ColumnsConversation.C_NEW_MSG, this.newMessage.get());
-        }
-        if (!this.myMove.isUnset()) {
-            target.put(ColumnsConversation.C_MY_MOVE, this.myMove.get());
-        }
-        if (!this.iceBreak.isUnset()) {
-            target.put(ColumnsConversation.C_ICE_BREAK, this.iceBreak.get());
-        }
-        if (!this.tipFree.isUnset()) {
-            target.put(ColumnsConversation.C_TIP_FREE, this.tipFree.get());
-        }
-        if (!this.topAlbum.isUnset()) {
-            target.put(ColumnsConversation.C_TOP_ALBUM, this.topAlbum.get());
-        }
         if (!this.iBlockU.isUnset()) {
             target.put(ColumnsConversation.C_I_BLOCK_U, this.iBlockU.get());
-        }
-        if (!this.connected.isUnset()) {
-            target.put(ColumnsConversation.C_CONNECTED, this.connected.get());
         }
         return target;
     }
@@ -283,14 +220,7 @@ public class Conversation {
                     ColumnsConversation.C_LOCAL_UNREAD_COUNT,
                     ColumnsConversation.C_LOCAL_TIME_MS,
                     ColumnsConversation.C_DELETE,
-                    ColumnsConversation.C_MATCHED,
-                    ColumnsConversation.C_NEW_MSG,
-                    ColumnsConversation.C_MY_MOVE,
-                    ColumnsConversation.C_ICE_BREAK,
-                    ColumnsConversation.C_TIP_FREE,
-                    ColumnsConversation.C_TOP_ALBUM,
                     ColumnsConversation.C_I_BLOCK_U,
-                    ColumnsConversation.C_CONNECTED,
             };
         }
 
@@ -312,14 +242,7 @@ public class Conversation {
             target.localUnreadCount.set(CursorUtil.getLong(cursor, ++index));
             target.localTimeMs.set(CursorUtil.getLong(cursor, ++index));
             target.delete.set(CursorUtil.getInt(cursor, ++index));
-            target.matched.set(CursorUtil.getInt(cursor, ++index));
-            target.newMessage.set(CursorUtil.getInt(cursor, ++index));
-            target.myMove.set(CursorUtil.getInt(cursor, ++index));
-            target.iceBreak.set(CursorUtil.getInt(cursor, ++index));
-            target.tipFree.set(CursorUtil.getInt(cursor, ++index));
-            target.topAlbum.set(CursorUtil.getInt(cursor, ++index));
             target.iBlockU.set(CursorUtil.getInt(cursor, ++index));
-            target.connected.set(CursorUtil.getInt(cursor, ++index));
             return target;
         }
     };
