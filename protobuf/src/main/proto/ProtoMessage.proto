@@ -1,7 +1,7 @@
 syntax = "proto3";
 option java_package = "com.masonsoft.imsdk.core.proto";
 
-// 最近修改时间-2021-05-08 10:11:02
+// 最近修改时间-2021-06-21 10:11:02
 
 //0
 message Ping
@@ -14,6 +14,9 @@ message ImLogin
   int64 sign = 1;
   string token = 2; //从应用方获取的imtoken
   int64 ct = 3;//客户端类型 0:Android   1:ios    2:web
+  int64 sub_app = 4; //子应用id
+  string push_token = 5; //push token
+  string last_token = 6;//本机上一次登录成功的token，用于处理未正常退出登录的情况。如果本次token和上次token一致，或者本机确定上次退出登录成功，就不传。
 }
 //2
 message ImLogout
@@ -44,6 +47,9 @@ message ChatS
   double lat = 10;//纬度
   double lng = 11;//经度
   int64 zoom = 12;//地图缩放层级
+  string push_title = 13; //当type为240、241、243、247 时，可以自定义推送的内容
+  string push_body = 14; //当type为240、241、243、247 时，可以自定义推送的内容
+  string push_sound = 15; //当type为240、241、243、247 时，可以自定义推送的内容
 }
 //5
 message ChatSR
@@ -61,7 +67,6 @@ message ChatR
   int64 msg_id = 4; //消息id
   int64 msg_time = 5; //消息时间（以服务器为准 精确到百万分之一秒的时间戳）
   int64 sput = 6; //sender_profile_update_time 发送人的profile更新时间（精确到秒的时间戳）
-  bool new_msg = 7; //是否显示 new message
   int64 type = 8;// 消息类型
   string title = 9; //消息内容
   string body = 10; //消息内容
@@ -72,6 +77,9 @@ message ChatR
   double lat = 15;//纬度
   double lng = 16;//经度
   int64 zoom = 17;//地图缩放层级
+  string push_title = 18; //当type为240、241、243、247 时，可以自定义推送的内容
+  string push_body = 19; //当type为240、241、243、247 时，可以自定义推送的内容
+  string push_sound = 20; //当type为240、241、243、247 时，可以自定义推送的内容
 }
 //7
 message ChatRBatch
@@ -128,14 +136,7 @@ message ChatItem
   string show_msg = 7;//仅websocket端 返回
   int64 show_msg_time = 8;
   int64 unread = 9;
-  bool matched = 10;
-  bool new_msg = 11;
-  bool my_move = 12;
-  bool ice_break = 13;
-  bool tip_free = 14;
-  bool top_album = 15;
   bool i_block_u = 16;
-  bool connected = 17;//双方互发过消息了
   bool deleted = 18;//该会话已删除
 }
 //14
@@ -156,7 +157,6 @@ message ChatList
   int64 sign = 1;//websocket 会返回该值
   repeated ChatItem chat_items = 2;
   int64 update_time = 3;//app会返回，有该值说明 会话列表发送完毕，且会话列表中的最新更新时间会是这个值（精确到百万分之一秒的时间戳）
-  bool has_more = 4;//websocket 会返回该值，说明还有下一页
 }
 //16
 message GetProfile
@@ -179,8 +179,8 @@ message Profile
   int64 update_time = 3;//profile的更新时间 精确到秒的时间戳
   string nick_name = 4;
   string avatar = 5;
-  bool gold = 6;
-  bool verified = 7;
+  int64 gender = 6;
+  string custom = 7;//第三方自定义数据
 }
 //19
 message ProfileList
@@ -193,6 +193,12 @@ message GetChat
   int64 sign = 1;
   int64 uid = 2;
 }
+//21 客户端更新push token
+message UpdatePushToken
+{
+  int64 sign = 1;
+  string push_token = 2;
+}
 //50  for demo: 通知客户端用户上线事件
 message ProfileOnline
 {
@@ -200,8 +206,12 @@ message ProfileOnline
   int64 update_time = 2;//profile的更新时间 精确到秒的时间戳
   string nick_name = 3;
   string avatar = 4;
-  bool gold = 5;
-  bool verified = 6;
+  int64 gender = 5;
+}
+//51 for demo：通知客户端用户上线事件
+message UsrOnline
+{
+  int64 uid = 1;
 }
 //52 for demo：通知客户端用户下线事件
 message UsrOffline
@@ -215,9 +225,8 @@ message Signup
   int64 phone = 2;
   string nick_name = 3;
   string avatar = 4;
-  string pic = 5;//用户spark界面的封面图
-  bool gold = 6;//是否gold用户
-  bool verified = 7;//是否是认证用户
+  int64 gender = 5;
+  string pic = 6;//用户spark界面的封面图
 }
 //54 for demo: 获取spark
 message FetchSpark
@@ -230,7 +239,8 @@ message Spark
   int64 uid = 1;
   string nick_name = 2;
   string avatar = 3;
-  string pic = 4; //用户spark界面的封面图
+  int64 gender = 4;
+  string pic = 5; //用户spark界面的封面图
 }
 //56 for demo: sparks
 message Sparks
@@ -243,4 +253,15 @@ message GetImToken
 {
   int64 sign = 1;
   int64 phone = 2;
+}
+//for ws：统计功能：开启机器人
+//58
+message RobotOn
+{
+  int64 sign = 1;
+}
+//59
+message RobotOff
+{
+  int64 sign = 1;
 }
