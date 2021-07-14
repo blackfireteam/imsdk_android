@@ -61,8 +61,7 @@
     <string name="imsdk_sample_profile_modify_avatar_success">头像修改成功</string>
     <string name="imsdk_sample_profile_modify_nickname_fail">昵称修改失败</string>
     <string name="imsdk_sample_profile_modify_nickname_success">昵称修改成功</string>
-    <string name="imsdk_sample_profile_modify_gold">是否付费</string>
-    <string name="imsdk_sample_profile_modify_verify">是否认证</string>
+    <string name="imsdk_sample_profile_modify_gender">性别</string>
     <string name="imsdk_sample_tip_action_general_fail">操作失败</string>
     <string name="imsdk_sample_tip_action_general_success">操作成功</string>
     <string name="imsdk_sample_button_text_sign_out">退出登录</string>

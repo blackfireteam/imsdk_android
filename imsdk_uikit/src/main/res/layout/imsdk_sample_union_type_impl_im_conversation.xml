@@ -65,21 +65,14 @@
                 app:layout_flexShrink="1"
                 tools:text="大师兄大师兄大师兄大师兄大师兄大师兄大师兄大师兄大师兄大师兄大师兄" />
 
-            <com.masonsoft.imsdk.uikit.widget.UserCacheVerifiedFlagView
-                android:id="@+id/user_verified_flag"
+            <com.masonsoft.imsdk.uikit.widget.UserCacheGenderView
+                android:id="@+id/user_gender"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_margin="5dp"
                 app:layout_flexGrow="0"
-                app:layout_flexShrink="0" />
-
-            <com.masonsoft.imsdk.uikit.widget.UserCacheGoldFlagView
-                android:id="@+id/user_gold_flag"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_margin="5dp"
-                app:layout_flexGrow="0"
-                app:layout_flexShrink="0" />
+                app:layout_flexShrink="0"
+                tools:src="@drawable/imsdk_sample_ic_gender_female" />
         </com.google.android.flexbox.FlexboxLayout>
 
         <com.masonsoft.imsdk.uikit.widget.IMConversationUnreadCountView
