@@ -153,60 +153,6 @@ public final class DatabaseHelper {
         String C_DELETE = "c_delete";
 
         /**
-         * 业务定制：是否 match
-         *
-         * @since db version 1
-         */
-        @Remote("matched")
-        @Local
-        String C_MATCHED = "c_matched";
-
-        /**
-         * 业务定制：是否是 new message
-         *
-         * @since db version 1
-         */
-        @Remote("new_msg")
-        @Local
-        String C_NEW_MSG = "c_new_msg";
-
-        /**
-         * 业务定制：是否 my move
-         *
-         * @since db version 1
-         */
-        @Remote("my_move")
-        @Local
-        String C_MY_MOVE = "c_my_move";
-
-        /**
-         * 业务定制：是否 ice break
-         *
-         * @since db version 1
-         */
-        @Remote("ice_break")
-        @Local
-        String C_ICE_BREAK = "c_ice_break";
-
-        /**
-         * 业务定制：是否 tip free
-         *
-         * @since db version 1
-         */
-        @Remote("tip_free")
-        @Local
-        String C_TIP_FREE = "c_tip_free";
-
-        /**
-         * 业务定制：是否 top album
-         *
-         * @since db version 1
-         */
-        @Remote("top_album")
-        @Local
-        String C_TOP_ALBUM = "c_top_album";
-
-        /**
          * 业务定制：是否 block 了对方
          *
          * @since db version 1
@@ -214,15 +160,6 @@ public final class DatabaseHelper {
         @Remote("i_block_u")
         @Local
         String C_I_BLOCK_U = "c_i_block_u";
-
-        /**
-         * 业务定制：双方互发过消息了
-         *
-         * @since db version 1
-         */
-        @Remote("connected")
-        @Local
-        String C_CONNECTED = "c_connected";
     }
 
     /**
@@ -430,6 +367,19 @@ public final class DatabaseHelper {
          */
         @Local
         String C_LOCAL_BLOCK_ID = "c_local_block_id";
+
+        /**
+         * 当 type 为 240、241、243、247 时，可以自定义推送的内容
+         */
+        String C_PUSH_TITLE = "c_push_title";
+        /**
+         * 当 type 为 240、241、243、247 时，可以自定义推送的内容
+         */
+        String C_PUSH_BODY = "c_push_body";
+        /**
+         * 当 type 为 240、241、243、247 时，可以自定义推送的内容
+         */
+        String C_PUSH_SOUND = "c_push_sound";
     }
 
     /**
@@ -577,14 +527,7 @@ public final class DatabaseHelper {
                 ColumnsConversation.C_LOCAL_UNREAD_COUNT + " integer not null default 0," +
                 ColumnsConversation.C_LOCAL_TIME_MS + " integer not null default 0," +
                 ColumnsConversation.C_DELETE + " integer not null default 0," +
-                ColumnsConversation.C_MATCHED + " integer not null default 0," +
-                ColumnsConversation.C_NEW_MSG + " integer not null default 0," +
-                ColumnsConversation.C_MY_MOVE + " integer not null default 0," +
-                ColumnsConversation.C_ICE_BREAK + " integer not null default 0," +
-                ColumnsConversation.C_TIP_FREE + " integer not null default 0," +
-                ColumnsConversation.C_TOP_ALBUM + " integer not null default 0," +
-                ColumnsConversation.C_I_BLOCK_U + " integer not null default 0," +
-                ColumnsConversation.C_CONNECTED + " integer not null default 0" +
+                ColumnsConversation.C_I_BLOCK_U + " integer not null default 0" +
                 ")";
     }
 
@@ -677,7 +620,10 @@ public final class DatabaseHelper {
                 ColumnsMessage.C_LNG + " double not null default 0," +
                 ColumnsMessage.C_ZOOM + " integer not null default 0," +
                 ColumnsMessage.C_LOCAL_ACTION_MSG + " integer not null default 0," +
-                ColumnsMessage.C_LOCAL_BLOCK_ID + " integer not null default 0" +
+                ColumnsMessage.C_LOCAL_BLOCK_ID + " integer not null default 0," +
+                ColumnsMessage.C_PUSH_TITLE + " text," +
+                ColumnsMessage.C_PUSH_BODY + " text," +
+                ColumnsMessage.C_PUSH_SOUND + " text" +
                 ")";
     }
 
