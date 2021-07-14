@@ -197,11 +197,11 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                     Preconditions.checkNotNull(sessionUserInfo);
 
                     // 是否提交更改
-                    final int gender = sessionUserInfo.getGender(MSIMConstants.Gender.MALE);
+                    final int gender = sessionUserInfo.getGender(Integer.MIN_VALUE);
                     if (isChecked) {
-                        return gender == MSIMConstants.Gender.FEMALE;
+                        return gender != MSIMConstants.Gender.FEMALE;
                     } else {
-                        return gender == MSIMConstants.Gender.MALE;
+                        return gender != MSIMConstants.Gender.MALE;
                     }
                 })
                 .map(submit -> {
