@@ -59,12 +59,12 @@ public final class IMConstants {
         /**
          * 男
          */
-        public static final int MALE = 0;
+        public static final int MALE = 1;
 
         /**
          * 女
          */
-        public static final int FEMALE = 1;
+        public static final int FEMALE = 2;
 
     }
 
