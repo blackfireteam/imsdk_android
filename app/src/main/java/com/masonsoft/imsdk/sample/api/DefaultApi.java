@@ -85,11 +85,8 @@ public class DefaultApi {
 
         //noinspection UnnecessaryLocalVariable
         final OkHttpClient okHttpClient = SHARE_HTTP_CLIENT;
-        try {
-            final Response response = okHttpClient.newCall(request).execute();
-            //noinspection ConstantConditions
+        try (final Response response = okHttpClient.newCall(request).execute()) {
             final String json = response.body().string();
-
             final JsonObject jsonObject = new Gson().fromJson(json, new TypeToken<JsonObject>() {
             }.getType());
             final int code = jsonObject.get("code").getAsInt();
