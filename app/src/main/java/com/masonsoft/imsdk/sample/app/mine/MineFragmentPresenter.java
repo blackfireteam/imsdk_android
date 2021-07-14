@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.FileUploadManager;
@@ -187,7 +188,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                 }));
     }
 
-    public void trySubmitGoldChanged(boolean isChecked) {
+    public void trySubmitGenderChanged(boolean isChecked) {
         mRequestHolder.set(Single.just("")
                 .map(input -> {
                     final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
@@ -196,7 +197,12 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                     Preconditions.checkNotNull(sessionUserInfo);
 
                     // 是否提交更改
-                    return sessionUserInfo.isGold(!isChecked) != isChecked;
+                    final int gender = sessionUserInfo.getGender(MSIMConstants.Gender.MALE);
+                    if (isChecked) {
+                        return gender == MSIMConstants.Gender.FEMALE;
+                    } else {
+                        return gender == MSIMConstants.Gender.MALE;
+                    }
                 })
                 .map(submit -> {
                     if (!submit) {
@@ -205,8 +211,9 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
 
                     final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
                     Preconditions.checkArgument(sessionUserId > 0);
-                    DefaultApi.updateGold(sessionUserId, isChecked);
-                    UserInfoManager.getInstance().updateGold(sessionUserId, isChecked);
+                    final int gender = isChecked ? MSIMConstants.Gender.FEMALE : MSIMConstants.Gender.MALE;
+                    DefaultApi.updateGender(sessionUserId, gender);
+                    UserInfoManager.getInstance().updateGender(sessionUserId, gender);
                     return new Object();
                 })
                 .subscribeOn(Schedulers.io())
@@ -217,7 +224,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                         return;
                     }
 
-                    view.onGoldModifySuccess();
+                    view.onGenderModifySuccess();
                 }, e -> {
                     SampleLog.e(e);
                     final MineFragment.ViewImpl view = getView();
@@ -225,49 +232,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                         return;
                     }
 
-                    view.onGoldModifyFail(e);
-                }));
-    }
-
-    public void trySubmitVerifiedChanged(boolean isChecked) {
-        mRequestHolder.set(Single.just("")
-                .map(input -> {
-                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
-                    Preconditions.checkArgument(sessionUserId > 0);
-                    final MSIMUserInfo sessionUserInfo = MSIMManager.getInstance().getUserInfoManager().getUserInfo(sessionUserId);
-                    Preconditions.checkNotNull(sessionUserInfo);
-
-                    // 是否提交更改
-                    return sessionUserInfo.isVerified(!isChecked) != isChecked;
-                })
-                .map(submit -> {
-                    if (!submit) {
-                        return new Object();
-                    }
-
-                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
-                    Preconditions.checkArgument(sessionUserId > 0);
-                    DefaultApi.updateVerified(sessionUserId, isChecked);
-                    UserInfoManager.getInstance().updateVerified(sessionUserId, isChecked);
-                    return new Object();
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ignore -> {
-                    final MineFragment.ViewImpl view = getView();
-                    if (view == null) {
-                        return;
-                    }
-
-                    view.onVerifiedModifySuccess();
-                }, e -> {
-                    SampleLog.e(e);
-                    final MineFragment.ViewImpl view = getView();
-                    if (view == null) {
-                        return;
-                    }
-
-                    view.onVerifiedModifyFail(e);
+                    view.onGenderModifyFail(e);
                 }));
     }
 

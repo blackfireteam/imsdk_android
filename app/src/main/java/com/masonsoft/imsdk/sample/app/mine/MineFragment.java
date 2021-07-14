@@ -13,15 +13,16 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMineFragmentBinding;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaPickerDialog;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentConfirmDialog;
@@ -91,8 +92,7 @@ public class MineFragment extends SystemInsetsFragment {
         mBinding = ImsdkSampleMineFragmentBinding.inflate(inflater, container, false);
         ViewUtil.onClick(mBinding.avatar, v -> startModifyAvatar());
         ViewUtil.onClick(mBinding.modifyUsername, v -> startModifyUsername());
-        mBinding.modifyGoldSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onGoldChanged(isChecked));
-        mBinding.modifyVerifiedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onVerifiedChanged(isChecked));
+        mBinding.modifyGenderSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onGenderChanged(isChecked));
         ViewUtil.onClick(mBinding.actionSignOut, v -> requestSignOut());
 
         mBinding.actionSignOut.setEnabled(MSIMManager.getInstance().hasSession());
@@ -106,8 +106,7 @@ public class MineFragment extends SystemInsetsFragment {
             return;
         }
 
-        mBinding.modifyGoldSwitch.setOnCheckedChangeListener(null);
-        mBinding.modifyVerifiedSwitch.setOnCheckedChangeListener(null);
+        mBinding.modifyGenderSwitch.setOnCheckedChangeListener(null);
     }
 
     private void bindCheckedChangeListener() {
@@ -116,8 +115,7 @@ public class MineFragment extends SystemInsetsFragment {
             return;
         }
 
-        mBinding.modifyGoldSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onGoldChanged(isChecked));
-        mBinding.modifyVerifiedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onVerifiedChanged(isChecked));
+        mBinding.modifyGenderSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onGenderChanged(isChecked));
     }
 
     @Override
@@ -213,7 +211,7 @@ public class MineFragment extends SystemInsetsFragment {
         dialog.show();
     }
 
-    private void onGoldChanged(boolean isChecked) {
+    private void onGenderChanged(boolean isChecked) {
         final Activity activity = getActivity();
         if (activity == null) {
             SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
@@ -228,25 +226,7 @@ public class MineFragment extends SystemInsetsFragment {
             SampleLog.e(IMUIKitConstants.ErrorLog.PRESENTER_IS_NULL);
             return;
         }
-        mPresenter.trySubmitGoldChanged(isChecked);
-    }
-
-    private void onVerifiedChanged(boolean isChecked) {
-        final Activity activity = getActivity();
-        if (activity == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
-            return;
-        }
-        if (isStateSaved()) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
-            return;
-        }
-
-        if (mPresenter == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.PRESENTER_IS_NULL);
-            return;
-        }
-        mPresenter.trySubmitVerifiedChanged(isChecked);
+        mPresenter.trySubmitGenderChanged(isChecked);
     }
 
     private void requestSignOut() {
@@ -295,12 +275,13 @@ public class MineFragment extends SystemInsetsFragment {
                 return;
             }
 
-            final boolean gold = userInfo != null && userInfo.isGold();
-            final boolean verified = userInfo != null && userInfo.isVerified();
+            int gender = MSIMConstants.Gender.MALE;
+            if (userInfo != null) {
+                gender = userInfo.getGender(gender);
+            }
 
             clearCheckedChangeListener();
-            mBinding.modifyGoldSwitch.setChecked(gold);
-            mBinding.modifyVerifiedSwitch.setChecked(verified);
+            mBinding.modifyGenderSwitch.setChecked(gender == MSIMConstants.Gender.FEMALE);
             bindCheckedChangeListener();
 
             mBinding.actionSignOut.setEnabled(MSIMManager.getInstance().hasSession());
@@ -377,8 +358,8 @@ public class MineFragment extends SystemInsetsFragment {
             TipUtil.show(R.string.imsdk_sample_profile_modify_nickname_success);
         }
 
-        public void onGoldModifySuccess() {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onGoldModifySuccess");
+        public void onGenderModifySuccess() {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onGenderModifySuccess");
             if (mBinding == null) {
                 SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
@@ -386,31 +367,8 @@ public class MineFragment extends SystemInsetsFragment {
             TipUtil.show(R.string.imsdk_sample_tip_action_general_success);
         }
 
-        public void onGoldModifyFail(Throwable e) {
-            SampleLog.v(e, Objects.defaultObjectTag(this) + " onGoldModifyFail");
-            if (mBinding == null) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
-                return;
-            }
-            if (mPresenter == null) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.PRESENTER_IS_NULL);
-                return;
-            }
-            TipUtil.show(R.string.imsdk_sample_tip_action_general_fail);
-            mPresenter.requestSyncSessionUserInfo();
-        }
-
-        public void onVerifiedModifySuccess() {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onVerifiedModifySuccess");
-            if (mBinding == null) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
-                return;
-            }
-            TipUtil.show(R.string.imsdk_sample_tip_action_general_success);
-        }
-
-        public void onVerifiedModifyFail(Throwable e) {
-            SampleLog.v(e, Objects.defaultObjectTag(this) + " onVerifiedModifyFail");
+        public void onGenderModifyFail(Throwable e) {
+            SampleLog.v(e, Objects.defaultObjectTag(this) + " onGenderModifyFail");
             if (mBinding == null) {
                 SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
                 return;

@@ -129,14 +129,7 @@ public class DefaultApi {
         requestArgs.put("uid", userId);
         requestArgs.put("nick_name", nickname);
         requestArgs.put("avatar", avatar);
-        requestArgs.put("gold", 1);
-        requestArgs.put("gold_exp", TimeUnit.DAYS.toSeconds(360) + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
-        requestArgs.put("approved", 1);
-        requestArgs.put("disabled", 0);
-        requestArgs.put("blocked", 0);
-        requestArgs.put("hold", 0);
-        requestArgs.put("deleted", 0);
-        requestArgs.put("verified", 1);
+        requestArgs.put("gender", MSIMConstants.Gender.MALE);
 
         requestApiServer(url, requestArgs, null);
         return new Object();
@@ -167,27 +160,12 @@ public class DefaultApi {
     }
 
     @NonNull
-    public static Object updateGold(long userId, boolean gold) {
+    public static Object updateGender(long userId, int gender) {
         final String url = "/user/update";
 
         final Map<String, Object> requestArgs = new HashMap<>();
         requestArgs.put("uid", userId);
-        requestArgs.put("gold", MSIMConstants.trueOfFalse(gold));
-        if (gold) {
-            requestArgs.put("gold_exp", (System.currentTimeMillis() / 1000) + TimeUnit.DAYS.toSeconds(7));
-        }
-
-        requestApiServer(url, requestArgs, null);
-        return new Object();
-    }
-
-    @NonNull
-    public static Object updateVerified(long userId, boolean verified) {
-        final String url = "/user/update";
-
-        final Map<String, Object> requestArgs = new HashMap<>();
-        requestArgs.put("uid", userId);
-        requestArgs.put("verified", MSIMConstants.trueOfFalse(verified));
+        requestArgs.put("gender", gender);
 
         requestApiServer(url, requestArgs, null);
         return new Object();
