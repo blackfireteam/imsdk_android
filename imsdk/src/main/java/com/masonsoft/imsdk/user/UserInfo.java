@@ -50,11 +50,17 @@ public class UserInfo {
     @NonNull
     public final StateProp<String> avatar = new StateProp<>();
 
+    /**
+     * 性别
+     */
     @NonNull
-    public final StateProp<Integer> gold = new StateProp<>();
+    public final StateProp<Integer> gender = new StateProp<>();
 
+    /**
+     * 第三方自定义数据
+     */
     @NonNull
-    public final StateProp<Integer> verified = new StateProp<>();
+    public final StateProp<String> custom = new StateProp<>();
 
     @NonNull
     public String toShortString() {
@@ -90,8 +96,8 @@ public class UserInfo {
         this.updateTimeMs.apply(input.updateTimeMs);
         this.nickname.apply(input.nickname);
         this.avatar.apply(input.avatar);
-        this.gold.apply(input.gold);
-        this.verified.apply(input.verified);
+        this.gender.apply(input.gender);
+        this.custom.apply(input.custom);
     }
 
     @NonNull
@@ -114,11 +120,11 @@ public class UserInfo {
             if (!this.avatar.isUnset()) {
                 jsonObject.put("avatar", this.avatar.get());
             }
-            if (!this.gold.isUnset()) {
-                jsonObject.put("gold", this.gold.get());
+            if (!this.gender.isUnset()) {
+                jsonObject.put("gender", this.gender.get());
             }
-            if (!this.verified.isUnset()) {
-                jsonObject.put("verified", this.verified.get());
+            if (!this.custom.isUnset()) {
+                jsonObject.put("custom", this.custom.get());
             }
         } catch (Throwable e) {
             IMLog.e(e);
@@ -154,11 +160,21 @@ public class UserInfo {
             if (!TextUtils.isEmpty(userJson)) {
                 try {
                     final JSONObject jsonObject = new JSONObject(userJson);
-                    target.updateTimeMs.set(jsonObject.optLong("updateTimeMs"));
-                    target.nickname.set(jsonObject.optString("nickname"));
-                    target.avatar.set(jsonObject.optString("avatar"));
-                    target.gold.set(jsonObject.optInt("gold"));
-                    target.verified.set(jsonObject.optInt("verified"));
+                    if (jsonObject.has("updateTimeMs")) {
+                        target.updateTimeMs.set(jsonObject.getLong("updateTimeMs"));
+                    }
+                    if (jsonObject.has("nickname")) {
+                        target.nickname.set(jsonObject.getString("nickname"));
+                    }
+                    if (jsonObject.has("avatar")) {
+                        target.avatar.set(jsonObject.getString("avatar"));
+                    }
+                    if (jsonObject.has("gender")) {
+                        target.gender.set(jsonObject.getInt("gender"));
+                    }
+                    if (jsonObject.has("custom")) {
+                        target.custom.set(jsonObject.getString("custom"));
+                    }
                 } catch (Throwable e) {
                     IMLog.e(e);
                     RuntimeMode.fixme(e);
