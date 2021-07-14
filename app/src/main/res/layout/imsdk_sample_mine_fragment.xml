@@ -77,7 +77,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/username"
                 app:layout_constraintTop_toTopOf="@id/username"
-                tools:src="@drawable/imsdk_sample_ic_gender_male" />
+                tools:src="@drawable/imsdk_sample_ic_gender_female" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
