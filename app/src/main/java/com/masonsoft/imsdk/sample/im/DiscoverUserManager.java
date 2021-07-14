@@ -124,8 +124,7 @@ public class DiscoverUserManager {
                 .setUpdateTimeMs(input.getUpdateTime() * 1000L /* 将服务器返回的秒转换为毫秒 */)
                 .setNickname(input.getNickName())
                 .setAvatar(input.getAvatar())
-                .setGold(input.getGold())
-                .setVerified(input.getVerified());
+                .setGender((int) input.getGender());
     }
 
 }
