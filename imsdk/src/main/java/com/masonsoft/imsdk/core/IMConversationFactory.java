@@ -33,14 +33,7 @@ public class IMConversationFactory {
         target.unreadCount.apply(input.localUnreadCount);
         target.timeMs.apply(input.localTimeMs);
         target.delete.apply(input.delete);
-        target.matched.apply(input.matched);
-        target.newMessage.apply(input.newMessage);
-        target.myMove.apply(input.myMove);
-        target.iceBreak.apply(input.iceBreak);
-        target.tipFree.apply(input.tipFree);
-        target.topAlbum.apply(input.topAlbum);
         target.iBlockU.apply(input.iBlockU);
-        target.connected.apply(input.connected);
         return target;
     }
 
