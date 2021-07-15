@@ -60,9 +60,9 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             @Override
             public void onDownloadSuccess(String id, String localFilePath, String serverUrl) {
                 if (SystemUtil.addToMediaStore(new File(localFilePath))) {
-                    TipUtil.show(R.string.imsdk_sample_tip_success_add_to_media_store);
+                    TipUtil.show(R.string.imsdk_uikit_tip_success_add_to_media_store);
                 } else {
-                    TipUtil.show(R.string.imsdk_sample_tip_download_success);
+                    TipUtil.show(R.string.imsdk_uikit_tip_download_success);
                 }
             }
 
@@ -72,7 +72,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                     TipUtil.showNetworkError();
                     return;
                 }
-                TipUtil.show(R.string.imsdk_sample_tip_download_fail);
+                TipUtil.show(R.string.imsdk_uikit_tip_download_fail);
             }
         }));
     }
@@ -99,7 +99,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 .request(Manifest.permission.READ_EXTERNAL_STORAGE)
                 .subscribe(granted -> {
                     if (!granted) {
-                        TipUtil.show(R.string.imsdk_sample_tip_require_permission_storage);
+                        TipUtil.show(R.string.imsdk_uikit_tip_require_permission_storage);
                         return;
                     }
                     FILE_DOWNLOAD_HELPER.enqueueFileDownload(null, downloadUrl);
@@ -526,11 +526,11 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 final List<String> menuList = new ArrayList<>();
                 final List<Integer> menuIdList = new ArrayList<>();
 
-                menuList.add(I18nResources.getString(R.string.imsdk_sample_menu_copy));
+                menuList.add(I18nResources.getString(R.string.imsdk_uikit_menu_copy));
                 menuIdList.add(MENU_ID_COPY);
                 if (!holderFinder.received) {
                     if (holderFinder.message.getSendStatus(MSIMConstants.SendStatus.SUCCESS) == MSIMConstants.SendStatus.SUCCESS) {
-                        menuList.add(I18nResources.getString(R.string.imsdk_sample_menu_recall));
+                        menuList.add(I18nResources.getString(R.string.imsdk_uikit_menu_recall));
                         menuIdList.add(MENU_ID_RECALL);
                     }
                 }
@@ -575,7 +575,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
 
                 if (!holderFinder.received) {
                     if (holderFinder.message.getSendStatus(MSIMConstants.SendStatus.SUCCESS) == MSIMConstants.SendStatus.SUCCESS) {
-                        menuList.add(I18nResources.getString(R.string.imsdk_sample_menu_recall));
+                        menuList.add(I18nResources.getString(R.string.imsdk_uikit_menu_recall));
                         menuIdList.add(MENU_ID_RECALL);
                     }
                 }

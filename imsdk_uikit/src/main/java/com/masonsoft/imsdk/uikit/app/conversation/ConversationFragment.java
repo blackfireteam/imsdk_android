@@ -15,7 +15,7 @@ import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.uikit.IMUIKitLog;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleConversationFragmentBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitConversationFragmentBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUIKitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.widget.DividerItemDecoration;
@@ -46,7 +46,7 @@ public class ConversationFragment extends SystemInsetsFragment {
     }
 
     @Nullable
-    private ImsdkSampleConversationFragmentBinding mBinding;
+    private ImsdkUikitConversationFragmentBinding mBinding;
 
     private UnionTypeAdapter mDataAdapter;
     private ConversationFragmentPresenter mPresenter;
@@ -56,7 +56,7 @@ public class ConversationFragment extends SystemInsetsFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         IMUIKitLog.v("onCreateView %s", getClass());
-        mBinding = ImsdkSampleConversationFragmentBinding.inflate(inflater, container, false);
+        mBinding = ImsdkUikitConversationFragmentBinding.inflate(inflater, container, false);
 
         final RecyclerView recyclerView = mBinding.recyclerView;
         LinearLayoutManager layoutManager = new LinearLayoutManager(
@@ -195,7 +195,7 @@ public class ConversationFragment extends SystemInsetsFragment {
                         groupArrayList.removeGroup(getGroupHeader());
                     })
                     .commit(() -> {
-                        final ImsdkSampleConversationFragmentBinding binding = mBinding;
+                        final ImsdkUikitConversationFragmentBinding binding = mBinding;
                         if (binding == null) {
                             return;
                         }
@@ -205,7 +205,7 @@ public class ConversationFragment extends SystemInsetsFragment {
                             autoScrollToTop[0] = true;
                         }
                     }, () -> {
-                        final ImsdkSampleConversationFragmentBinding binding = mBinding;
+                        final ImsdkUikitConversationFragmentBinding binding = mBinding;
                         if (binding == null) {
                             return;
                         }

@@ -8,7 +8,7 @@ import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 import com.masonsoft.imsdk.uikit.IMUIKitLog;
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleUnionTypeImplImMessageVoiceReceivedBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplImMessageVoiceReceivedBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 
 import io.github.idonans.lang.util.ViewUtil;
@@ -16,11 +16,11 @@ import io.github.idonans.uniontype.Host;
 
 public class IMMessageVoiceReceivedViewHolder extends IMMessageVoiceViewHolder {
 
-    private final ImsdkSampleUnionTypeImplImMessageVoiceReceivedBinding mBinding;
+    private final ImsdkUikitUnionTypeImplImMessageVoiceReceivedBinding mBinding;
 
     public IMMessageVoiceReceivedViewHolder(@NonNull Host host) {
-        super(host, R.layout.imsdk_sample_union_type_impl_im_message_voice_received);
-        mBinding = ImsdkSampleUnionTypeImplImMessageVoiceReceivedBinding.bind(itemView);
+        super(host, R.layout.imsdk_uikit_union_type_impl_im_message_voice_received);
+        mBinding = ImsdkUikitUnionTypeImplImMessageVoiceReceivedBinding.bind(itemView);
     }
 
     @Override

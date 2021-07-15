@@ -56,32 +56,22 @@
                 app:layout_flexGrow="0"
                 app:layout_flexShrink="0" />
 
-            <com.masonsoft.imsdk.uikit.widget.ResizeImageView
-                android:id="@+id/resize_image_view"
+            <TextView
+                android:id="@+id/message_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/imsdk_sample_ic_common_rect_corners_16dp_white"
-                android:minWidth="93dp"
-                android:minHeight="93dp"
+                android:background="@drawable/imsdk_uikit_chat_bubble_received"
+                android:includeFontPadding="false"
+                android:lineSpacingMultiplier="1.2"
+                android:minHeight="40dp"
+                android:paddingStart="12dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="10dp"
+                android:textColor="#333333"
+                android:textSize="15sp"
                 app:layout_flexGrow="0"
-                app:layout_flexShrink="1">
-
-                <com.masonsoft.imsdk.uikit.widget.IMImageView
-                    android:id="@+id/image"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:imagePlaceHolderFail="#d1d1d1"
-                    app:imagePlaceHolderLoading="#d1d1d1"
-                    app:roundSize="16dp" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/imsdk_sample_empty_text_hint"
-                    android:scaleType="centerInside"
-                    android:src="@android:drawable/ic_media_play" />
-            </com.masonsoft.imsdk.uikit.widget.ResizeImageView>
+                app:layout_flexShrink="1" />
         </com.google.android.flexbox.FlexboxLayout>
     </com.masonsoft.imsdk.uikit.widget.IMMessageRevokeStateFrameLayout>
 </LinearLayout>

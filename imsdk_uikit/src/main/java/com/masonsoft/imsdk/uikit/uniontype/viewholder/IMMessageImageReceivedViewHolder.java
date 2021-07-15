@@ -8,7 +8,7 @@ import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 import com.masonsoft.imsdk.uikit.IMUIKitLog;
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleUnionTypeImplImMessageImageReceivedBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplImMessageImageReceivedBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 
 import io.github.idonans.lang.util.ViewUtil;
@@ -16,11 +16,11 @@ import io.github.idonans.uniontype.Host;
 
 public class IMMessageImageReceivedViewHolder extends IMMessageImageViewHolder {
 
-    private final ImsdkSampleUnionTypeImplImMessageImageReceivedBinding mBinding;
+    private final ImsdkUikitUnionTypeImplImMessageImageReceivedBinding mBinding;
 
     public IMMessageImageReceivedViewHolder(@NonNull Host host) {
-        super(host, R.layout.imsdk_sample_union_type_impl_im_message_image_received);
-        mBinding = ImsdkSampleUnionTypeImplImMessageImageReceivedBinding.bind(itemView);
+        super(host, R.layout.imsdk_uikit_union_type_impl_im_message_image_received);
+        mBinding = ImsdkUikitUnionTypeImplImMessageImageReceivedBinding.bind(itemView);
     }
 
     @Override

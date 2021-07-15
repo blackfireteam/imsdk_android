@@ -71,7 +71,7 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
         }
 
         if (isInEditMode()) {
-            mReadTextView.setText(R.string.imsdk_sample_tip_message_read);
+            mReadTextView.setText(R.string.imsdk_uikit_tip_message_read);
         }
     }
 
@@ -123,9 +123,9 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
 
         if (messageSendStatus == MSIMConstants.SendStatus.SUCCESS) {
             if (read) {
-                mReadTextView.setText(R.string.imsdk_sample_tip_message_read);
+                mReadTextView.setText(R.string.imsdk_uikit_tip_message_read);
             } else {
-                mReadTextView.setText(R.string.imsdk_sample_tip_message_delivered);
+                mReadTextView.setText(R.string.imsdk_uikit_tip_message_delivered);
             }
         } else {
             mReadTextView.setText(null);

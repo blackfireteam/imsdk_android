@@ -89,7 +89,7 @@ public abstract class IMMessageVoiceViewHolder extends IMMessageViewHolder {
                         ((AnimationDrawable) drawable).start();
                     }
                 } else {
-                    mAudioImageFlag.setImageResource(R.drawable.imsdk_sample_voice_msg_playing_3);
+                    mAudioImageFlag.setImageResource(R.drawable.imsdk_uikit_voice_msg_playing_3);
                 }
             }
 

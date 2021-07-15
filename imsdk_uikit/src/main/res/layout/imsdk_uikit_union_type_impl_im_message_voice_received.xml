@@ -56,22 +56,37 @@
                 app:layout_flexGrow="0"
                 app:layout_flexShrink="0" />
 
-            <TextView
-                android:id="@+id/message_text"
+            <com.masonsoft.imsdk.uikit.widget.IMMessageAudioView
+                android:id="@+id/audio_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/imsdk_sample_chat_bubble_received"
-                android:includeFontPadding="false"
-                android:lineSpacingMultiplier="1.2"
-                android:minHeight="40dp"
-                android:paddingStart="12dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="12dp"
-                android:paddingBottom="10dp"
-                android:textColor="#333333"
-                android:textSize="15sp"
+                android:layout_height="40dp"
+                android:background="@drawable/imsdk_uikit_chat_bubble_received"
+                android:padding="0dp"
                 app:layout_flexGrow="0"
-                app:layout_flexShrink="1" />
+                app:layout_flexShrink="1">
+
+                <ImageView
+                    android:id="@+id/audio_image_flag"
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="10dp"
+                    android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/imsdk_uikit_voice_msg_playing_3" />
+
+                <TextView
+                    android:id="@+id/audio_duration_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="45dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="0dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    tools:text="120''" />
+            </com.masonsoft.imsdk.uikit.widget.IMMessageAudioView>
         </com.google.android.flexbox.FlexboxLayout>
     </com.masonsoft.imsdk.uikit.widget.IMMessageRevokeStateFrameLayout>
 </LinearLayout>

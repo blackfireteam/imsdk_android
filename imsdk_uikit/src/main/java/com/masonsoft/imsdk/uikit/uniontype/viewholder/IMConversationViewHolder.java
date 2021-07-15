@@ -14,7 +14,7 @@ import com.masonsoft.imsdk.uikit.IMUIKitConstants;
 import com.masonsoft.imsdk.uikit.IMUIKitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.impopup.IMChatConversationMenuDialog;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleUnionTypeImplImConversationBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplImConversationBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 
 import java.util.ArrayList;
@@ -26,11 +26,11 @@ import io.github.idonans.uniontype.UnionTypeViewHolder;
 
 public class IMConversationViewHolder extends UnionTypeViewHolder {
 
-    private final ImsdkSampleUnionTypeImplImConversationBinding mBinding;
+    private final ImsdkUikitUnionTypeImplImConversationBinding mBinding;
 
     public IMConversationViewHolder(@NonNull Host host) {
-        super(host, R.layout.imsdk_sample_union_type_impl_im_conversation);
-        mBinding = ImsdkSampleUnionTypeImplImConversationBinding.bind(itemView);
+        super(host, R.layout.imsdk_uikit_union_type_impl_im_conversation);
+        mBinding = ImsdkUikitUnionTypeImplImConversationBinding.bind(itemView);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
 
             final List<String> menuList = new ArrayList<>();
             final List<Integer> menuIdList = new ArrayList<>();
-            menuList.add(I18nResources.getString(R.string.imsdk_sample_menu_delete));
+            menuList.add(I18nResources.getString(R.string.imsdk_uikit_menu_delete));
             menuIdList.add(MENU_ID_DELETE);
 
             final View anchorView = itemView;
