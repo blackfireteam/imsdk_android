@@ -17,7 +17,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="57dp"
-            android:background="@drawable/imsdk_sample_ic_common_rect_top_corners_16dp_white"
+            android:background="@drawable/imsdk_uikit_ic_common_rect_top_corners_16dp_white"
             android:clickable="true"
             android:focusable="true">
 
@@ -53,7 +53,7 @@
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="15dp"
-                android:background="@drawable/imsdk_sample_ic_common_rect_corners_4dp_fill_enable_black_normal_cccccc"
+                android:background="@drawable/imsdk_uikit_ic_common_rect_corners_4dp_fill_enable_black_normal_cccccc"
                 android:enabled="false"
                 android:gravity="center"
                 android:includeFontPadding="false"
