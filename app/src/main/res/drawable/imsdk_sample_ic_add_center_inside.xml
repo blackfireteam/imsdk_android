@@ -6,6 +6,6 @@
         </shape>
     </item>
     <item android:gravity="center">
-        <bitmap android:src="@drawable/imsdk_sample_ic_add" />
+        <bitmap android:src="@drawable/imsdk_uikit_ic_add" />
     </item>
 </layer-list>

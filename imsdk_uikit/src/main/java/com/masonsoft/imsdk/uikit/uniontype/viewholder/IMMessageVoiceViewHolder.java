@@ -82,7 +82,7 @@ public abstract class IMMessageVoiceViewHolder extends IMMessageViewHolder {
                 if (shouldShowPauseButton) {
                     Drawable drawable = mAudioImageFlag.getDrawable();
                     if (!(drawable instanceof AnimationDrawable)) {
-                        mAudioImageFlag.setImageResource(R.drawable.imsdk_sample_voice_message_playing_anim);
+                        mAudioImageFlag.setImageResource(R.drawable.imsdk_uikit_voice_message_playing_anim);
                         drawable = mAudioImageFlag.getDrawable();
                     }
                     if (drawable instanceof AnimationDrawable) {

@@ -45,10 +45,10 @@ public class UserCacheGenderView extends UserCacheDynamicImageView {
 
     private void setGender(int gender) {
         if (gender == MSIMConstants.Gender.MALE) {
-            setImageResource(R.drawable.imsdk_sample_ic_gender_male);
+            setImageResource(R.drawable.imsdk_uikit_ic_gender_male);
         } else {
             // default female
-            setImageResource(R.drawable.imsdk_sample_ic_gender_female);
+            setImageResource(R.drawable.imsdk_uikit_ic_gender_female);
         }
     }
 
