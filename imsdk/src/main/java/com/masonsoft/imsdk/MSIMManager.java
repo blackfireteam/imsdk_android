@@ -18,6 +18,8 @@ import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.util.RxJavaUtil;
 import com.masonsoft.imsdk.util.WeakObservable;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.Threads;
 
@@ -38,6 +40,7 @@ public class MSIMManager {
         return INSTANCE.get();
     }
 
+    private final AtomicBoolean mInit = new AtomicBoolean(false);
     private int mSubApp;
 
     @NonNull
@@ -173,9 +176,17 @@ public class MSIMManager {
 
     public void initSdk(int subApp, @Nullable MSIMSdkListener listener) {
         mSubApp = subApp;
+        mInit.set(true);
+
         addSdkListener(listener);
 
         Threads.postBackground(() -> IMManager.getInstance().start());
+    }
+
+    private void requireInit() {
+        if (!mInit.get()) {
+            throw new IllegalStateException("not init. see #initSdk");
+        }
     }
 
     public void addSdkListener(@Nullable MSIMSdkListener listener) {
@@ -203,6 +214,8 @@ public class MSIMManager {
     }
 
     public void signIn(@NonNull String token, @NonNull String tcpServerAndPort, @Nullable MSIMCallback<GeneralResult> callback) {
+        requireInit();
+
         final Object signInOrSignOutTag = resetSignInOrSignOutTag();
         final MSIMCallback<GeneralResult> proxy = new MSIMCallbackProxy<>(callback);
         final Session session = Session.create(token, tcpServerAndPort);
@@ -222,6 +235,8 @@ public class MSIMManager {
     @WorkerThread
     @NonNull
     public GeneralResult signInWithBlock(@NonNull String token, @NonNull String tcpServerAndPort) {
+        requireInit();
+
         resetSignInOrSignOutTag();
         final Session session = Session.create(token, tcpServerAndPort);
         IMSessionManager.getInstance().setSession(session);
@@ -230,6 +245,8 @@ public class MSIMManager {
     }
 
     public void signOut(@Nullable MSIMCallback<GeneralResult> callback) {
+        requireInit();
+
         final Object signInOrSignOutTag = resetSignInOrSignOutTag();
         final MSIMCallback<GeneralResult> proxy = new MSIMCallbackProxy<>(callback);
         Threads.postBackground(() -> {
@@ -247,6 +264,8 @@ public class MSIMManager {
     @WorkerThread
     @NonNull
     public GeneralResult signOutWithBlock() {
+        requireInit();
+
         resetSignInOrSignOutTag();
         final GeneralResult result = IMSessionManager.getInstance().signOutWithBlockOrTimeout();
         return result.getCause();
@@ -264,14 +283,20 @@ public class MSIMManager {
     }
 
     public long getSessionUserId() {
+        requireInit();
+
         return IMSessionManager.getInstance().getSessionUserId();
     }
 
     public boolean hasSession() {
+        requireInit();
+
         return IMSessionManager.getInstance().getSession() != null;
     }
 
     public void setSession(@NonNull String token, @NonNull String tcpServerAndPort) {
+        requireInit();
+
         resetSignInOrSignOutTag();
         final Session session = Session.create(token, tcpServerAndPort);
         IMSessionManager.getInstance().setSession(session);
@@ -279,20 +304,28 @@ public class MSIMManager {
 
     @NonNull
     public MSIMMessageManager getMessageManager() {
+        requireInit();
+
         return MSIMMessageManager.getInstance();
     }
 
     @NonNull
     public MSIMConversationManager getConversationManager() {
+        requireInit();
+
         return MSIMConversationManager.getInstance();
     }
 
     @NonNull
     public MSIMUserInfoManager getUserInfoManager() {
+        requireInit();
+
         return MSIMUserInfoManager.getInstance();
     }
 
     public final int getSubApp() {
+        requireInit();
+
         return mSubApp;
     }
 

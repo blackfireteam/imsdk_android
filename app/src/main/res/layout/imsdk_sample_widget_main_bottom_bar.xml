@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:layout_gravity="bottom"
-    tools:layout_height="@dimen/imsdk_sample_main_bottom_bar_height">
+    tools:layout_height="@dimen/imsdk_uikit_main_bottom_bar_height">
 
     <LinearLayout
         android:id="@+id/tab_home"

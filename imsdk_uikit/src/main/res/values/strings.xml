@@ -3,6 +3,7 @@
     <string name="app_name">IMSDK Sample</string>
     <string name="imsdk_sample_base_on">BaseOn</string>
     <string name="imsdk_uikit_empty_text_hint" />
+    <string name="imsdk_uikit_conversation_title">消息</string>
     <string name="imsdk_uikit_chat_input_hint">发送聊天内容</string>
     <string name="imsdk_uikit_chat_input_submit">发送</string>
     <string name="imsdk_uikit_tip_text_network_error">网络不给力</string>

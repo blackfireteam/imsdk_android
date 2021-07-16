@@ -5,7 +5,6 @@
     <string name="imsdk_sample_tab_conversation">消息</string>
     <string name="imsdk_sample_tab_mine">我的</string>
     <string name="imsdk_sample_tab_discover_title">在线用户</string>
-    <string name="imsdk_sample_tab_conversation_title">消息</string>
     <string name="imsdk_sample_sign_in_submit_text">登录</string>
     <string name="imsdk_sample_submit_action_next">下一步</string>
     <string name="imsdk_sample_submit_action_ok">确定</string>

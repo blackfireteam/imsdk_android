@@ -15,19 +15,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/imsdk_sample_color_white_grey_background"
+        android:background="@color/imsdk_uikit_color_white_grey_background"
         app:systemInsetPaddingBottom="48dp"
         app:systemInsetPaddingBottomNotConsume="true">
 
         <com.masonsoft.imsdk.sample.widget.MainBottomBar
             android:id="@+id/main_bottom_bar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/imsdk_sample_main_bottom_bar_height" />
+            android:layout_height="@dimen/imsdk_uikit_main_bottom_bar_height" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/imsdk_sample_color_divider_line" />
+            android:background="@color/imsdk_uikit_color_divider_line" />
     </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
 
 </FrameLayout>

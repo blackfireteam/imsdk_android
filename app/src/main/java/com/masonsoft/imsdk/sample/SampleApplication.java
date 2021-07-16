@@ -36,8 +36,8 @@ public class SampleApplication extends Application {
         if (debug) {
             IMLog.setLogLevel(Log.VERBOSE);
             IMUIKitLog.setLogLevel(Log.VERBOSE);
+            SampleLog.setLogLevel(Log.VERBOSE);
         }
-        LocalSettingsManager.getInstance().start();
         DiscoverUserManager.getInstance().start();
         if (debug) {
             DebugManager.getInstance().start();
@@ -46,12 +46,8 @@ public class SampleApplication extends Application {
             WebView.setDataDirectorySuffix(ProcessManager.getInstance().getProcessTag());
         }
 
-        // 设置文件上服务
+        // 设置文件上传服务
         FileUploadManager.getInstance().setFileUploadProvider(new TencentOSSFileUploadProvider());
-
-        if (debug) {
-            SampleLog.setLogLevel(Log.VERBOSE);
-        }
 
         EmojiCompat.init(new BundledEmojiCompatConfig(this));
 
@@ -65,6 +61,8 @@ public class SampleApplication extends Application {
 
         initFresco();
         registerActivityLifecycleCallbacks(TopActivity.getInstance().getActivityLifecycleCallbacks());
+
+        LocalSettingsManager.getInstance().start();
     }
 
     private void initFresco() {

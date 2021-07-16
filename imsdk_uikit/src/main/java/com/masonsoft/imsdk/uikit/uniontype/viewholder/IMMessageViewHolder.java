@@ -482,11 +482,11 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
         }
 
         private static void setHolderFinderTag(UnionTypeViewHolder holder, Object tag) {
-            holder.itemView.setTag(R.id.imsdk_sample_holder_finder_tag, tag);
+            holder.itemView.setTag(R.id.imsdk_uikit_holder_finder_tag, tag);
         }
 
         private static boolean isHolderFinderTagChanged(UnionTypeViewHolder holder, Object tag) {
-            return holder.itemView.getTag(R.id.imsdk_sample_holder_finder_tag) != tag;
+            return holder.itemView.getTag(R.id.imsdk_uikit_holder_finder_tag) != tag;
         }
 
         public static void showMenu(UnionTypeViewHolder holder) {
