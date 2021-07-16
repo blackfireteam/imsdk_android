@@ -20,7 +20,7 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSource;
 import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor;
 import com.google.android.exoplayer2.upstream.cache.SimpleCache;
 import com.masonsoft.imsdk.uikit.util.OkHttpClientUtil;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 import java.io.File;
 
@@ -66,7 +66,7 @@ public class MediaPlayerManager {
 
             File cacheDir = createMediaCacheDir();
             if (cacheDir == null) {
-                IMUIKitLog.e("cache dir is null, ignore cache.");
+                MSIMUikitLog.e("cache dir is null, ignore cache.");
                 return dataSourceFactory;
             }
 
@@ -98,7 +98,7 @@ public class MediaPlayerManager {
                     )
                     .setFlags(CacheDataSource.FLAG_BLOCK_ON_CACHE | CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR);
         } catch (Throwable e) {
-            IMUIKitLog.e(e);
+            MSIMUikitLog.e(e);
             e.printStackTrace();
         }
         return null;
@@ -115,7 +115,7 @@ public class MediaPlayerManager {
             FileUtil.createNewFileQuietly(new File(cacheDir, ".nomedia"));
             return cacheDir;
         } catch (Throwable e) {
-            IMUIKitLog.e(e);
+            MSIMUikitLog.e(e);
             e.printStackTrace();
         }
         return null;
@@ -136,7 +136,7 @@ public class MediaPlayerManager {
                     .createMediaSource(MediaItem.fromUri(url));
             return new MediaPlayer(mediaSource, autoPlay, loop);
         } catch (Throwable e) {
-            IMUIKitLog.e(e);
+            MSIMUikitLog.e(e);
             e.printStackTrace();
         }
         return null;

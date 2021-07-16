@@ -9,7 +9,7 @@ import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.MSIMUserInfoListener;
 import com.masonsoft.imsdk.MSIMUserInfoListenerProxy;
 import com.masonsoft.imsdk.lang.ObjectWrapper;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.Preconditions;
@@ -56,7 +56,7 @@ public abstract class UserCacheChangedViewHelper {
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(objectWrapper -> onUserCacheChanged((MSIMUserInfo) objectWrapper.getObject()), IMUIKitLog::e));
+                .subscribe(objectWrapper -> onUserCacheChanged((MSIMUserInfo) objectWrapper.getObject()), MSIMUikitLog::e));
     }
 
     protected abstract void onUserCacheChanged(@Nullable MSIMUserInfo userInfo);

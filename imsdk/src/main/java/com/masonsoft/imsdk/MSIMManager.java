@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import com.masonsoft.imsdk.core.DebugManager;
+import com.masonsoft.imsdk.core.FileUploadProvider;
 import com.masonsoft.imsdk.core.IMManager;
 import com.masonsoft.imsdk.core.IMSessionManager;
 import com.masonsoft.imsdk.core.message.packet.MessagePacket;
@@ -180,7 +182,10 @@ public class MSIMManager {
 
         addSdkListener(listener);
 
-        Threads.postBackground(() -> IMManager.getInstance().start());
+        Threads.postBackground(() -> {
+            IMManager.getInstance().start();
+            DebugManager.getInstance().start();
+        });
     }
 
     private void requireInit() {
@@ -300,6 +305,18 @@ public class MSIMManager {
         resetSignInOrSignOutTag();
         final Session session = Session.create(token, tcpServerAndPort);
         IMSessionManager.getInstance().setSession(session);
+    }
+
+    public FileUploadProvider getFileUploadProvider() {
+        requireInit();
+
+        return IMManager.getInstance().getFileUploadProvider();
+    }
+
+    public void setFileUploadProvider(FileUploadProvider fileUploadProvider) {
+        requireInit();
+
+        IMManager.getInstance().setFileUploadProvider(fileUploadProvider);
     }
 
     @NonNull

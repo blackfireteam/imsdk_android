@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import androidx.annotation.Nullable;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 import io.github.idonans.core.util.IOUtil;
 
@@ -76,7 +76,7 @@ public class MediaPlayerDelegate {
                 }
             }
         } catch (Throwable e) {
-            IMUIKitLog.e(e);
+            MSIMUikitLog.e(e);
             e.printStackTrace();
         }
 
@@ -93,7 +93,7 @@ public class MediaPlayerDelegate {
             IOUtil.closeQuietly(mMediaPlayer);
             mMediaPlayer = null;
         } catch (Throwable e) {
-            IMUIKitLog.e(e);
+            MSIMUikitLog.e(e);
             e.printStackTrace();
         }
     }
@@ -113,7 +113,7 @@ public class MediaPlayerDelegate {
                 }
             }
         } catch (Throwable e) {
-            IMUIKitLog.e(e);
+            MSIMUikitLog.e(e);
             e.printStackTrace();
         }
     }

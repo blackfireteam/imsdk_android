@@ -18,7 +18,7 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMWeakCallback;
 import com.masonsoft.imsdk.lang.GeneralResult;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
 
@@ -104,7 +104,7 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
     @Override
     protected void onMessageChanged(@Nullable MSIMMessage message, @Nullable Object customObject) {
         if (DEBUG) {
-            IMUIKitLog.v("onMessageChanged %s", message);
+            MSIMUikitLog.v("onMessageChanged %s", message);
         }
         mMessageUnsafe = message;
         if (message == null) {

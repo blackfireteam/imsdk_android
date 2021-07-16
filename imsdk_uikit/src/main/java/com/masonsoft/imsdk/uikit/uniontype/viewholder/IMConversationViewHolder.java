@@ -9,9 +9,9 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.uikit.IMUIKitComponentManager;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitComponentManager;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.impopup.IMChatConversationMenuDialog;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplImConversationBinding;
@@ -56,11 +56,11 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
         ViewUtil.onClick(itemView, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
 
-            IMUIKitComponentManager.getInstance().dispatchConversationViewClick(
+            MSIMUikitComponentManager.getInstance().dispatchConversationViewClick(
                     innerActivity,
                     sessionUserId,
                     conversationId,
@@ -70,7 +70,7 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
         itemView.setOnLongClickListener(v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return false;
             }
 
@@ -109,7 +109,7 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
                             conversation
                     );
                 } else {
-                    IMUIKitLog.e("IMChatConversationMenuDialog onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
+                    MSIMUikitLog.e("IMChatConversationMenuDialog onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
                             menuId, menuText, menuView);
                 }
             });

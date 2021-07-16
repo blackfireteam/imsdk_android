@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 import java.util.Collection;
 
@@ -18,7 +18,7 @@ public class TopVisibleRecyclerViewMicroLifecycleComponentManager extends Recycl
         super(recyclerView, lifecycle);
         mRecyclerView.setRecyclerListener(holder -> {
             if (DEBUG) {
-                IMUIKitLog.v("setRecyclerListener callback");
+                MSIMUikitLog.v("setRecyclerListener callback");
             }
             Collection<MicroLifecycleComponent> microLifecycleComponents = copyComponents();
             for (MicroLifecycleComponent microLifecycleComponent : microLifecycleComponents) {

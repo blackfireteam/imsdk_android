@@ -20,8 +20,8 @@ import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.TopActivity;
 import com.masonsoft.imsdk.uikit.common.impopup.IMChatMessageMenuDialog;
@@ -81,16 +81,16 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
     private static void download(Host host, String downloadUrl) {
         Activity innerActivity = host.getActivity();
         if (innerActivity == null) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (!(innerActivity instanceof AppCompatActivity)) {
-            IMUIKitLog.e("activity is not AppCompatActivity: %s", innerActivity);
+            MSIMUikitLog.e("activity is not AppCompatActivity: %s", innerActivity);
             return;
         }
         FragmentManager fm = ((AppCompatActivity) innerActivity).getSupportFragmentManager();
         if (fm.isStateSaved()) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 
@@ -176,7 +176,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 final long currentMessageTime = dataObject.object.getTimeMs();
                 if (currentMessageTime <= 0) {
                     Throwable e = new IllegalArgumentException("invalid timeMs " + dataObject.object);
-                    IMUIKitLog.e(e);
+                    MSIMUikitLog.e(e);
                 }
 
                 int position = getAdapterPosition();
@@ -191,7 +191,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                             final long preMessageTime = preMessage.getTimeMs();
                             if (preMessageTime <= 0) {
                                 Throwable e = new IllegalArgumentException("invalid timeMs " + preMessage);
-                                IMUIKitLog.e(e);
+                                MSIMUikitLog.e(e);
                             }
                             needShowTime = currentMessageTime - preMessageTime >= showTimeDuration;
                         }
@@ -205,7 +205,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
 
     protected void updateMessageTimeView(TextView messageTimeView, DataObject<MSIMMessage> dataObject) {
         if (messageTimeView == null) {
-            IMUIKitLog.v("updateMessageTimeView ignore null messageTimeView");
+            MSIMUikitLog.v("updateMessageTimeView ignore null messageTimeView");
             return;
         }
         final boolean needShowTime = needShowTime(dataObject);
@@ -219,7 +219,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             currentMessageTime = dataObject.object.getTimeMs();
         }
         if (currentMessageTime <= 0) {
-            IMUIKitLog.v("invalid current message time: %s", currentMessageTime);
+            MSIMUikitLog.v("invalid current message time: %s", currentMessageTime);
             ViewUtil.setVisibilityIfChanged(messageTimeView, View.GONE);
             return;
         }
@@ -337,7 +337,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                         dataObject);
             }
 
-            IMUIKitLog.e("createPreviewDefault unknown message type %s", dataObject.object);
+            MSIMUikitLog.e("createPreviewDefault unknown message type %s", dataObject.object);
             return null;
         }
 
@@ -347,32 +347,32 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
 
             int position = holder.getAdapterPosition();
             if (position < 0) {
-                IMUIKitLog.e("invalid position %s", position);
+                MSIMUikitLog.e("invalid position %s", position);
                 return null;
             }
             UnionTypeItemObject itemObject = holder.host.getAdapter().getItem(position);
             if (itemObject == null) {
-                IMUIKitLog.e("item object is null");
+                MSIMUikitLog.e("item object is null");
                 return null;
             }
             if (!(itemObject.itemObject instanceof DataObject)) {
-                IMUIKitLog.e("item object is not data object");
+                MSIMUikitLog.e("item object is not data object");
                 return null;
             }
             final DataObject<?> dataObject = (DataObject<?>) itemObject.itemObject;
             if (!(dataObject.object instanceof MSIMMessage)) {
-                IMUIKitLog.e("item object's data object's object is not MSIMMessage");
+                MSIMUikitLog.e("item object's data object's object is not MSIMMessage");
                 return null;
             }
 
             final MSIMMessage message = (MSIMMessage) dataObject.object;
             Activity innerActivity = holder.host.getActivity();
             if (innerActivity == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return null;
             }
             if (innerActivity != TopActivity.getInstance().get()) {
-                IMUIKitLog.e("activity is not the top activity");
+                MSIMUikitLog.e("activity is not the top activity");
                 return null;
             }
             Lifecycle lifecycle = null;
@@ -385,7 +385,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 }
             }
             if (lifecycle == null) {
-                IMUIKitLog.e("lifecycle is null");
+                MSIMUikitLog.e("lifecycle is null");
                 return null;
             }
 
@@ -412,7 +412,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             setHolderFinderTag(input.holder, tag);
             Threads.postBackground(() -> {
                 if (isHolderFinderTagChanged(input.holder, tag)) {
-                    IMUIKitLog.v("ignore. holder finder tag changed");
+                    MSIMUikitLog.v("ignore. holder finder tag changed");
                     return;
                 }
                 final MSIMMessage message = MSIMManager.getInstance().getMessageManager().getMessage(
@@ -422,12 +422,12 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                         input.message.getMessageId()
                 );
                 if (isHolderFinderTagChanged(input.holder, tag)) {
-                    IMUIKitLog.v("ignore. holder finder tag changed");
+                    MSIMUikitLog.v("ignore. holder finder tag changed");
                     return;
                 }
                 Threads.runOnUi(() -> {
                     if (isHolderFinderTagChanged(input.holder, tag)) {
-                        IMUIKitLog.v("ignore. holder finder tag changed");
+                        MSIMUikitLog.v("ignore. holder finder tag changed");
                         return;
                     }
                     if (message == null) {
@@ -456,7 +456,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
         public static void showPreview(UnionTypeViewHolder holder, long targetUserId) {
             final HolderFinder holderFinder = getHolderFinder(holder);
             if (holderFinder == null) {
-                IMUIKitLog.e("showPreview holderFinder is null");
+                MSIMUikitLog.e("showPreview holderFinder is null");
                 return;
             }
 
@@ -474,7 +474,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 return;
             }
 
-            IMUIKitLog.e("showPreview other message type %s", holderFinder.message);
+            MSIMUikitLog.e("showPreview other message type %s", holderFinder.message);
         }
 
         private static void clearHolderFinderTag(UnionTypeViewHolder holder) {
@@ -492,12 +492,12 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
         public static void showMenu(UnionTypeViewHolder holder) {
             final HolderFinder holderFinder = getHolderFinder(holder);
             if (holderFinder == null) {
-                IMUIKitLog.e("holder finder is null");
+                MSIMUikitLog.e("holder finder is null");
                 return;
             }
             refreshHolderFinderAsync(holderFinder, refreshHolderFinder -> {
                 if (refreshHolderFinder == null) {
-                    IMUIKitLog.e("refreshHolderFinderAsync refreshHolderFinder is null");
+                    MSIMUikitLog.e("refreshHolderFinderAsync refreshHolderFinder is null");
                     return;
                 }
                 if (showMenuInternal(refreshHolderFinder)) {
@@ -514,12 +514,12 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 // 文字
                 View anchorView = holderFinder.holder.itemView.findViewById(R.id.message_text);
                 if (anchorView == null) {
-                    IMUIKitLog.v("showMenu MessageType.TEXT R.id.message_text not found");
+                    MSIMUikitLog.v("showMenu MessageType.TEXT R.id.message_text not found");
                     return false;
                 }
 
                 if (anchorView.getWidth() <= 0 || anchorView.getHeight() <= 0) {
-                    IMUIKitLog.v("showMenu anchor view not layout");
+                    MSIMUikitLog.v("showMenu anchor view not layout");
                     return false;
                 }
 
@@ -550,7 +550,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                         // 撤回
                         revoke(holderFinder.holder);
                     } else {
-                        IMUIKitLog.e("IMChatMessageMenuDialog onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
+                        MSIMUikitLog.e("IMChatMessageMenuDialog onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
                                 menuId, menuText, menuView);
                     }
                 });
@@ -561,12 +561,12 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 // 图片
                 View anchorView = holderFinder.holder.itemView.findViewById(R.id.resize_image_view);
                 if (anchorView == null) {
-                    IMUIKitLog.v("showMenu MessageType.IMAGE R.id.resize_image_view not found");
+                    MSIMUikitLog.v("showMenu MessageType.IMAGE R.id.resize_image_view not found");
                     return false;
                 }
 
                 if (anchorView.getWidth() <= 0 || anchorView.getHeight() <= 0) {
-                    IMUIKitLog.v("showMenu anchor view not layout");
+                    MSIMUikitLog.v("showMenu anchor view not layout");
                     return false;
                 }
 
@@ -595,7 +595,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                         // 撤回
                         revoke(holderFinder.holder);
                     } else {
-                        IMUIKitLog.e("showMenu onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
+                        MSIMUikitLog.e("showMenu onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
                                 menuId, menuText, menuView);
                     }
                 });
@@ -603,7 +603,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
                 return true;
             }
 
-            IMUIKitLog.e("imMessage type is unknown %s", holderFinder.message);
+            MSIMUikitLog.e("imMessage type is unknown %s", holderFinder.message);
             return false;
         }
 
@@ -613,7 +613,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
         private static void revoke(UnionTypeViewHolder holder) {
             final HolderFinder holderFinder = getHolderFinder(holder);
             if (holderFinder == null) {
-                IMUIKitLog.e("revoke getHolderFinder return null");
+                MSIMUikitLog.e("revoke getHolderFinder return null");
                 return;
             }
             final MSIMMessage message = holderFinder.message;

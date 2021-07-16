@@ -16,8 +16,8 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.util.EventLogger;
 import com.google.android.exoplayer2.video.VideoListener;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 import java.io.Closeable;
 
@@ -25,7 +25,7 @@ import io.github.idonans.core.util.ContextUtil;
 
 public class MediaPlayer implements Closeable {
 
-    private static final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     @Nullable
     private SimpleExoPlayer mPlayer;
@@ -40,21 +40,21 @@ public class MediaPlayer implements Closeable {
             @Override
             public void onAudioSessionIdChanged(int audioSessionId) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onAudioSessionIdChanged audioSessionId:%s", audioSessionId);
+                    MSIMUikitLog.v("onAudioSessionIdChanged audioSessionId:%s", audioSessionId);
                 }
             }
 
             @Override
             public void onAudioAttributesChanged(AudioAttributes audioAttributes) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onAudioAttributesChanged");
+                    MSIMUikitLog.v("onAudioAttributesChanged");
                 }
             }
 
             @Override
             public void onVolumeChanged(float volume) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onVolumeChanged volume:%s", volume);
+                    MSIMUikitLog.v("onVolumeChanged volume:%s", volume);
                 }
             }
         });
@@ -62,70 +62,70 @@ public class MediaPlayer implements Closeable {
             @Override
             public void onTimelineChanged(Timeline timeline, int reason) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onTimelineChanged reason:%s", reason);
+                    MSIMUikitLog.v("onTimelineChanged reason:%s", reason);
                 }
             }
 
             @Override
             public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onTracksChanged");
+                    MSIMUikitLog.v("onTracksChanged");
                 }
             }
 
             @Override
             public void onIsLoadingChanged(boolean isLoading) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onIsLoadingChanged isLoading:%s", isLoading);
+                    MSIMUikitLog.v("onIsLoadingChanged isLoading:%s", isLoading);
                 }
             }
 
             @Override
             public void onPlaybackStateChanged(int state) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onPlaybackStateChanged state:%s", state);
+                    MSIMUikitLog.v("onPlaybackStateChanged state:%s", state);
                 }
             }
 
             @Override
             public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onPlayWhenReadyChanged playWhenReady:%s reason:%s", playWhenReady, reason);
+                    MSIMUikitLog.v("onPlayWhenReadyChanged playWhenReady:%s reason:%s", playWhenReady, reason);
                 }
             }
 
             @Override
             public void onPlaybackSuppressionReasonChanged(int playbackSuppressionReason) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onPlaybackSuppressionReasonChanged playbackSuppressionReason:%s", playbackSuppressionReason);
+                    MSIMUikitLog.v("onPlaybackSuppressionReasonChanged playbackSuppressionReason:%s", playbackSuppressionReason);
                 }
             }
 
             @Override
             public void onIsPlayingChanged(boolean isPlaying) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onIsPlayingChanged isPlaying:%s", isPlaying);
+                    MSIMUikitLog.v("onIsPlayingChanged isPlaying:%s", isPlaying);
                 }
             }
 
             @Override
             public void onRepeatModeChanged(int repeatMode) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onRepeatModeChanged repeatMode:%s", repeatMode);
+                    MSIMUikitLog.v("onRepeatModeChanged repeatMode:%s", repeatMode);
                 }
             }
 
             @Override
             public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onShuffleModeEnabledChanged shuffleModeEnabled:%s", shuffleModeEnabled);
+                    MSIMUikitLog.v("onShuffleModeEnabledChanged shuffleModeEnabled:%s", shuffleModeEnabled);
                 }
             }
 
             @Override
             public void onPlayerError(ExoPlaybackException error) {
                 if (DEBUG) {
-                    IMUIKitLog.v(error, "onPlayerError");
+                    MSIMUikitLog.v(error, "onPlayerError");
                     error.printStackTrace();
                 }
             }
@@ -133,14 +133,14 @@ public class MediaPlayer implements Closeable {
             @Override
             public void onPositionDiscontinuity(int reason) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onPositionDiscontinuity reason:%s", reason);
+                    MSIMUikitLog.v("onPositionDiscontinuity reason:%s", reason);
                 }
             }
 
             @Override
             public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onPlaybackParametersChanged");
+                    MSIMUikitLog.v("onPlaybackParametersChanged");
                 }
             }
         });
@@ -148,7 +148,7 @@ public class MediaPlayer implements Closeable {
             @Override
             public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onVideoSizeChanged width:%s, height:%s, unappliedRotationDegrees:%s, pixelWidthHeightRatio:%s",
+                    MSIMUikitLog.v("onVideoSizeChanged width:%s, height:%s, unappliedRotationDegrees:%s, pixelWidthHeightRatio:%s",
                             width, height, unappliedRotationDegrees, pixelWidthHeightRatio);
                 }
             }
@@ -156,14 +156,14 @@ public class MediaPlayer implements Closeable {
             @Override
             public void onSurfaceSizeChanged(int width, int height) {
                 if (DEBUG) {
-                    IMUIKitLog.v("onSurfaceSizeChanged width:%s, height:%s", width, height);
+                    MSIMUikitLog.v("onSurfaceSizeChanged width:%s, height:%s", width, height);
                 }
             }
 
             @Override
             public void onRenderedFirstFrame() {
                 if (DEBUG) {
-                    IMUIKitLog.v("onRenderedFirstFrame");
+                    MSIMUikitLog.v("onRenderedFirstFrame");
                 }
             }
         });

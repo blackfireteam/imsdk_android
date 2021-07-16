@@ -8,11 +8,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMUserInfo;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 
 public abstract class UserCacheDynamicFrameLayout extends FrameLayout {
 
-    protected final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    protected final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     private UserCacheChangedViewHelper mUserCacheChangedViewHelper;
 

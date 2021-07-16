@@ -22,7 +22,7 @@ import com.masonsoft.imsdk.sample.uniontype.viewholder.HomeSparkViewHolder;
 import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardLayoutItemTouchHelper;
 import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardLayoutManager;
 import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardTouchCallbackImpl;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManagerHost;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.TopVisibleRecyclerViewMicroLifecycleComponentManager;
@@ -132,12 +132,12 @@ public class HomeFragment extends SystemInsetsFragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int swipeDir, Object payload) {
                 final int position = viewHolder.getAdapterPosition();
                 if (position < 0) {
-                    SampleLog.e(IMUIKitConstants.ErrorLog.INVALID_POSITION);
+                    SampleLog.e(MSIMUikitConstants.ErrorLog.INVALID_POSITION);
                     return;
                 }
                 final UnionTypeItemObject originObject = adapter.getItem(position);
                 if (originObject == null) {
-                    SampleLog.e(IMUIKitConstants.ErrorLog.INVALID_TARGET);
+                    SampleLog.e(MSIMUikitConstants.ErrorLog.INVALID_TARGET);
                     return;
                 }
                 //noinspection unchecked
@@ -150,7 +150,7 @@ public class HomeFragment extends SystemInsetsFragment {
 
                 if (payload instanceof Bundle) {
                     Bundle args = (Bundle) payload;
-                    boolean swipeOnly = args.getBoolean(IMUIKitConstants.ExtrasKey.KEY_BOOLEAN, false);
+                    boolean swipeOnly = args.getBoolean(MSIMUikitConstants.ExtrasKey.KEY_BOOLEAN, false);
                     if (swipeOnly) {
                         // swipe only, this is invoked by #swipeTopVisibleViewHolderOnly
                         SampleLog.v("ignore. onSwiped is swipe only");
@@ -159,7 +159,7 @@ public class HomeFragment extends SystemInsetsFragment {
                 }
 
                 if (spark == null || spark.userId <= 0) {
-                    SampleLog.e(IMUIKitConstants.ErrorLog.INVALID_TARGET);
+                    SampleLog.e(MSIMUikitConstants.ErrorLog.INVALID_TARGET);
                     return;
                 }
 

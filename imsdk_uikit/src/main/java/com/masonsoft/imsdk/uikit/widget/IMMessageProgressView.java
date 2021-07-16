@@ -9,15 +9,15 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.lang.util.ViewUtil;
 
 public class IMMessageProgressView extends ProgressView {
 
-    private static final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     public IMMessageProgressView(Context context) {
         this(context, null);
@@ -69,7 +69,7 @@ public class IMMessageProgressView extends ProgressView {
 
     private void showProgress(float progress) {
         if (DEBUG) {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " showProgress progress:%s", progress);
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " showProgress progress:%s", progress);
         }
         ViewUtil.setVisibilityIfChanged(this, View.VISIBLE);
         setProgress(progress);
@@ -77,7 +77,7 @@ public class IMMessageProgressView extends ProgressView {
 
     private void hideProgress() {
         if (DEBUG) {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " hideProgress");
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " hideProgress");
         }
         ViewUtil.setVisibilityIfChanged(this, View.GONE);
     }

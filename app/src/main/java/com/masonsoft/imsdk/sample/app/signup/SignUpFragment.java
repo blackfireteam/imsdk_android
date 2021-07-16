@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 
 public abstract class SignUpFragment extends SystemInsetsFragment {
 
@@ -24,7 +24,7 @@ public abstract class SignUpFragment extends SystemInsetsFragment {
 
     protected void saveSignUpArgument() {
         if (isStateSaved()) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 

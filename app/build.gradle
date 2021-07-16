@@ -63,7 +63,6 @@ dependencies {
     implementation project(path: ':imsdk_uikit')
     // implementation 'io.github.blackfireteam.msimsdk:msimsdk:1.0-alpha0'
 
-    implementation 'com.tencent.qcloud:cosxml:5.6.0'
     implementation 'me.relex:photodraweeview:2.0.0'
 
     // debugImplementation rootProject.ext.bcfg.deps.leakcanary

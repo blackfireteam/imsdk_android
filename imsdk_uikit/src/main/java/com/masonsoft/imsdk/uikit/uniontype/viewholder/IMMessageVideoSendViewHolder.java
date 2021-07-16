@@ -5,8 +5,8 @@ import android.app.Activity;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplImMessageImageSendBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
@@ -39,12 +39,12 @@ public class IMMessageVideoSendViewHolder extends IMMessageVideoViewHolder {
         ViewUtil.onClick(mBinding.avatar, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
 
             // TODO open profile ?
-            IMUIKitLog.w("require open profile");
+            MSIMUikitLog.w("require open profile");
         });
     }
 

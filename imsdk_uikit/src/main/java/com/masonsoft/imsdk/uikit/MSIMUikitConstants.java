@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.util.HumanUtil;
 
-public class IMUIKitConstants {
+public class MSIMUikitConstants {
 
     public static final boolean DEBUG_WIDGET = true;
 

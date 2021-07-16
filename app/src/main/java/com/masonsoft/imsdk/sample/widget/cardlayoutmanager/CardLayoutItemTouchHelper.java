@@ -44,7 +44,7 @@ import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -2203,7 +2203,7 @@ public class CardLayoutItemTouchHelper extends RecyclerView.ItemDecoration
                                          float animateDx, float animateDy, Object payload) {
             if (payload instanceof Bundle) {
                 Bundle args = (Bundle) payload;
-                long duration = args.getLong(IMUIKitConstants.ExtrasKey.LONG_ANIMATE_DURATION, -1);
+                long duration = args.getLong(MSIMUikitConstants.ExtrasKey.LONG_ANIMATE_DURATION, -1);
                 if (duration >= 0) {
                     return duration;
                 }

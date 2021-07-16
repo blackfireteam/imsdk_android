@@ -9,11 +9,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 
 public abstract class IMMessageDynamicFrameLayout extends FrameLayout {
 
-    protected final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    protected final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     public IMMessageDynamicFrameLayout(Context context) {
         this(context, null);

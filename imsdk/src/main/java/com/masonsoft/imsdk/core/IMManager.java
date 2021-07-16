@@ -28,6 +28,8 @@ public class IMManager {
         return INSTANCE.get();
     }
 
+    private FileUploadProvider mFileUploadProvider;
+
     private IMManager() {
         NetworkManager.getInstance().start();
         TcpClientAutoReconnectionManager.getInstance().start();
@@ -35,6 +37,14 @@ public class IMManager {
 
     public void start() {
         IMLog.v(Objects.defaultObjectTag(this) + " start");
+    }
+
+    public FileUploadProvider getFileUploadProvider() {
+        return mFileUploadProvider;
+    }
+
+    public void setFileUploadProvider(FileUploadProvider fileUploadProvider) {
+        mFileUploadProvider = fileUploadProvider;
     }
 
 }

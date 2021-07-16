@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 
 /**
@@ -84,7 +84,7 @@ public class AspectRatioFrameLayout extends FrameLayout {
             return;
         }
 
-        IMUIKitLog.v("neither width or height is exactly");
+        MSIMUikitLog.v("neither width or height is exactly");
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 

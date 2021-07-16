@@ -1,6 +1,6 @@
 package com.masonsoft.imsdk.uikit.common.microlifecycle.real;
 
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
 
 import java.util.Collection;
@@ -27,7 +27,7 @@ public class MicroLifecycleRealHelper {
                     continue;
                 }
                 if (!(item instanceof RealHost)) {
-                    IMUIKitLog.v("ignore. item is not RealHost type %s", item);
+                    MSIMUikitLog.v("ignore. item is not RealHost type %s", item);
                     continue;
                 }
                 Real real = ((RealHost) item).getReal();
@@ -36,7 +36,7 @@ public class MicroLifecycleRealHelper {
                 }
             }
         } catch (Throwable e) {
-            IMUIKitLog.e(e);
+            MSIMUikitLog.e(e);
             e.printStackTrace();
         }
     }

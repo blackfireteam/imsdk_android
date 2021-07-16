@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.R;
 
 import io.github.idonans.appcontext.AppContext;
@@ -24,7 +24,7 @@ import io.github.idonans.lang.util.ViewUtil;
 
 public class IMConversationUnreadCountView extends IMConversationDynamicFrameLayout {
 
-    private final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     public IMConversationUnreadCountView(Context context) {
         this(context, null);

@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 import io.github.idonans.core.thread.Threads;
 
@@ -24,7 +24,7 @@ public abstract class RecyclerViewMicroLifecycleComponentManager extends MicroLi
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
             if (DEBUG) {
-                IMUIKitLog.v("onScrollStateChanged newState:%s", newState);
+                MSIMUikitLog.v("onScrollStateChanged newState:%s", newState);
             }
         }
 
@@ -32,7 +32,7 @@ public abstract class RecyclerViewMicroLifecycleComponentManager extends MicroLi
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             if (DEBUG) {
-                IMUIKitLog.v("onScrolled dx:%s, dy:%s", dx, dy);
+                MSIMUikitLog.v("onScrolled dx:%s, dy:%s", dx, dy);
             }
 
             requestDispatchLifecycleEventAgain(0L);

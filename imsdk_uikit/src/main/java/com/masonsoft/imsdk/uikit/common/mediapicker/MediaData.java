@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.ObjectsCompat;
 
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.CursorUtil;
 
 import java.io.Closeable;
@@ -101,7 +101,7 @@ public class MediaData {
         }
 
         public boolean isImageMemorySizeTooLarge() {
-            return getImageMemorySize() > IMUIKitConstants.SELECTOR_MAX_IMAGE_SIZE;
+            return getImageMemorySize() > MSIMUikitConstants.SELECTOR_MAX_IMAGE_SIZE;
         }
 
         @Override
@@ -265,7 +265,7 @@ public class MediaData {
                     callback.onLoadFinish(new MediaData(allMediaInfoBucket, allBuckets, allMediaInfoMap, mMediaSelector));
                 }
             } catch (Throwable e) {
-                IMUIKitLog.e(e);
+                MSIMUikitLog.e(e);
                 MediaLoaderCallback callback = getCallback();
                 if (callback != null) {
                     callback.onLoadFinish(new MediaData(allMediaInfoBucket, allBuckets, allMediaInfoMap, mMediaSelector));
@@ -363,7 +363,7 @@ public class MediaData {
             } else {
                 final String path = CursorUtil.getString(cursor, ++index);
                 if (TextUtils.isEmpty(path)) {
-                    IMUIKitLog.v("invalid path:%s, target:%s", path, target);
+                    MSIMUikitLog.v("invalid path:%s, target:%s", path, target);
                     return null;
                 }
                 final File dir = new File(path).getParentFile();
@@ -376,10 +376,10 @@ public class MediaData {
                 target.uri = Uri.fromFile(new File(path));
             }
 
-            IMUIKitLog.v("cursorToMediaInfo USE_CONTENT_URI:%s -> %s", USE_CONTENT_URI, target);
+            MSIMUikitLog.v("cursorToMediaInfo USE_CONTENT_URI:%s -> %s", USE_CONTENT_URI, target);
 
             if (TextUtils.isEmpty(target.mimeType)) {
-                IMUIKitLog.v("invalid mimeType:%s", target.mimeType);
+                MSIMUikitLog.v("invalid mimeType:%s", target.mimeType);
                 return null;
             }
 

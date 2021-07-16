@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.lang.GeneralResult;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitConversationFragmentBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
@@ -55,7 +55,7 @@ public class ConversationFragment extends SystemInsetsFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        IMUIKitLog.v("onCreateView %s", getClass());
+        MSIMUikitLog.v("onCreateView %s", getClass());
         mBinding = ImsdkUikitConversationFragmentBinding.inflate(inflater, container, false);
 
         final RecyclerView recyclerView = mBinding.recyclerView;
@@ -106,12 +106,12 @@ public class ConversationFragment extends SystemInsetsFragment {
     }
 
     private static void smoothScrollToPosition(RecyclerView recyclerView, int position) {
-        IMUIKitLog.v("smoothScrollToPosition recyclerView:%s position:%s", recyclerView, position);
+        MSIMUikitLog.v("smoothScrollToPosition recyclerView:%s position:%s", recyclerView, position);
         recyclerView.smoothScrollToPosition(position);
     }
 
     private static void scrollToPosition(RecyclerView recyclerView, int position) {
-        IMUIKitLog.v("scrollToPosition recyclerView:%s position:%s", recyclerView, position);
+        MSIMUikitLog.v("scrollToPosition recyclerView:%s position:%s", recyclerView, position);
         recyclerView.scrollToPosition(position);
     }
 
@@ -125,19 +125,19 @@ public class ConversationFragment extends SystemInsetsFragment {
         @WorkerThread
         void mergeSortedConversationList(@NonNull final List<UnionTypeItemObject> unionTypeItemObjectList) {
             final String tag = Objects.defaultObjectTag(this) + "[mergeSortedConversationList][" + System.currentTimeMillis() + "][size:]" + unionTypeItemObjectList.size();
-            IMUIKitLog.v(tag);
+            MSIMUikitLog.v(tag);
             final boolean[] autoScrollToTop = {false};
             getAdapter().getData().beginTransaction()
                     .add((transaction, groupArrayList) -> {
                         if (groupArrayList.getGroupItemsSize(getGroupContent()) == 0) {
                             // request init page
-                            IMUIKitLog.v(tag + " try use requestInit instead of merge");
+                            MSIMUikitLog.v(tag + " try use requestInit instead of merge");
                             ConversationFragmentPresenter presenter = mPresenter;
                             if (presenter != null && !presenter.getInitRequestStatus().isLoading()) {
                                 Threads.postUi(() -> {
                                     if (mPresenter != null) {
                                         if (!mPresenter.getInitRequestStatus().isLoading()) {
-                                            IMUIKitLog.v(tag + " use requestInit instead of merge");
+                                            MSIMUikitLog.v(tag + " use requestInit instead of merge");
                                             mPresenter.requestInit(true);
                                         }
                                     }

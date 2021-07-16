@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.signin.SignInActivity;
 import com.masonsoft.imsdk.sample.app.signin.SignInView;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.util.Objects;
 
 public abstract class SignUpView extends SignInView {
@@ -21,7 +21,7 @@ public abstract class SignUpView extends SignInView {
 
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 

@@ -10,7 +10,7 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMMessageViewHolder;
@@ -119,9 +119,9 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createInitRequest() throws Exception {
-        IMUIKitLog.v("createInitRequest");
+        MSIMUikitLog.v("createInitRequest");
         if (DEBUG) {
-            IMUIKitLog.v("createInitRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s",
+            MSIMUikitLog.v("createInitRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s",
                     mSessionUserId,
                     mConversationType,
                     mTargetUserId,
@@ -146,7 +146,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                         UnionTypeItemObject item = createDefault(message);
                         if (item == null) {
                             if (DEBUG) {
-                                IMUIKitLog.e("createInitRequest ignore null UnionTypeItemObject");
+                                MSIMUikitLog.e("createInitRequest ignore null UnionTypeItemObject");
                             }
                             continue;
                         }
@@ -181,9 +181,9 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createPrePageRequest() throws Exception {
-        IMUIKitLog.v("createPrePageRequest");
+        MSIMUikitLog.v("createPrePageRequest");
         if (DEBUG) {
-            IMUIKitLog.v("createPrePageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, firstMessageSeq:%s",
+            MSIMUikitLog.v("createPrePageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, firstMessageSeq:%s",
                     mSessionUserId,
                     mConversationType,
                     mTargetUserId,
@@ -192,7 +192,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         }
 
         if (mFirstMessageSeq <= 0) {
-            IMUIKitLog.e("createPrePageRequest invalid firstMessageSeq:%s", mFirstMessageSeq);
+            MSIMUikitLog.e("createPrePageRequest invalid firstMessageSeq:%s", mFirstMessageSeq);
             return null;
         }
 
@@ -214,7 +214,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                         UnionTypeItemObject item = createDefault(message);
                         if (item == null) {
                             if (DEBUG) {
-                                IMUIKitLog.e("createPrePageRequest ignore null UnionTypeItemObject");
+                                MSIMUikitLog.e("createPrePageRequest ignore null UnionTypeItemObject");
                             }
                             continue;
                         }
@@ -240,9 +240,9 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createNextPageRequest() throws Exception {
-        IMUIKitLog.v("createNextPageRequest");
+        MSIMUikitLog.v("createNextPageRequest");
         if (DEBUG) {
-            IMUIKitLog.v("createNextPageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, lastMessageSeq:%s",
+            MSIMUikitLog.v("createNextPageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, lastMessageSeq:%s",
                     mSessionUserId,
                     mConversationType,
                     mTargetUserId,
@@ -251,7 +251,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         }
 
         if (mLastMessageSeq <= 0) {
-            IMUIKitLog.e("createNextPageRequest invalid lastMessageSeq:%s", mLastMessageSeq);
+            MSIMUikitLog.e("createNextPageRequest invalid lastMessageSeq:%s", mLastMessageSeq);
             return null;
         }
 
@@ -272,7 +272,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                         UnionTypeItemObject item = createDefault(message);
                         if (item == null) {
                             if (DEBUG) {
-                                IMUIKitLog.e("createNextPageRequest ignore null UnionTypeItemObject");
+                                MSIMUikitLog.e("createNextPageRequest ignore null UnionTypeItemObject");
                             }
                             continue;
                         }

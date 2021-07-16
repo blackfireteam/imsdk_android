@@ -9,13 +9,13 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.masonsoft.imsdk.MSIMConversation;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 
 import io.github.idonans.appcontext.AppContext;
 
 public abstract class IMConversationDynamicFrameLayout extends FrameLayout {
 
-    private final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     public IMConversationDynamicFrameLayout(Context context) {
         this(context, null);

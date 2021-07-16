@@ -12,7 +12,7 @@ import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessageListener;
 import com.masonsoft.imsdk.MSIMMessageListenerProxy;
 import com.masonsoft.imsdk.lang.ObjectWrapper;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.thread.Threads;
@@ -111,7 +111,7 @@ public abstract class IMMessageChangedViewHelper {
                 .subscribe(pair -> {
                     Preconditions.checkNotNull(pair.first);
                     onMessageChanged((MSIMMessage) pair.first.getObject(), pair.second);
-                }, IMUIKitLog::e));
+                }, MSIMUikitLog::e));
     }
 
     @Nullable

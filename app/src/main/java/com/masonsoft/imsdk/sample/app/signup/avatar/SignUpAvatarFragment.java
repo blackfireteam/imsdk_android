@@ -22,7 +22,7 @@ import com.masonsoft.imsdk.sample.app.signup.SignUpArgument;
 import com.masonsoft.imsdk.sample.app.signup.SignUpFragment;
 import com.masonsoft.imsdk.sample.app.signup.SignUpView;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignUpAvatarFragmentBinding;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaPickerDialog;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaSelector;
@@ -58,7 +58,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
 
     private void validateSubmitState() {
         if (mBinding == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 
@@ -99,12 +99,12 @@ public class SignUpAvatarFragment extends SignUpFragment {
 
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
         if (mBinding == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 
@@ -116,7 +116,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
                             if (granted) {
                                 onPickAvatarPermissionGranted();
                             } else {
-                                SampleLog.e(IMUIKitConstants.ErrorLog.PERMISSION_REQUIRED);
+                                SampleLog.e(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
                             }
                         }));
     }
@@ -126,12 +126,12 @@ public class SignUpAvatarFragment extends SignUpFragment {
 
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
         if (mBinding == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 
@@ -154,16 +154,16 @@ public class SignUpAvatarFragment extends SignUpFragment {
 
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
         if (mBinding == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
         if (mPresenter == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.PRESENTER_IS_NULL);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
             return;
         }
 
@@ -176,12 +176,12 @@ public class SignUpAvatarFragment extends SignUpFragment {
 
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
         if (mBinding == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 
@@ -229,7 +229,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
         public void onAvatarUploadFail(Throwable e) {
             SampleLog.v(e, Objects.defaultObjectTag(this) + " onAvatarUploadFail");
             if (mBinding == null) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             }
             mBinding.progressView.setProgress(0f);
         }
@@ -237,7 +237,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
         public void onAvatarUploadProgress(@IntRange(from = 0, to = 100) int percent) {
             SampleLog.v(Objects.defaultObjectTag(this) + " onAvatarUploadProgress percent:%s", percent);
             if (mBinding == null) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             }
             mBinding.progressView.setProgress(percent / 100f);
         }
@@ -247,7 +247,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
 
             final Activity activity = getActivity();
             if (activity == null) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+                SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
                 return;
             }
 
@@ -263,7 +263,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
 
             final Activity activity = getActivity();
             if (activity == null) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+                SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
                 return;
             }
 
@@ -275,7 +275,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
 
             final Activity activity = getActivity();
             if (activity == null) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+                SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
                 return;
             }
 
@@ -287,7 +287,7 @@ public class SignUpAvatarFragment extends SignUpFragment {
 
             final Activity activity = getActivity();
             if (activity == null) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+                SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
                 return;
             }
 

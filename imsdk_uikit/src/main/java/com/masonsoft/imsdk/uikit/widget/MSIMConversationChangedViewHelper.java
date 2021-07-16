@@ -11,7 +11,7 @@ import com.masonsoft.imsdk.MSIMConversationListener;
 import com.masonsoft.imsdk.MSIMConversationListenerProxy;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.lang.ObjectWrapper;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
@@ -100,7 +100,7 @@ public abstract class MSIMConversationChangedViewHelper {
 
     @UiThread
     public void requestLoadData(boolean reset) {
-        IMUIKitLog.v("[%s][requestLoadData][onUi] ============= onConversationChangedInternal sessionUserId:%s, conversationId:%s",
+        MSIMUikitLog.v("[%s][requestLoadData][onUi] ============= onConversationChangedInternal sessionUserId:%s, conversationId:%s",
                 Objects.defaultObjectTag(MSIMConversationChangedViewHelper.this),
                 mSessionUserId,
                 mConversationId
@@ -116,7 +116,7 @@ public abstract class MSIMConversationChangedViewHelper {
         }
         mRequestHolder.set(Single.just("")
                 .map(input -> {
-                    IMUIKitLog.v("[%s][requestLoadData][onIO] ============= onConversationChangedInternal sessionUserId:%s, conversationId:%s",
+                    MSIMUikitLog.v("[%s][requestLoadData][onIO] ============= onConversationChangedInternal sessionUserId:%s, conversationId:%s",
                             Objects.defaultObjectTag(MSIMConversationChangedViewHelper.this),
                             mSessionUserId,
                             mConversationId
@@ -146,7 +146,7 @@ public abstract class MSIMConversationChangedViewHelper {
                 .subscribe(pair -> {
                     Preconditions.checkNotNull(pair.first);
                     onConversationChanged((MSIMConversation) pair.first.getObject(), pair.second);
-                }, IMUIKitLog::e));
+                }, MSIMUikitLog::e));
     }
 
     @Nullable
@@ -188,7 +188,7 @@ public abstract class MSIMConversationChangedViewHelper {
                 return;
             }
 
-            IMUIKitLog.v("[%s] ============= onConversationChangedInternal sessionUserId:%s, conversationId:%s",
+            MSIMUikitLog.v("[%s] ============= onConversationChangedInternal sessionUserId:%s, conversationId:%s",
                     Objects.defaultObjectTag(MSIMConversationChangedViewHelper.this),
                     sessionUserId,
                     conversationId
@@ -225,7 +225,7 @@ public abstract class MSIMConversationChangedViewHelper {
                     return;
                 }
 
-                IMUIKitLog.v("[%s] ============= [merge size:%s] onConversationChangedInternal sessionUserId:%s, conversationId:%s",
+                MSIMUikitLog.v("[%s] ============= [merge size:%s] onConversationChangedInternal sessionUserId:%s, conversationId:%s",
                         Objects.defaultObjectTag(MSIMConversationChangedViewHelper.this),
                         refreshArgsList.size(),
                         firstMatchRefreshArgs.sessionUserId,

@@ -13,7 +13,7 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.uikit.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplHomeSparkBinding;
 import com.masonsoft.imsdk.sample.entity.Spark;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.util.Objects;
 
@@ -81,7 +81,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         ViewUtil.onClick(itemView, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
+                SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
 
@@ -90,7 +90,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         ViewUtil.onClick(mBinding.actionLike, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
+                SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
 
@@ -105,12 +105,12 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         ViewUtil.onClick(mBinding.actionChat, v -> {
             final Activity innerActivity = host.getActivity();
             if (innerActivity == null) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
+                SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
                 return;
             }
 
             if (spark.userId <= 0) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.INVALID_USER_ID);
+                SampleLog.e(MSIMUikitConstants.ErrorLog.INVALID_USER_ID);
                 return;
             }
 

@@ -23,8 +23,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 
 import java.util.List;
@@ -37,7 +37,7 @@ import io.github.idonans.lang.util.ViewUtil;
  */
 public class IMChatConversationPopupView extends ViewGroup {
 
-    private final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     public IMChatConversationPopupView(Context context) {
         this(context, null);
@@ -146,7 +146,7 @@ public class IMChatConversationPopupView extends ViewGroup {
 
     private void dispatchMenuClick(int menuId, String menuText, View menuView) {
         if (DEBUG) {
-            IMUIKitLog.v("dispatchMenuClick menuId:%s, menuText:%s, menuView:%s", menuId, menuText, menuView);
+            MSIMUikitLog.v("dispatchMenuClick menuId:%s, menuText:%s, menuView:%s", menuId, menuText, menuView);
         }
         if (mOnMenuClickListener != null) {
             mOnMenuClickListener.onItemMenuClick(menuId, menuText, menuView);

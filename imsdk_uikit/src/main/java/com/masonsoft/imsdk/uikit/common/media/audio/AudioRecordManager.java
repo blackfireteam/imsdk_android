@@ -8,8 +8,8 @@ import androidx.annotation.Nullable;
 import androidx.core.math.MathUtils;
 
 import com.masonsoft.imsdk.lang.MediaInfo;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.MediaUtil;
 
 import java.io.File;
@@ -32,8 +32,8 @@ public class AudioRecordManager {
         }
     };
 
-    private static final long AUDIO_RECORD_MIN_DURATION = IMUIKitConstants.AUDIO_RECORD_MIN_DURATION;
-    private static final long AUDIO_RECORD_MAX_DURATION = IMUIKitConstants.AUDIO_RECORD_MAX_DURATION;
+    private static final long AUDIO_RECORD_MIN_DURATION = MSIMUikitConstants.AUDIO_RECORD_MIN_DURATION;
+    private static final long AUDIO_RECORD_MAX_DURATION = MSIMUikitConstants.AUDIO_RECORD_MAX_DURATION;
 
     public static AudioRecordManager getInstance() {
         return INSTANCE.get();
@@ -133,12 +133,12 @@ public class AudioRecordManager {
                 mAudioRecorder.setOutputFile(mAudioRecorderFile);
                 mAudioRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
                 mAudioRecorder.setOnErrorListener((mr, what, extra) -> {
-                    IMUIKitLog.e("AudioRecorder OnErrorListener what:%s", what);
+                    MSIMUikitLog.e("AudioRecorder OnErrorListener what:%s", what);
                 });
                 mAudioRecorder.prepare();
                 mAudioRecorder.start();
             } catch (Throwable e) {
-                IMUIKitLog.e(e);
+                MSIMUikitLog.e(e);
                 stopAudioRecordInternal();
             }
         }
@@ -154,7 +154,7 @@ public class AudioRecordManager {
                     mAudioRecorder.release();
                 }
             } catch (Throwable e) {
-                IMUIKitLog.e(e);
+                MSIMUikitLog.e(e);
             } finally {
                 mAudioRecorder = null;
                 mAudioRecorderFile = null;
@@ -290,7 +290,7 @@ public class AudioRecordManager {
             }
             return mediaInfo.durationMs;
         } catch (Throwable e) {
-            IMUIKitLog.e(e);
+            MSIMUikitLog.e(e);
             return 0L;
         }
     }

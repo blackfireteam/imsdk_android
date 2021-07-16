@@ -2,8 +2,8 @@ package com.masonsoft.imsdk.uikit.util;
 
 import android.text.TextUtils;
 
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -13,7 +13,7 @@ import java.util.Locale;
 
 public class FormatUtil {
 
-    private static final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     /**
      * 格式化时间展示样式.
@@ -44,7 +44,7 @@ public class FormatUtil {
             if (DEBUG) {
                 if (diffDay != 0) {
                     Throwable e = new IllegalArgumentException("invalid diff day " + diffDay);
-                    IMUIKitLog.e(e);
+                    MSIMUikitLog.e(e);
                 }
             }
             return dateFormatOptions.sameDay().format(new Date(timeMs));
@@ -175,7 +175,7 @@ public class FormatUtil {
             }
             return TIME_FORMAT_YYYYMMDD.parse(timeYYYYMMDD).getTime();
         } catch (Throwable e) {
-            IMUIKitLog.e(e);
+            MSIMUikitLog.e(e);
         }
         return 0;
     }

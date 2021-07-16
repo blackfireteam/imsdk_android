@@ -8,8 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 import io.github.idonans.lang.util.ViewUtil;
 
@@ -21,7 +21,7 @@ import io.github.idonans.lang.util.ViewUtil;
  */
 public class IMMessageRevokeStateFrameLayout extends IMMessageDynamicFrameLayout {
 
-    protected final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    protected final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     public IMMessageRevokeStateFrameLayout(Context context) {
         this(context, null);
@@ -69,7 +69,7 @@ public class IMMessageRevokeStateFrameLayout extends IMMessageDynamicFrameLayout
         int childCount = getChildCount();
         if (childCount != 2) {
             final Throwable e = new IllegalStateException("only support 2 child. current child count:" + childCount);
-            IMUIKitLog.e(e);
+            MSIMUikitLog.e(e);
             return;
         }
 

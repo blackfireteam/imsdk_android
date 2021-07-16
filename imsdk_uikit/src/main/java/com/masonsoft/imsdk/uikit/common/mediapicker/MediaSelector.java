@@ -3,7 +3,7 @@ package com.masonsoft.imsdk.uikit.common.mediapicker;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.uikit.util.TipUtil;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.R;
 
 import java.util.List;
@@ -51,7 +51,7 @@ public interface MediaSelector {
                     return false;
                 }
                 if (info.isImageMemorySizeTooLarge()
-                        || info.size > IMUIKitConstants.SELECTOR_MAX_IMAGE_FILE_SIZE) {
+                        || info.size > MSIMUikitConstants.SELECTOR_MAX_IMAGE_FILE_SIZE) {
                     TipUtil.show(R.string.imsdk_uikit_tip_image_too_large);
                     return false;
                 }
@@ -65,12 +65,12 @@ public interface MediaSelector {
                     TipUtil.show(R.string.imsdk_uikit_tip_video_invalid);
                     return false;
                 }
-                if (info.durationMs < IMUIKitConstants.SELECTOR_MIN_VIDEO_DURATION) {
+                if (info.durationMs < MSIMUikitConstants.SELECTOR_MIN_VIDEO_DURATION) {
                     TipUtil.show(R.string.imsdk_uikit_tip_video_too_short);
                     return false;
                 }
-                if (info.size > IMUIKitConstants.SELECTOR_MAX_VIDEO_SIZE
-                        || info.durationMs > IMUIKitConstants.SELECTOR_MAX_VIDEO_DURATION) {
+                if (info.size > MSIMUikitConstants.SELECTOR_MAX_VIDEO_SIZE
+                        || info.durationMs > MSIMUikitConstants.SELECTOR_MAX_VIDEO_DURATION) {
                     TipUtil.show(R.string.imsdk_uikit_tip_video_too_large);
                     return false;
                 }

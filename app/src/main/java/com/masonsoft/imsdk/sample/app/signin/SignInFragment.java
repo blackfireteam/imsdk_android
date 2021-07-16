@@ -21,7 +21,7 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentConfirmDialog;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleLoadingDialog;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
@@ -58,11 +58,11 @@ public class SignInFragment extends SystemInsetsFragment {
     private void showSignInLoadingDialog() {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (isStateSaved()) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
         if (mSignInLoadingDialog == null) {
@@ -74,11 +74,11 @@ public class SignInFragment extends SystemInsetsFragment {
     private void hideSignInLoadingDialog() {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
         if (isStateSaved()) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
         if (mSignInLoadingDialog != null) {
@@ -140,7 +140,7 @@ public class SignInFragment extends SystemInsetsFragment {
 
     private void refreshShowCurrentApiServer() {
         if (mBinding == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
         if (mCurrentApiServerInternet) {
@@ -180,12 +180,12 @@ public class SignInFragment extends SystemInsetsFragment {
 
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
         if (mBinding == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 
@@ -241,12 +241,12 @@ public class SignInFragment extends SystemInsetsFragment {
     private void showAutoRegConfirmDialog(final long userId) {
         final Activity activity = getActivity();
         if (activity == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
         if (mBinding == null) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 
@@ -302,7 +302,7 @@ public class SignInFragment extends SystemInsetsFragment {
 
             final Activity activity = getActivity();
             if (activity == null) {
-                SampleLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+                SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
                 return;
             }
 

@@ -7,8 +7,8 @@ import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMImageElement;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMVideoElement;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.Objects;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import io.github.idonans.core.util.Preconditions;
 
 public class IMImageView extends ImageLayout {
 
-    private static final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     public IMImageView(Context context) {
         this(context, null);
@@ -58,7 +58,7 @@ public class IMImageView extends ImageLayout {
                     firstAvailableUrls.add(url);
                 }
                 if (DEBUG) {
-                    IMUIKitLog.v(Objects.defaultObjectTag(this) + " image message localPath:%s, url:%s",
+                    MSIMUikitLog.v(Objects.defaultObjectTag(this) + " image message localPath:%s, url:%s",
                             localPath, url);
                 }
             } else if (messageType == MSIMConstants.MessageType.VIDEO) {
@@ -73,10 +73,10 @@ public class IMImageView extends ImageLayout {
                     firstAvailableUrls.add(thumbUrl);
                 }
                 if (DEBUG) {
-                    IMUIKitLog.v(Objects.defaultObjectTag(this) + " video message localThumbPath:%s, thumbUrl:%s", localThumbPath, thumbUrl);
+                    MSIMUikitLog.v(Objects.defaultObjectTag(this) + " video message localThumbPath:%s, thumbUrl:%s", localThumbPath, thumbUrl);
                 }
             } else {
-                IMUIKitLog.e(Objects.defaultObjectTag(this) + " not support type %s", messageType);
+                MSIMUikitLog.e(Objects.defaultObjectTag(this) + " not support type %s", messageType);
             }
         }
 

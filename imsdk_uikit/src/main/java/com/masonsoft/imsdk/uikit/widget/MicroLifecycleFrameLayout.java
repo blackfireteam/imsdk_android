@@ -12,13 +12,13 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.core.view.ViewCompat;
 
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.Objects;
 
 public abstract class MicroLifecycleFrameLayout extends FrameLayout {
 
-    protected static final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    protected static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     public MicroLifecycleFrameLayout(@NonNull Context context) {
         this(context, null);
@@ -102,7 +102,7 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
                 performResume();
             }
         } else {
-            IMUIKitLog.e("ignore toggleWithManual. perform resumed is false.");
+            MSIMUikitLog.e("ignore toggleWithManual. perform resumed is false.");
         }
     }
 
@@ -132,7 +132,7 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
     @UiThread
     public void performCreate() {
         if (mCreated) {
-            IMUIKitLog.e("ignore, already created");
+            MSIMUikitLog.e("ignore, already created");
             return;
         }
 
@@ -145,7 +145,7 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
     @UiThread
     public void performStart() {
         if (mStarted) {
-            IMUIKitLog.e("ignore, already started");
+            MSIMUikitLog.e("ignore, already started");
             return;
         }
         mStarted = true;
@@ -157,12 +157,12 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
         mPerformResumed = true;
 
         if (mResumed) {
-            IMUIKitLog.v("ignore, already resume");
+            MSIMUikitLog.v("ignore, already resume");
             return;
         }
 
         if (mManual && !mAllowResumedOnce) {
-            IMUIKitLog.v("can not resume, manual:%s, allow resumed once: %s", mManual, mAllowResumedOnce);
+            MSIMUikitLog.v("can not resume, manual:%s, allow resumed once: %s", mManual, mAllowResumedOnce);
             return;
         }
 
@@ -191,7 +191,7 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
         mManual = manual;
 
         if (!mResumed) {
-            IMUIKitLog.v("ignore. not resume");
+            MSIMUikitLog.v("ignore. not resume");
             return;
         }
 
@@ -205,7 +205,7 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
     @UiThread
     public void performStop() {
         if (!mStarted) {
-            IMUIKitLog.e("ignore, not started.");
+            MSIMUikitLog.e("ignore, not started.");
             return;
         }
         mStarted = false;
@@ -215,7 +215,7 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
     @UiThread
     public void performDestroy() {
         if (!mCreated) {
-            IMUIKitLog.e("ignore, not created.");
+            MSIMUikitLog.e("ignore, not created.");
             return;
         }
         mCreated = false;
@@ -226,7 +226,7 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
     @UiThread
     protected void onCreate() {
         if (DEBUG) {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " onCreate");
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onCreate");
         }
     }
 
@@ -234,7 +234,7 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
     @UiThread
     protected void onStart() {
         if (DEBUG) {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " onStart");
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onStart");
         }
     }
 
@@ -242,7 +242,7 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
     @UiThread
     protected void onResume() {
         if (DEBUG) {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " onResume");
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onResume");
         }
     }
 
@@ -250,7 +250,7 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
     @UiThread
     protected void onPause() {
         if (DEBUG) {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " onPause");
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onPause");
         }
     }
 
@@ -258,7 +258,7 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
     @UiThread
     protected void onStop() {
         if (DEBUG) {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " onStop");
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onStop");
         }
     }
 
@@ -266,7 +266,7 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
     @UiThread
     protected void onDestroy() {
         if (DEBUG) {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " onDestroy");
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onDestroy");
         }
     }
 

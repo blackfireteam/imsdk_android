@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonMediaPickerDialogBinding;
@@ -38,7 +38,7 @@ import io.github.idonans.uniontype.UnionTypeItemObject;
 
 public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBackLayer.OnBackPressedListener {
 
-    private static final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     private final Activity mActivity;
     private final LayoutInflater mInflater;
@@ -123,7 +123,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
 
     private void notifyMediaDataChanged() {
         if (mUnionTypeMediaData == null) {
-            IMUIKitLog.e("notifyMediaDataChanged mUnionTypeMediaData is null");
+            MSIMUikitLog.e("notifyMediaDataChanged mUnionTypeMediaData is null");
             return;
         }
         if (mUnionTypeMediaData.mediaData.bucketSelected != null) {
@@ -212,16 +212,16 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             });
             ViewUtil.onClick(mActionSubmit, v -> {
                 if (mUnionTypeMediaData == null) {
-                    IMUIKitLog.e("mUnionTypeMediaData is null");
+                    MSIMUikitLog.e("mUnionTypeMediaData is null");
                     return;
                 }
                 if (mUnionTypeMediaData.mediaData.mediaInfoListSelected.isEmpty()) {
-                    IMUIKitLog.e("mUnionTypeMediaData.mediaData.mediaInfoListSelected.isEmpty()");
+                    MSIMUikitLog.e("mUnionTypeMediaData.mediaData.mediaInfoListSelected.isEmpty()");
                     return;
                 }
 
                 if (mOnMediaPickListener == null) {
-                    IMUIKitLog.v("ignore. mOnMediaPickListener is null.");
+                    MSIMUikitLog.v("ignore. mOnMediaPickListener is null.");
                     return;
                 }
                 if (mOnMediaPickListener.onMediaPick(mUnionTypeMediaData.mediaData.mediaInfoListSelected)) {
@@ -234,7 +234,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             boolean enable;
             int count;
             if (mUnionTypeMediaData == null) {
-                IMUIKitLog.e("mUnionTypeMediaData is null");
+                MSIMUikitLog.e("mUnionTypeMediaData is null");
                 count = 0;
                 enable = false;
             } else if (mInnerMediaSelector.canFinishSelect(mUnionTypeMediaData.mediaData.mediaInfoListSelected)) {
@@ -279,7 +279,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                 int size = mUnionTypeMediaData.mediaData.allSubBuckets.size();
                 final int position = viewHolder.getAdapterPosition();
                 if ((position < 0 || position >= size)) {
-                    IMUIKitLog.e("BucketView onItemClick invalid position: %s, size:%s", position, size);
+                    MSIMUikitLog.e("BucketView onItemClick invalid position: %s, size:%s", position, size);
                     BucketView.this.hide();
                     return;
                 }
@@ -287,7 +287,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                 MediaData.MediaBucket mediaBucket = mUnionTypeMediaData.mediaData.allSubBuckets.get(position);
                 if (ObjectsCompat.equals(mUnionTypeMediaData.mediaData.bucketSelected, mediaBucket)) {
                     if (DEBUG) {
-                        IMUIKitLog.v("BucketView onItemClick ignore. same as last bucket selected");
+                        MSIMUikitLog.v("BucketView onItemClick ignore. same as last bucket selected");
                     }
                     BucketView.this.hide();
                     return;
@@ -377,7 +377,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
     @Override
     public void onLoadFinish(@NonNull MediaData mediaData) {
         if (DEBUG) {
-            IMUIKitLog.v("onLoadFinish buckets:%s, media info list map size:%s", mediaData.allSubBuckets.size(), mediaData.allMediaInfoListMap.size());
+            MSIMUikitLog.v("onLoadFinish buckets:%s, media info list map size:%s", mediaData.allSubBuckets.size(), mediaData.allMediaInfoListMap.size());
         }
         mediaData.bucketSelected = mediaData.allMediaInfoListBucket;
         UnionTypeMediaData unionTypeMediaData = new UnionTypeMediaData(this, mediaData);

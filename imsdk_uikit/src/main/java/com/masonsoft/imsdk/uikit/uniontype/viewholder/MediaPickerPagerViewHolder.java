@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
@@ -36,7 +36,7 @@ public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
         final MediaData.MediaInfo mediaInfo = itemObject.object;
         final MediaData mediaData = itemObject.getExtObjectObject1(null);
 
-        IMUIKitLog.v(Objects.defaultObjectTag(this) + " onBind position:%s uri:%s", position, mediaInfo.uri);
+        MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onBind position:%s uri:%s", position, mediaInfo.uri);
 
         if (mediaInfo.isVideoMimeType()) {
             ViewUtil.setVisibilityIfChanged(mBinding.videoFlag, View.VISIBLE);

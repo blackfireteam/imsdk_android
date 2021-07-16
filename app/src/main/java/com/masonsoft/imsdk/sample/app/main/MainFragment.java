@@ -19,7 +19,7 @@ import com.masonsoft.imsdk.sample.app.discover.DiscoverFragment;
 import com.masonsoft.imsdk.sample.app.home.HomeFragment;
 import com.masonsoft.imsdk.sample.app.mine.MineFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMainFragmentBinding;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.app.conversation.ConversationFragment;
 
@@ -98,7 +98,7 @@ public class MainFragment extends SystemInsetsFragment {
         boolean needCommit = false;
 
         if (fm.isStateSaved()) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
 
@@ -190,7 +190,7 @@ public class MainFragment extends SystemInsetsFragment {
         boolean needCommit = false;
 
         if (fm.isStateSaved()) {
-            SampleLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            SampleLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return null;
         }
 

@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMUserInfo;
-import com.masonsoft.imsdk.core.FileUploadManager;
 import com.masonsoft.imsdk.core.FileUploadProvider;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.SampleLog;
@@ -107,7 +106,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                             });
                         }
                     };
-                    final FileUploadProvider fileUploadProvider = FileUploadManager.getInstance().getFileUploadProvider();
+                    final FileUploadProvider fileUploadProvider = MSIMManager.getInstance().getFileUploadProvider();
                     return fileUploadProvider.uploadFile(photoUri.toString(), FileUploadProvider.SOURCE_OTHER, null, progress);
                 })
                 .subscribeOn(Schedulers.io())

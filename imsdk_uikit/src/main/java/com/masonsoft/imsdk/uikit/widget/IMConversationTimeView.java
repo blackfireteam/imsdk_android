@@ -12,12 +12,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.masonsoft.imsdk.MSIMConversation;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.util.FormatUtil;
 
 public class IMConversationTimeView extends IMConversationDynamicFrameLayout {
 
-    private final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     public IMConversationTimeView(Context context) {
         this(context, null);

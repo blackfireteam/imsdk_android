@@ -19,8 +19,8 @@ import androidx.emoji.widget.EmojiTextView;
 import androidx.gridlayout.widget.GridLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaPickerDialog;
@@ -305,7 +305,7 @@ public class CustomSoftKeyboard extends FrameLayout {
     private void requestMediaPickerPermission() {
         final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
         if (activity == null) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
 
@@ -316,7 +316,7 @@ public class CustomSoftKeyboard extends FrameLayout {
                             if (granted) {
                                 onMediaPickerPermissionGranted();
                             } else {
-                                IMUIKitLog.e(IMUIKitConstants.ErrorLog.PERMISSION_REQUIRED);
+                                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
                             }
                         }));
     }
@@ -324,7 +324,7 @@ public class CustomSoftKeyboard extends FrameLayout {
     private void onMediaPickerPermissionGranted() {
         final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
         if (activity == null) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
 
@@ -338,7 +338,7 @@ public class CustomSoftKeyboard extends FrameLayout {
                 if (!mediaInfo.isImageMimeType()
                         && !mediaInfo.isVideoMimeType()) {
                     Throwable e = new Throwable("unknown mime type:" + mediaInfo.mimeType + ", uri:" + mediaInfo.uri);
-                    IMUIKitLog.e(e);
+                    MSIMUikitLog.e(e);
                     return false;
                 }
             }

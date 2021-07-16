@@ -2,7 +2,7 @@ package com.masonsoft.imsdk.sample.app.signup.avatar;
 
 import android.net.Uri;
 
-import com.masonsoft.imsdk.core.FileUploadManager;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.FileUploadProvider;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.api.ApiResponseException;
@@ -44,7 +44,7 @@ public class SignUpAvatarFragmentPresenter extends SignUpViewPresenter<SignUpAva
                             });
                         }
                     };
-                    final FileUploadProvider fileUploadProvider = FileUploadManager.getInstance().getFileUploadProvider();
+                    final FileUploadProvider fileUploadProvider = MSIMManager.getInstance().getFileUploadProvider();
                     return fileUploadProvider.uploadFile(photoUri.toString(), FileUploadProvider.SOURCE_OTHER, null, progress);
                 })
                 .subscribeOn(Schedulers.io())

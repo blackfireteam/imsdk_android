@@ -9,13 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMConversation;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 
 import io.github.idonans.lang.util.ViewUtil;
 
 public class IMConversationLastMessage extends IMConversationDynamicFrameLayout {
 
-    private final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     public IMConversationLastMessage(Context context) {
         this(context, null);

@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 import java.util.Collection;
 
@@ -16,7 +16,7 @@ public class CenterRecyclerViewMicroLifecycleComponentManager extends RecyclerVi
         super(recyclerView, lifecycle);
         mRecyclerView.setRecyclerListener(holder -> {
             if (DEBUG) {
-                IMUIKitLog.v("setRecyclerListener callback");
+                MSIMUikitLog.v("setRecyclerListener callback");
             }
             Collection<MicroLifecycleComponent> microLifecycleComponents = copyComponents();
             for (MicroLifecycleComponent microLifecycleComponent : microLifecycleComponents) {

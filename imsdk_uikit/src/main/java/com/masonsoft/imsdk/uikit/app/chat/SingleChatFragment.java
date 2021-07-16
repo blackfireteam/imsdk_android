@@ -25,8 +25,8 @@ import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessageFactory;
 import com.masonsoft.imsdk.MSIMWeakCallback;
 import com.masonsoft.imsdk.lang.GeneralResult;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.common.media.audio.AudioRecordManager;
@@ -67,7 +67,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
     public static SingleChatFragment newInstance(long targetUserId) {
         Bundle args = new Bundle();
-        args.putLong(IMUIKitConstants.ExtrasKey.TARGET_USER_ID, targetUserId);
+        args.putLong(MSIMUikitConstants.ExtrasKey.TARGET_USER_ID, targetUserId);
         SingleChatFragment fragment = new SingleChatFragment();
         fragment.setArguments(args);
         return fragment;
@@ -98,17 +98,17 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         final Bundle args = getArguments();
         if (args != null) {
-            mTargetUserId = args.getLong(IMUIKitConstants.ExtrasKey.TARGET_USER_ID, mTargetUserId);
+            mTargetUserId = args.getLong(MSIMUikitConstants.ExtrasKey.TARGET_USER_ID, mTargetUserId);
         }
     }
 
     private static void smoothScrollToPosition(RecyclerView recyclerView, int position) {
-        IMUIKitLog.v("smoothScrollToPosition recyclerView:%s position:%s", recyclerView, position);
+        MSIMUikitLog.v("smoothScrollToPosition recyclerView:%s position:%s", recyclerView, position);
         recyclerView.smoothScrollToPosition(position);
     }
 
     private static void scrollToPosition(RecyclerView recyclerView, int position) {
-        IMUIKitLog.v("scrollToPosition recyclerView:%s position:%s", recyclerView, position);
+        MSIMUikitLog.v("scrollToPosition recyclerView:%s position:%s", recyclerView, position);
         recyclerView.scrollToPosition(position);
     }
 
@@ -164,7 +164,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             protected boolean isTouchOutside(float rawX, float rawY) {
                 final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
                 if (binding == null) {
-                    IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                     return false;
                 }
 
@@ -172,7 +172,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 binding.keyboardTopLine.getLocationInWindow(outLocation);
                 boolean isTouchOutside = rawY <= outLocation[1];
 
-                IMUIKitLog.v("isTouchOutside touch raw:[%s,%s], keyboard top line location:[%s,%s], isTouchOutside:%s",
+                MSIMUikitLog.v("isTouchOutside touch raw:[%s,%s], keyboard top line location:[%s,%s], isTouchOutside:%s",
                         rawX, rawY, outLocation[0], outLocation[1], isTouchOutside);
 
                 return isTouchOutside;
@@ -182,7 +182,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             protected void onSoftKeyboardLayoutShown(boolean customSoftKeyboard, boolean systemSoftKeyboard) {
                 final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
                 if (binding == null) {
-                    IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                     return;
                 }
 
@@ -199,7 +199,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                             scrollWithAnimation = true;
                         }
 
-                        IMUIKitLog.v("onSoftKeyboardLayoutShown scrollWithAnimation:%s, firstPosition:%s, count:%s",
+                        MSIMUikitLog.v("onSoftKeyboardLayoutShown scrollWithAnimation:%s, firstPosition:%s, count:%s",
                                 scrollWithAnimation, firstPosition, count);
                         if (scrollWithAnimation) {
                             smoothScrollToPosition(binding.recyclerView, count - 1);
@@ -209,7 +209,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                                     super.onScrolled(recyclerView, dx, dy);
                                     binding.recyclerView.removeOnScrollListener(this);
-                                    IMUIKitLog.v("onSoftKeyboardLayoutShown scrollWithAnimation:false addOnScrollListener onScrolled");
+                                    MSIMUikitLog.v("onSoftKeyboardLayoutShown scrollWithAnimation:false addOnScrollListener onScrolled");
                                     smoothScrollToPosition(binding.recyclerView, mDataAdapter.getItemCount() - 1);
                                 }
                             });
@@ -227,7 +227,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                         ViewUtil.setVisibilityIfChanged(binding.keyboardEmojiSystemSoftKeyboard, View.GONE);
                     } else {
                         final Throwable e = new IllegalStateException();
-                        IMUIKitLog.e(e);
+                        MSIMUikitLog.e(e);
                     }
                 } else {
                     ViewUtil.setVisibilityIfChanged(binding.keyboardEmoji, View.VISIBLE);
@@ -244,7 +244,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             protected void onAllSoftKeyboardLayoutHidden() {
                 final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
                 if (binding == null) {
-                    IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                     return;
                 }
                 ViewUtil.setVisibilityIfChanged(binding.keyboardEmoji, View.VISIBLE);
@@ -254,7 +254,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
         mVoiceRecordGestureHelper = new VoiceRecordGestureHelper(mBinding.keyboardVoiceRecordText) {
             @Override
             protected void onVoiceRecordGestureStart() {
-                IMUIKitLog.v(Objects.defaultObjectTag(this) + " onVoiceRecordGestureStart");
+                MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onVoiceRecordGestureStart");
                 if (hasVoiceRecordPermission()) {
                     AudioRecordManager.getInstance().startAudioRecord();
                 } else {
@@ -264,7 +264,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
             @Override
             protected void onVoiceRecordGestureMove(boolean inside) {
-                IMUIKitLog.v(Objects.defaultObjectTag(this) + " onVoiceRecordGestureMove inside:%s", inside);
+                MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onVoiceRecordGestureMove inside:%s", inside);
                 if (mViewImpl != null) {
                     mViewImpl.updateAudioRecording(inside);
                 }
@@ -272,7 +272,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
             @Override
             protected void onVoiceRecordGestureEnd(boolean inside) {
-                IMUIKitLog.v(Objects.defaultObjectTag(this) + " onVoiceRecordGestureEnd inside:%s", inside);
+                MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onVoiceRecordGestureEnd inside:%s", inside);
                 if (inside) {
                     AudioRecordManager.getInstance().stopAudioRecord();
                 } else {
@@ -291,7 +291,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                             public boolean isContentEnable() {
                                 final Editable editable = keyboardEditText.getText();
                                 if (editable == null) {
-                                    IMUIKitLog.e(IMUIKitConstants.ErrorLog.EDITABLE_IS_NULL);
+                                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.EDITABLE_IS_NULL);
                                     return false;
                                 }
                                 final String content = editable.toString();
@@ -310,11 +310,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
         ViewUtil.onClick(mBinding.keyboardSubmit, v -> submitTextMessage());
         ViewUtil.onClick(mBinding.keyboardVoice, v -> {
             if (mBinding == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             if (mSoftKeyboardHelper == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
                 return;
             }
 
@@ -326,11 +326,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
         });
         ViewUtil.onClick(mBinding.keyboardVoiceSystemSoftKeyboard, v -> {
             if (mBinding == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             if (mSoftKeyboardHelper == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
                 return;
             }
 
@@ -342,11 +342,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
         });
         ViewUtil.onClick(mBinding.keyboardEmoji, v -> {
             if (mBinding == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             if (mSoftKeyboardHelper == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
                 return;
             }
             mBinding.customSoftKeyboard.showLayerEmoji();
@@ -354,22 +354,22 @@ public class SingleChatFragment extends SystemInsetsFragment {
         });
         ViewUtil.onClick(mBinding.keyboardEmojiSystemSoftKeyboard, v -> {
             if (mBinding == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             if (mSoftKeyboardHelper == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
                 return;
             }
             mSoftKeyboardHelper.requestShowSystemSoftKeyboard();
         });
         ViewUtil.onClick(mBinding.keyboardMore, v -> {
             if (mBinding == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
             if (mSoftKeyboardHelper == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
                 return;
             }
             mBinding.customSoftKeyboard.showLayerMore();
@@ -379,7 +379,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             @Override
             public void onInputText(CharSequence text) {
                 if (mBinding == null) {
-                    IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                     return;
                 }
                 EditTextUtil.insertText(mBinding.keyboardEditText, text);
@@ -388,7 +388,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             @Override
             public void onDeleteOne() {
                 if (mBinding == null) {
-                    IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                     return;
                 }
                 EditTextUtil.deleteOne(mBinding.keyboardEditText);
@@ -396,13 +396,13 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
             @Override
             public void onMediaPicked(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
-                IMUIKitLog.v("onImagePicked size:%s", mediaInfoList.size());
+                MSIMUikitLog.v("onImagePicked size:%s", mediaInfoList.size());
                 if (mBinding == null) {
-                    IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                     return;
                 }
                 if (mSoftKeyboardHelper == null) {
-                    IMUIKitLog.e(IMUIKitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
                     return;
                 }
                 mSoftKeyboardHelper.requestHideAllSoftKeyboard();
@@ -435,16 +435,16 @@ public class SingleChatFragment extends SystemInsetsFragment {
     }
 
     private void requestVoiceRecordPermission() {
-        IMUIKitLog.v("requestVoiceRecordPermission");
+        MSIMUikitLog.v("requestVoiceRecordPermission");
 
         final Activity activity = getActivity();
         if (activity == null) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
             return;
         }
 
         if (mBinding == null) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 
@@ -456,25 +456,25 @@ public class SingleChatFragment extends SystemInsetsFragment {
                             if (granted) {
                                 onVoiceRecordPermissionGranted();
                             } else {
-                                IMUIKitLog.e(IMUIKitConstants.ErrorLog.PERMISSION_REQUIRED);
+                                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
                             }
                         }));
     }
 
     private void onVoiceRecordPermissionGranted() {
-        IMUIKitLog.v("onVoiceRecordPermissionGranted");
+        MSIMUikitLog.v("onVoiceRecordPermissionGranted");
     }
 
     private void submitTextMessage() {
         final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
         if (binding == null) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 
         final Editable editable = binding.keyboardEditText.getText();
         if (editable == null) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.EDITABLE_IS_NULL);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.EDITABLE_IS_NULL);
             return;
         }
 
@@ -492,7 +492,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
     private void submitMediaMessage(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
         final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
         if (binding == null) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 
@@ -516,7 +516,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
     private void submitAudioMessage(final String audioFilePath) {
         final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
         if (binding == null) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
 
@@ -567,7 +567,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
     }
 
     private void sendMarkAsRead() {
-        IMUIKitLog.v(Objects.defaultObjectTag(this) + " sendMarkAsRead targetUserId:%s", mTargetUserId);
+        MSIMUikitLog.v(Objects.defaultObjectTag(this) + " sendMarkAsRead targetUserId:%s", mTargetUserId);
         MSIMManager.getInstance().getMessageManager().markAsRead(
                 MSIMManager.getInstance().getSessionUserId(),
                 mTargetUserId
@@ -578,7 +578,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         @Override
         public void onAudioRecordStart() {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " onAudioRecordStart");
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onAudioRecordStart");
             if (mViewImpl != null) {
                 mViewImpl.showAudioRecording();
             }
@@ -586,12 +586,12 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         @Override
         public void onAudioRecordProgress(long duration) {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " onAudioRecordProgress duration:%s", duration);
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onAudioRecordProgress duration:%s", duration);
         }
 
         @Override
         public void onAudioRecordError() {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " onAudioRecordError");
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onAudioRecordError");
             if (mViewImpl != null) {
                 mViewImpl.hideAudioRecoding(false, true);
             }
@@ -599,7 +599,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         @Override
         public void onAudioRecordCancel(boolean lessThanMinDuration) {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " onAudioRecordCancel lessThanMinDuration:%s", lessThanMinDuration);
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onAudioRecordCancel lessThanMinDuration:%s", lessThanMinDuration);
             if (mViewImpl != null) {
                 mViewImpl.hideAudioRecoding(lessThanMinDuration, false);
             }
@@ -607,7 +607,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         @Override
         public void onAudioRecordCompletedSuccess(@NonNull String audioRecorderFile, boolean reachMaxDuration) {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " onAudioRecordCompletedSuccess audioRecorderFile:%s, reachMaxDuration:%s", audioRecorderFile, reachMaxDuration);
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onAudioRecordCompletedSuccess audioRecorderFile:%s, reachMaxDuration:%s", audioRecorderFile, reachMaxDuration);
             if (mViewImpl != null) {
                 mViewImpl.hideAudioRecoding(false, false);
 
@@ -626,11 +626,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         private void showAudioRecording() {
             if (getChildFragmentManager().isStateSaved()) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
                 return;
             }
             if (mBinding == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 
@@ -645,11 +645,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         private void updateAudioRecording(boolean inside) {
             if (getChildFragmentManager().isStateSaved()) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
                 return;
             }
             if (mBinding == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 
@@ -672,16 +672,16 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         private void hideAudioRecoding(final boolean tooShort, final boolean fail) {
             if (getChildFragmentManager().isStateSaved()) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
                 return;
             }
             if (mBinding == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 
             if (mBinding.recordingVolumeLayer.getVisibility() == View.GONE) {
-                IMUIKitLog.w("unexpected. hideAudioRecoding recordingVolumeLayer already gone");
+                MSIMUikitLog.w("unexpected. hideAudioRecoding recordingVolumeLayer already gone");
                 return;
             }
 
@@ -754,7 +754,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
             final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
             if (binding == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 
@@ -848,7 +848,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
             final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
             if (binding == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 
@@ -898,10 +898,10 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
                 final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
                 if (binding == null) {
-                    IMUIKitLog.e(IMUIKitConstants.ErrorLog.BINDING_IS_NULL);
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                     return;
                 }
-                IMUIKitLog.v("onCallback %s", result);
+                MSIMUikitLog.v("onCallback %s", result);
 
                 if (result.isSuccess()) {
                     if (mClearEditTextWhenSuccess) {

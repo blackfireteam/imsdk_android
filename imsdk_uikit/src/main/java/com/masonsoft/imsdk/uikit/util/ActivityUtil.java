@@ -8,8 +8,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 public class ActivityUtil {
 
@@ -20,17 +20,17 @@ public class ActivityUtil {
         if (fragment != null) {
             final Activity activity = fragment.getActivity();
             if (activity == null) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
                 return false;
             }
             if (activity.isFinishing()) {
-                IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_FINISHING);
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_FINISHING);
                 return false;
             }
             activity.onBackPressed();
             return true;
         } else {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_IS_NULL);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_IS_NULL);
             return false;
         }
     }
@@ -59,21 +59,21 @@ public class ActivityUtil {
     public static AppCompatActivity getActiveAppCompatActivity(@Nullable Context context) {
         final Activity activity = getActivity(context);
         if (activity == null) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return null;
         }
         if (!(activity instanceof AppCompatActivity)) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_NOT_APP_COMPAT_ACTIVITY);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NOT_APP_COMPAT_ACTIVITY);
             return null;
         }
 
         final AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
         if (appCompatActivity.isFinishing()) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.ACTIVITY_IS_FINISHING);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_FINISHING);
             return null;
         }
         if (appCompatActivity.getSupportFragmentManager().isStateSaved()) {
-            IMUIKitLog.e(IMUIKitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return null;
         }
         return appCompatActivity;

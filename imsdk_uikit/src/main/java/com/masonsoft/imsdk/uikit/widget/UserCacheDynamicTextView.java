@@ -7,11 +7,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.masonsoft.imsdk.MSIMUserInfo;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 
 public abstract class UserCacheDynamicTextView extends AppCompatTextView {
 
-    private static final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     private UserCacheChangedViewHelper mUserCacheChangedViewHelper;
 

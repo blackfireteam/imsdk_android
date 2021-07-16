@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.uikit.widget.PagerRecyclerView;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.CenterRecyclerViewMicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
@@ -27,7 +27,7 @@ import io.github.idonans.uniontype.UnionTypeAdapter;
 
 public class IMImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedListener {
 
-    private static final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
     private final ViewDialog mViewDialog;
 
     private final PagerRecyclerView mRecyclerView;

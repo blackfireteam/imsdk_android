@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample;
+package com.masonsoft.imsdk.uikit.common.fileupload;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

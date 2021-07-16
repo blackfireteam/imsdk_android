@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.lang.SafetyRunnable;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -159,7 +159,7 @@ public class FileDownloadHelper {
 
         private void notifyDownloadFail(Throwable e) {
             if (DEBUG) {
-                IMUIKitLog.v(e, "notifyDownloadFail, mId:%s, mServerUrl:%s", mId, mServerUrl);
+                MSIMUikitLog.v(e, "notifyDownloadFail, mId:%s, mServerUrl:%s", mId, mServerUrl);
             }
             FileDownloadHelper fileUploadHelper = getFileUploadHelper();
             if (fileUploadHelper != null) {
@@ -172,7 +172,7 @@ public class FileDownloadHelper {
 
         private void notifyDownloadSuccess(String localFilePath) {
             if (DEBUG) {
-                IMUIKitLog.v("notifyDownloadSuccess, mId:%s, mServerUrl:%s, localFilePath:%s", mId, mServerUrl, localFilePath);
+                MSIMUikitLog.v("notifyDownloadSuccess, mId:%s, mServerUrl:%s, localFilePath:%s", mId, mServerUrl, localFilePath);
             }
             FileDownloadHelper fileDownloadHelper = getFileUploadHelper();
             if (fileDownloadHelper != null) {
@@ -185,12 +185,12 @@ public class FileDownloadHelper {
 
         private void notifyDownloadProgress(long currentSize, long totalSize) {
             if (DEBUG) {
-                IMUIKitLog.v("notifyDownloadProgress [%s/%s], mId:%s, mServerUrl:%s",
+                MSIMUikitLog.v("notifyDownloadProgress [%s/%s], mId:%s, mServerUrl:%s",
                         currentSize, totalSize, mId, mServerUrl);
             }
             if (currentSize > totalSize && totalSize >= 0) {
                 Throwable e = new IllegalArgumentException("notifyDownloadProgress invalid args currentSize:" + currentSize + ", totalSize:" + totalSize);
-                IMUIKitLog.e(e);
+                MSIMUikitLog.e(e);
                 currentSize = totalSize;
             }
             final Progress progress = new Progress(totalSize, currentSize);
@@ -206,7 +206,7 @@ public class FileDownloadHelper {
         @Override
         public void run() {
             if (DEBUG) {
-                IMUIKitLog.v("DownloadTask::run, mId:%s, mServerUrl:%s", mId, mServerUrl);
+                MSIMUikitLog.v("DownloadTask::run, mId:%s, mServerUrl:%s", mId, mServerUrl);
             }
 
             File errorFile = null;
@@ -253,14 +253,14 @@ public class FileDownloadHelper {
                     is = new FileInputStream(serverUrlAsFile);
                 }
 
-                IMUIKitLog.v("DownloadTask run start download, %s -> %s", mServerUrl, localFile.getAbsolutePath());
+                MSIMUikitLog.v("DownloadTask run start download, %s -> %s", mServerUrl, localFile.getAbsolutePath());
                 IOUtil.copy(is, localFile, this, progress);
                 errorFile = null;
-                IMUIKitLog.v("DownloadTask run start download onSuccess, %s -> %s", mServerUrl, localFile.getAbsolutePath());
+                MSIMUikitLog.v("DownloadTask run start download onSuccess, %s -> %s", mServerUrl, localFile.getAbsolutePath());
 
                 notifyDownloadSuccess(localFile.getAbsolutePath());
             } catch (Throwable e) {
-                IMUIKitLog.e(e);
+                MSIMUikitLog.e(e);
                 notifyDownloadFail(e);
             } finally {
                 FileUtil.deleteFileQuietly(errorFile);
@@ -268,7 +268,7 @@ public class FileDownloadHelper {
                 IOUtil.closeQuietly(response);
             }
             if (DEBUG) {
-                IMUIKitLog.v("DownloadTask::run:end, mId:%s, mServerUrl:%s", mId, mServerUrl);
+                MSIMUikitLog.v("DownloadTask::run:end, mId:%s, mServerUrl:%s", mId, mServerUrl);
             }
         }
     }

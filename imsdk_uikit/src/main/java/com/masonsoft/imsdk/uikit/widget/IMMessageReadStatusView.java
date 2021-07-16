@@ -14,7 +14,7 @@ import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 
 public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
@@ -108,7 +108,7 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
 
     private void onConversationOrMessageChanged(@Nullable MSIMConversation conversation, @Nullable MSIMMessage message) {
         if (DEBUG) {
-            IMUIKitLog.v("onConversationOrMessageChanged conversation:%s message:%s", conversation, message);
+            MSIMUikitLog.v("onConversationOrMessageChanged conversation:%s message:%s", conversation, message);
         }
 
         if (message == null || conversation == null) {

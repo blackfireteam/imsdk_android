@@ -10,7 +10,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 
 import com.google.common.collect.Lists;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 import java.io.Closeable;
 import java.lang.ref.WeakReference;
@@ -53,7 +53,7 @@ public abstract class MicroLifecycleComponentManager implements Closeable, Lifec
 
     protected void dispatchLifecycleEvent(@NonNull Lifecycle.Event event) {
         if (DEBUG) {
-            IMUIKitLog.v("dispatchLifecycleEvent %s", event);
+            MSIMUikitLog.v("dispatchLifecycleEvent %s", event);
         }
         Collection<MicroLifecycleComponent> microLifecycleComponents = copyComponents();
         for (MicroLifecycleComponent microLifecycleComponent : microLifecycleComponents) {
@@ -66,7 +66,7 @@ public abstract class MicroLifecycleComponentManager implements Closeable, Lifec
     @Override
     public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
         if (DEBUG) {
-            IMUIKitLog.v("onStateChanged %s", event);
+            MSIMUikitLog.v("onStateChanged %s", event);
         }
         dispatchLifecycleEvent(event);
     }
@@ -129,42 +129,42 @@ public abstract class MicroLifecycleComponentManager implements Closeable, Lifec
         @CallSuper
         public void onCreate() {
             if (DEBUG) {
-                IMUIKitLog.v("onCreate @%s", hashCode());
+                MSIMUikitLog.v("onCreate @%s", hashCode());
             }
         }
 
         @CallSuper
         public void onStart() {
             if (DEBUG) {
-                IMUIKitLog.v("onStart @%s", hashCode());
+                MSIMUikitLog.v("onStart @%s", hashCode());
             }
         }
 
         @CallSuper
         public void onResume() {
             if (DEBUG) {
-                IMUIKitLog.v("onResume @%s", hashCode());
+                MSIMUikitLog.v("onResume @%s", hashCode());
             }
         }
 
         @CallSuper
         public void onPause() {
             if (DEBUG) {
-                IMUIKitLog.v("onPause @%s", hashCode());
+                MSIMUikitLog.v("onPause @%s", hashCode());
             }
         }
 
         @CallSuper
         public void onStop() {
             if (DEBUG) {
-                IMUIKitLog.v("onStop @%s", hashCode());
+                MSIMUikitLog.v("onStop @%s", hashCode());
             }
         }
 
         @CallSuper
         public void onDestroy() {
             if (DEBUG) {
-                IMUIKitLog.v("onDestroy @%s", hashCode());
+                MSIMUikitLog.v("onDestroy @%s", hashCode());
             }
             mMicroLifecycleComponentManager.removeComponent(this);
         }
@@ -173,7 +173,7 @@ public abstract class MicroLifecycleComponentManager implements Closeable, Lifec
 
             @Override
             public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
-                IMUIKitLog.v("MicroLifecycleComponentObserver onStateChanged %s", event);
+                MSIMUikitLog.v("MicroLifecycleComponentObserver onStateChanged %s", event);
                 if (event == Lifecycle.Event.ON_CREATE) {
                     onCreate();
                 } else if (event == Lifecycle.Event.ON_START) {
@@ -187,7 +187,7 @@ public abstract class MicroLifecycleComponentManager implements Closeable, Lifec
                 } else if (event == Lifecycle.Event.ON_DESTROY) {
                     onDestroy();
                 } else {
-                    IMUIKitLog.w("unexpected lifecycle event %s", event);
+                    MSIMUikitLog.w("unexpected lifecycle event %s", event);
                 }
             }
 
@@ -231,7 +231,7 @@ public abstract class MicroLifecycleComponentManager implements Closeable, Lifec
             MicroLifecycleComponent microLifecycleComponent = mMicroLifecycleComponentRef.get();
             if (microLifecycleComponent == null) {
                 if (DEBUG) {
-                    IMUIKitLog.e("microLifecycleComponent is null");
+                    MSIMUikitLog.e("microLifecycleComponent is null");
                 }
                 return;
             }

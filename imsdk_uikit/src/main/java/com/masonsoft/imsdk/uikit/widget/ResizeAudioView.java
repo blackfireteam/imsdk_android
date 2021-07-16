@@ -6,7 +6,7 @@ import android.widget.FrameLayout;
 
 import androidx.core.math.MathUtils;
 
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,7 +14,7 @@ import io.github.idonans.core.util.DimenUtil;
 
 public class ResizeAudioView extends FrameLayout {
 
-    private static final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     public ResizeAudioView(Context context) {
         this(context, null);

@@ -17,7 +17,7 @@ import androidx.core.content.ContextCompat;
 
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.util.Objects;
 
@@ -67,7 +67,7 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
     @Override
     protected void onMessageChanged(@Nullable MSIMMessage message, @Nullable Object customObject) {
         if (DEBUG) {
-            IMUIKitLog.v(Objects.defaultObjectTag(this) + " onMessageChanged %s", message);
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onMessageChanged %s", message);
         }
         if (message == null) {
             mTextView.setText(null);

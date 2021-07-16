@@ -4,7 +4,7 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 /**
  * EditText 相关辅助类
@@ -27,7 +27,7 @@ public class EditTextUtil {
                 view.getText().insert(selectionStart, text);
             }
         } else {
-            IMUIKitLog.e("insertText invalid selectionStart:%s", selectionStart);
+            MSIMUikitLog.e("insertText invalid selectionStart:%s", selectionStart);
         }
     }
 
@@ -53,7 +53,7 @@ public class EditTextUtil {
                 view.getText().delete(selectionStart - 1, selectionStart);
             }
         } else {
-            IMUIKitLog.e("deleteOne invalid selectionStart:%s", selectionStart);
+            MSIMUikitLog.e("deleteOne invalid selectionStart:%s", selectionStart);
         }
     }
 

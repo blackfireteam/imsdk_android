@@ -2,7 +2,7 @@ package com.masonsoft.imsdk.uikit.util;
 
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
@@ -46,7 +46,7 @@ public class OkHttpClientUtil {
                     .sslSocketFactory(sslSocketFactory, trustManager)
                     .hostnameVerifier((hostname, session) -> true);
         } catch (Throwable e) {
-            IMUIKitLog.e(e);
+            MSIMUikitLog.e(e);
         }
 
         return new OkHttpClient.Builder()

@@ -9,8 +9,8 @@ import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.lang.GeneralResultException;
-import com.masonsoft.imsdk.uikit.IMUIKitConstants;
-import com.masonsoft.imsdk.uikit.IMUIKitLog;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMMessageViewHolder;
@@ -27,7 +27,7 @@ import io.reactivex.rxjava3.core.SingleSource;
 
 public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemObject, Object, IMImageOrVideoPreviewDialog.ViewImpl> {
 
-    private static final boolean DEBUG = IMUIKitConstants.DEBUG_WIDGET;
+    private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     private final long mSessionUserId;
     private final int mConversationType;
@@ -95,9 +95,9 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, Object>> createPrePageRequest() throws Exception {
-        IMUIKitLog.v("createPrePageRequest");
+        MSIMUikitLog.v("createPrePageRequest");
         if (DEBUG) {
-            IMUIKitLog.v("createPrePageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, firstMessageSeq:%s",
+            MSIMUikitLog.v("createPrePageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, firstMessageSeq:%s",
                     mSessionUserId,
                     mConversationType,
                     mTargetUserId,
@@ -106,7 +106,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
         }
 
         if (mFirstMessageSeq <= 0) {
-            IMUIKitLog.e("createPrePageRequest invalid firstMessageSeq:%s", mFirstMessageSeq);
+            MSIMUikitLog.e("createPrePageRequest invalid firstMessageSeq:%s", mFirstMessageSeq);
             return null;
         }
 
@@ -128,7 +128,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
                         UnionTypeItemObject item = create(message);
                         if (item == null) {
                             if (DEBUG) {
-                                IMUIKitLog.e("createPrePageRequest ignore null UnionTypeItemObject");
+                                MSIMUikitLog.e("createPrePageRequest ignore null UnionTypeItemObject");
                             }
                             continue;
                         }
@@ -144,7 +144,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
 
     @Override
     protected void onPrePageRequestResult(@NonNull IMImageOrVideoPreviewDialog.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, Object> result) {
-        IMUIKitLog.v("onPrePageRequestResult");
+        MSIMUikitLog.v("onPrePageRequestResult");
 
         // 记录上一页，下一页参数
         if (result.items != null && !result.items.isEmpty()) {
@@ -156,9 +156,9 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, Object>> createNextPageRequest() throws Exception {
-        IMUIKitLog.v("createNextPageRequest");
+        MSIMUikitLog.v("createNextPageRequest");
         if (DEBUG) {
-            IMUIKitLog.v("createNextPageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, lastMessageSeq:%s",
+            MSIMUikitLog.v("createNextPageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, lastMessageSeq:%s",
                     mSessionUserId,
                     mConversationType,
                     mTargetUserId,
@@ -167,7 +167,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
         }
 
         if (mLastMessageSeq <= 0) {
-            IMUIKitLog.e("createNextPageRequest invalid lastMessageSeq:%s", mLastMessageSeq);
+            MSIMUikitLog.e("createNextPageRequest invalid lastMessageSeq:%s", mLastMessageSeq);
             return null;
         }
 
@@ -188,7 +188,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
                         UnionTypeItemObject item = create(message);
                         if (item == null) {
                             if (DEBUG) {
-                                IMUIKitLog.e("createNextPageRequest ignore null UnionTypeItemObject");
+                                MSIMUikitLog.e("createNextPageRequest ignore null UnionTypeItemObject");
                             }
                             continue;
                         }
@@ -204,7 +204,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
 
     @Override
     protected void onNextPageRequestResult(@NonNull IMImageOrVideoPreviewDialog.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, Object> result) {
-        IMUIKitLog.v("onNextPageRequestResult");
+        MSIMUikitLog.v("onNextPageRequestResult");
 
         // 记录上一页，下一页参数
         if (result.items != null && !result.items.isEmpty()) {

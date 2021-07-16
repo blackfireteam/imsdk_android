@@ -7,16 +7,16 @@ import androidx.annotation.Nullable;
 
 import io.github.idonans.core.Singleton;
 
-public class IMUIKitComponentManager {
+public class MSIMUikitComponentManager {
 
-    private static final Singleton<IMUIKitComponentManager> INSTANCE = new Singleton<IMUIKitComponentManager>() {
+    private static final Singleton<MSIMUikitComponentManager> INSTANCE = new Singleton<MSIMUikitComponentManager>() {
         @Override
-        protected IMUIKitComponentManager create() {
-            return new IMUIKitComponentManager();
+        protected MSIMUikitComponentManager create() {
+            return new MSIMUikitComponentManager();
         }
     };
 
-    public static IMUIKitComponentManager getInstance() {
+    public static MSIMUikitComponentManager getInstance() {
         return INSTANCE.get();
     }
 
@@ -27,7 +27,7 @@ public class IMUIKitComponentManager {
     @Nullable
     private OnConversationViewClickListener mOnConversationViewClickListener;
 
-    private IMUIKitComponentManager() {
+    private MSIMUikitComponentManager() {
     }
 
     public void setOnConversationViewClickListener(@Nullable OnConversationViewClickListener onConversationViewClickListener) {
