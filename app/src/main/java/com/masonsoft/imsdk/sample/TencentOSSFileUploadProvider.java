@@ -33,7 +33,7 @@ public class TencentOSSFileUploadProvider implements FileUploadProvider {
 
     @NonNull
     @Override
-    public String uploadFile(@NonNull String filePath, @Nullable String mimeType, @NonNull Progress progress) throws Throwable {
+    public String uploadFile(@NonNull String filePath, @Source int source, @Nullable String mimeType, @NonNull Progress progress) throws Throwable {
         final String fileExtension = FileUtil.getFileExtensionFromUrl(filePath);
 
         final QCloudCredentialProvider credentialProvider =
@@ -49,7 +49,8 @@ public class TencentOSSFileUploadProvider implements FileUploadProvider {
         final TransferManager transferManager =
                 new TransferManager(cosXmlService, transferConfig);
         final String bucket = "msim-1252460681";
-        final String cosPath = "im_image/Android_" + FilenameUtil.createUnionFilename(fileExtension, mimeType);
+        final String dir = createDir(source, mimeType);
+        final String cosPath = dir + "/Android_" + FilenameUtil.createUnionFilename(fileExtension, mimeType);
         //noinspection UnnecessaryLocalVariable
         final String srcPath = filePath;
 
@@ -60,6 +61,24 @@ public class TencentOSSFileUploadProvider implements FileUploadProvider {
         final String accessUrl = putObjectResult.accessUrl;
         Preconditions.checkNotNull(accessUrl);
         return accessUrl;
+    }
+
+    @NonNull
+    private String createDir(@Source int source, @Nullable String mimeType) {
+        if (source == SOURCE_OTHER) {
+            return "common";
+        } else {
+            // SOURCE_CHAT
+            String dir = "im_image";
+            if (mimeType != null) {
+                if (mimeType.startsWith("video/")) {
+                    dir = "im_video";
+                } else if (mimeType.startsWith("audio/")) {
+                    dir = "im_voice";
+                }
+            }
+            return dir;
+        }
     }
 
 }

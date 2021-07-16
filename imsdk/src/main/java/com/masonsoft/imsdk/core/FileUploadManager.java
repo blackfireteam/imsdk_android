@@ -107,7 +107,7 @@ public class FileUploadManager {
 
         @NonNull
         @Override
-        public String uploadFile(@NonNull String filePath, @Nullable String mimeType, @NonNull Progress progress) throws Throwable {
+        public String uploadFile(@NonNull String filePath, @Source int source, @Nullable String mimeType, @NonNull Progress progress) throws Throwable {
             final CacheEntity cache = MemoryFullCache.DEFAULT.getFullCache(filePath);
             if (cache != null) {
                 IMLog.v(Objects.defaultObjectTag(this) + " uploadFile cache hit. %s -> %s",
@@ -122,7 +122,7 @@ public class FileUploadManager {
 
             final FileUploadProvider provider = mProvider;
             if (provider != null) {
-                final String accessUrl = provider.uploadFile(compressFilePath, outMimeType[0], progress);
+                final String accessUrl = provider.uploadFile(compressFilePath, source, outMimeType[0], progress);
                 MemoryFullCache.DEFAULT.addFullCache(filePath, new CacheEntity(outMimeType[0], accessUrl));
                 return accessUrl;
             }

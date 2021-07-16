@@ -76,6 +76,7 @@ public abstract class TcpClient implements Closeable {
     /**
      * 获取当前长连接状态
      */
+    @State
     public int getState() {
         synchronized (mStateLock) {
             return mState;
