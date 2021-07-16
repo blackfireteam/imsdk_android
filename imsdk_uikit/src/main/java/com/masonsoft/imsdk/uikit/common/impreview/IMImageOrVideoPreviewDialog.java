@@ -16,7 +16,7 @@ import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.CenterRecyclerViewMicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManagerHost;
-import com.masonsoft.imsdk.uikit.uniontype.IMUIKitUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 
 import io.github.idonans.backstack.ViewBackLayer;
 import io.github.idonans.backstack.dialog.ViewDialog;
@@ -63,7 +63,7 @@ public class IMImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedL
 
         UnionTypeAdapter adapter = new UnionTypeAdapterImpl();
         adapter.setHost(Host.Factory.create(activity, mRecyclerView, adapter));
-        adapter.setUnionTypeMapper(new IMUIKitUnionTypeMapper());
+        adapter.setUnionTypeMapper(new IMUikitUnionTypeMapper());
         mViewImpl = new ViewImpl(adapter);
         clearPresenter();
 

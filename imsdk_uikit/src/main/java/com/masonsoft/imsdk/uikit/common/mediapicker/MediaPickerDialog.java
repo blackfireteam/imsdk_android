@@ -22,7 +22,7 @@ import com.masonsoft.imsdk.uikit.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonMediaPickerDialogBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonMediaPickerDialogBucketViewBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonMediaPickerDialogPagerViewBinding;
-import com.masonsoft.imsdk.uikit.uniontype.IMUIKitUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.widget.GridItemDecoration;
 
 import java.util.List;
@@ -185,7 +185,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             mRecyclerView.addItemDecoration(new GridItemDecoration(3, DimenUtil.dp2px(2), false));
             mDataAdapter = new ItemClickUnionTypeAdapter();
             mDataAdapter.setHost(Host.Factory.create(mActivity, mRecyclerView, mDataAdapter));
-            mDataAdapter.setUnionTypeMapper(new IMUIKitUnionTypeMapper());
+            mDataAdapter.setUnionTypeMapper(new IMUikitUnionTypeMapper());
             mDataAdapter.setOnItemClickListener(viewHolder -> {
                 Preconditions.checkNotNull(mUnionTypeMediaData);
                 final int position = viewHolder.getAdapterPosition();
@@ -273,7 +273,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             mRecyclerView.setHasFixedSize(false);
             mDataAdapter = new ItemClickUnionTypeAdapter();
             mDataAdapter.setHost(Host.Factory.create(mActivity, mRecyclerView, mDataAdapter));
-            mDataAdapter.setUnionTypeMapper(new IMUIKitUnionTypeMapper());
+            mDataAdapter.setUnionTypeMapper(new IMUikitUnionTypeMapper());
             mDataAdapter.setOnItemClickListener(viewHolder -> {
                 Preconditions.checkNotNull(mUnionTypeMediaData);
                 int size = mUnionTypeMediaData.mediaData.allSubBuckets.size();
@@ -343,7 +343,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             pagerSnapHelper.attachToRecyclerView(mRecyclerView);
             mDataAdapter = new ItemClickUnionTypeAdapter();
             mDataAdapter.setHost(Host.Factory.create(mActivity, mRecyclerView, mDataAdapter));
-            mDataAdapter.setUnionTypeMapper(new IMUIKitUnionTypeMapper());
+            mDataAdapter.setUnionTypeMapper(new IMUikitUnionTypeMapper());
             mDataAdapter.setOnItemClickListener(viewHolder -> PagerView.this.hide());
             mRecyclerView.setAdapter(mDataAdapter);
         }

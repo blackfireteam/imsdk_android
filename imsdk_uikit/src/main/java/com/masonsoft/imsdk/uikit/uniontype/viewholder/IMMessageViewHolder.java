@@ -27,7 +27,7 @@ import com.masonsoft.imsdk.uikit.common.TopActivity;
 import com.masonsoft.imsdk.uikit.common.impopup.IMChatMessageMenuDialog;
 import com.masonsoft.imsdk.uikit.common.impreview.IMImageOrVideoPreviewDialog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
-import com.masonsoft.imsdk.uikit.uniontype.IMUIKitUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.util.ClipboardUtil;
 import com.masonsoft.imsdk.uikit.util.FileDownloadHelper;
 import com.masonsoft.imsdk.uikit.util.FormatUtil;
@@ -247,10 +247,10 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             if (messageType == MSIMConstants.MessageType.REVOKED) {
                 return received
                         ? UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_RECEIVED,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_RECEIVED,
                         dataObject)
                         : UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_SEND,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_SEND,
                         dataObject);
             }
 
@@ -258,59 +258,59 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             if (messageType == MSIMConstants.MessageType.TEXT) {
                 return received
                         ? UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_TEXT_RECEIVED,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_TEXT_RECEIVED,
                         dataObject)
                         : UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_TEXT_SEND,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_TEXT_SEND,
                         dataObject);
             }
 
             // 图片消息
             if (messageType == MSIMConstants.MessageType.IMAGE) {
                 return received ? UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_RECEIVED,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_RECEIVED,
                         dataObject)
                         : UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND,
                         dataObject);
             }
 
             // 语音消息
             if (messageType == MSIMConstants.MessageType.AUDIO) {
                 return received ? UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VOICE_RECEIVED,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VOICE_RECEIVED,
                         dataObject)
                         : UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND,
                         dataObject);
             }
 
             // 视频消息
             if (messageType == MSIMConstants.MessageType.VIDEO) {
                 return received ? UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_RECEIVED,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_RECEIVED,
                         dataObject)
                         : UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_SEND,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_SEND,
                         dataObject);
             }
 
             // 自定义消息
             if (messageType == MSIMConstants.MessageType.FIRST_CUSTOM_MESSAGE) {
                 return received ? UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED,
                         dataObject)
                         : UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_SEND,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_SEND,
                         dataObject);
             }
 
             // fallback
             return received ? UnionTypeItemObject.valueOf(
-                    IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_RECEIVED,
+                    IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_RECEIVED,
                     dataObject)
                     : UnionTypeItemObject.valueOf(
-                    IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_SEND,
+                    IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_SEND,
                     dataObject);
         }
 
@@ -326,14 +326,14 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             // 视频消息
             if (messageType == MSIMConstants.MessageType.VIDEO) {
                 return UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO,
                         dataObject);
             }
 
             // 图片消息
             if (messageType == MSIMConstants.MessageType.IMAGE) {
                 return UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE,
                         dataObject);
             }
 

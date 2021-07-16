@@ -23,7 +23,7 @@ import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerPagerViewHolder
 
 import io.github.idonans.dynamic.uniontype.loadingstatus.UnionTypeLoadingStatus;
 
-public class IMUIKitUnionTypeMapper extends UnionTypeLoadingStatus {
+public class IMUikitUnionTypeMapper extends UnionTypeLoadingStatus {
 
     private static int sNextUnionType = 1;
     public static final int UNION_TYPE_IMPL_MEDIA_PICKER_GRID = sNextUnionType++; // 媒体选择器 Grid 视图中的一个 item
@@ -47,7 +47,7 @@ public class IMUIKitUnionTypeMapper extends UnionTypeLoadingStatus {
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED = sNextUnionType++; // 聊天消息-接收的自定义消息
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_SEND = sNextUnionType++; // 聊天消息-发送的自定义消息
 
-    public IMUIKitUnionTypeMapper() {
+    public IMUikitUnionTypeMapper() {
         put(UNION_TYPE_IMPL_MEDIA_PICKER_GRID, MediaPickerGridViewHolder::new);
         put(UNION_TYPE_IMPL_MEDIA_PICKER_BUCKET, MediaPickerBucketViewHolder::new);
         put(UNION_TYPE_IMPL_MEDIA_PICKER_PAGER, MediaPickerPagerViewHolder::new);

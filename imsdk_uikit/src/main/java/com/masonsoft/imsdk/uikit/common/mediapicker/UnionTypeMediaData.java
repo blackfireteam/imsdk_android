@@ -3,7 +3,7 @@ package com.masonsoft.imsdk.uikit.common.mediapicker;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
-import com.masonsoft.imsdk.uikit.uniontype.IMUIKitUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,13 +40,13 @@ public class UnionTypeMediaData {
 
             for (MediaData.MediaInfo mediaInfo : bucket.mediaInfoList) {
                 gridItems.add(UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_MEDIA_PICKER_GRID,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_MEDIA_PICKER_GRID,
                         new DataObject<>(mediaInfo)
                                 .putExtObjectObject1(this.mediaData)
                                 .putExtObjectObject2(UnionTypeMediaData.this)));
 
                 pagerItems.add(UnionTypeItemObject.valueOf(
-                        IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_MEDIA_PICKER_PAGER,
+                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_MEDIA_PICKER_PAGER,
                         new DataObject<>(mediaInfo)
                                 .putExtObjectObject1(this.mediaData)
                                 .putExtObjectObject2(UnionTypeMediaData.this)));
@@ -55,7 +55,7 @@ public class UnionTypeMediaData {
             this.unionTypeGridItemsMap.put(bucket, gridItems);
             this.unionTypePagerItemsMap.put(bucket, pagerItems);
             unionTypeBucketItems.add(UnionTypeItemObject.valueOf(
-                    IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_MEDIA_PICKER_BUCKET,
+                    IMUikitUnionTypeMapper.UNION_TYPE_IMPL_MEDIA_PICKER_BUCKET,
                     new DataObject<>(bucket)
                             .putExtObjectObject1(this.mediaData)
                             .putExtObjectObject2(UnionTypeMediaData.this)));

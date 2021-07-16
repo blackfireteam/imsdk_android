@@ -15,7 +15,7 @@ import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
-import com.masonsoft.imsdk.uikit.uniontype.IMUIKitUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.widget.SessionUserIdChangedViewHelper;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
@@ -191,7 +191,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         }
         final DataObject<MSIMConversation> dataObject = new DeepDiffDataObject(conversation);
         return new UnionTypeItemObject(
-                IMUIKitUnionTypeMapper.UNION_TYPE_IMPL_IM_CONVERSATION,
+                IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_CONVERSATION,
                 dataObject
         );
     }

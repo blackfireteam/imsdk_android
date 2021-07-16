@@ -35,7 +35,7 @@ import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentMa
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManagerHost;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.VisibleRecyclerViewMicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitSingleChatFragmentBinding;
-import com.masonsoft.imsdk.uikit.uniontype.IMUIKitUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
 import com.masonsoft.imsdk.uikit.util.EditTextUtil;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
@@ -147,7 +147,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         UnionTypeAdapter adapter = new UnionTypeAdapterImpl();
         adapter.setHost(Host.Factory.create(this, recyclerView, adapter));
-        adapter.setUnionTypeMapper(new IMUIKitUnionTypeMapper());
+        adapter.setUnionTypeMapper(new IMUikitUnionTypeMapper());
         mDataAdapter = adapter;
         mViewImpl = new ViewImpl(adapter);
         clearPresenter();
