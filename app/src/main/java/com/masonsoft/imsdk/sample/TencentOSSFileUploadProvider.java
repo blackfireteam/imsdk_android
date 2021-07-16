@@ -9,8 +9,6 @@ import com.tencent.cos.xml.CosXmlService;
 import com.tencent.cos.xml.CosXmlServiceConfig;
 import com.tencent.cos.xml.model.object.PutObjectRequest;
 import com.tencent.cos.xml.model.object.PutObjectResult;
-import com.tencent.cos.xml.transfer.TransferConfig;
-import com.tencent.cos.xml.transfer.TransferManager;
 import com.tencent.qcloud.core.auth.QCloudCredentialProvider;
 import com.tencent.qcloud.core.auth.ShortTimeCredentialProvider;
 
@@ -45,9 +43,6 @@ public class TencentOSSFileUploadProvider implements FileUploadProvider {
         final CosXmlService cosXmlService =
                 new CosXmlService(ContextUtil.getContext(), serviceConfig, credentialProvider);
 
-        final TransferConfig transferConfig = new TransferConfig.Builder().build();
-        final TransferManager transferManager =
-                new TransferManager(cosXmlService, transferConfig);
         final String bucket = "msim-1252460681";
         final String dir = createDir(source, mimeType);
         final String cosPath = dir + "/Android_" + FilenameUtil.createUnionFilename(fileExtension, mimeType);
