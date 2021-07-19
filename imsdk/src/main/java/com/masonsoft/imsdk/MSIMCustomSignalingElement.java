@@ -5,13 +5,13 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.core.IMMessage;
 
 /**
- * 自定义消息
+ * 自定义信令消息
  *
  * @since 1.0
  */
-public class MSIMCustomElement extends MSIMElement {
+public class MSIMCustomSignalingElement extends MSIMElement {
 
-    MSIMCustomElement(@NonNull IMMessage message) {
+    MSIMCustomSignalingElement(@NonNull IMMessage message) {
         super(message);
     }
 

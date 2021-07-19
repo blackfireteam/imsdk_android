@@ -111,6 +111,17 @@ public class IMMessageFactory {
     }
 
     /**
+     * 自定义信令消息
+     */
+    @NonNull
+    public static IMMessage createCustomSignalingMessage(String text) {
+        final IMMessage target = new IMMessage();
+        target.type.set(IMConstants.MessageType.CUSTOM_MESSAGE_SIGNALING);
+        target.body.set(text);
+        return target;
+    }
+
+    /**
      * 自定义消息
      */
     @SuppressWarnings("ConstantConditions")

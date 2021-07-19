@@ -201,9 +201,9 @@ public class IMConversationManager {
             return false;
         }
 
-        // 指令消息不影响未读消息数
-        if (IMConstants.MessageType.isActionMessage(message.messageType.get())) {
-            IMLog.v("ignore. message's messageType:%s is action message", message.messageType.get());
+        // 过滤不需要记录未读数的消息
+        if (!IMConstants.MessageType.isCountMessage(message.messageType.get())) {
+            IMLog.v("ignore. message's messageType:%s is not count message", message.messageType.get());
             return false;
         }
 
@@ -328,8 +328,8 @@ public class IMConversationManager {
                     }
                 }
 
-                if (newShowMessage.localActionMessage.get() > 0) {
-                    // 指令消息不能作为会话的 showMessageId
+                if (!IMConstants.MessageType.isVisibleMessage(newShowMessage.messageType.get())) {
+                    // 不可见消息不能作为会话的 showMessageId
                     useNewShowMessageId = false;
                 }
 

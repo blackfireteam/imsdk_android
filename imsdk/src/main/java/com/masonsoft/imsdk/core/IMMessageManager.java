@@ -196,14 +196,14 @@ public class IMMessageManager {
     }
 
     /**
-     * 去除指令消息
+     * 保留可见消息
      */
     @NonNull
     private TinyPage<IMMessage> filter(@NonNull TinyPage<IMMessage> input) {
         return input.filter(message -> {
             if (!message.type.isUnset()) {
                 final int type = message.type.get();
-                return !IMConstants.MessageType.isActionMessage(type);
+                return IMConstants.MessageType.isVisibleMessage(type);
             }
 
             return false;

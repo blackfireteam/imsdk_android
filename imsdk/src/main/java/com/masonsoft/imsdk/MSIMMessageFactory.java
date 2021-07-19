@@ -36,10 +36,28 @@ public class MSIMMessageFactory {
         return new MSIMMessage(message);
     }
 
+    /**
+     * 自定义信令消息
+     */
     @NonNull
-    public static MSIMMessage createCustomMessage(String text) {
-        final IMMessage message = IMMessageFactory.createCustomMessage(text);
+    public static MSIMMessage createCustomSignalingMessage(String text) {
+        final IMMessage message = IMMessageFactory.createCustomSignalingMessage(text);
         return new MSIMMessage(message);
+    }
+
+    @NonNull
+    public static MSIMMessage createCustomMessage(String text, boolean supportCount, boolean supportRecall) {
+        final IMMessage message = IMMessageFactory.createCustomMessage(text, supportCount, supportRecall);
+        return new MSIMMessage(message);
+    }
+
+    @NonNull
+    public static MSIMMessage setPushInfo(@NonNull MSIMMessage message, String pushTitle, String pushBody, String pushSound) {
+        final IMMessage msg = message.getMessage();
+        msg.pushTitle.set(pushTitle);
+        msg.pushBody.set(pushBody);
+        msg.pushSound.set(pushSound);
+        return message;
     }
 
 }

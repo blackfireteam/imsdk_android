@@ -195,9 +195,18 @@ public class MSIMMessage {
     }
 
     @Nullable
+    public MSIMCustomSignalingElement getCustomSignalingElement() {
+        final int messageType = getMessageType(-1);
+        if (messageType == MSIMConstants.MessageType.CUSTOM_MESSAGE_SIGNALING) {
+            return new MSIMCustomSignalingElement(mMessage);
+        }
+        return null;
+    }
+
+    @Nullable
     public MSIMCustomElement getCustomElement() {
         final int messageType = getMessageType(-1);
-        if (messageType == MSIMConstants.MessageType.FIRST_CUSTOM_MESSAGE) {
+        if (MSIMConstants.MessageType.isCustomMessage(messageType)) {
             return new MSIMCustomElement(mMessage);
         }
         return null;
