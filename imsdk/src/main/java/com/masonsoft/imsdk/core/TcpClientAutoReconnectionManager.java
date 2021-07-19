@@ -215,6 +215,7 @@ public class TcpClientAutoReconnectionManager {
 
             if (target.isOnline()) {
                 // 长连接在线，不重连
+                IMLog.v("%s current is online, fast return true.", target);
                 return true;
             }
 
@@ -223,6 +224,7 @@ public class TcpClientAutoReconnectionManager {
                 final SignOutMessagePacket messagePacket = sessionTcpClient.getSignOutMessagePacket();
                 if (messagePacket.isSignOut()) {
                     // 至少客户端已经发起了退出登录的请求，不重连。
+                    IMLog.v("%s session tcp client's is sign out, fast return true.");
                     return true;
                 }
             }
@@ -239,6 +241,7 @@ public class TcpClientAutoReconnectionManager {
 
         public void reconnectNow(@Nullable IMSessionManager.SessionTcpClientProxy target) {
             if (IMSessionManager.getInstance().getSessionTcpClientProxy() == target) {
+                IMLog.v("%s ok, start reconnect now", target);
                 IMSessionManager.getInstance().recreateSessionTcpClient();
             } else {
                 IMLog.e("ignore. reconnectNow target is another one");
