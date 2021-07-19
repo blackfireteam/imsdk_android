@@ -44,7 +44,9 @@ public class IMUikitUnionTypeMapper extends UnionTypeLoadingStatus {
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_SEND = sNextUnionType++; // 聊天消息-发送的视频
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE = sNextUnionType++; // 聊天消息-横向全屏预览-图片
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO = sNextUnionType++; // 聊天消息-横向全屏预览-视频
+    @Deprecated
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED = sNextUnionType++; // 聊天消息-接收的自定义消息
+    @Deprecated
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_SEND = sNextUnionType++; // 聊天消息-发送的自定义消息
 
     public IMUikitUnionTypeMapper() {

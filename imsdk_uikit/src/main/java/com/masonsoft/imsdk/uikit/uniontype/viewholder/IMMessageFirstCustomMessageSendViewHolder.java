@@ -14,6 +14,7 @@ import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 
+@Deprecated
 public class IMMessageFirstCustomMessageSendViewHolder extends IMMessageFirstCustomMessageViewHolder {
 
     private final ImsdkUikitUnionTypeImplImMessageFirstCustomMessageSendBinding mBinding;

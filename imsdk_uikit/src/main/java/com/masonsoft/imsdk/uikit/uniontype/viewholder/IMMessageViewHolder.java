@@ -296,7 +296,7 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             }
 
             // 自定义消息
-            if (messageType == MSIMConstants.MessageType.FIRST_CUSTOM_MESSAGE) {
+            if (MSIMConstants.MessageType.isCustomMessage(messageType)) {
                 return received ? UnionTypeItemObject.valueOf(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED,
                         dataObject)

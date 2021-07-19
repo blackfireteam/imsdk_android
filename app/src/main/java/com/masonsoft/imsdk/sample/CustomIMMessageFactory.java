@@ -20,7 +20,7 @@ public class CustomIMMessageFactory {
         data.put("type", 1);
         data.put("desc", "like");
         final String text = new Gson().toJson(data);
-        return MSIMMessageFactory.createCustomMessage(text);
+        return MSIMMessageFactory.createCustomMessage(text, true, true);
     }
 
 }
