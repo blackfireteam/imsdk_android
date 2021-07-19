@@ -242,12 +242,13 @@ public class SessionTcpClient extends NettyTcpClient {
     }
 
     /**
-     * 当前长连接是否在线(长连接已建立并且已经登录成功)
+     * 当前长连接是否在线(长连接已建立并且已经登录成功, 同时没有请求过退出登录)
      */
     public boolean isOnline() {
         return SessionValidator.isValid(mSession)
                 && getState() == STATE_CONNECTED
-                && mSignInMessagePacket.isSignIn();
+                && mSignInMessagePacket.isSignIn()
+                && !mSignOutMessagePacket.isSignOut();
     }
 
     /**

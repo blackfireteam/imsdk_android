@@ -381,6 +381,12 @@ public class IMSessionManager {
         synchronized (mSessionLock) {
 
             if (mSessionTcpClientProxy != null) {
+                if (mSessionTcpClientProxy.isOnline()) {
+                    // 长连接在线，不重连
+                    IMLog.v("%s recreateSessionTcpClient fast return. current tcp client proxy is online.", Objects.defaultObjectTag(this));
+                    return;
+                }
+
                 if (!mSessionTcpClientProxy.isAbort()) {
                     final SessionTcpClient sessionTcpClient = mSessionTcpClientProxy.getSessionTcpClient();
                     if (sessionTcpClient != null) {
@@ -388,7 +394,7 @@ public class IMSessionManager {
                         if (sessionTcpClientState == TcpClient.STATE_IDLE
                                 || sessionTcpClientState == TcpClient.STATE_CONNECTING) {
                             // 正在请求建立长连接
-                            IMLog.v(Objects.defaultObjectTag(this) + " recreateSessionTcpClient fast return. current tcp client is in connecting.");
+                            IMLog.v("%s recreateSessionTcpClient fast return. current tcp client is in connecting.", Objects.defaultObjectTag(this));
                             return;
                         }
 
@@ -396,7 +402,7 @@ public class IMSessionManager {
                             if (!sessionTcpClient.getSignInMessagePacket().isEnd()
                                     && sessionTcpClient.getSignOutMessagePacket().isIdle()) {
                                 // 正在登陆中
-                                IMLog.v(Objects.defaultObjectTag(this) + " recreateSessionTcpClient fast return. current tcp client is in sign in ing.");
+                                IMLog.v("%s recreateSessionTcpClient fast return. current tcp client is in sign in ing.", Objects.defaultObjectTag(this));
                                 return;
                             }
                         }
@@ -739,8 +745,8 @@ public class IMSessionManager {
         }
 
         /**
-         * 判断当前长连接是否在线。当长连接不在线时，不能够发送消息。长连接在线的含义是：长连接建立成功并且认证通过。
-         * 认证消息(登录消息)在长连接内部自动维护(长连接首次建立成功时会自动发送登录消息)。
+         * 判断当前长连接是否在线。当长连接不在线时，不能够发送消息。长连接在线的含义是：长连接建立成功并且认证通过,
+         * 同时没有请求过退出登录。认证消息(登录消息)在长连接内部自动维护(长连接首次建立成功时会自动发送登录消息)。
          */
         public boolean isOnline() {
             final SessionTcpClient sessionTcpClient = mSessionTcpClient;
