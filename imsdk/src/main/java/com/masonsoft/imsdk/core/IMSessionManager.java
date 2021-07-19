@@ -377,7 +377,7 @@ public class IMSessionManager {
      * 终止旧的长连接，建立新的长连接(如果存在有效的登录信息)
      */
     private void recreateSessionTcpClient(boolean resetConfig) {
-        IMLog.v(Objects.defaultObjectTag(this) + " recreateSessionTcpClient");
+        IMLog.v("%s recreateSessionTcpClient, resetConfig:%s", Objects.defaultObjectTag(this), resetConfig);
         synchronized (mSessionLock) {
 
             if (mSessionTcpClientProxy != null) {
