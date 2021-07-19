@@ -30,7 +30,7 @@ public abstract class SignInViewPresenter<T extends SignInView> extends DynamicP
                     if (view == null) {
                         return;
                     }
-                    view.onFetchTokenSuccess(init.token);
+                    view.onFetchTokenSuccess(init.token, init.url);
                 }, e -> {
                     SampleLog.e(e);
                     final SignInView view = getView();
@@ -50,11 +50,12 @@ public abstract class SignInViewPresenter<T extends SignInView> extends DynamicP
     }
 
 
-    public void requestTcpSignIn(String token) {
+    public void requestTcpSignIn(String token, String url) {
         mRequestHolder.set(Single.just("")
                 .map(input -> {
                     final LocalSettingsManager.Settings settings = LocalSettingsManager.getInstance().getSettings();
                     settings.imToken = token;
+                    settings.imServer = url;
                     LocalSettingsManager.getInstance().setSettings(settings);
                     return MSIMManager.getInstance().signInWithBlock(settings.imToken, settings.imServer);
                 })

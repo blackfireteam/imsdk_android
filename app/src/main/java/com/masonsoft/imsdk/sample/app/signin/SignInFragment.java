@@ -19,9 +19,9 @@ import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentConfirmDialog;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleLoadingDialog;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
@@ -43,9 +43,7 @@ public class SignInFragment extends SystemInsetsFragment {
     }
 
     private static final String DEFAULT_API_SERVER_INTERNET = "https://im.ekfree.com:18789";
-    private static final String DEFAULT_IM_SERVER_INTERNET = "im.ekfree.com:18889";
     private static final String DEFAULT_API_SERVER_LOCAL = "https://192.168.50.189:18789";
-    private static final String DEFAULT_IM_SERVER_LOCAL = "192.168.50.189:18889";
     private boolean mCurrentApiServerInternet = true;
 
     @Nullable
@@ -94,7 +92,6 @@ public class SignInFragment extends SystemInsetsFragment {
                 new FormValidator.InputView[]{
                         FormValidator.InputViewFactory.create(mBinding.editText),
                         FormValidator.InputViewFactory.create(mBinding.apiServer),
-                        FormValidator.InputViewFactory.create(mBinding.imServer),
                 },
                 new FormValidator.SubmitView[]{
                         FormValidator.SubmitViewFactory.create(mBinding.submit),
@@ -119,11 +116,9 @@ public class SignInFragment extends SystemInsetsFragment {
             if (isChecked) {
                 ViewUtil.setVisibilityIfChanged(mBinding.resetServer, View.VISIBLE);
                 ViewUtil.setVisibilityIfChanged(mBinding.apiServer, View.VISIBLE);
-                ViewUtil.setVisibilityIfChanged(mBinding.imServer, View.VISIBLE);
             } else {
                 ViewUtil.setVisibilityIfChanged(mBinding.resetServer, View.GONE);
                 ViewUtil.setVisibilityIfChanged(mBinding.apiServer, View.GONE);
-                ViewUtil.setVisibilityIfChanged(mBinding.imServer, View.GONE);
             }
         });
 
@@ -145,10 +140,8 @@ public class SignInFragment extends SystemInsetsFragment {
         }
         if (mCurrentApiServerInternet) {
             mBinding.apiServer.setText(DEFAULT_API_SERVER_INTERNET);
-            mBinding.imServer.setText(DEFAULT_IM_SERVER_INTERNET);
         } else {
             mBinding.apiServer.setText(DEFAULT_API_SERVER_LOCAL);
-            mBinding.imServer.setText(DEFAULT_IM_SERVER_LOCAL);
         }
     }
 
@@ -209,17 +202,11 @@ public class SignInFragment extends SystemInsetsFragment {
             ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_api_server_error));
             return;
         }
-        final String imServer = mBinding.imServer.getText().toString().trim().toLowerCase();
-        if (TextUtils.isEmpty(imServer)
-                || imServer.contains("://")
-                || !imServer.contains(":")) {
-            ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_im_server_error));
-        }
 
         final LocalSettingsManager.Settings settings = LocalSettingsManager.getInstance().getSettings();
         try {
             settings.apiServer = apiServer;
-            settings.imServer = imServer;
+            settings.imServer = null;
             settings.imToken = null;
             LocalSettingsManager.getInstance().setSettings(settings);
         } catch (Throwable e) {

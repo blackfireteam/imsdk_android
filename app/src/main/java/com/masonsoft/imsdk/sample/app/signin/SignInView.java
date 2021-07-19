@@ -37,15 +37,15 @@ public abstract class SignInView implements DynamicView {
         SignUpActivity.start(activity, signUpArgument);
     }
 
-    public void onFetchTokenSuccess(String token) {
-        SampleLog.v(Objects.defaultObjectTag(this) + " onFetchTokenSuccess token:%s", token);
+    public void onFetchTokenSuccess(String token, String url) {
+        SampleLog.v(Objects.defaultObjectTag(this) + " onFetchTokenSuccess token:%s, url:%s", token, url);
 
         final SignInViewPresenter<?> presenter = getPresenter();
         if (presenter == null) {
             SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
             return;
         }
-        presenter.requestTcpSignIn(token);
+        presenter.requestTcpSignIn(token, url);
     }
 
     public void onFetchTokenFail(long userId, int code, String message) {
