@@ -243,26 +243,6 @@ public final class IMConstants {
         ///////////////////////////////////////////////////////
 
         /**
-         * 语音聊天结束
-         */
-        public static final int VOICE_END = 16;
-        /**
-         * 视频聊天结束
-         */
-        public static final int VIDEO_END = 17;
-
-        ///////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////
-
-        /**
-         * 位置共享
-         */
-        public static final int REAL_TIME_LOCATION = 30;
-
-        ///////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////
-
-        /**
          * 已撤回的消息
          */
         public static final int REVOKED = 31;
@@ -271,69 +251,92 @@ public final class IMConstants {
         ///////////////////////////////////////////////////////
 
         /**
-         * 媚眼
-         */
-        public static final int WINK = 32;
-        /**
-         * 匹配成功
-         */
-        public static final int MATCH = 33;
-        /**
-         * 请求上传相册
-         */
-        public static final int REQUEST_UPLOAD_PHOTO = 34;
-        /**
-         * 相册上传后回执
-         */
-        public static final int REQUEST_UPLOAD_PHOTO_RESULT = 35;
-        /**
-         * 请求私有相册访问权限
-         */
-        public static final int REQUEST_PRIVATE_PHOTO = 36;
-        /**
-         * 允许访问私有相册的回执
-         */
-        public static final int REQUEST_PRIVATE_PHOTO_RESULT = 37;
-        /**
-         * 请求用户认证资料
-         */
-        public static final int REQUEST_VERIFY_PROFILE = 38;
-        /**
-         * 分享相册
-         */
-        public static final int SHARE_PHOTO = 39;
-        /**
-         * 周报
-         */
-        public static final int WEEKLY = 40;
-
-        ///////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////
-        // 64 - 99 消息操作信息（此类型消息 不可见）
-
-        /**
          * 消息撤回（该类型消息不可见）
          */
         public static final int REVOKE_MESSAGE = 64;
 
         ///////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////
-        // 100-199 应用方自定义消息类型（可见）
-        // 200-255 应用方自定义消息类型（不可见）
-
-        public static final int FIRST_CUSTOM_MESSAGE = 100;
-        public static final int FIRST_CUSTOM_ACTION_MESSAGE = 200;
+        // 自定义消息类型
 
         /**
-         * 判断指定类型的消息是否是指令消息，指令消息 UI 不可见
+         * 不生成消息, 仅作为信号传递(信令消息)
          */
-        public static boolean isActionMessage(int type) {
-            return (type >= 64 && type <= 99) || (type >= 200 && type <= 255);
+        public static final int CUSTOM_MESSAGE_SIGNALING = 240;
+        /**
+         * 不算计数, 不可撤回（可带push字段）
+         */
+        public static final int CUSTOM_MESSAGE_NO_COUNT_NO_RECALL = 241;
+        /**
+         * 算计数, 不可撤回（可带push字段）
+         */
+        public static final int CUSTOM_MESSAGE_COUNT_NO_RECALL = 243;
+        /**
+         * 算计数, 可撤回（可带push字段）
+         */
+        public static final int CUSTOM_MESSAGE_COUNT_RECALL = 247;
+
+        /**
+         * 是否是可见的消息。可见的消息会出现在聊天页面中。如：文字消息是一种可见消息，指令消息是一种不见消息，信令消息也是不可见消息。
+         */
+        public static boolean isVisibleMessage(int type) {
+            return type == TEXT
+                    || type == IMAGE
+                    || type == AUDIO
+                    || type == VIDEO
+                    || type == LOCATION
+                    || type == USER_PROFILE
+                    || type == CUSTOM_EMOJI
+                    || type == REVOKED
+                    || type == CUSTOM_MESSAGE_NO_COUNT_NO_RECALL
+                    || type == CUSTOM_MESSAGE_COUNT_NO_RECALL
+                    || type == CUSTOM_MESSAGE_COUNT_RECALL;
         }
 
-        public static boolean isCustomMessage(int type) {
-            return type >= 100 && type <= 255;
+        /**
+         * 是否是需要累计未读数的消息
+         */
+        public static boolean isCountMessage(int type) {
+            return type == TEXT
+                    || type == IMAGE
+                    || type == AUDIO
+                    || type == VIDEO
+                    || type == LOCATION
+                    || type == USER_PROFILE
+                    || type == CUSTOM_EMOJI
+                    || type == REVOKED
+                    || type == CUSTOM_MESSAGE_COUNT_NO_RECALL
+                    || type == CUSTOM_MESSAGE_COUNT_RECALL;
         }
+
+        /**
+         * 需要写入数据库的消息，具有消息 id, 影响 block 计算。
+         */
+        public static boolean isDbMessage(int type) {
+            return type == TEXT
+                    || type == IMAGE
+                    || type == AUDIO
+                    || type == VIDEO
+                    || type == LOCATION
+                    || type == USER_PROFILE
+                    || type == CUSTOM_EMOJI
+                    || type == REVOKED
+                    || type == REVOKE_MESSAGE
+                    || type == CUSTOM_MESSAGE_NO_COUNT_NO_RECALL
+                    || type == CUSTOM_MESSAGE_COUNT_NO_RECALL
+                    || type == CUSTOM_MESSAGE_COUNT_RECALL;
+        }
+
+        /**
+         * 是否是自定义消息
+         */
+        public static boolean isCustomMessage(int type) {
+            return type == CUSTOM_MESSAGE_SIGNALING
+                    || type == CUSTOM_MESSAGE_NO_COUNT_NO_RECALL
+                    || type == CUSTOM_MESSAGE_COUNT_NO_RECALL
+                    || type == CUSTOM_MESSAGE_COUNT_RECALL;
+        }
+
     }
 
 }

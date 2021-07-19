@@ -439,13 +439,16 @@ public class IMSessionMessageUploadManager {
                 }
 
                 if (IMConstants.MessageType.isCustomMessage(messageType)
-                        && !IMConstants.MessageType.isActionMessage(messageType)) {
-                    // 自定义非指令消息
+                        && IMConstants.MessageType.isVisibleMessage(messageType)) {
+                    // 自定义可见消息
                     final ProtoMessage.ChatS chatS = ProtoMessage.ChatS.newBuilder()
                             .setSign(mSign)
                             .setType(messageType)
                             .setToUid(message.toUserId.get())
                             .setBody(message.body.getOrDefault(null))
+                            .setPushTitle(message.pushTitle.getOrDefault(null))
+                            .setPushBody(message.pushBody.getOrDefault(null))
+                            .setPushSound(message.pushSound.getOrDefault(null))
                             .build();
                     final ProtoByteMessage protoByteMessage = ProtoByteMessage.Type.encode(chatS);
                     final ChatSMessagePacket chatSMessagePacket = new ChatSMessagePacket(protoByteMessage, mSign);

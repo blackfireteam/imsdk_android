@@ -116,17 +116,49 @@ public class MSIMConstants {
 
         ///////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////
-
-        public static final int FIRST_CUSTOM_MESSAGE = IMConstants.MessageType.FIRST_CUSTOM_MESSAGE;
-        public static final int FIRST_CUSTOM_ACTION_MESSAGE = IMConstants.MessageType.FIRST_CUSTOM_ACTION_MESSAGE;
+        // 自定义消息类型
 
         /**
-         * 判断指定类型的消息是否是指令消息，指令消息 UI 不可见
+         * 不生成消息, 仅作为信号传递(信令消息)
          */
-        public static boolean isActionMessage(int type) {
-            return IMConstants.MessageType.isActionMessage(type);
+        public static final int CUSTOM_MESSAGE_SIGNALING = IMConstants.MessageType.CUSTOM_MESSAGE_SIGNALING;
+        /**
+         * 不算计数, 不可撤回（可带push字段）
+         */
+        public static final int CUSTOM_MESSAGE_NO_COUNT_NO_RECALL = IMConstants.MessageType.CUSTOM_MESSAGE_NO_COUNT_NO_RECALL;
+        /**
+         * 算计数, 不可撤回（可带push字段）
+         */
+        public static final int CUSTOM_MESSAGE_COUNT_NO_RECALL = IMConstants.MessageType.CUSTOM_MESSAGE_COUNT_NO_RECALL;
+        /**
+         * 算计数, 可撤回（可带push字段）
+         */
+        public static final int CUSTOM_MESSAGE_COUNT_RECALL = IMConstants.MessageType.CUSTOM_MESSAGE_COUNT_RECALL;
+
+        /**
+         * 是否是可见的消息。可见的消息会出现在聊天页面中。如：文字消息是一种可见消息，指令消息是一种不见消息，信令消息也是不可见消息。
+         */
+        public static boolean isVisibleMessage(int type) {
+            return IMConstants.MessageType.isVisibleMessage(type);
         }
 
+        /**
+         * 是否是需要累计未读数的消息
+         */
+        public static boolean isCountMessage(int type) {
+            return IMConstants.MessageType.isCountMessage(type);
+        }
+
+        /**
+         * 需要写入数据库的消息，具有消息 id, 影响 block 计算。
+         */
+        public static boolean isDbMessage(int type) {
+            return IMConstants.MessageType.isDbMessage(type);
+        }
+
+        /**
+         * 是否是自定义消息
+         */
         public static boolean isCustomMessage(int type) {
             return IMConstants.MessageType.isCustomMessage(type);
         }

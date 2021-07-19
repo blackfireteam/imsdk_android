@@ -187,7 +187,9 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
             boolean clearConversationDeleteFlag = false;
 
             for (Message message : messageList) {
-                final boolean actionMessage = message.localActionMessage.get() > 0;
+                final int messageType = message.messageType.get();
+                final boolean visibleMessage = IMConstants.MessageType.isVisibleMessage(messageType);
+                final boolean countMessage = IMConstants.MessageType.isCountMessage(messageType);
                 final long remoteMessageId = message.remoteMessageId.get();
                 // 设置 block id
                 message.localBlockId.set(blockId);
@@ -208,9 +210,9 @@ public class TinyChatRNewMessageListProcessor implements Processor<List<SessionP
                         IMLog.e(e);
                     } else {
                         // 新消息入库成功
-                        if (!actionMessage) {
+                        if (visibleMessage) {
                             clearConversationDeleteFlag = true;
-                            if (message.fromUserId.get() != sessionUserId) {
+                            if (countMessage && message.fromUserId.get() != sessionUserId) {
                                 // 如果是收到的别人的消息，累加未读消息数
                                 conversationUnreadCountDiff++;
                             }

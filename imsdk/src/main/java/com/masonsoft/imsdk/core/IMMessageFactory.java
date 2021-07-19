@@ -113,10 +113,24 @@ public class IMMessageFactory {
     /**
      * 自定义消息
      */
+    @SuppressWarnings("ConstantConditions")
     @NonNull
-    public static IMMessage createCustomMessage(String text) {
+    public static IMMessage createCustomMessage(String text, boolean supportCount, boolean supportRecall) {
         final IMMessage target = new IMMessage();
-        target.type.set(IMConstants.MessageType.FIRST_CUSTOM_MESSAGE);
+
+        if (supportCount && supportRecall) {
+            // [supportCount, supportRecall] as [true, true]
+            target.type.set(IMConstants.MessageType.CUSTOM_MESSAGE_COUNT_RECALL);
+        } else if (supportCount && !supportRecall) {
+            // [supportCount, supportRecall] as [true, false]
+            target.type.set(IMConstants.MessageType.CUSTOM_MESSAGE_COUNT_NO_RECALL);
+        } else if (!supportCount && !supportRecall) {
+            // [supportCount, supportRecall] as [false, false]
+            target.type.set(IMConstants.MessageType.CUSTOM_MESSAGE_NO_COUNT_NO_RECALL);
+        } else {
+            throw new IllegalArgumentException("disallow set [supportCount, supportRecall] as [false, true]");
+        }
+
         target.body.set(text);
         return target;
     }
@@ -157,6 +171,9 @@ public class IMMessageFactory {
         target.lat.apply(input.lat);
         target.lng.apply(input.lng);
         target.zoom.apply(input.zoom);
+        target.pushTitle.apply(input.pushTitle);
+        target.pushBody.apply(input.pushBody);
+        target.pushSound.apply(input.pushSound);
         return target;
     }
 

@@ -353,12 +353,12 @@ public final class DatabaseHelper {
         String C_ZOOM = "c_zoom";
 
         /**
-         * 该消息是否是一条指令消息。指令消息不会显示在屏幕上。（如撤回消息是一条指令消息）
+         * 该消息是否是一条可见消息。可见消息会显示在屏幕上。
          *
          * @since db version 1
          */
         @Local
-        String C_LOCAL_ACTION_MSG = "c_local_action_msg";
+        String C_LOCAL_VISIBLE_MSG = "c_local_visible_msg";
 
         /**
          * 消息所属 block。相同 block 的消息是连续的。
@@ -546,8 +546,6 @@ public final class DatabaseHelper {
     }
 
     /**
-     * @param conversationType
-     * @param targetUserId
      * @see IMConstants.ConversationType
      */
     private static String getTableNameMessage(final int conversationType, long targetUserId) {
@@ -557,9 +555,6 @@ public final class DatabaseHelper {
     /**
      * 获取目标会话对应的消息表的表名，如果表不存在会创建对应的表。每一个会话都使用一个单独的消息表。
      *
-     * @param conversationType
-     * @param targetUserId
-     * @return
      * @see IMConstants.ConversationType
      */
     @NonNull
@@ -619,7 +614,7 @@ public final class DatabaseHelper {
                 ColumnsMessage.C_LAT + " double not null default 0," +
                 ColumnsMessage.C_LNG + " double not null default 0," +
                 ColumnsMessage.C_ZOOM + " integer not null default 0," +
-                ColumnsMessage.C_LOCAL_ACTION_MSG + " integer not null default 0," +
+                ColumnsMessage.C_LOCAL_VISIBLE_MSG + " integer not null default 0," +
                 ColumnsMessage.C_LOCAL_BLOCK_ID + " integer not null default 0," +
                 ColumnsMessage.C_PUSH_TITLE + " text," +
                 ColumnsMessage.C_PUSH_BODY + " text," +
@@ -639,7 +634,7 @@ public final class DatabaseHelper {
                 "create index if not exists " + tableNameMessage + "_index_to_user_id on " + tableNameMessage + "(" + ColumnsMessage.C_TO_USER_ID + ")",
                 "create unique index if not exists " + tableNameMessage + "_index_unique_rmi on " + tableNameMessage + "(" + ColumnsMessage.C_REMOTE_MSG_ID + ")",
                 "create index if not exists " + tableNameMessage + "_index_msg_type on " + tableNameMessage + "(" + ColumnsMessage.C_MSG_TYPE + ")",
-                "create index if not exists " + tableNameMessage + "_index_local_action_msg on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_ACTION_MSG + ")",
+                "create index if not exists " + tableNameMessage + "_index_local_visible_msg on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_VISIBLE_MSG + ")",
                 "create index if not exists " + tableNameMessage + "_index_local_block_id on " + tableNameMessage + "(" + ColumnsMessage.C_LOCAL_BLOCK_ID + ")",
         };
     }

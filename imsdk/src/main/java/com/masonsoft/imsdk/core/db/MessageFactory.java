@@ -47,13 +47,16 @@ public class MessageFactory {
         target.lat.set(input.getLat());
         target.lng.set(input.getLng());
         target.zoom.set(input.getZoom());
+        target.pushTitle.set(input.getPushTitle());
+        target.pushBody.set(input.getPushBody());
+        target.pushSound.set(input.getPushSound());
 
-        if (IMConstants.MessageType.isActionMessage((int) input.getType())) {
-            // 消息类型不可见，是一种指令消息
-            target.localActionMessage.set(IMConstants.TRUE);
+        if (IMConstants.MessageType.isVisibleMessage((int) input.getType())) {
+            // 消息类型可见
+            target.localVisibleMessage.set(IMConstants.TRUE);
         } else {
-            // 非指令消息
-            target.localActionMessage.set(IMConstants.FALSE);
+            // 消息类型不可见
+            target.localVisibleMessage.set(IMConstants.FALSE);
         }
 
         return target;
@@ -85,13 +88,16 @@ public class MessageFactory {
         target.lat.apply(input.lat);
         target.lng.apply(input.lng);
         target.zoom.apply(input.zoom);
+        target.pushTitle.apply(input.pushTitle);
+        target.pushBody.apply(input.pushBody);
+        target.pushSound.apply(input.pushSound);
 
         if (!input.type.isUnset() && input.type.get() != null) {
             // 当设置了有效的 type 值
-            if (IMConstants.MessageType.isActionMessage(input.type.get())) {
-                target.localActionMessage.set(IMConstants.TRUE);
+            if (IMConstants.MessageType.isVisibleMessage(input.type.get())) {
+                target.localVisibleMessage.set(IMConstants.TRUE);
             } else {
-                target.localActionMessage.set(IMConstants.FALSE);
+                target.localVisibleMessage.set(IMConstants.FALSE);
             }
         }
 

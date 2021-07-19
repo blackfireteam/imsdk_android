@@ -171,10 +171,10 @@ public class Message {
     public final StateProp<Long> zoom = new StateProp<>();
 
     /**
-     * @see ColumnsMessage#C_LOCAL_ACTION_MSG
+     * @see ColumnsMessage#C_LOCAL_VISIBLE_MSG
      */
     @NonNull
-    public final StateProp<Integer> localActionMessage = new StateProp<>();
+    public final StateProp<Integer> localVisibleMessage = new StateProp<>();
 
     /**
      * @see ColumnsMessage#C_LOCAL_BLOCK_ID
@@ -293,7 +293,7 @@ public class Message {
         this.lat.apply(input.lat);
         this.lng.apply(input.lng);
         this.zoom.apply(input.zoom);
-        this.localActionMessage.apply(input.localActionMessage);
+        this.localVisibleMessage.apply(input.localVisibleMessage);
         this.localBlockId.apply(input.localBlockId);
         this.pushTitle.apply(input.pushTitle);
         this.pushBody.apply(input.pushBody);
@@ -369,8 +369,8 @@ public class Message {
         if (!this.zoom.isUnset()) {
             target.put(ColumnsMessage.C_ZOOM, this.zoom.get());
         }
-        if (!this.localActionMessage.isUnset()) {
-            target.put(ColumnsMessage.C_LOCAL_ACTION_MSG, this.localActionMessage.get());
+        if (!this.localVisibleMessage.isUnset()) {
+            target.put(ColumnsMessage.C_LOCAL_VISIBLE_MSG, this.localVisibleMessage.get());
         }
         if (!this.localBlockId.isUnset()) {
             target.put(ColumnsMessage.C_LOCAL_BLOCK_ID, this.localBlockId.get());
@@ -418,7 +418,7 @@ public class Message {
                     ColumnsMessage.C_LAT,
                     ColumnsMessage.C_LNG,
                     ColumnsMessage.C_ZOOM,
-                    ColumnsMessage.C_LOCAL_ACTION_MSG,
+                    ColumnsMessage.C_LOCAL_VISIBLE_MSG,
                     ColumnsMessage.C_LOCAL_BLOCK_ID,
                     ColumnsMessage.C_PUSH_TITLE,
                     ColumnsMessage.C_PUSH_BODY,
@@ -453,7 +453,7 @@ public class Message {
             target.lat.set(CursorUtil.getDouble(cursor, ++index));
             target.lng.set(CursorUtil.getDouble(cursor, ++index));
             target.zoom.set(CursorUtil.getLong(cursor, ++index));
-            target.localActionMessage.set(CursorUtil.getInt(cursor, ++index));
+            target.localVisibleMessage.set(CursorUtil.getInt(cursor, ++index));
             target.localBlockId.set(CursorUtil.getLong(cursor, ++index));
             target.pushTitle.set(CursorUtil.getString(cursor, ++index));
             target.pushBody.set(CursorUtil.getString(cursor, ++index));

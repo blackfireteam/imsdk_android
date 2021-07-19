@@ -162,6 +162,24 @@ public class IMMessage {
     public final StateProp<Long> zoom = new StateProp<>();
 
     /**
+     * 推送信息
+     */
+    @NonNull
+    public final StateProp<String> pushTitle = new StateProp<>();
+
+    /**
+     * 推送信息
+     */
+    @NonNull
+    public final StateProp<String> pushBody = new StateProp<>();
+
+    /**
+     * 推送信息
+     */
+    @NonNull
+    public final StateProp<String> pushSound = new StateProp<>();
+
+    /**
      * 消息发送失败时的错误码
      */
     @NonNull
@@ -220,6 +238,9 @@ public class IMMessage {
         this.lat.apply(input.lat);
         this.lng.apply(input.lng);
         this.zoom.apply(input.zoom);
+        this.pushTitle.apply(input.pushTitle);
+        this.pushBody.apply(input.pushBody);
+        this.pushSound.apply(input.pushSound);
         this.errorCode.apply(input.errorCode);
         this.errorMessage.apply(input.errorMessage);
         this.sendState.apply(input.sendState);
